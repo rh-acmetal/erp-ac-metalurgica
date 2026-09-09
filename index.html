@@ -501,6 +501,7 @@ tr:last-child td{border-bottom:none}
         <div class="chart-card"><div class="chart-ttl">Absenteísmo Jan–Jun 2026</div><div style="position:relative;height:140px"><canvas id="c-abs"></canvas></div></div>
         <div class="card" style="margin:0">
           <div style="font-size:12px;font-weight:700;margin-bottom:10px">⚠ Alertas Críticos do Sistema</div>
+          <div class="alert al-r" id="dash-sst-banner" style="display:none;margin-bottom:8px"></div>
           <div class="alert al-r"><div>📅</div><div><div class="al-title">12 férias vencidas — risco de multa</div><div class="al-sub">Programar imediatamente. Setores: Produção, Fundição, Manutenção</div></div></div>
           <div class="alert al-y"><div>📋</div><div><div class="al-title">4 NRs vencidas — NR-10, NR-12, NR-35</div><div class="al-sub">Agendar reciclagem com urgência. 13 colaboradores afetados.</div></div></div>
           <div class="alert al-y"><div>🩺</div><div><div class="al-title">7 ASOs vencendo em 30 dias</div><div class="al-sub">Produção e Manutenção. Agendar com clínica ocupacional.</div></div></div>
@@ -527,31 +528,103 @@ tr:last-child td{border-bottom:none}
         <div class="kpi-card"><div class="kpi-lbl">CNPJ 02 — Brass Metal</div><div class="kpi-val" id="colab-kpi-cnpj02">—</div></div>
         <div class="kpi-card"><div class="kpi-lbl">Afastados / Inativos</div><div class="kpi-val" style="color:var(--yellow)" id="colab-kpi-inativos">—</div></div>
       </div>
-      <div class="filters">
-        <div class="srch-wrap"><input class="finp" type="text" id="colab-search" placeholder="Buscar por nome, cargo ou matrícula..." oninput="tcColab.setSearch(this.value)"></div>
-        <select class="fsel" id="colab-filter-setor" onchange="tcColab.setFilter('setor', this.value)">
-          <option value="">Todos os setores</option>
-          <option>Produção</option><option>Manutenção</option><option>Qualidade</option><option>Administrativo</option><option>Fundição</option><option>Usinagem</option><option>Geral</option>
-        </select>
-        <select class="fsel" id="colab-filter-status" onchange="tcColab.setFilter('status', this.value)">
-          <option value="">Todos os status</option><option>Ativo</option><option>Afastado</option><option>Férias</option><option>Inativo</option>
-        </select>
-        <span class="chip" id="colab-count">21 registros</span>
-        <button class="btn btn-s btn-sm" onclick="exportTableToExcel('colaboradores',[{field:'mat',label:'Matrícula',width:10},{field:'nome',label:'Nome',width:35},{field:'cargo',label:'Cargo',width:28},{field:'setor',label:'Setor',width:14},{field:'adm',label:'Admissão',width:12},{field:'nascimento',label:'Nascimento',width:12},{field:'sal',label:'Salário',width:10},{field:'cnpj',label:'CNPJ',width:6},{field:'status',label:'Status',width:10}],'Colaboradores')">⬇ Exportar</button>
+      <!-- FILTROS AVANÇADOS -->
+      <div style="background:#fff;border:1px solid var(--g200);border-radius:9px;padding:14px;margin-bottom:12px">
+        <!-- Linha 1: Busca + CNPJ + Setor + Cargo -->
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
+          <div class="srch" style="flex:2;min-width:200px">
+            <input class="finp" style="width:100%" type="text" id="colab-search"
+              placeholder="🔎 Nome, matrícula ou CPF..."
+              oninput="colabFiltrar()">
+          </div>
+          <select class="fsel" id="cf-cnpj" onchange="colabFiltrar()" style="min-width:160px">
+            <option value="">🏢 Todas as empresas</option>
+            <option value="01">CNPJ 01 — AC Metalúrgica</option>
+            <option value="02">CNPJ 02 — Brass Metal</option>
+          </select>
+          <select class="fsel" id="cf-setor" onchange="colabFiltrar()" style="min-width:150px">
+            <option value="">📌 Todos os setores</option>
+            <option>Produção</option><option>Manutenção</option><option>Qualidade</option>
+            <option>Administrativo</option><option>Fundição</option><option>Usinagem</option><option>Geral</option>
+          </select>
+          <select class="fsel" id="cf-cargo" onchange="colabFiltrar()" style="min-width:180px">
+            <option value="">💼 Todos os cargos</option>
+          </select>
+        </div>
+        <!-- Linha 2: Admissão + Salário + Status + Limpar + Atualizar -->
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+          <div style="display:flex;align-items:center;gap:4px">
+            <span style="font-size:10px;color:var(--g400);white-space:nowrap">📅 Admissão:</span>
+            <input type="number" class="fsel" id="cf-adm-de" placeholder="De (ano)" min="2000" max="2030"
+              style="width:90px" onchange="colabFiltrar()">
+            <span style="font-size:10px;color:var(--g400)">–</span>
+            <input type="number" class="fsel" id="cf-adm-ate" placeholder="Até (ano)" min="2000" max="2030"
+              style="width:90px" onchange="colabFiltrar()">
+          </div>
+          <div style="display:flex;align-items:center;gap:4px">
+            <span style="font-size:10px;color:var(--g400);white-space:nowrap">💰 Salário:</span>
+            <input type="number" class="fsel" id="cf-sal-min" placeholder="Mín R$" min="0"
+              style="width:90px" onchange="colabFiltrar()">
+            <span style="font-size:10px;color:var(--g400)">–</span>
+            <input type="number" class="fsel" id="cf-sal-max" placeholder="Máx R$" min="0"
+              style="width:90px" onchange="colabFiltrar()">
+          </div>
+          <select class="fsel" id="cf-status" onchange="colabFiltrar()" style="min-width:130px">
+            <option value="">🟢 Todos os status</option>
+            <option value="Ativo">🟢 Ativo</option>
+            <option value="Férias">🔵 Férias</option>
+            <option value="Afastado">🟡 Afastado</option>
+            <option value="Inativo">⚫ Desligado</option>
+          </select>
+          <span class="chip" id="colab-count" style="font-weight:600">— colaboradores</span>
+          <div style="display:flex;gap:6px;margin-left:auto">
+            <button class="btn btn-s btn-sm" onclick="colabLimparFiltros()" title="Limpar todos os filtros">🔄 Limpar</button>
+            <button class="btn btn-s btn-sm" onclick="colabAtualizar()" title="Recarregar dados">🔃 Atualizar</button>
+            <button class="btn btn-s btn-sm" onclick="toggleColunasColab()" title="Escolher colunas">⚙ Colunas</button>
+          </div>
+        </div>
+        <!-- Painel de colunas (oculto por padrão) -->
+        <div id="colab-colunas-panel" style="display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--g100)">
+          <div style="font-size:10px;font-weight:700;color:var(--g400);margin-bottom:6px;text-transform:uppercase">Colunas visíveis:</div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px">
+            <label style="display:flex;align-items:center;gap:4px;font-size:11px;cursor:pointer"><input type="checkbox" id="col-mat" checked onchange="colabRenderizar()"> Matrícula</label>
+            <label style="display:flex;align-items:center;gap:4px;font-size:11px;cursor:pointer"><input type="checkbox" id="col-nome" checked onchange="colabRenderizar()"> Nome</label>
+            <label style="display:flex;align-items:center;gap:4px;font-size:11px;cursor:pointer"><input type="checkbox" id="col-cargo" checked onchange="colabRenderizar()"> Cargo</label>
+            <label style="display:flex;align-items:center;gap:4px;font-size:11px;cursor:pointer"><input type="checkbox" id="col-setor" checked onchange="colabRenderizar()"> Setor</label>
+            <label style="display:flex;align-items:center;gap:4px;font-size:11px;cursor:pointer"><input type="checkbox" id="col-adm" checked onchange="colabRenderizar()"> Admissão</label>
+            <label style="display:flex;align-items:center;gap:4px;font-size:11px;cursor:pointer"><input type="checkbox" id="col-sal" checked onchange="colabRenderizar()"> Salário</label>
+            <label style="display:flex;align-items:center;gap:4px;font-size:11px;cursor:pointer"><input type="checkbox" id="col-cnpj" checked onchange="colabRenderizar()"> CNPJ</label>
+            <label style="display:flex;align-items:center;gap:4px;font-size:11px;cursor:pointer"><input type="checkbox" id="col-status" checked onchange="colabRenderizar()"> Status</label>
+            <label style="display:flex;align-items:center;gap:4px;font-size:11px;cursor:pointer"><input type="checkbox" id="col-tempo" checked onchange="colabRenderizar()"> Tempo Casa</label>
+            <label style="display:flex;align-items:center;gap:4px;font-size:11px;cursor:pointer"><input type="checkbox" id="col-nasc" onchange="colabRenderizar()"> Nascimento</label>
+            <label style="display:flex;align-items:center;gap:4px;font-size:11px;cursor:pointer"><input type="checkbox" id="col-cpf" onchange="colabRenderizar()"> CPF</label>
+            <label style="display:flex;align-items:center;gap:4px;font-size:11px;cursor:pointer"><input type="checkbox" id="col-rg" onchange="colabRenderizar()"> RG</label>
+          </div>
+        </div>
       </div>
+      <!-- Seletor de paginação + exportar -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:11px;color:var(--g400)">Exibir:</span>
+          <select class="fsel" id="colab-page-size" style="width:80px" onchange="colabPageSize=+this.value;colabPage=1;colabRenderizar()">
+            <option value="10" selected>10</option>
+            <option value="25">25</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+          </select>
+          <span style="font-size:11px;color:var(--g400)">por página</span>
+        </div>
+        <button class="btn btn-s btn-sm" onclick="exportTableToExcel('colaboradores',[{field:'mat',label:'Matrícula',width:10},{field:'nome',label:'Nome',width:35},{field:'cargo',label:'Cargo',width:28},{field:'setor',label:'Setor',width:14},{field:'adm',label:'Admissão',width:12},{field:'nascimento',label:'Nascimento',width:12},{field:'sal',label:'Salário',width:10},{field:'cnpj',label:'CNPJ',width:6},{field:'rg',label:'RG',width:14},{field:'cpf',label:'CPF',width:16},{field:'status',label:'Status',width:10}],'Colaboradores')">⬇ Exportar Excel</button>
+      </div>
+      <!-- TABELA -->
       <div class="card" style="padding:0">
-        <table>
-          <thead><tr>
-            <th style="cursor:pointer" onclick="tcColab.setSort('mat')">Matrícula ⇅</th>
-            <th style="cursor:pointer" onclick="tcColab.setSort('nome')">Colaborador ⇅</th>
-            <th>Cargo</th><th style="cursor:pointer" onclick="tcColab.setSort('setor')">Setor ⇅</th>
-            <th style="cursor:pointer" onclick="tcColab.setSort('adm')">Admissão ⇅</th>
-            <th>Salário</th><th>CNPJ</th><th>Status</th><th>Tempo Casa</th><th>Ações</th>
-          </tr></thead>
+        <table id="colab-table">
+          <thead id="colab-thead"></thead>
           <tbody id="colab-tbody"></tbody>
         </table>
-        <div style="padding:10px 14px;display:flex;align-items:center;justify-content:flex-end;gap:4px;border-top:1px solid var(--g100)" id="colab-pagination"></div>
+        <div style="padding:10px 14px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--g100)" id="colab-pagination"></div>
       </div>
+
       <div style="margin-top:16px">
         <div class="chart-ttl" style="margin-bottom:10px">Estrutura Organizacional</div>
         <div class="org-wrap">
@@ -597,11 +670,32 @@ tr:last-child td{border-bottom:none}
         <span class="chip" id="beneficio-count">— registros</span>
         <button class="btn btn-s btn-sm" onclick="exportTableToExcel('beneficios_mov',[{field:'colaborador',label:'Colaborador',width:35},{field:'beneficio',label:'Benefício',width:25},{field:'tipo',label:'Tipo',width:16},{field:'data',label:'Data',width:12},{field:'motivo',label:'Motivo',width:25},{field:'situacao',label:'Situação',width:14}],'Beneficios')">⬇ Exportar</button>
       </div>
-      <div class="card" style="padding:0">
+      <div style="background:#fff;border:1px solid var(--g200);border-radius:9px;padding:12px;margin-bottom:10px">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+          <div class="srch-wrap" style="flex:2;min-width:180px"><input class="finp" style="width:100%" id="benef-search" placeholder="🔎 Buscar colaborador ou benefício..." oninput="benefCtrl.filter()"></div>
+          <select class="fsel" data-fid="benef" style="min-width:145px" onchange="benefCtrl.setFilter('beneficio',this.value)">
+            <option value="">💳 Todos os benefícios</option>
+            <option>VT</option><option>VR</option><option>Convênio Médico</option><option>Seguro de Vida</option><option>Odontológico</option>
+          </select>
+          <select class="fsel" data-fid="benef" style="min-width:130px" onchange="benefCtrl.setFilter('tipoMov',this.value)">
+            <option value="">📋 Todos os tipos</option><option>Inclusão</option><option>Exclusão</option>
+          </select>
+          <select class="fsel" data-fid="benef" style="min-width:130px" onchange="benefCtrl.setFilter('situacao',this.value)">
+            <option value="">🟢 Todas as situações</option><option>Concluída</option><option>Pendente</option><option>Cancelada</option>
+          </select>
+          <span class="chip" id="benef-count">— registros</span>
+          <button class="btn btn-s btn-xs" onclick="benefCtrl.clearAll()" title="Limpar">🔄 Limpar</button>
+          <button class="btn btn-s btn-xs" onclick="benefCtrl.load();showToast('🔃 Atualizado')" title="Atualizar">🔃</button>
+          <select class="fsel" style="width:72px" onchange="benefCtrl._pageSize=+this.value;benefCtrl._page=1;benefCtrl.render()">
+            <option value="10" selected>10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option>
+          </select>
+        </div>
+      </div>
+            <div class="card" style="padding:0">
         <div class="card-hdr">Movimentações — Inclusão / Exclusão</div>
         <table><thead><tr><th>Colaborador</th><th>Benefício</th><th>Tipo</th><th>Data</th><th>Motivo</th><th>Status</th><th>Ações</th></tr></thead>
-        <tbody id="beneficio-tbody-crud"></tbody></table>
-        <div style="padding:10px 14px;display:flex;align-items:center;justify-content:flex-end;gap:4px;border-top:1px solid var(--g100)" id="beneficio-pagination"></div>
+        <tbody id="benef-tbody"></tbody></table>
+        <div style="padding:10px 14px;display:flex;align-items:center;justify-content:flex-end;gap:4px;border-top:1px solid var(--g100)" id="benef-pag"></div>
       </div>
     </div>
 
@@ -618,16 +712,21 @@ tr:last-child td{border-bottom:none}
         <div class="kpi-card"><div class="kpi-lbl">Concluídas</div><div class="kpi-val dg" id="adm-concluidas-crud">—</div></div>
         <div class="kpi-card"><div class="kpi-lbl">Progresso Médio</div><div class="kpi-val" id="adm-media-crud">—</div></div>
       </div>
-      <div class="filters">
-        <div class="srch-wrap"><input class="finp" type="text" placeholder="Buscar nome, cargo ou setor..." oninput="tcAdmissao.setSearch(this.value)"></div>
-        <select class="fsel" onchange="tcAdmissao.setFilter('situacao', this.value)">
-          <option value="">Todas as situações</option><option>Em andamento</option><option>Concluída</option><option>Cancelada</option>
-        </select>
-        <span class="chip" id="admissao-count">— registros</span>
-        <button class="btn btn-s btn-sm" onclick="exportTableToExcel('admissoes',[{field:'nome',label:'Nome',width:35},{field:'cargo',label:'Cargo',width:28},{field:'setor',label:'Setor',width:14},{field:'inicio',label:'Início',width:12},{field:'situacao',label:'Situação',width:14}],'Admissoes')">⬇ Exportar</button>
+           <div style="background:#fff;border:1px solid var(--g200);border-radius:9px;padding:12px;margin-bottom:10px">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+          <div class="srch-wrap" style="flex:2;min-width:180px"><input class="finp" style="width:100%" id="adm-search" placeholder="🔎 Buscar nome, cargo ou setor..." oninput="admCtrl.filter()"></div>
+          <select class="fsel" data-fid="adm" style="min-width:160px" onchange="admCtrl.setFilter('situacao',this.value)"><option value="">🟢 Todas as situações</option><option>Pendente</option><option>Em andamento</option><option>Concluída</option></select><select class="fsel" data-fid="adm" style="min-width:130px" onchange="admCtrl.setFilter('setor',this.value)"><option value="">📌 Setor</option><option value="Produção">Produção</option><option value="Manutenção">Manutenção</option><option value="Qualidade">Qualidade</option><option value="Administrativo">Administrativo</option><option value="Fundição">Fundição</option><option value="Usinagem">Usinagem</option></select>
+          <span class="chip" id="adm-count">— registros</span>
+          <button class="btn btn-s btn-xs" onclick="admCtrl.clearAll()" title="Limpar">🔄 Limpar</button>
+          <button class="btn btn-s btn-xs" onclick="admCtrl.load();showToast('🔃 Atualizado')" title="Atualizar">🔃</button>
+          <select class="fsel" style="width:72px" onchange="admCtrl._pageSize=+this.value;admCtrl._page=1;admCtrl.render()">
+            <option value="10" selected>10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option>
+          </select>
+          <button class="btn btn-s btn-xs" onclick="exportTableToExcel('admissoes',[{field:'nome',label:'Nome',width:35},{field:'cargo',label:'Cargo',width:28},{field:'setor',label:'Setor',width:16},{field:'dataInicio',label:'Início',width:12},{field:'situacao',label:'Situação',width:14}],'Admissoes')">⬇ Excel</button>
+        </div>
       </div>
       <div id="admissao-cards-crud"></div>
-      <div style="display:flex;align-items:center;justify-content:flex-end;gap:4px;margin-top:8px" id="admissao-pagination"></div>
+      <div style="display:flex;align-items:center;justify-content:flex-end;gap:4px;margin-top:8px" id="adm-pag"></div>
     </div>
 
     <!-- ══ FÉRIAS ══ -->
@@ -643,20 +742,24 @@ tr:last-child td{border-bottom:none}
         <div class="kpi-card"><div class="kpi-lbl">Elegíveis</div><div class="kpi-val" style="color:var(--yellow)" id="f-elegiveis-crud">—</div></div>
         <div class="kpi-card"><div class="kpi-lbl">Em Gozo</div><div class="kpi-val" id="f-gozo-crud">—</div></div>
       </div>
-      <div class="filters">
-        <div class="srch-wrap"><input class="finp" type="text" placeholder="Buscar colaborador..." oninput="tcFerias.setSearch(this.value)"></div>
-        <select class="fsel" onchange="tcFerias.setFilter('situacao', this.value)">
-          <option value="">Todas as situações</option>
-          <option>Em aquisição</option><option>Elegível</option><option>Programada</option><option>Em gozo</option><option>Vencida</option><option>Gozada</option>
-        </select>
-        <span class="chip" id="ferias-count">21 registros</span>
-        <button class="btn btn-s btn-sm" onclick="exportTableToExcel('ferias',[{field:'colaborador',label:'Colaborador',width:35},{field:'cargo',label:'Cargo',width:28},{field:'setor',label:'Setor',width:14},{field:'periodoInicio',label:'Início Período',width:14},{field:'periodoFim',label:'Fim Período',width:14},{field:'inicioGozo',label:'Início Gozo',width:14},{field:'dias',label:'Dias',width:8},{field:'situacao',label:'Situação',width:16}],'Ferias')">⬇ Exportar</button>
+           <div style="background:#fff;border:1px solid var(--g200);border-radius:9px;padding:12px;margin-bottom:10px">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+          <div class="srch-wrap" style="flex:2;min-width:180px"><input class="finp" style="width:100%" id="ferias-search" placeholder="🔎 Buscar colaborador, cargo ou setor..." oninput="feriasCtrl.filter()"></div>
+          <select class="fsel" data-fid="ferias" style="min-width:160px" onchange="feriasCtrl.setFilter('situacao',this.value)"><option value="">🟢 Todas as situações</option><option value="Em aquisição">Em aquisição</option><option value="Elegível">🟡 Elegível</option><option value="Programada">📅 Programada</option><option value="Em gozo">🔵 Em gozo</option><option value="Vencida">🔴 Vencida</option></select><select class="fsel" data-fid="ferias" style="min-width:145px" onchange="feriasCtrl.setFilter('setor',this.value)"><option value="">📌 Todos os setores</option><option value="Produção">Produção</option><option value="Manutenção">Manutenção</option><option value="Qualidade">Qualidade</option><option value="Administrativo">Administrativo</option><option value="Fundição">Fundição</option><option value="Usinagem">Usinagem</option></select>
+          <span class="chip" id="ferias-count">— registros</span>
+          <button class="btn btn-s btn-xs" onclick="feriasCtrl.clearAll()" title="Limpar">🔄 Limpar</button>
+          <button class="btn btn-s btn-xs" onclick="feriasCtrl.load();showToast('🔃 Atualizado')" title="Atualizar">🔃</button>
+          <select class="fsel" style="width:72px" onchange="feriasCtrl._pageSize=+this.value;feriasCtrl._page=1;feriasCtrl.render()">
+            <option value="10" selected>10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option>
+          </select>
+          <button class="btn btn-s btn-xs" onclick="exportTableToExcel('ferias',[{field:'colaborador',label:'Colaborador',width:35},{field:'cargo',label:'Cargo',width:28},{field:'setor',label:'Setor',width:16},{field:'situacao',label:'Situação',width:14}],'Ferias')">⬇ Excel</button>
+        </div>
       </div>
       <div class="card" style="padding:0">
         <div class="card-hdr">Controle de Férias por Colaborador</div>
         <table><thead><tr><th>Colaborador</th><th>Cargo</th><th>Período Aquisitivo</th><th>Início Gozo</th><th>Dias</th><th>Situação</th><th>Ações</th></tr></thead>
-        <tbody id="ferias-tbody-crud"></tbody></table>
-        <div style="padding:10px 14px;display:flex;align-items:center;justify-content:flex-end;gap:4px;border-top:1px solid var(--g100)" id="ferias-pagination"></div>
+        <tbody id="ferias-tbody"></tbody></table>
+        <div style="padding:10px 14px;display:flex;align-items:center;justify-content:flex-end;gap:4px;border-top:1px solid var(--g100)" id="ferias-pag"></div>
       </div>
     </div>
 
@@ -670,22 +773,23 @@ tr:last-child td{border-bottom:none}
         <div class="sec-title" style="font-size:13px">Lançamentos de Ponto</div>
         <button class="btn btn-p btn-sm" onclick="openCrudModal(MOD_PONTO,null)">+ Novo Lançamento</button>
       </div>
-      <div class="filters">
-        <div class="srch-wrap"><input class="finp" type="text" placeholder="Buscar colaborador..." oninput="tcPonto.setSearch(this.value)"></div>
-        <select class="fsel" onchange="tcPonto.setFilter('tipo', this.value)">
-          <option value="">Todos os tipos</option>
-          <option>Hora Extra</option><option>Falta Injustificada</option><option>Falta Justificada</option><option>Atraso</option><option>Banco de Horas (crédito)</option><option>Banco de Horas (débito)</option><option>Atestado</option>
-        </select>
-        <select class="fsel" onchange="tcPonto.setFilter('situacao', this.value)">
-          <option value="">Todas as situações</option><option>Pendente aprovação</option><option>Aprovado</option><option>Reprovado</option>
-        </select>
-        <span class="chip" id="ponto-count">— registros</span>
-        <button class="btn btn-s btn-sm" onclick="exportTableToExcel('ponto',[{field:'colaborador',label:'Colaborador',width:35},{field:'data',label:'Data',width:12},{field:'tipo',label:'Tipo',width:22},{field:'horas',label:'Horas/Qtd',width:10},{field:'justificativa',label:'Justificativa',width:30},{field:'situacao',label:'Situação',width:16}],'Ponto')">⬇ Exportar</button>
+           <div style="background:#fff;border:1px solid var(--g200);border-radius:9px;padding:12px;margin-bottom:10px">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+          <div class="srch-wrap" style="flex:2;min-width:180px"><input class="finp" style="width:100%" id="ponto-search" placeholder="🔎 Buscar colaborador ou justificativa..." oninput="pontoCtrl.filter()"></div>
+          <select class="fsel" data-fid="ponto" style="min-width:180px" onchange="pontoCtrl.setFilter('tipo',this.value)"><option value="">📋 Todos os tipos</option><option>Hora Extra</option><option>Falta Injustificada</option><option>Falta Justificada</option><option>Atraso</option><option>Banco de Horas</option><option>Atestado</option></select><select class="fsel" data-fid="ponto" style="min-width:165px" onchange="pontoCtrl.setFilter('situacao',this.value)"><option value="">🟢 Todas as situações</option><option>Pendente aprovação</option><option>Aprovado</option><option>Rejeitado</option></select>
+          <span class="chip" id="ponto-count">— registros</span>
+          <button class="btn btn-s btn-xs" onclick="pontoCtrl.clearAll()" title="Limpar">🔄 Limpar</button>
+          <button class="btn btn-s btn-xs" onclick="pontoCtrl.load();showToast('🔃 Atualizado')" title="Atualizar">🔃</button>
+          <select class="fsel" style="width:72px" onchange="pontoCtrl._pageSize=+this.value;pontoCtrl._page=1;pontoCtrl.render()">
+            <option value="10" selected>10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option>
+          </select>
+          <button class="btn btn-s btn-xs" onclick="exportTableToExcel('ponto',[{field:'colaborador',label:'Colaborador',width:35},{field:'data',label:'Data',width:12},{field:'tipo',label:'Tipo',width:22},{field:'quantidade',label:'Qtd',width:8},{field:'justificativa',label:'Justificativa',width:30},{field:'situacao',label:'Situação',width:18}],'Ponto')">⬇ Excel</button>
+        </div>
       </div>
       <div class="card" style="padding:0">
         <table><thead><tr><th>Colaborador</th><th>Data</th><th>Tipo</th><th>Horas/Qtd</th><th>Justificativa</th><th>Situação</th><th>Ações</th></tr></thead>
-        <tbody id="ponto-tbody-crud"></tbody></table>
-        <div style="padding:10px 14px;display:flex;align-items:center;justify-content:flex-end;gap:4px;border-top:1px solid var(--g100)" id="ponto-pagination"></div>
+        <tbody id="ponto-tbody"></tbody></table>
+        <div style="padding:10px 14px;display:flex;align-items:center;justify-content:flex-end;gap:4px;border-top:1px solid var(--g100)" id="ponto-pag"></div>
       </div>
       <div class="card" style="text-align:center;padding:20px;margin-top:12px"><div style="font-size:28px;margin-bottom:6px">🔌</div><div style="font-size:12px;font-weight:700;margin-bottom:4px">Integração com relógio de ponto</div><div class="muted" style="max-width:360px;margin:0 auto 10px;font-size:11px">Quando configurada, os lançamentos passam a ser importados automaticamente via API.</div><button class="btn btn-s btn-sm">⚙ Configurar Integração</button></div>
     </div>
@@ -717,11 +821,33 @@ tr:last-child td{border-bottom:none}
         <span class="chip" id="vaga-count">— registros</span>
         <button class="btn btn-s btn-sm" onclick="exportTableToExcel('vagas',[{field:'codigo',label:'Código',width:10},{field:'titulo',label:'Vaga',width:30},{field:'setor',label:'Setor',width:16},{field:'abertura',label:'Abertura',width:12},{field:'candidatos',label:'Candidatos',width:10},{field:'fase',label:'Fase',width:16},{field:'sla',label:'SLA(d)',width:8},{field:'aprovacao',label:'Aprovação',width:16},{field:'situacao',label:'Status',width:14}],'Vagas')">⬇ Exportar</button>
       </div>
-      <div class="card" style="padding:0">
+      <div style="background:#fff;border:1px solid var(--g200);border-radius:9px;padding:12px;margin-bottom:10px">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+          <div class="srch-wrap" style="flex:2;min-width:180px"><input class="finp" style="width:100%" id="vaga-search" placeholder="🔎 Buscar vaga, código ou setor..." oninput="vagaCtrl.filter()"></div>
+          <select class="fsel" data-fid="vaga" style="min-width:155px" onchange="vagaCtrl.setFilter('fase',this.value)">
+            <option value="">📋 Todas as fases</option>
+            <option>Triagem</option><option>Entrev. RH</option><option>Entrev. Gestor</option><option>Testes</option><option>Aprovados</option><option>Banco de Talentos</option>
+          </select>
+          <select class="fsel" data-fid="vaga" style="min-width:130px" onchange="vagaCtrl.setFilter('aprovacao',this.value)">
+            <option value="">✅ Aprovação</option><option>Pendente</option><option>Aprovada</option><option>Reprovada</option>
+          </select>
+          <select class="fsel" data-fid="vaga" style="min-width:130px" onchange="vagaCtrl.setFilter('situacao',this.value)">
+            <option value="">🟢 Todas as situações</option><option>Em andamento</option><option>Encerrada</option><option>Pausada</option><option>Cancelada</option>
+          </select>
+          <span class="chip" id="vaga-count">— vagas</span>
+          <button class="btn btn-s btn-xs" onclick="vagaCtrl.clearAll()" title="Limpar">🔄 Limpar</button>
+          <button class="btn btn-s btn-xs" onclick="vagaCtrl.load();showToast('🔃 Atualizado')" title="Atualizar">🔃</button>
+          <select class="fsel" style="width:72px" onchange="vagaCtrl._pageSize=+this.value;vagaCtrl._page=1;vagaCtrl.render()">
+            <option value="10" selected>10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option>
+          </select>
+          <button class="btn btn-s btn-xs" onclick="exportTableToExcel('vagas',[{field:'codigo',label:'Código',width:10},{field:'titulo',label:'Vaga',width:35},{field:'setor',label:'Setor',width:16},{field:'fase',label:'Fase',width:20},{field:'candidatos',label:'Candidatos',width:10},{field:'dataAbertura',label:'Abertura',width:12},{field:'aprovacao',label:'Aprovação',width:12},{field:'situacao',label:'Situação',width:14}],'Vagas')">⬇ Excel</button>
+        </div>
+      </div>
+            <div class="card" style="padding:0">
         <div class="card-hdr">Vagas — Workflow de Aprovação</div>
         <table><thead><tr><th>#</th><th>Vaga</th><th>Setor</th><th>Abertura</th><th>Candidatos</th><th>Fase</th><th>SLA</th><th>Aprovação</th><th>Status</th><th>Ações</th></tr></thead>
-        <tbody id="vaga-tbody-crud"></tbody></table>
-        <div style="padding:10px 14px;display:flex;align-items:center;justify-content:flex-end;gap:4px;border-top:1px solid var(--g100)" id="vaga-pagination"></div>
+        <tbody id="vaga-tbody"></tbody></table>
+        <div style="padding:10px 14px;display:flex;align-items:center;justify-content:flex-end;gap:4px;border-top:1px solid var(--g100)" id="vaga-pag"></div>
       </div>
     </div>
 
@@ -740,21 +866,23 @@ tr:last-child td{border-bottom:none}
         <div class="tab" onclick="swTab(this,'cg-historico')">Histórico de Mérito</div>
       </div>
       <div id="cg-estrutura" class="tc active">
-        <div class="filters">
-          <div class="srch-wrap"><input class="finp" type="text" placeholder="Buscar cargo, família ou nível..." oninput="tcCargo.setSearch(this.value)"></div>
-          <select class="fsel" onchange="tcCargo.setFilter('familia', this.value)">
-            <option value="">Todas as famílias</option><option>Produção</option><option>Usinagem</option><option>Fundição</option><option>Qualidade</option><option>Manutenção</option><option>Administrativo</option><option>Gestão</option>
-          </select>
-          <select class="fsel" onchange="tcCargo.setFilter('situacao', this.value)">
-            <option value="">Todas as situações</option><option>Na faixa</option><option>Abaixo faixa</option><option>Acima faixa</option>
-          </select>
+             <div style="background:#fff;border:1px solid var(--g200);border-radius:9px;padding:12px;margin-bottom:10px">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+          <div class="srch-wrap" style="flex:2;min-width:180px"><input class="finp" style="width:100%" id="cargoAdv-search" placeholder="🔎 Buscar cargo, família ou nível..." oninput="cargoAdvCtrl.filter()"></div>
+          <select class="fsel" data-fid="cargoAdv" style="min-width:160px" onchange="cargoAdvCtrl.setFilter('familia',this.value)"><option value="">👥 Todas as famílias</option><option>Usinagem</option><option>Fundição</option><option>Produção</option><option>Manutenção</option><option>Qualidade</option><option>Administrativo</option></select><select class="fsel" data-fid="cargoAdv" style="min-width:110px" onchange="cargoAdvCtrl.setFilter('nivel',this.value)"><option value="">📊 Todos os níveis</option><option>N1</option><option>N2</option><option>N3</option><option>N4</option><option>N5</option></select><select class="fsel" data-fid="cargoAdv" style="min-width:150px" onchange="cargoAdvCtrl.setFilter('situacao',this.value)"><option value="">🟢 Todas as situações</option><option>Na faixa</option><option>Abaixo faixa</option><option>Acima faixa</option></select>
           <span class="chip" id="cargo-count">— registros</span>
-          <button class="btn btn-s btn-sm" onclick="exportTableToExcel('cargos',[{field:'cargo',label:'Cargo',width:30},{field:'familia',label:'Família',width:16},{field:'nivel',label:'Nível',width:8},{field:'faixaMin',label:'Faixa Min',width:12},{field:'faixaMedia',label:'Faixa Média',width:12},{field:'faixaMax',label:'Faixa Máx',width:12},{field:'ocupacao',label:'Ocupação',width:10},{field:'mediaAtual',label:'Média Atual',width:12},{field:'situacao',label:'Situação',width:14}],'Cargos')">⬇ Exportar</button>
+          <button class="btn btn-s btn-xs" onclick="cargoAdvCtrl.clearAll()" title="Limpar">🔄 Limpar</button>
+          <button class="btn btn-s btn-xs" onclick="cargoAdvCtrl.load();showToast('🔃 Atualizado')" title="Atualizar">🔃</button>
+          <select class="fsel" style="width:72px" onchange="cargoAdvCtrl._pageSize=+this.value;cargoAdvCtrl._page=1;cargoAdvCtrl.render()">
+            <option value="10" selected>10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option>
+          </select>
+          <button class="btn btn-s btn-xs" onclick="exportTableToExcel('cargos',[{field:'cargo',label:'Cargo',width:35},{field:'familia',label:'Família',width:16},{field:'nivel',label:'Nível',width:8},{field:'faixaMin',label:'Mín R$',width:10},{field:'faixaMedia',label:'Média R$',width:10},{field:'faixaMax',label:'Máx R$',width:10},{field:'ocupacao',label:'Ocup.',width:8},{field:'mediaAtual',label:'Média Atual R$',width:14},{field:'situacao',label:'Situação',width:14}],'Cargos')">⬇ Excel</button>
         </div>
+      </div>
         <div class="card" style="padding:0">
           <table><thead><tr><th>Cargo</th><th>Família</th><th>Nível</th><th>Faixa Min</th><th>Faixa Méd</th><th>Faixa Máx</th><th>Ocup.</th><th>Média Atual</th><th>Situação</th><th>Ações</th></tr></thead>
-          <tbody id="cargo-tbody-crud"></tbody></table>
-          <div style="padding:10px 14px;display:flex;align-items:center;justify-content:flex-end;gap:4px;border-top:1px solid var(--g100)" id="cargo-pagination"></div>
+          <tbody id="cargo-tbody"></tbody></table>
+          <div style="padding:10px 14px;display:flex;align-items:center;justify-content:flex-end;gap:4px;border-top:1px solid var(--g100)" id="cargo-pag"></div>
         </div>
       </div>
       <div id="cg-faixas" class="tc">
@@ -816,19 +944,23 @@ tr:last-child td{border-bottom:none}
       </div>
       <div class="tabs"><div class="tab active" onclick="swTab(this,'td-matriz')">Matriz de Treinamentos</div><div class="tab" onclick="swTab(this,'td-trilhas')">Trilhas LMS</div><div class="tab" onclick="swTab(this,'td-certs')">Certificados</div><div class="tab" onclick="swTab(this,'td-eficacia')">Eficácia</div></div>
       <div id="td-matriz" class="tc active">
-        <div class="filters">
-          <div class="srch-wrap"><input class="finp" type="text" placeholder="Buscar colaborador, cargo ou NR..." oninput="tcTreino.setSearch(this.value)"></div>
-          <select class="fsel" onchange="tcTreino.setFilter('situacao', this.value)">
-            <option value="">Todas as situações</option>
-            <option>Pendente</option><option>Em andamento</option><option>Concluído</option><option>Vencido</option>
-          </select>
+             <div style="background:#fff;border:1px solid var(--g200);border-radius:9px;padding:12px;margin-bottom:10px">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+          <div class="srch-wrap" style="flex:2;min-width:180px"><input class="finp" style="width:100%" id="treino-search" placeholder="🔎 Buscar colaborador, cargo ou NR..." oninput="treinoCtrl.filter()"></div>
+          <select class="fsel" data-fid="treino" style="min-width:160px" onchange="treinoCtrl.setFilter('situacao',this.value)"><option value="">🟢 Todas as situações</option><option>Pendente</option><option>Em andamento</option><option>Concluído</option><option>Vencido</option></select><select class="fsel" data-fid="treino" style="min-width:150px" onchange="treinoCtrl.setFilter('tipo',this.value)"><option value="">📋 Todos os tipos</option><option>NR</option><option>Comportamental</option><option>Técnico</option><option>Segurança</option><option>Qualidade</option></select>
           <span class="chip" id="treino-count">— registros</span>
-          <button class="btn btn-s btn-sm" onclick="exportTableToExcel('treinamentos',[{field:'colaborador',label:'Colaborador',width:35},{field:'cargo',label:'Cargo',width:28},{field:'treinamento',label:'Treinamento',width:25},{field:'tipo',label:'Tipo',width:12},{field:'periodicidade',label:'Periodicidade',width:14},{field:'cargaHoraria',label:'Carga Horária',width:12},{field:'validade',label:'Validade',width:12},{field:'situacao',label:'Situação',width:14}],'Treinamentos')">⬇ Exportar</button>
+          <button class="btn btn-s btn-xs" onclick="treinoCtrl.clearAll()" title="Limpar">🔄 Limpar</button>
+          <button class="btn btn-s btn-xs" onclick="treinoCtrl.load();showToast('🔃 Atualizado')" title="Atualizar">🔃</button>
+          <select class="fsel" style="width:72px" onchange="treinoCtrl._pageSize=+this.value;treinoCtrl._page=1;treinoCtrl.render()">
+            <option value="10" selected>10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option>
+          </select>
+          <button class="btn btn-s btn-xs" onclick="exportTableToExcel('treinamentos',[{field:'colaborador',label:'Colaborador',width:35},{field:'cargo',label:'Cargo',width:28},{field:'treinamento',label:'NR/Treinamento',width:20},{field:'tipo',label:'Tipo',width:16},{field:'dataConclusao',label:'Conclusão',width:12},{field:'validade',label:'Validade',width:12},{field:'situacao',label:'Situação',width:14}],'Treinamentos')">⬇ Excel</button>
         </div>
+      </div>
         <div class="card" style="padding:0">
           <table><thead><tr><th>Colaborador</th><th>Cargo</th><th>Treinamento</th><th>Tipo</th><th>Periodicidade</th><th>Carga H</th><th>Validade</th><th>Situação</th><th>Ações</th></tr></thead>
-          <tbody id="treino-tbody-crud"></tbody></table>
-          <div style="padding:10px 14px;display:flex;align-items:center;justify-content:flex-end;gap:4px;border-top:1px solid var(--g100)" id="treino-pagination"></div>
+          <tbody id="treino-tbody"></tbody></table>
+          <div style="padding:10px 14px;display:flex;align-items:center;justify-content:flex-end;gap:4px;border-top:1px solid var(--g100)" id="treino-pag"></div>
         </div>
       </div>
       <div id="td-trilhas" class="tc">
@@ -867,19 +999,24 @@ tr:last-child td{border-bottom:none}
         <div class="kpi-card"><div class="kpi-lbl">Média Geral</div><div class="kpi-val" id="av-media-crud">—</div></div>
       </div>
       <div class="charts-grid"><div class="chart-card"><div class="chart-ttl">Distribuição de Performance</div><div style="position:relative;height:170px"><canvas id="c-perf"></canvas></div></div><div class="chart-card"><div class="chart-ttl">Média por Setor</div><div style="position:relative;height:170px"><canvas id="c-sperf"></canvas></div></div></div>
-      <div class="filters">
-        <div class="srch-wrap"><input class="finp" type="text" placeholder="Buscar colaborador, cargo ou setor..." oninput="tcAval.setSearch(this.value)"></div>
-        <select class="fsel" onchange="tcAval.setFilter('situacao', this.value)">
-          <option value="">Todos os status</option><option>Pendente</option><option>Concluída</option>
-        </select>
-        <span class="chip" id="aval-count">— registros</span>
-        <button class="btn btn-s btn-sm" onclick="exportTableToExcel('avaliacoes',[{field:'colaborador',label:'Colaborador',width:35},{field:'cargo',label:'Cargo',width:28},{field:'setor',label:'Setor',width:14},{field:'ciclo',label:'Ciclo',width:14},{field:'nota',label:'Nota',width:8},{field:'resultado',label:'Resultado',width:22},{field:'pdi',label:'PDI',width:14},{field:'situacao',label:'Status',width:12}],'Avaliacoes')">⬇ Exportar Ciclo</button>
+           <div style="background:#fff;border:1px solid var(--g200);border-radius:9px;padding:12px;margin-bottom:10px">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+          <div class="srch-wrap" style="flex:2;min-width:180px"><input class="finp" style="width:100%" id="aval-search" placeholder="🔎 Buscar colaborador, cargo ou setor..." oninput="avalCtrl.filter()"></div>
+          <select class="fsel" data-fid="aval" style="min-width:155px" onchange="avalCtrl.setFilter('ciclo',this.value)"><option value="">📋 Todos os ciclos</option><option>1º Sem. 2026</option><option>2º Sem. 2025</option><option>1º Sem. 2025</option></select><select class="fsel" data-fid="aval" style="min-width:160px" onchange="avalCtrl.setFilter('situacao',this.value)"><option value="">🟢 Todas as situações</option><option>Pendente</option><option>Em andamento</option><option>Concluída</option><option>Cancelada</option></select><select class="fsel" data-fid="aval" style="min-width:180px" onchange="avalCtrl.setFilter('resultado',this.value)"><option value="">⭐ Todos os resultados</option><option>Abaixo das expectativas</option><option>Dentro das expectativas</option><option>Supera as expectativas</option><option>Muito acima das expectativas</option></select><select class="fsel" data-fid="aval" style="min-width:130px" onchange="avalCtrl.setFilter('setor',this.value)"><option value="">📌 Setor</option><option value="Produção">Produção</option><option value="Manutenção">Manutenção</option><option value="Qualidade">Qualidade</option><option value="Administrativo">Administrativo</option><option value="Fundição">Fundição</option><option value="Usinagem">Usinagem</option></select>
+          <span class="chip" id="aval-count">— registros</span>
+          <button class="btn btn-s btn-xs" onclick="avalCtrl.clearAll()" title="Limpar">🔄 Limpar</button>
+          <button class="btn btn-s btn-xs" onclick="avalCtrl.load();showToast('🔃 Atualizado')" title="Atualizar">🔃</button>
+          <select class="fsel" style="width:72px" onchange="avalCtrl._pageSize=+this.value;avalCtrl._page=1;avalCtrl.render()">
+            <option value="10" selected>10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option>
+          </select>
+          <button class="btn btn-s btn-xs" onclick="exportTableToExcel('avaliacoes',[{field:'colaborador',label:'Colaborador',width:35},{field:'cargo',label:'Cargo',width:28},{field:'setor',label:'Setor',width:16},{field:'ciclo',label:'Ciclo',width:14},{field:'nota',label:'Nota',width:8},{field:'resultado',label:'Resultado',width:30},{field:'situacao',label:'Situação',width:14}],'Avaliacoes')">⬇ Excel</button>
+        </div>
       </div>
       <div class="card" style="padding:0">
         <div class="card-hdr">Colaboradores — Ciclo 1º Sem. 2026</div>
         <table><thead><tr><th>Colaborador</th><th>Cargo</th><th>Setor</th><th>Ciclo</th><th>Nota</th><th>Resultado</th><th>PDI</th><th>Status</th><th>Ações</th></tr></thead>
-        <tbody id="aval-tbody-crud"></tbody></table>
-        <div style="padding:10px 14px;display:flex;align-items:center;justify-content:flex-end;gap:4px;border-top:1px solid var(--g100)" id="aval-pagination"></div>
+        <tbody id="aval-tbody"></tbody></table>
+        <div style="padding:10px 14px;display:flex;align-items:center;justify-content:flex-end;gap:4px;border-top:1px solid var(--g100)" id="aval-pag"></div>
       </div>
     </div>
 
@@ -916,7 +1053,25 @@ tr:last-child td{border-bottom:none}
           <div class="pulse-item"><div class="pulse-q">Tenho clareza sobre meu crescimento</div><div class="pulse-bar-wrap"><div class="pbar" style="flex:1"><div class="pbar-fill pbar-y" style="width:58%"></div></div><div class="pulse-score">5.8</div></div></div>
         </div>
       </div>
-      <div class="card" style="padding:0;margin-top:14px">
+      <div style="background:#fff;border:1px solid var(--g200);border-radius:9px;padding:12px;margin-bottom:10px">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+          <div class="srch-wrap" style="flex:2;min-width:180px"><input class="finp" style="width:100%" id="clima-search" placeholder="🔎 Buscar pesquisa ou tipo..." oninput="climaCtrl&&climaCtrl.filter()"></div>
+          <select class="fsel" data-fid="clima" style="min-width:150px" onchange="climaCtrl&&climaCtrl.setFilter('tipo',this.value)">
+            <option value="">📋 Todos os tipos</option>
+            <option>Pulse mensal</option><option>eNPS trimestral</option><option>Pesquisa anual</option><option>Pesquisa temática</option>
+          </select>
+          <select class="fsel" data-fid="clima" style="min-width:140px" onchange="climaCtrl&&climaCtrl.setFilter('situacao',this.value)">
+            <option value="">🟢 Todas as situações</option><option>Planejada</option><option>Em andamento</option><option>Encerrada</option>
+          </select>
+          <span class="chip" id="clima-count-adv">— pesquisas</span>
+          <button class="btn btn-s btn-xs" onclick="climaCtrl&&climaCtrl.clearAll()" title="Limpar">🔄 Limpar</button>
+          <button class="btn btn-s btn-xs" onclick="climaCtrl&&climaCtrl.load();showToast('🔃 Atualizado')" title="Atualizar">🔃</button>
+          <select class="fsel" style="width:72px" onchange="climaCtrl&&(climaCtrl._pageSize=+this.value,climaCtrl._page=1,climaCtrl.render())">
+            <option value="10" selected>10</option><option value="25">25</option><option value="50">50</option>
+          </select>
+        </div>
+      </div>
+            <div class="card" style="padding:0;margin-top:14px">
         <div class="card-hdr" style="justify-content:space-between">
           <span>Histórico de Pesquisas</span>
           <div style="display:flex;gap:6px">
@@ -985,7 +1140,25 @@ tr:last-child td{border-bottom:none}
             </div>
           </div>
         </div>
-        <div class="card" style="padding:0">
+        <div style="background:#fff;border:1px solid var(--g200);border-radius:9px;padding:12px;margin-bottom:10px">
+          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+            <div class="srch-wrap" style="flex:2;min-width:180px"><input class="finp" style="width:100%" id="suc-search" placeholder="🔎 Buscar posição, titular ou sucessor..." oninput="sucCtrl&&sucCtrl.filter()"></div>
+            <select class="fsel" data-fid="suc" style="min-width:165px" onchange="sucCtrl&&sucCtrl.setFilter('prontidao',this.value)">
+              <option value="">⏱ Todas as prontidões</option>
+              <option>Pronto agora</option><option>1–2 anos</option><option>2–3 anos</option><option>Em desenvolvimento</option><option>Não identificado</option>
+            </select>
+            <select class="fsel" data-fid="suc" style="min-width:130px" onchange="sucCtrl&&sucCtrl.setFilter('potencial',this.value)">
+              <option value="">⭐ Potencial</option><option>Alto</option><option>Médio</option><option>Baixo</option>
+            </select>
+            <select class="fsel" data-fid="suc" style="min-width:130px" onchange="sucCtrl&&sucCtrl.setFilter('desempenho',this.value)">
+              <option value="">📊 Desempenho</option><option>Alto</option><option>Médio</option><option>Baixo</option>
+            </select>
+            <span class="chip" id="suc-count-adv">— posições</span>
+            <button class="btn btn-s btn-xs" onclick="sucCtrl&&sucCtrl.clearAll()">🔄 Limpar</button>
+            <button class="btn btn-s btn-xs" onclick="sucCtrl&&sucCtrl.load();showToast('🔃 Atualizado')">🔃</button>
+          </div>
+        </div>
+                <div class="card" style="padding:0">
           <div class="card-hdr">Mapa de Sucessão — Posições Críticas</div>
           <table><thead><tr><th>Posição</th><th>Titular</th><th>Sucessor</th><th>Prontidão</th><th>Potencial</th><th>Desemp.</th><th>Ações</th></tr></thead>
           <tbody id="sucessao-tbody-crud"></tbody></table>
@@ -1078,17 +1251,21 @@ tr:last-child td{border-bottom:none}
       </div>
       <div class="tabs"><div class="tab active" onclick="swTab(this,'sst-aso')">Exames / ASO</div><div class="tab" onclick="swTab(this,'sst-epi')">EPIs</div><div class="tab" onclick="swTab(this,'sst-afastamentos')">Afastamentos</div><div class="tab" onclick="swTab(this,'sst-acidentes')">Acidentes</div></div>
       <div id="sst-aso" class="tc active">
-        <div class="filters">
-          <div class="srch-wrap"><input class="finp" type="text" placeholder="Buscar colaborador ou cargo..." oninput="tcSST.setSearch(this.value)"></div>
-          <select class="fsel" onchange="tcSST.setFilter('situacao', this.value)">
-            <option value="">Todas as situações</option>
-            <option>Em dia</option><option>Agendar</option><option>Vence em breve</option><option>Vencido</option>
-          </select>
+             <div style="background:#fff;border:1px solid var(--g200);border-radius:9px;padding:12px;margin-bottom:10px">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+          <div class="srch-wrap" style="flex:2;min-width:180px"><input class="finp" style="width:100%" id="sst-search" placeholder="🔎 Buscar colaborador ou cargo..." oninput="sstAdvCtrl.filter()"></div>
+          <select class="fsel" data-fid="sst" style="min-width:160px" onchange="sstAdvCtrl.setFilter('situacao',this.value)"><option value="">🟢 Todas as situações</option><option>Em dia</option><option>Agendar</option><option>Vence em breve</option><option>Vencido</option></select><select class="fsel" data-fid="sst" style="min-width:160px" onchange="sstAdvCtrl.setFilter('tipoExame',this.value)"><option value="">🩺 Todos os tipos</option><option>Admissional</option><option>Periódico</option><option>Retorno</option><option>Mudança de função</option><option>Demissional</option></select>
           <span class="chip" id="sst-count">— registros</span>
-          <button class="btn btn-s btn-sm" onclick="exportTableToExcel('sst',[{field:'colaborador',label:'Colaborador',width:35},{field:'cargo',label:'Cargo',width:28},{field:'tipoExame',label:'Tipo Exame',width:18},{field:'dataExame',label:'Data Exame',width:12},{field:'validade',label:'Validade',width:12},{field:'nrsPendentes',label:'NRs Pendentes',width:20},{field:'situacao',label:'Situação',width:14}],'SST')">⬇ Exportar</button>
+          <button class="btn btn-s btn-xs" onclick="sstAdvCtrl.clearAll()" title="Limpar">🔄 Limpar</button>
+          <button class="btn btn-s btn-xs" onclick="sstAdvCtrl.load();showToast('🔃 Atualizado')" title="Atualizar">🔃</button>
+          <select class="fsel" style="width:72px" onchange="sstAdvCtrl._pageSize=+this.value;sstAdvCtrl._page=1;sstAdvCtrl.render()">
+            <option value="10" selected>10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option>
+          </select>
+          <button class="btn btn-s btn-xs" onclick="exportTableToExcel('sst',[{field:'colaborador',label:'Colaborador',width:35},{field:'cargo',label:'Cargo',width:28},{field:'tipoExame',label:'Tipo Exame',width:18},{field:'dataExame',label:'Data Exame',width:12},{field:'proximoExame',label:'Próximo Exame',width:14},{field:'situacao',label:'Situação',width:14}],'SST')">⬇ Excel</button>
         </div>
-        <div class="card" style="padding:0"><table><thead><tr><th>Colaborador</th><th>Cargo</th><th>Exame</th><th>Data</th><th>Vencimento</th><th>NRs Pendentes</th><th>Status</th><th>Ações</th></tr></thead><tbody id="sst-tbody-crud"></tbody></table>
-        <div style="padding:10px 14px;display:flex;align-items:center;justify-content:flex-end;gap:4px;border-top:1px solid var(--g100)" id="sst-pagination"></div>
+      </div>
+        <div class="card" style="padding:0"><table><thead><tr><th>Colaborador</th><th>Cargo</th><th>Exame</th><th>Data</th><th>Vencimento</th><th>NRs Pendentes</th><th>Status</th><th>Ações</th></tr></thead><tbody id="sst-tbody"></tbody></table>
+        <div style="padding:10px 14px;display:flex;align-items:center;justify-content:flex-end;gap:4px;border-top:1px solid var(--g100)" id="sst-pag"></div>
         </div>
       </div>
       <div id="sst-epi" class="tc">
@@ -1317,10 +1494,18 @@ tr:last-child td{border-bottom:none}
         <div class="kpi-card"><div class="kpi-lbl">Total Líquido</div><div class="kpi-val" style="font-size:16px;color:var(--blue)" id="hol-liq-crud">—</div></div>
         <div class="kpi-card"><div class="kpi-lbl">FGTS Total (enc. empresa)</div><div class="kpi-val" style="font-size:16px" id="hol-fgts-crud">—</div></div>
       </div>
-      <div class="filters">
-        <div class="srch-wrap"><input class="finp" type="text" placeholder="Buscar colaborador, cargo ou competência..." oninput="tcHolerite.setSearch(this.value)"></div>
-        <span class="chip" id="holerite-count">— registros</span>
-        <button class="btn btn-s btn-sm" onclick="exportTableToExcel('holerites',[{field:'colaborador',label:'Colaborador',width:35},{field:'cargo',label:'Cargo',width:28},{field:'competencia',label:'Competência',width:12},{field:'salarioBase',label:'Sal.Base',width:12},{field:'liquido',label:'Líquido',width:12},{field:'fgts',label:'FGTS',width:10}],'Holerites')">⬇ Exportar</button>
+           <div style="background:#fff;border:1px solid var(--g200);border-radius:9px;padding:12px;margin-bottom:10px">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+          <div class="srch-wrap" style="flex:2;min-width:180px"><input class="finp" style="width:100%" id="hole-search" placeholder="🔎 Buscar colaborador, cargo ou competência..." oninput="holeCtrl.filter()"></div>
+          <select class="fsel" data-fid="hole" style="min-width:165px" onchange="holeCtrl.setFilter('competencia',this.value)"><option value="">📅 Todas as competências</option><option>Jun/2026</option><option>Mai/2026</option><option>Abr/2026</option><option>Mar/2026</option></select>
+          <span class="chip" id="holerite-count">— registros</span>
+          <button class="btn btn-s btn-xs" onclick="holeCtrl.clearAll()" title="Limpar">🔄 Limpar</button>
+          <button class="btn btn-s btn-xs" onclick="holeCtrl.load();showToast('🔃 Atualizado')" title="Atualizar">🔃</button>
+          <select class="fsel" style="width:72px" onchange="holeCtrl._pageSize=+this.value;holeCtrl._page=1;holeCtrl.render()">
+            <option value="10" selected>10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option>
+          </select>
+          <button class="btn btn-s btn-xs" onclick="exportTableToExcel('holerites',[{field:'colaborador',label:'Colaborador',width:35},{field:'cargo',label:'Cargo',width:28},{field:'competencia',label:'Competência',width:12},{field:'salarioBase',label:'Sal.Base',width:12},{field:'liquido',label:'Líquido',width:12}],'Holerites')">⬇ Excel</button>
+        </div>
       </div>
       <div class="card" style="padding:0">
         <table><thead><tr><th>Colaborador</th><th>Cargo</th><th>Competência</th><th>Salário Base</th><th>Total Proventos</th><th>Total Descontos</th><th>Líquido</th><th>FGTS</th><th>Ações</th></tr></thead>
@@ -1344,20 +1529,18 @@ tr:last-child td{border-bottom:none}
         <div class="kpi-card"><div class="kpi-lbl">Rascunhos</div><div class="kpi-val" style="color:var(--yellow)" id="com-rascunhos-crud">—</div></div>
         <div class="kpi-card"><div class="kpi-lbl">Categorias Ativas</div><div class="kpi-val" id="com-categorias-crud">—</div></div>
       </div>
-      <div class="filters">
-        <div class="srch-wrap"><input class="finp" type="text" placeholder="Buscar título, categoria ou conteúdo..." oninput="tcComunicado.setSearch(this.value)"></div>
-        <select class="fsel" onchange="tcComunicado.setFilter('categoria', this.value)">
-          <option value="">Todas as categorias</option>
-          <option>Aviso Geral</option><option>Segurança do Trabalho</option><option>Benefícios</option>
-          <option>Férias</option><option>Treinamento</option><option>Processo Seletivo</option>
-          <option>Reconhecimento</option><option>Aniversariantes</option><option>Resultado & Metas</option>
-          <option>Endomarketing</option><option>RH Informa</option>
-        </select>
-        <select class="fsel" onchange="tcComunicado.setFilter('situacao', this.value)">
-          <option value="">Todos os status</option><option>Publicado</option><option>Rascunho</option><option>Arquivado</option>
-        </select>
-        <span class="chip" id="comunicado-count">— registros</span>
-        <button class="btn btn-s btn-sm" onclick="exportTableToExcel('comunicados',[{field:'titulo',label:'Título',width:35},{field:'categoria',label:'Categoria',width:20},{field:'destinatario',label:'Para',width:20},{field:'canal',label:'Canal',width:14},{field:'data',label:'Data',width:12},{field:'autor',label:'Autor',width:20},{field:'situacao',label:'Status',width:12}],'Comunicados')">⬇ Exportar</button>
+           <div style="background:#fff;border:1px solid var(--g200);border-radius:9px;padding:12px;margin-bottom:10px">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+          <div class="srch-wrap" style="flex:2;min-width:180px"><input class="finp" style="width:100%" id="com-search" placeholder="🔎 Buscar título, categoria ou conteúdo..." oninput="comCtrl.filter()"></div>
+          <select class="fsel" data-fid="com" style="min-width:180px" onchange="comCtrl.setFilter('categoria',this.value)"><option value="">📋 Todas as categorias</option><option>Aviso Geral</option><option>Segurança do Trabalho</option><option>Benefícios</option><option>Férias</option><option>Treinamento</option><option>Processo Seletivo</option><option>Reconhecimento</option><option>Aniversariantes</option><option>Resultado & Metas</option><option>Endomarketing</option><option>RH Informa</option></select><select class="fsel" data-fid="com" style="min-width:150px" onchange="comCtrl.setFilter('canal',this.value)"><option value="">📣 Todos os canais</option><option>WhatsApp</option><option>Quadro de avisos</option><option>E-mail</option><option>Reunião</option><option>App</option><option>Todos</option></select><select class="fsel" data-fid="com" style="min-width:160px" onchange="comCtrl.setFilter('destinatario',this.value)"><option value="">👥 Todos</option><option>Todos os colaboradores</option><option>Produção</option><option>Usinagem</option><option>Fundição</option><option>Qualidade</option><option>Manutenção</option><option>Administrativo</option><option>Liderança</option></select><select class="fsel" data-fid="com" style="min-width:140px" onchange="comCtrl.setFilter('situacao',this.value)"><option value="">🟢 Todos os status</option><option>Rascunho</option><option>Publicado</option><option>Arquivado</option></select>
+          <span class="chip" id="comunicado-count">— registros</span>
+          <button class="btn btn-s btn-xs" onclick="comCtrl.clearAll()" title="Limpar">🔄 Limpar</button>
+          <button class="btn btn-s btn-xs" onclick="comCtrl.load();showToast('🔃 Atualizado')" title="Atualizar">🔃</button>
+          <select class="fsel" style="width:72px" onchange="comCtrl._pageSize=+this.value;comCtrl._page=1;comCtrl.render()">
+            <option value="10" selected>10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option>
+          </select>
+          <button class="btn btn-s btn-xs" onclick="exportTableToExcel('comunicados',[{field:'titulo',label:'Título',width:35},{field:'categoria',label:'Categoria',width:20},{field:'canal',label:'Canal',width:14},{field:'destinatario',label:'Para',width:20},{field:'data',label:'Data',width:12},{field:'situacao',label:'Status',width:12}],'Comunicados')">⬇ Excel</button>
+        </div>
       </div>
       <div id="comunicado-cards-crud" style="margin-bottom:8px"></div>
       <div style="display:flex;align-items:center;justify-content:flex-end;gap:4px" id="comunicado-pagination"></div>
@@ -1370,7 +1553,7 @@ tr:last-child td{border-bottom:none}
 
 <!-- MODAL COLABORADOR -->
 <div id="m-colab-detail" class="modal-overlay" onclick="if(event.target===this)this.classList.remove('open')">
-  <div class="modal" style="width:540px">
+  <div class="modal" style="width:640px;max-height:90vh">
     <div class="m-hdr"><div class="m-title" id="m-colab-title">Ficha do Colaborador</div><button class="m-close" onclick="document.getElementById('m-colab-detail').classList.remove('open')">×</button></div>
     <div class="m-body" id="m-colab-body"></div>
   </div>
@@ -1539,19 +1722,22 @@ function doLogin(){
   document.getElementById('login-screen').style.display='none';
   document.getElementById('app').style.display='block';
   buildAll();
+  // Ensure COLABS are in localStorage before rendering
+  try {
+    const key='ac_erp_v4_colaboradores';
+    const stored=JSON.parse(localStorage.getItem(key)||'[]');
+    if(stored.length < COLABS.length){
+      const agora=new Date().toLocaleString('pt-BR');
+      const migrado=COLABS.map((c,i)=>Object.assign({id:i+1},c,{criadoEm:agora,atualizadoEm:agora,status:c.status||'Ativo',nascimento:c.nascimento||'—',rg:c.rg||'—',cpf:c.cpf||'—'}));
+      localStorage.setItem(key,JSON.stringify(migrado));
+    }
+  } catch(e){}
   setTimeout(()=>{
-    // Re-run initCrudModules to ensure data is in localStorage
-    // (needed on first visit when localStorage is empty)
-    try { initCrudModules(); } catch(e){}
-    try { initLote2Modules(); } catch(e){}
     buildDashCharts();
     atualizarKPIsDash();
-    if(typeof tcColab!=='undefined'&&tcColab)tcColab.refresh();
-    if(typeof tcFerias!=='undefined'&&tcFerias)tcFerias.refresh();
-    if(typeof tcTreino!=='undefined'&&tcTreino)tcTreino.refresh();
-    if(typeof tcAval!=='undefined'&&tcAval)tcAval.refresh();
-    if(typeof tcSST!=='undefined'&&tcSST)tcSST.refresh();
-  },500);
+    try{colabPopularCargos();colabFiltrado=loadData('colaboradores');colabFiltrar();}catch(e){}
+    try{initAllAdvFilters();}catch(e){}
+  },300);
 }
 function ql(p){document.getElementById('l-perfil').value=p;doLogin();}
 function doLogout(){document.getElementById('app').style.display='none';document.getElementById('login-screen').style.display='flex';chartsBuilt={};}
@@ -1571,10 +1757,22 @@ function applyUser(p){
 function go(id,el,title,bread){
   if(id==='indicadores'){setTimeout(()=>{try{buildPeopleAnalytics();}catch(e){}},80);}
   if(id==='dashboard'){setTimeout(()=>{try{atualizarKPIsDash();}catch(e){}},100);}
-  if(id==='colaboradores'){setTimeout(()=>{try{if(tcColab)tcColab.refresh();atualizarKPIsDash();}catch(e){}},200);}
+  if(id==='colaboradores'){setTimeout(()=>{
+    try{
+      colabPopularCargos();
+      colabFiltrado=loadData('colaboradores');
+      colabFiltrar();
+      atualizarKPIsDash();
+    }catch(e){}
+  },200);}
   if(id==='holerite'){setTimeout(()=>{try{if(tcHolerite)tcHolerite.refresh();atualizarKPIsHolerite();}catch(e){}},80);}
   if(id==='comunicados'){setTimeout(()=>{try{if(tcComunicado)tcComunicado.refresh();atualizarKPIsComunicados();}catch(e){}},80);}
   if(id==='configuracoes'){setTimeout(()=>{try{initConfiguracoes();}catch(e){}},80);}
+  const advMap={'ferias':'feriasCtrl','treinamentos':'treinoCtrl','avaliacoes':'avalCtrl','clima':'climaCtrl','sucessao':'sucCtrl',
+    'sst':'sstAdvCtrl','admissao':'admCtrl','recrutamento':'vagaCtrl',
+    'beneficios':'benefCtrl','cargos':'cargoAdvCtrl','ponto':'pontoCtrl',
+    'holerite':'holeCtrl','comunicados':'comCtrl'};
+  if(advMap[id]){setTimeout(()=>{try{window[advMap[id]]&&window[advMap[id]].load();}catch(e){}},150);}
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById('page-'+id).classList.add('active');
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
@@ -1586,7 +1784,7 @@ function go(id,el,title,bread){
   if(id==='clima'&&!chartsBuilt.clima){setTimeout(()=>{buildClimaCharts();chartsBuilt.clima=true},60);}
 }
 
-function buildAll(){buildCal();buildCompForm();initCrudModules();initLote2Modules();initLote3Modules();initLote4Modules();initLote5Modules();initLote6Modules();tryRestoreSupabase();setTimeout(()=>{atualizarKPIsDash();if(tcColab)tcColab.refresh();},100);}
+function buildAll(){buildCal();buildCompForm();initCrudModules();initLote2Modules();initLote3Modules();initLote4Modules();initLote5Modules();initLote6Modules();tryRestoreSupabase();initAllAdvFilters();setTimeout(()=>{atualizarKPIsDash();colabPopularCargos();colabFiltrado=loadData('colaboradores');colabFiltrar();},100);}
 
 
 
@@ -2365,6 +2563,7 @@ function refreshAllKPIs() {
   try { if (typeof atualizarKPIsTerceiros === 'function') atualizarKPIsTerceiros(); } catch(e){}
   try { if (typeof atualizarKPIsDocumentos === 'function') atualizarKPIsDocumentos(); } catch(e){}
   try { if (typeof buildPeopleAnalytics === 'function') buildPeopleAnalytics(); } catch(e){}
+  try { if (typeof updateSSTBanner === 'function') updateSSTBanner(); } catch(e){}
   try { if (typeof atualizarKPIsHolerite === 'function') atualizarKPIsHolerite(); } catch(e){}
   try { if (typeof atualizarKPIsComunicados === 'function') atualizarKPIsComunicados(); } catch(e){}
   try { if (typeof refreshDashCharts === 'function') refreshDashCharts(); } catch(e){}
@@ -2432,22 +2631,115 @@ function abrirDetalheColabId(id) {
   if (!c) return;
   const nrs = nrsDoCargo(c.cargo||'');
   const tc = tempoCasa(c.adm);
+
+  // Busca histórico do colaborador nos outros módulos
+  const ferias = loadData('ferias').filter(f=>f.colaborador===c.nome);
+  const treinos = loadData('treinamentos').filter(t=>t.colaborador===c.nome);
+  const avals = loadData('avaliacoes').filter(a=>a.colaborador===c.nome);
+  const sst = loadData('sst').filter(s=>s.colaborador===c.nome);
+  const docs = loadData('documentos').filter(d=>d.colaborador===c.nome);
+  const audit = loadData('auditoria').filter(a=>String(a.registroLabel||'').includes(c.nome)).slice(0,5);
+
+  // Status de férias
+  const ferStatus = ferias[0] ? ferias[0].situacao : 'Sem registro';
+  const ferBadge = {'Vencida':'br','Elegível':'by','Em aquisição':'bb','Programada':'bg','Em gozo':'bp'}[ferStatus]||'bgy';
+
+  // Status SST
+  const sstStatus = sst[0] ? sst[0].situacao : 'Sem ASO';
+  const sstBadge = {'Em dia':'bg','Agendar':'by','Vence em breve':'bo','Vencido':'br'}[sstStatus]||'bgy';
+
+  // Treinamentos vencidos
+  const treinosVencidos = treinos.filter(t=>t.situacao==='Vencido').length;
+  const treinosPendentes = treinos.filter(t=>t.situacao==='Pendente').length;
+
+  // Avaliação atual
+  const avalAtual = avals.find(a=>a.ciclo==='1º Sem. 2026');
+  const avalNota = avalAtual && avalAtual.nota!=null ? avalAtual.nota : '—';
+  const avalStatus = avalAtual ? avalAtual.situacao : 'Sem avaliação';
+
   document.getElementById('m-colab-title').textContent = c.nome;
   document.getElementById('m-colab-body').innerHTML = `
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
-      <div style="background:var(--g50);border-radius:6px;padding:8px 10px"><div style="font-size:9px;color:var(--g400);font-weight:700;text-transform:uppercase">Matrícula</div><div style="font-size:13px;font-weight:700;font-family:monospace">${c.mat||'—'}</div></div>
-      <div style="background:var(--g50);border-radius:6px;padding:8px 10px"><div style="font-size:9px;color:var(--g400);font-weight:700;text-transform:uppercase">Tempo de Casa</div><div style="font-size:13px;font-weight:700">${tc}</div></div>
-      <div style="background:var(--g50);border-radius:6px;padding:8px 10px"><div style="font-size:9px;color:var(--g400);font-weight:700;text-transform:uppercase">Cargo</div><div style="font-size:11px;font-weight:600">${c.cargo}</div></div>
-      <div style="background:var(--g50);border-radius:6px;padding:8px 10px"><div style="font-size:9px;color:var(--g400);font-weight:700;text-transform:uppercase">Setor</div><div style="font-size:12px;font-weight:600">${c.setor}</div></div>
-      <div style="background:var(--g50);border-radius:6px;padding:8px 10px"><div style="font-size:9px;color:var(--g400);font-weight:700;text-transform:uppercase">Nascimento</div><div style="font-size:12px;font-weight:600">${c.nascimento||'—'}</div></div>
-      <div style="background:var(--g50);border-radius:6px;padding:8px 10px"><div style="font-size:9px;color:var(--g400);font-weight:700;text-transform:uppercase">Admissão</div><div style="font-size:12px;font-weight:600">${c.adm}</div></div>
-      <div style="background:var(--g50);border-radius:6px;padding:8px 10px"><div style="font-size:9px;color:var(--g400);font-weight:700;text-transform:uppercase">RG</div><div style="font-size:11px;font-family:monospace">${c.rg||'—'}</div></div>
-      <div style="background:var(--g50);border-radius:6px;padding:8px 10px"><div style="font-size:9px;color:var(--g400);font-weight:700;text-transform:uppercase">CPF</div><div style="font-size:11px;font-family:monospace">${c.cpf||'—'}</div></div>
+    <!-- DADOS PESSOAIS -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:12px">
+      <div style="background:var(--g50);border-radius:6px;padding:8px 10px">
+        <div style="font-size:9px;color:var(--g400);font-weight:700;text-transform:uppercase">Matrícula</div>
+        <div style="font-size:13px;font-weight:700;font-family:monospace">${c.mat||'—'}</div>
+      </div>
+      <div style="background:var(--g50);border-radius:6px;padding:8px 10px">
+        <div style="font-size:9px;color:var(--g400);font-weight:700;text-transform:uppercase">Tempo de Casa</div>
+        <div style="font-size:13px;font-weight:700">${tc}</div>
+      </div>
+      <div style="background:var(--g50);border-radius:6px;padding:8px 10px">
+        <div style="font-size:9px;color:var(--g400);font-weight:700;text-transform:uppercase">Cargo</div>
+        <div style="font-size:11px;font-weight:600">${c.cargo}</div>
+      </div>
+      <div style="background:var(--g50);border-radius:6px;padding:8px 10px">
+        <div style="font-size:9px;color:var(--g400);font-weight:700;text-transform:uppercase">Setor · CNPJ</div>
+        <div style="font-size:11px;font-weight:600">${c.setor} · CNPJ ${c.cnpj||'01'}</div>
+      </div>
+      <div style="background:var(--g50);border-radius:6px;padding:8px 10px">
+        <div style="font-size:9px;color:var(--g400);font-weight:700;text-transform:uppercase">Admissão</div>
+        <div style="font-size:12px;font-weight:600">${c.adm}</div>
+      </div>
+      <div style="background:var(--g50);border-radius:6px;padding:8px 10px">
+        <div style="font-size:9px;color:var(--g400);font-weight:700;text-transform:uppercase">Salário</div>
+        <div style="font-size:12px;font-weight:600">${c.sal||'—'}</div>
+      </div>
+      <div style="background:var(--g50);border-radius:6px;padding:8px 10px">
+        <div style="font-size:9px;color:var(--g400);font-weight:700;text-transform:uppercase">Nascimento</div>
+        <div style="font-size:11px;font-weight:600">${c.nascimento||'—'}</div>
+      </div>
+      <div style="background:var(--g50);border-radius:6px;padding:8px 10px">
+        <div style="font-size:9px;color:var(--g400);font-weight:700;text-transform:uppercase">CPF · RG</div>
+        <div style="font-size:10px;font-family:monospace">${c.cpf||'—'} · ${c.rg||'—'}</div>
+      </div>
     </div>
-    <div style="font-size:11px;font-weight:700;margin-bottom:6px;color:var(--g800)">NRs Obrigatórias para o Cargo</div>
-    <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:14px">${nrs.map(n=>'<span class="badge bb">'+n+'</span>').join('')}</div>
-    <div style="display:flex;gap:8px">
+
+    <!-- PAINEL DE STATUS -->
+    <div style="font-size:11px;font-weight:700;margin-bottom:8px;color:var(--g800)">📊 Status nos Módulos</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;margin-bottom:12px">
+      <div style="background:var(--g50);border-radius:6px;padding:8px;text-align:center">
+        <div style="font-size:9px;color:var(--g400);font-weight:700;text-transform:uppercase;margin-bottom:4px">Férias</div>
+        <span class="badge ${ferBadge}">${ferStatus}</span>
+      </div>
+      <div style="background:var(--g50);border-radius:6px;padding:8px;text-align:center">
+        <div style="font-size:9px;color:var(--g400);font-weight:700;text-transform:uppercase;margin-bottom:4px">SST/ASO</div>
+        <span class="badge ${sstBadge}">${sstStatus}</span>
+      </div>
+      <div style="background:var(--g50);border-radius:6px;padding:8px;text-align:center">
+        <div style="font-size:9px;color:var(--g400);font-weight:700;text-transform:uppercase;margin-bottom:4px">Avaliação</div>
+        <div style="font-size:12px;font-weight:700;color:${avalNota>=8?'var(--green)':avalNota>=6?'var(--blue)':'var(--yellow)'}">${avalNota}</div>
+        <div style="font-size:9px;color:var(--g400)">${avalStatus}</div>
+      </div>
+      <div style="background:var(--g50);border-radius:6px;padding:8px;text-align:center">
+        <div style="font-size:9px;color:var(--g400);font-weight:700;text-transform:uppercase;margin-bottom:4px">NRs</div>
+        <div style="font-size:12px;font-weight:700;color:${treinosVencidos>0?'var(--red)':treinosPendentes>0?'var(--yellow)':'var(--green)'}">${treinosVencidos>0?treinosVencidos+' vencida(s)':treinosPendentes>0?treinosPendentes+' pendente(s)':'Em dia'}</div>
+      </div>
+    </div>
+
+    <!-- NRs DO CARGO -->
+    <div style="font-size:11px;font-weight:700;margin-bottom:6px;color:var(--g800)">🛡 NRs Obrigatórias para o Cargo</div>
+    <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px">${nrs.map(n=>'<span class="badge bb">'+n+'</span>').join('')}</div>
+
+    <!-- HISTÓRICO DE DOCUMENTOS -->
+    ${docs.length ? `<div style="font-size:11px;font-weight:700;margin-bottom:6px;color:var(--g800)">📄 Documentos (${docs.length})</div>
+    <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px">${docs.map(d=>'<span class="badge '+(d.situacao==='Vencido'?'br':d.situacao==='Vigente'?'bg':'bgy')+'">'+d.tipo+'</span>').join('')}</div>` : ''}
+
+    <!-- HISTÓRICO DE AUDITORIA -->
+    ${audit.length ? `<div style="font-size:11px;font-weight:700;margin-bottom:6px;color:var(--g800)">📋 Últimas Ações</div>
+    <div style="background:var(--g50);border-radius:6px;padding:8px;margin-bottom:12px;font-size:10px">
+      ${audit.map(a=>`<div style="display:flex;gap:8px;border-bottom:1px solid var(--g100);padding:4px 0">
+        <span style="color:var(--g400);min-width:110px">${a.dataHora}</span>
+        <span class="badge bgy" style="font-size:9px">${a.acao}</span>
+        <span style="color:var(--g600)">${a.usuario}</span>
+      </div>`).join('')}
+    </div>` : ''}
+
+    <!-- AÇÕES -->
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
       <button class="btn btn-p btn-sm" onclick="document.getElementById('m-colab-detail').classList.remove('open');openCrudModal(MOD_COLAB,${c.id})">✏ Editar</button>
+      <button class="btn btn-s btn-sm" onclick="document.getElementById('m-colab-detail').classList.remove('open');go('ferias',null,'Férias','')">📅 Ver Férias</button>
+      <button class="btn btn-s btn-sm" onclick="document.getElementById('m-colab-detail').classList.remove('open');go('sst',null,'SST','')">🛡 Ver SST</button>
       <button class="btn btn-s btn-sm" onclick="document.getElementById('m-colab-detail').classList.remove('open')">Fechar</button>
     </div>`;
   document.getElementById('m-colab-detail').classList.add('open');
@@ -4730,6 +5022,864 @@ function mostrarSQLSetup() {
     if (ta) ta.value = SUPABASE_SETUP_SQL;
   }
 }
+
+/* ═══════════ COLABORADORES — FILTROS AVANÇADOS ═══════════ */
+
+let colabPageSize = 10;
+let colabPage = 1;
+let colabFiltrado = [];
+
+function colabGetCols() {
+  const ids = ['mat','nome','cargo','setor','adm','sal','cnpj','status','tempo','nasc','cpf','rg'];
+  const out = {};
+  ids.forEach(id => {
+    const el = document.getElementById('col-'+id);
+    out[id] = el ? el.checked : true;
+  });
+  return out;
+}
+
+function colabFiltrar() {
+  const todos = loadData('colaboradores');
+  const busca = (document.getElementById('colab-search')||{}).value||'';
+  const cnpj = (document.getElementById('cf-cnpj')||{}).value||'';
+  const setor = (document.getElementById('cf-setor')||{}).value||'';
+  const cargo = (document.getElementById('cf-cargo')||{}).value||'';
+  const status = (document.getElementById('cf-status')||{}).value||'';
+  const admDe = parseInt((document.getElementById('cf-adm-de')||{}).value)||0;
+  const admAte = parseInt((document.getElementById('cf-adm-ate')||{}).value)||9999;
+  const salMin = parseFloat((document.getElementById('cf-sal-min')||{}).value)||0;
+  const salMax = parseFloat((document.getElementById('cf-sal-max')||{}).value)||Infinity;
+
+  colabFiltrado = todos.filter(c => {
+    // Busca textual: nome, matrícula ou CPF
+    if (busca) {
+      const b = busca.toLowerCase();
+      const matchNome = (c.nome||'').toLowerCase().includes(b);
+      const matchMat  = (c.mat||'').toLowerCase().includes(b);
+      const matchCpf  = (c.cpf||'').replace(/\D/g,'').includes(b.replace(/\D/g,''));
+      if (!matchNome && !matchMat && !matchCpf) return false;
+    }
+    if (cnpj && c.cnpj !== cnpj) return false;
+    if (setor && c.setor !== setor) return false;
+    if (cargo && c.cargo !== cargo) return false;
+    if (status && c.status !== status) return false;
+    // Filtro por ano de admissão
+    if (admDe || admAte < 9999) {
+      const ano = parseInt(anoAdm(c.adm)) || 0;
+      if (ano < admDe || ano > admAte) return false;
+    }
+    // Filtro por salário
+    if (salMin > 0 || salMax < Infinity) {
+      const sal = parseFloat((c.sal||'').replace(/[^\d.,]/g,'').replace(',','.')) || 0;
+      if (sal < salMin || sal > salMax) return false;
+    }
+    return true;
+  });
+
+  colabPage = 1;
+  colabRenderizar();
+}
+
+function colabLimparFiltros() {
+  ['colab-search','cf-cnpj','cf-setor','cf-cargo','cf-status','cf-adm-de','cf-adm-ate','cf-sal-min','cf-sal-max']
+    .forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+  colabFiltrar();
+}
+
+function colabAtualizar() {
+  colabFiltrar();
+  atualizarKPIsDash();
+  showToast('🔃 Dados atualizados');
+}
+
+function toggleColunasColab() {
+  const p = document.getElementById('colab-colunas-panel');
+  if (p) p.style.display = p.style.display === 'none' ? 'block' : 'none';
+}
+
+function colabPopularCargos() {
+  const sel = document.getElementById('cf-cargo');
+  if (!sel) return;
+  const cargos = [...new Set(loadData('colaboradores').map(c=>c.cargo))].filter(Boolean).sort();
+  sel.innerHTML = '<option value="">💼 Todos os cargos</option>' +
+    cargos.map(c=>`<option value="${c}">${c}</option>`).join('');
+}
+
+function colabRenderizar() {
+  const cols = colabGetCols();
+  const AV_C = ['#1a3f6f','#7e22ce','#0d9488','#b45309','#991b1b','#0d7a4e','#1d4ed8','#7c3aed','#0f766e','#9a3412'];
+
+  // Header dinâmico
+  const thead = document.getElementById('colab-thead');
+  if (thead) {
+    const headers = [];
+    if (cols.mat)    headers.push('<th style="cursor:pointer" onclick="colabSort(\'mat\')">Matrícula ⇅</th>');
+    if (cols.nome)   headers.push('<th style="cursor:pointer" onclick="colabSort(\'nome\')">Colaborador ⇅</th>');
+    if (cols.cargo)  headers.push('<th>Cargo</th>');
+    if (cols.setor)  headers.push('<th style="cursor:pointer" onclick="colabSort(\'setor\')">Setor ⇅</th>');
+    if (cols.adm)    headers.push('<th style="cursor:pointer" onclick="colabSort(\'adm\')">Admissão ⇅</th>');
+    if (cols.sal)    headers.push('<th>Salário</th>');
+    if (cols.cnpj)   headers.push('<th>CNPJ</th>');
+    if (cols.status) headers.push('<th>Status</th>');
+    if (cols.tempo)  headers.push('<th>Tempo Casa</th>');
+    if (cols.nasc)   headers.push('<th>Nascimento</th>');
+    if (cols.cpf)    headers.push('<th>CPF</th>');
+    if (cols.rg)     headers.push('<th>RG</th>');
+    headers.push('<th>Ações</th>');
+    thead.innerHTML = '<tr>' + headers.join('') + '</tr>';
+  }
+
+  // Paginação
+  const total = colabFiltrado.length;
+  const totalPages = Math.max(1, Math.ceil(total / colabPageSize));
+  if (colabPage > totalPages) colabPage = totalPages;
+  const start = (colabPage-1)*colabPageSize;
+  const pageData = colabFiltrado.slice(start, start+colabPageSize);
+
+  // Contador
+  const countEl = document.getElementById('colab-count');
+  if (countEl) countEl.textContent = total + ' colaborador' + (total!==1?'es':'');
+
+  // Rows
+  const tbody = document.getElementById('colab-tbody');
+  if (!tbody) return;
+  if (!pageData.length) {
+    tbody.innerHTML = '<tr><td colspan="20" class="muted" style="text-align:center;padding:24px">Nenhum colaborador encontrado. <button class="btn btn-s btn-xs" onclick="colabLimparFiltros()">Limpar filtros</button></td></tr>';
+  } else {
+    tbody.innerHTML = pageData.map((c,i) => {
+      const idx = start+i;
+      const ini = (c.nome||'').split(' ').slice(0,2).map(n=>n[0]).join('');
+      const cor = AV_C[idx % AV_C.length];
+      const sb = {Ativo:'bg',Afastado:'bo','Férias':'bb',Inativo:'bgy'}[c.status]||'bgy';
+      const tc = tempoCasa(c.adm);
+      const inativo = c.status === 'Inativo';
+      const cells = [];
+      if (cols.mat)    cells.push(`<td class="mono" style="font-size:10px">${c.mat||'—'}</td>`);
+      if (cols.nome)   cells.push(`<td><div style="display:flex;align-items:center;gap:7px"><div class="avatar" style="background:${cor}">${ini}</div><strong style="font-size:11px">${c.nome}</strong></div></td>`);
+      if (cols.cargo)  cells.push(`<td style="font-size:11px">${c.cargo}</td>`);
+      if (cols.setor)  cells.push(`<td>${c.setor}</td>`);
+      if (cols.adm)    cells.push(`<td>${c.adm}</td>`);
+      if (cols.sal)    cells.push(`<td class="mono">${c.sal||'—'}</td>`);
+      if (cols.cnpj)   cells.push(`<td><span class="badge bgy">CNPJ ${c.cnpj||'01'}</span></td>`);
+      if (cols.status) cells.push(`<td><span class="badge ${sb}">${c.status}</span></td>`);
+      if (cols.tempo)  cells.push(`<td><span class="chip">${tc}</span></td>`);
+      if (cols.nasc)   cells.push(`<td>${c.nascimento||'—'}</td>`);
+      if (cols.cpf)    cells.push(`<td class="mono" style="font-size:10px">${c.cpf||'—'}</td>`);
+      if (cols.rg)     cells.push(`<td class="mono" style="font-size:10px">${c.rg||'—'}</td>`);
+      cells.push(`<td style="white-space:nowrap">
+        <button class="btn btn-s btn-xs" onclick="abrirDetalheColabId(${c.id})">Ver</button>
+        <button class="btn btn-s btn-xs" onclick="openCrudModal(MOD_COLAB,${c.id})">✏</button>
+        ${inativo
+          ? `<button class="btn btn-s btn-xs" onclick="crudRestoreAction(MOD_COLAB,${c.id},'${escAttr(c.nome)}')">↩</button>`
+          : `<button class="btn btn-s btn-xs" onclick="crudDeleteAction(MOD_COLAB,${c.id},'${escAttr(c.nome)}')">🗑</button>`}
+      </td>`);
+      return `<tr style="${inativo?'opacity:.5':''}">${cells.join('')}</tr>`;
+    }).join('');
+  }
+
+  // Paginação controls
+  const pag = document.getElementById('colab-pagination');
+  if (pag) {
+    if (totalPages <= 1) {
+      pag.innerHTML = `<span class="muted">${total} colaborador${total!==1?'es':''}</span>`;
+    } else {
+      const s=start+1, e=Math.min(start+colabPageSize,total);
+      pag.innerHTML = `
+        <span class="muted">${s}–${e} de ${total}</span>
+        <div style="display:flex;gap:4px;margin-left:auto">
+          <button class="btn btn-s btn-xs" ${colabPage<=1?'disabled':''} onclick="colabPage=1;colabRenderizar()">«</button>
+          <button class="btn btn-s btn-xs" ${colabPage<=1?'disabled':''} onclick="colabPage--;colabRenderizar()">‹ Anterior</button>
+          <span style="margin:0 8px;font-size:11px;font-weight:600;align-self:center">Página ${colabPage} / ${totalPages}</span>
+          <button class="btn btn-s btn-xs" ${colabPage>=totalPages?'disabled':''} onclick="colabPage++;colabRenderizar()">Próxima ›</button>
+          <button class="btn btn-s btn-xs" ${colabPage>=totalPages?'disabled':''} onclick="colabPage=${totalPages};colabRenderizar()">»</button>
+        </div>`;
+    }
+  }
+}
+
+let colabSortField = 'nome';
+let colabSortDir = 1;
+function colabSort(field) {
+  if (colabSortField === field) colabSortDir *= -1;
+  else { colabSortField = field; colabSortDir = 1; }
+  colabFiltrado.sort((a,b)=>{
+    const av=a[field]||'', bv=b[field]||'';
+    return av<bv?-colabSortDir:av>bv?colabSortDir:0;
+  });
+  colabPage=1;
+  colabRenderizar();
+}
+
+// Override initColabTable to use new system
+function initColabTable() {
+  // Still create tcColab for compatibility with other modules
+  tcColab = {
+    refresh: () => { colabFiltrado = loadData('colaboradores'); colabFiltrar(); },
+    setSearch: (v) => { const el=document.getElementById('colab-search'); if(el)el.value=v; colabFiltrar(); },
+    setFilter: (f,v) => { colabFiltrar(); },
+  };
+  window._tc_colab = tcColab;
+  // Populate cargo dropdown
+  colabPopularCargos();
+  // Initialize with all data
+  colabFiltrado = loadData('colaboradores');
+  colabFiltrar();
+}
+
+
+
+/* ═══════ FILTROS AVANÇADOS TODOS MÓDULOS ═══════ */
+/* ═══════════════════════════════════════════════════════════════
+   FILTROS AVANÇADOS — TODOS OS MÓDULOS
+   Padrão uniforme: busca + filtros + paginação + ordenação + limpar
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── FACTORY: cria um controlador de filtros avançado para qualquer módulo ── */
+function makeAdvCtrl(cfg) {
+  // cfg: { id, table, tbodyId, countId, paginationId, searchFields,
+  //        filters:[], pageSize, sortField, sortDir, render }
+  const ctrl = {
+    _data: [], _filtered: [], _page: 1, _pageSize: cfg.pageSize||10,
+    _sortField: cfg.sortField||'', _sortDir: cfg.sortDir||1,
+    _filters: {},
+
+    load() {
+      this._data = loadData(cfg.table);
+      this.filter();
+    },
+
+    setSearch(v) {
+      const el = document.getElementById(cfg.id+'-search');
+      if (el) el.value = v;
+      this.filter();
+    },
+
+    setFilter(field, val) {
+      this._filters[field] = val;
+      this.filter();
+    },
+
+    clearAll() {
+      this._filters = {};
+      this._page = 1;
+      const el = document.getElementById(cfg.id+'-search');
+      if (el) el.value = '';
+      // Reset all filter selects / inputs
+      document.querySelectorAll('[data-fid="'+cfg.id+'"]').forEach(el => {
+        el.value = '';
+      });
+      this.filter();
+    },
+
+    refresh() {
+      this.load();
+    },
+
+    filter() {
+      const busca = (document.getElementById(cfg.id+'-search')||{}).value||'';
+      let rows = this._data.slice();
+
+      // Text search
+      if (busca) {
+        const b = busca.toLowerCase();
+        rows = rows.filter(r => cfg.searchFields.some(f => (r[f]||'').toLowerCase().includes(b)));
+      }
+
+      // Field filters
+      Object.entries(this._filters).forEach(([field, val]) => {
+        if (!val) return;
+        rows = rows.filter(r => String(r[field]||'') === String(val));
+      });
+
+      // Range filters (salary, date year)
+      if (cfg.rangeFilters) {
+        cfg.rangeFilters.forEach(rf => {
+          const minEl = document.getElementById(cfg.id+'-'+rf.id+'-min');
+          const maxEl = document.getElementById(cfg.id+'-'+rf.id+'-max');
+          const minV = minEl ? parseFloat(minEl.value)||0 : 0;
+          const maxV = maxEl ? parseFloat(maxEl.value)||Infinity : Infinity;
+          if (minV > 0 || maxV < Infinity) {
+            rows = rows.filter(r => {
+              const v = rf.extract(r);
+              return v >= minV && v <= maxV;
+            });
+          }
+        });
+      }
+
+      // Sort
+      if (this._sortField) {
+        const sf = this._sortField, sd = this._sortDir;
+        rows.sort((a,b)=>{
+          const av=a[sf]||'', bv=b[sf]||'';
+          return av<bv?-sd:av>bv?sd:0;
+        });
+      }
+
+      this._filtered = rows;
+      this._page = Math.min(this._page, Math.max(1, Math.ceil(rows.length/this._pageSize)));
+      this.render();
+    },
+
+    sort(field) {
+      if (this._sortField===field) this._sortDir*=-1;
+      else { this._sortField=field; this._sortDir=1; }
+      this.filter();
+    },
+
+    render() {
+      const total = this._filtered.length;
+      const ps = this._pageSize;
+      const totalPages = Math.max(1, Math.ceil(total/ps));
+      const start = (this._page-1)*ps;
+      const pageData = this._filtered.slice(start, start+ps);
+
+      // Count
+      const countEl = document.getElementById(cfg.countId);
+      if (countEl) countEl.textContent = total + ' registro'+(total!==1?'s':'');
+
+      // Body
+      const tbody = document.getElementById(cfg.tbodyId);
+      if (!tbody) return;
+      if (!pageData.length) {
+        tbody.innerHTML = '<tr><td colspan="20" class="muted" style="text-align:center;padding:20px">Nenhum registro encontrado. <button class="btn btn-s btn-xs" onclick="'+cfg.id+'Ctrl.clearAll()">Limpar filtros</button></td></tr>';
+      } else {
+        tbody.innerHTML = cfg.render(pageData);
+      }
+
+      // Pagination
+      const pagEl = document.getElementById(cfg.paginationId);
+      if (pagEl) {
+        if (totalPages <= 1) {
+          pagEl.innerHTML = `<span class="muted">${total} registro${total!==1?'s':''}</span>`;
+        } else {
+          const s=start+1, e=Math.min(start+ps,total);
+          const ctrl = cfg.id+'Ctrl';
+          pagEl.innerHTML = `
+            <span class="muted">${s}–${e} de ${total}</span>
+            <div style="display:flex;gap:3px;margin-left:auto">
+              <button class="btn btn-s btn-xs" ${this._page<=1?'disabled':''} onclick="${ctrl}._page=1;${ctrl}.render()">«</button>
+              <button class="btn btn-s btn-xs" ${this._page<=1?'disabled':''} onclick="${ctrl}._page--;${ctrl}.render()">‹</button>
+              <span style="margin:0 6px;font-size:11px;font-weight:600;align-self:center">${this._page}/${totalPages}</span>
+              <button class="btn btn-s btn-xs" ${this._page>=totalPages?'disabled':''} onclick="${ctrl}._page++;${ctrl}.render()">›</button>
+              <button class="btn btn-s btn-xs" ${this._page>=totalPages?'disabled':''} onclick="${ctrl}._page=${totalPages};${ctrl}.render()">»</button>
+            </div>`;
+        }
+      }
+    }
+  };
+
+  // Register globally
+  window[cfg.id+'Ctrl'] = ctrl;
+  return ctrl;
+}
+
+/* ── HELPER: render de filtros padrão ── */
+function fBox(label, children) {
+  return `<div style="background:#fff;border:1px solid var(--g200);border-radius:9px;padding:12px;margin-bottom:10px">
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">${children}</div>
+  </div>`;
+}
+function fSearch(id, ph) {
+  return `<div class="srch-wrap" style="flex:2;min-width:180px"><input class="finp" style="width:100%" id="${id}-search" placeholder="🔎 ${ph}" oninput="${id}Ctrl.filter()"></div>`;
+}
+function fSelect(id, field, label, opts) {
+  return `<select class="fsel" data-fid="${id}" style="min-width:140px" onchange="${id}Ctrl.setFilter('${field}',this.value)">
+    <option value="">${label}</option>${opts.map(o=>typeof o==='string'?`<option>${o}</option>`:`<option value="${o.v}">${o.l}</option>`).join('')}
+  </select>`;
+}
+function fYear(id, field, label) {
+  return `<div style="display:flex;align-items:center;gap:3px">
+    <span style="font-size:10px;color:var(--g400);white-space:nowrap">${label}:</span>
+    <input type="number" class="fsel" id="${id}-${field}-min" placeholder="De" min="2000" max="2030" style="width:78px" onchange="${id}Ctrl.filter()" data-fid="${id}">
+    <span style="font-size:10px;color:var(--g400)">–</span>
+    <input type="number" class="fsel" id="${id}-${field}-max" placeholder="Até" min="2000" max="2030" style="width:78px" onchange="${id}Ctrl.filter()" data-fid="${id}">
+  </div>`;
+}
+function fPageSize(id) {
+  return `<select class="fsel" style="width:72px" onchange="${id}Ctrl._pageSize=+this.value;${id}Ctrl._page=1;${id}Ctrl.render()">
+    <option value="10" selected>10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option>
+  </select>`;
+}
+function fActions(id, countId, exportCfg) {
+  const expStr = exportCfg ? `exportTableToExcel('${exportCfg.table}',${JSON.stringify(exportCfg.cols)},'${exportCfg.name}')` : '';
+  return `<span class="chip" id="${countId}">— registros</span>
+    <button class="btn btn-s btn-xs" onclick="${id}Ctrl.clearAll()" title="Limpar filtros">🔄 Limpar</button>
+    <button class="btn btn-s btn-xs" onclick="${id}Ctrl.load();showToast('🔃 Atualizado')" title="Atualizar">🔃</button>
+    ${expStr?`<button class="btn btn-s btn-xs" onclick="${expStr}">⬇ Excel</button>`:''}
+    ${fPageSize(id)}`;
+}
+
+/* ═══════════ FÉRIAS ═══════════ */
+let feriasCtrl;
+function initFeriasAdv() {
+  feriasCtrl = makeAdvCtrl({
+    id:'ferias', table:'ferias', tbodyId:'ferias-tbody', countId:'ferias-count',
+    paginationId:'ferias-pag', searchFields:['colaborador','setor','cargo'],
+    pageSize:10, sortField:'colaborador',
+    render: rows => rows.map(f => {
+      const sb = {'Em aquisição':'bb','Elegível':'by','Programada':'bg','Em gozo':'bp','Vencida':'br'}[f.situacao]||'bgy';
+      const inativo = f.status==='Inativo';
+      return `<tr style="${inativo?'opacity:.5':''}">
+        <td style="font-size:11px;font-weight:600">${f.colaborador}</td>
+        <td style="font-size:10px">${f.cargo||'—'}</td>
+        <td>${f.setor||'—'}</td>
+        <td>${f.inicioAquisitivo||'—'}</td>
+        <td>${f.fimAquisitivo||'—'}</td>
+        <td>${f.inicioGozo||'—'}</td>
+        <td>${f.diasGozar||30}</td>
+        <td><span class="badge ${sb}">${f.situacao||'—'}</span></td>
+        <td style="white-space:nowrap">
+          <button class="btn btn-s btn-xs" onclick="openCrudModal(MOD_FERIAS,${f.id})">✏</button>
+          ${inativo?`<button class="btn btn-s btn-xs" onclick="crudRestoreAction(MOD_FERIAS,${f.id},'${escAttr(f.colaborador)}')">↩</button>`
+                  :`<button class="btn btn-s btn-xs" onclick="crudDeleteAction(MOD_FERIAS,${f.id},'${escAttr(f.colaborador)}')">🗑</button>`}
+        </td></tr>`;
+    }).join(''),
+  });
+  window.feriasCtrl = feriasCtrl;
+  feriasCtrl.load();
+}
+
+/* ═══════════ TREINAMENTOS ═══════════ */
+let treinoCtrl;
+function initTreinoAdv() {
+  treinoCtrl = makeAdvCtrl({
+    id:'treino', table:'treinamentos', tbodyId:'treino-tbody', countId:'treino-count',
+    paginationId:'treino-pag', searchFields:['colaborador','treinamento','cargo'],
+    pageSize:10, sortField:'colaborador',
+    render: rows => rows.map(t => {
+      const sb = {'Concluído':'bg','Em andamento':'bb','Pendente':'by','Vencido':'br'}[t.situacao]||'bgy';
+      const inativo = t.status==='Inativo';
+      return `<tr style="${inativo?'opacity:.5':''}">
+        <td style="font-size:11px;font-weight:600">${t.colaborador}</td>
+        <td style="font-size:10px">${t.cargo||'—'}</td>
+        <td><span class="badge bb">${t.treinamento||'—'}</span></td>
+        <td>${t.tipo||'—'}</td>
+        <td>${t.dataConclusao||'—'}</td>
+        <td style="${t.situacao==='Vencido'?'color:var(--red);font-weight:700':''}">${t.validade||'—'}</td>
+        <td><span class="badge ${sb}">${t.situacao||'—'}</span></td>
+        <td style="white-space:nowrap">
+          <button class="btn btn-s btn-xs" onclick="openCrudModal(MOD_TREINO,${t.id})">✏</button>
+          ${inativo?`<button class="btn btn-s btn-xs" onclick="crudRestoreAction(MOD_TREINO,${t.id},'${escAttr(t.colaborador)}')">↩</button>`
+                  :`<button class="btn btn-s btn-xs" onclick="crudDeleteAction(MOD_TREINO,${t.id},'${escAttr(t.colaborador)}')">🗑</button>`}
+        </td></tr>`;
+    }).join(''),
+  });
+  window.treinoCtrl = treinoCtrl;
+  treinoCtrl.load();
+}
+
+/* ═══════════ AVALIAÇÕES ═══════════ */
+let avalCtrl;
+function initAvalAdv() {
+  avalCtrl = makeAdvCtrl({
+    id:'aval', table:'avaliacoes', tbodyId:'aval-tbody', countId:'aval-count',
+    paginationId:'aval-pag', searchFields:['colaborador','setor','cargo','resultado'],
+    pageSize:10, sortField:'colaborador',
+    render: rows => rows.map(a => {
+      const sb = {'Concluída':'bg','Pendente':'by','Em andamento':'bb','Cancelada':'br'}[a.situacao]||'bgy';
+      const nota = a.nota!=null?+a.nota:null;
+      const nc = nota!=null?(nota>=8?'var(--green)':nota>=6?'var(--blue)':'var(--red)'):'var(--g400)';
+      const inativo = a.status==='Inativo';
+      return `<tr style="${inativo?'opacity:.5':''}">
+        <td style="font-size:11px;font-weight:600">${a.colaborador}</td>
+        <td style="font-size:10px">${a.cargo||'—'}</td>
+        <td>${a.setor||'—'}</td>
+        <td><span class="chip">${a.ciclo||'—'}</span></td>
+        <td style="font-size:16px;font-weight:700;color:${nc}">${nota!=null?nota:'—'}</td>
+        <td style="font-size:10px">${a.resultado||'—'}</td>
+        <td><span class="badge ${sb}">${a.situacao||'—'}</span></td>
+        <td style="white-space:nowrap">
+          <button class="btn btn-s btn-xs" onclick="openCrudModal(MOD_AVAL,${a.id})">✏</button>
+          ${inativo?`<button class="btn btn-s btn-xs" onclick="crudRestoreAction(MOD_AVAL,${a.id},'${escAttr(a.colaborador)}')">↩</button>`
+                  :`<button class="btn btn-s btn-xs" onclick="crudDeleteAction(MOD_AVAL,${a.id},'${escAttr(a.colaborador)}')">🗑</button>`}
+        </td></tr>`;
+    }).join(''),
+  });
+  window.avalCtrl = avalCtrl;
+  avalCtrl.load();
+}
+
+/* ═══════════ SST ═══════════ */
+let sstAdvCtrl;
+function initSSTAdv() {
+  sstAdvCtrl = makeAdvCtrl({
+    id:'sst', table:'sst', tbodyId:'sst-tbody', countId:'sst-count',
+    paginationId:'sst-pag', searchFields:['colaborador','cargo','tipoExame'],
+    pageSize:10, sortField:'colaborador',
+    render: rows => rows.map(s => {
+      const sb = {'Em dia':'bg','Agendar':'by','Vence em breve':'bo','Vencido':'br'}[s.situacao]||'bgy';
+      const inativo = s.status==='Inativo';
+      return `<tr style="${inativo?'opacity:.5':''}">
+        <td style="font-size:11px;font-weight:600">${s.colaborador}</td>
+        <td style="font-size:10px">${s.cargo||'—'}</td>
+        <td>${s.tipoExame||'—'}</td>
+        <td>${s.dataExame||'—'}</td>
+        <td style="${s.situacao==='Vencido'?'color:var(--red);font-weight:700':''}">${s.proximoExame||'—'}</td>
+        <td><span class="badge ${sb}">${s.situacao||'—'}</span></td>
+        <td style="white-space:nowrap">
+          <button class="btn btn-s btn-xs" onclick="openCrudModal(MOD_SST,${s.id})">✏</button>
+          ${inativo?`<button class="btn btn-s btn-xs" onclick="crudRestoreAction(MOD_SST,${s.id},'${escAttr(s.colaborador)}')">↩</button>`
+                  :`<button class="btn btn-s btn-xs" onclick="crudDeleteAction(MOD_SST,${s.id},'${escAttr(s.colaborador)}')">🗑</button>`}
+        </td></tr>`;
+    }).join(''),
+  });
+  window.sstAdvCtrl = sstAdvCtrl;
+  sstAdvCtrl.load();
+}
+
+/* ═══════════ ADMISSÃO ═══════════ */
+let admCtrl;
+function initAdmissaoAdv() {
+  admCtrl = makeAdvCtrl({
+    id:'adm', table:'admissoes', tbodyId:'admissao-cards-crud', countId:'adm-count',
+    paginationId:'adm-pag', searchFields:['nome','cargo','setor'],
+    pageSize:10, sortField:'dataInicio',
+    render: rows => rows.map(a => {
+      const total=7, conc=+(a.docs||0)+(a.aso||0)+(a.contrato||0)+(a.cadastro||0)+(a.integracaoRH||0)+(a.epi||0)+(a.treinamento||0);
+      const pct=Math.round(conc/total*100);
+      const sb = a.situacao==='Concluída'?'bg':a.situacao==='Em andamento'?'bb':'by';
+      const inativo = a.status==='Inativo';
+      return `<tr style="${inativo?'opacity:.5':''}">
+        <td style="font-size:11px;font-weight:600">${a.nome}</td>
+        <td style="font-size:10px">${a.cargo||'—'}</td>
+        <td>${a.setor||'—'}</td>
+        <td>${a.dataInicio||'—'}</td>
+        <td>
+          <div style="display:flex;align-items:center;gap:6px">
+            <div style="flex:1;height:6px;background:var(--g100);border-radius:3px">
+              <div style="width:${pct}%;height:100%;background:${pct>=100?'var(--green)':pct>=50?'var(--blue)':'var(--yellow)'};border-radius:3px"></div>
+            </div>
+            <span style="font-size:10px;font-weight:600">${pct}%</span>
+          </div>
+        </td>
+        <td><span class="badge ${sb}">${a.situacao||'—'}</span></td>
+        <td style="white-space:nowrap">
+          <button class="btn btn-s btn-xs" onclick="openCrudModal(MOD_ADMISSAO,${a.id})">✏</button>
+          ${inativo?`<button class="btn btn-s btn-xs" onclick="crudRestoreAction(MOD_ADMISSAO,${a.id},'${escAttr(a.nome)}')">↩</button>`
+                  :`<button class="btn btn-s btn-xs" onclick="crudDeleteAction(MOD_ADMISSAO,${a.id},'${escAttr(a.nome)}')">🗑</button>`}
+        </td></tr>`;
+    }).join(''),
+  });
+  window.admCtrl = admCtrl;
+  admCtrl.load();
+}
+
+/* ═══════════ RECRUTAMENTO ═══════════ */
+let vagaCtrl;
+function initVagaAdv() {
+  vagaCtrl = makeAdvCtrl({
+    id:'vaga', table:'vagas', tbodyId:'vaga-tbody', countId:'vaga-count',
+    paginationId:'vaga-pag', searchFields:['titulo','setor','codigo'],
+    pageSize:10, sortField:'dataAbertura',
+    render: rows => rows.map(v => {
+      const sb = {'Em andamento':'bb','Encerrada':'bg','Pausada':'by','Cancelada':'br'}[v.situacao]||'bgy';
+      const apSb = {'Aprovada':'bg','Pendente':'by','Reprovada':'br'}[v.aprovacao]||'bgy';
+      const inativo = v.status==='Inativo';
+      return `<tr style="${inativo?'opacity:.5':''}">
+        <td class="mono" style="font-size:10px">${v.codigo||'—'}</td>
+        <td style="font-size:11px;font-weight:600">${v.titulo||'—'}</td>
+        <td>${v.setor||'—'}</td>
+        <td style="font-size:10px">${v.fase||'—'}</td>
+        <td>${v.candidatos||0}</td>
+        <td>${v.dataAbertura||'—'}</td>
+        <td><span class="badge ${apSb}">${v.aprovacao||'—'}</span></td>
+        <td><span class="badge ${sb}">${v.situacao||'—'}</span></td>
+        <td style="white-space:nowrap">
+          <button class="btn btn-s btn-xs" onclick="openCrudModal(MOD_VAGA,${v.id})">✏</button>
+          ${inativo?`<button class="btn btn-s btn-xs" onclick="crudRestoreAction(MOD_VAGA,${v.id},'${escAttr(v.titulo)}')">↩</button>`
+                  :`<button class="btn btn-s btn-xs" onclick="crudDeleteAction(MOD_VAGA,${v.id},'${escAttr(v.titulo)}')">🗑</button>`}
+        </td></tr>`;
+    }).join(''),
+  });
+  window.vagaCtrl = vagaCtrl;
+  vagaCtrl.load();
+}
+
+/* ═══════════ BENEFÍCIOS ═══════════ */
+let benefCtrl;
+function initBenefAdv() {
+  benefCtrl = makeAdvCtrl({
+    id:'benef', table:'beneficios_mov', tbodyId:'benef-tbody', countId:'benef-count',
+    paginationId:'benef-pag', searchFields:['colaborador','beneficio'],
+    pageSize:10, sortField:'data',
+    render: rows => rows.map(b => {
+      const sb = {'Concluída':'bg','Pendente':'by','Cancelada':'br'}[b.situacao]||'bgy';
+      const tbSb = b.tipoMov==='Inclusão'?'bg':'br';
+      const inativo = b.status==='Inativo';
+      return `<tr style="${inativo?'opacity:.5':''}">
+        <td style="font-size:11px;font-weight:600">${b.colaborador}</td>
+        <td><span class="chip">${b.beneficio||'—'}</span></td>
+        <td><span class="badge ${tbSb}">${b.tipoMov||'—'}</span></td>
+        <td>${b.data||'—'}</td>
+        <td style="font-size:10px">${b.motivo||'—'}</td>
+        <td><span class="badge ${sb}">${b.situacao||'—'}</span></td>
+        <td style="white-space:nowrap">
+          <button class="btn btn-s btn-xs" onclick="openCrudModal(MOD_BENEF,${b.id})">✏</button>
+          ${inativo?`<button class="btn btn-s btn-xs" onclick="crudRestoreAction(MOD_BENEF,${b.id},'${escAttr(b.colaborador)}')">↩</button>`
+                  :`<button class="btn btn-s btn-xs" onclick="crudDeleteAction(MOD_BENEF,${b.id},'${escAttr(b.colaborador)}')">🗑</button>`}
+        </td></tr>`;
+    }).join(''),
+  });
+  window.benefCtrl = benefCtrl;
+  benefCtrl.load();
+}
+
+/* ═══════════ CARGOS & SALÁRIOS ═══════════ */
+let cargoAdvCtrl;
+function initCargoAdv() {
+  cargoAdvCtrl = makeAdvCtrl({
+    id:'cargoAdv', table:'cargos', tbodyId:'cargo-tbody', countId:'cargo-count',
+    paginationId:'cargo-pag', searchFields:['cargo','familia','nivel'],
+    pageSize:15, sortField:'familia',
+    render: rows => rows.map(c => {
+      const sb = {'Na faixa':'bg','Abaixo faixa':'br','Acima faixa':'by'}[c.situacao]||'bgy';
+      const inativo = c.status==='Inativo';
+      return `<tr style="${inativo?'opacity:.5':''}">
+        <td style="font-size:11px;font-weight:600">${c.cargo}</td>
+        <td>${c.familia||'—'}</td>
+        <td><span class="chip">${c.nivel||'—'}</span></td>
+        <td class="mono">R$${fmtNum(c.faixaMin)}</td>
+        <td class="mono" style="font-weight:600">R$${fmtNum(c.faixaMedia)}</td>
+        <td class="mono">R$${fmtNum(c.faixaMax)}</td>
+        <td>${c.ocupacao||0}</td>
+        <td class="mono" style="font-weight:600">R$${fmtNum(c.mediaAtual)}</td>
+        <td><span class="badge ${sb}">${c.situacao||'—'}</span></td>
+        <td style="white-space:nowrap">
+          <button class="btn btn-s btn-xs" onclick="openCrudModal(MOD_CARGO,${c.id})">✏</button>
+          ${inativo?`<button class="btn btn-s btn-xs" onclick="crudRestoreAction(MOD_CARGO,${c.id},'${escAttr(c.cargo)}')">↩</button>`
+                  :`<button class="btn btn-s btn-xs" onclick="crudDeleteAction(MOD_CARGO,${c.id},'${escAttr(c.cargo)}')">🗑</button>`}
+        </td></tr>`;
+    }).join(''),
+  });
+  window.cargoAdvCtrl = cargoAdvCtrl;
+  cargoAdvCtrl.load();
+}
+function fmtNum(v){return v!=null?(+v).toLocaleString('pt-BR',{minimumFractionDigits:0}):'—';}
+
+/* ═══════════ PONTO ═══════════ */
+let pontoCtrl;
+function initPontoAdv() {
+  pontoCtrl = makeAdvCtrl({
+    id:'ponto', table:'ponto', tbodyId:'ponto-tbody', countId:'ponto-count',
+    paginationId:'ponto-pag', searchFields:['colaborador','tipo','justificativa'],
+    pageSize:10, sortField:'data',
+    render: rows => rows.map(p => {
+      const sb = {'Aprovado':'bg','Pendente aprovação':'by','Rejeitado':'br'}[p.situacao]||'bgy';
+      const inativo = p.status==='Inativo';
+      return `<tr style="${inativo?'opacity:.5':''}">
+        <td style="font-size:11px;font-weight:600">${p.colaborador}</td>
+        <td>${p.data||'—'}</td>
+        <td><span class="chip">${p.tipo||'—'}</span></td>
+        <td class="mono">${p.quantidade||'—'}</td>
+        <td style="font-size:10px">${p.justificativa||'—'}</td>
+        <td><span class="badge ${sb}">${p.situacao||'—'}</span></td>
+        <td style="white-space:nowrap">
+          <button class="btn btn-s btn-xs" onclick="openCrudModal(MOD_PONTO,${p.id})">✏</button>
+          ${inativo?`<button class="btn btn-s btn-xs" onclick="crudRestoreAction(MOD_PONTO,${p.id},'${escAttr(p.colaborador)}')">↩</button>`
+                  :`<button class="btn btn-s btn-xs" onclick="crudDeleteAction(MOD_PONTO,${p.id},'${escAttr(p.colaborador)}')">🗑</button>`}
+        </td></tr>`;
+    }).join(''),
+  });
+  window.pontoCtrl = pontoCtrl;
+  pontoCtrl.load();
+}
+
+/* ═══════════ HOLERITE ═══════════ */
+let holeCtrl;
+function initHoleriteAdv() {
+  holeCtrl = makeAdvCtrl({
+    id:'hole', table:'holerites', tbodyId:'holerite-tbody-crud', countId:'holerite-count',
+    paginationId:'holerite-pagination', searchFields:['colaborador','cargo','competencia'],
+    pageSize:10, sortField:'colaborador',
+    render: rows => rows.map(h => {
+      const c = calcHolerite(h);
+      const inativo = h.status==='Inativo';
+      return `<tr style="${inativo?'opacity:.5':''}">
+        <td style="font-size:11px;font-weight:600">${h.colaborador}</td>
+        <td style="font-size:10px">${h.cargo||'—'}</td>
+        <td><span class="chip">${h.competencia||'—'}</span></td>
+        <td class="mono">R$${(+h.salarioBase||0).toLocaleString('pt-BR',{minimumFractionDigits:2})}</td>
+        <td class="mono dg">R$${(+c.prov).toLocaleString('pt-BR',{minimumFractionDigits:2})}</td>
+        <td class="mono dr">-R$${(+c.desc).toLocaleString('pt-BR',{minimumFractionDigits:2})}</td>
+        <td class="mono" style="font-weight:700;color:var(--blue)">R$${(+c.liq).toLocaleString('pt-BR',{minimumFractionDigits:2})}</td>
+        <td style="white-space:nowrap">
+          <button class="btn btn-s btn-xs" onclick="verHolerite(${h.id})">📄 Ver</button>
+          <button class="btn btn-s btn-xs" onclick="openCrudModal(MOD_HOLERITE,${h.id})">✏</button>
+          ${inativo?`<button class="btn btn-s btn-xs" onclick="crudRestoreAction(MOD_HOLERITE,${h.id},'${escAttr(h.colaborador)}')">↩</button>`
+                  :`<button class="btn btn-s btn-xs" onclick="crudDeleteAction(MOD_HOLERITE,${h.id},'${escAttr(h.colaborador)}')">🗑</button>`}
+        </td></tr>`;
+    }).join(''),
+  });
+  window.holeCtrl = holeCtrl;
+  holeCtrl.load();
+}
+
+/* ═══════════ COMUNICADOS ═══════════ */
+let comCtrl;
+function initComunicadoAdv() {
+  comCtrl = makeAdvCtrl({
+    id:'com', table:'comunicados', tbodyId:'comunicado-cards-crud', countId:'comunicado-count',
+    paginationId:'comunicado-pagination', searchFields:['titulo','categoria','conteudo','autor'],
+    pageSize:6, sortField:'data', sortDir:-1,
+    render: comunicadoCardRender,
+  });
+  window.comCtrl = comCtrl;
+  comCtrl.load();
+}
+
+/* ═══════════ INICIALIZAÇÃO GERAL DOS FILTROS AVANÇADOS ═══════════ */
+function initAllAdvFilters() {
+  try { initFeriasAdv(); }    catch(e){ console.warn('ferias adv:', e); }
+  try { initTreinoAdv(); }    catch(e){ console.warn('treino adv:', e); }
+  try { initAvalAdv(); }      catch(e){ console.warn('aval adv:', e); }
+  try { initSSTAdv(); }       catch(e){ console.warn('sst adv:', e); }
+  try { initAdmissaoAdv(); }  catch(e){ console.warn('adm adv:', e); }
+  try { initVagaAdv(); }      catch(e){ console.warn('vaga adv:', e); }
+  try { initBenefAdv(); }     catch(e){ console.warn('benef adv:', e); }
+  try { initCargoAdv(); }     catch(e){ console.warn('cargo adv:', e); }
+  try { initPontoAdv(); }     catch(e){ console.warn('ponto adv:', e); }
+  try { initHoleriteAdv(); }  catch(e){ console.warn('hole adv:', e); }
+  try { initComunicadoAdv(); } catch(e){ console.warn('com adv:', e); }
+}
+
+
+/* ═══════ CLIMA + SUCESSÃO CONTROLLERS ═══════ */
+let climaCtrl, sucCtrl;
+
+function initClimaAdvFilters() {
+  climaCtrl = makeAdvCtrl({
+    id:'clima', table:'clima_pesquisas', tbodyId:'clima-tbody-crud', countId:'clima-count-adv',
+    paginationId:'clima-pagination', searchFields:['titulo','tipo'],
+    pageSize:8, sortField:'dataInicio', sortDir:-1,
+    render: climaRowRender,
+  });
+  window.climaCtrl = climaCtrl;
+  climaCtrl.load();
+
+  // Ações climate also
+  if(tcAcaoClima) tcAcaoClima.refresh();
+}
+
+function initSucAdvFilters() {
+  sucCtrl = makeAdvCtrl({
+    id:'suc', table:'sucessao', tbodyId:'sucessao-tbody-crud', countId:'suc-count-adv',
+    paginationId:'sucessao-pagination', searchFields:['posicao','titular','sucessor'],
+    pageSize:10, sortField:'posicao',
+    render: sucessaoRowRender,
+  });
+  window.sucCtrl = sucCtrl;
+  sucCtrl.load();
+}
+
+/* ═══════ PEOPLE ANALYTICS — MELHORIAS ═══════ */
+function buildPAChartsBySetor(colabs) {
+  // Real setor distribution
+  const setorCounts = {};
+  colabs.forEach(c => { setorCounts[c.setor||'Outros'] = (setorCounts[c.setor||'Outros']||0)+1; });
+  const sorted = Object.entries(setorCounts).sort((a,b)=>b[1]-a[1]);
+  
+  const COLORS = ['#1a3f6f','#7e22ce','#0d9488','#b45309','#991b1b','#0d7a4e','#1d4ed8','#7c3aed'];
+  
+  try {
+    const ctx = document.getElementById('c-sturn');
+    if (!ctx) return;
+    if (window._paChart1) { window._paChart1.destroy(); }
+    window._paChart1 = new Chart(ctx.getContext('2d'), {
+      type: 'bar',
+      data: {
+        labels: sorted.map(x=>x[0]),
+        datasets:[{
+          data: sorted.map(x=>x[1]),
+          backgroundColor: sorted.map((_,i)=>COLORS[i%COLORS.length]),
+          borderRadius: 4,
+        }]
+      },
+      options:{
+        responsive:true, maintainAspectRatio:false,
+        plugins:{legend:{display:false}},
+        scales:{
+          y:{ticks:{stepSize:1,font:{size:10}},grid:{color:'#f1f5f9'}},
+          x:{ticks:{font:{size:9}}}
+        }
+      }
+    });
+  } catch(e){}
+}
+
+// Override buildPACharts to use real setor data
+function buildPACharts(colabs, treinos, avals) {
+  buildPAChartsBySetor(colabs);
+
+  // Growth chart by year
+  const anoCounts = {};
+  colabs.forEach(c => { const a=anoAdm(c.adm); if(a) anoCounts[a]=(anoCounts[a]||0)+1; });
+  const anos = Object.keys(anoCounts).sort();
+  let acum = 0;
+  const crescimento = anos.map(a=>{acum+=anoCounts[a];return acum;});
+
+  try {
+    const ctx2 = document.getElementById('c-hcline');
+    if (!ctx2) return;
+    if (window._paChart2) { window._paChart2.destroy(); }
+    window._paChart2 = new Chart(ctx2.getContext('2d'), {
+      type:'line',
+      data:{
+        labels:anos,
+        datasets:[{
+          data:crescimento,
+          borderColor:'#1a3f6f',
+          backgroundColor:'rgba(26,63,111,.1)',
+          tension:.4, fill:true,
+          pointRadius:4, pointBackgroundColor:'#1a3f6f'
+        }]
+      },
+      options:{
+        responsive:true, maintainAspectRatio:false,
+        plugins:{legend:{display:false}},
+        scales:{
+          y:{min:0,ticks:{font:{size:10}},grid:{color:'#f1f5f9'}},
+          x:{ticks:{font:{size:10}}}
+        }
+      }
+    });
+  } catch(e){}
+}
+
+/* ═══════ DASHBOARD — SST URGENT BANNER ═══════ */
+function updateSSTBanner() {
+  const urgent = loadData('sst').filter(s=>s.status!=='Inativo'&&(s.situacao==='Agendar'||s.situacao==='Vencido'));
+  const bannerEl = document.getElementById('dash-sst-banner');
+  if (!bannerEl) return;
+  if (urgent.length > 0) {
+    bannerEl.style.display = 'flex';
+    bannerEl.innerHTML = `<div>⚠</div><div><div class="al-title">${urgent.length} ASO(s) urgentes — agendar com clínica ocupacional</div><div class="al-sub">${urgent.map(s=>s.colaborador.split(' ').slice(0,2).join(' ')).join(', ')}</div></div>`;
+  } else {
+    bannerEl.style.display = 'none';
+  }
+}
+
+/* ═══════ CARGOS — ALERTA NA FICHA DO COLABORADOR ═══════ */
+function salarioVsFaixa(colaborador) {
+  const sal = parseFloat((colaborador.sal||'').replace(/[^\d.,]/g,'').replace(',','.'));
+  if (!sal) return null;
+  const cargo = loadData('cargos').find(c=>c.cargo===colaborador.cargo&&c.status!=='Inativo');
+  if (!cargo) return null;
+  if (sal < cargo.faixaMin) return {status:'abaixo', pct:Math.round((sal/cargo.faixaMin-1)*100), faixa:cargo.faixaMin};
+  if (sal > cargo.faixaMax) return {status:'acima', pct:Math.round((sal/cargo.faixaMax-1)*100), faixa:cargo.faixaMax};
+  return {status:'ok'};
+}
+
+/* ═══════ WIRE INTO initAllAdvFilters ═══════ */
+const _origInitAllAdv = initAllAdvFilters;
+function initAllAdvFilters() {
+  _origInitAllAdv();
+  try { initClimaAdvFilters(); } catch(e){ console.warn('clima adv:', e); }
+  try { initSucAdvFilters(); }   catch(e){ console.warn('suc adv:', e); }
+  try { updateSSTBanner(); }     catch(e){}
+}
+
 </script>
 </body>
 </html>
