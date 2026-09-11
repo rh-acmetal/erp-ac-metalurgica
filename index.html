@@ -416,6 +416,15 @@ tr:last-child td{border-bottom:none}
     <div class="nav-item" onclick="go('indicadores',this,'People Analytics','Business Intelligence RH')">
       <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>People Analytics / BI
     </div>
+    <div class="nav-item" onclick="go('ind-rh',this,'Indicadores de RH','Turnover · Engajamento · T&D 2026')">
+      📊 Indicadores RH 2026
+    </div>
+    <div class="nav-item" onclick="go('planejamento',this,'Planejamento Estratégico RH 2027','5W2H · Plano de Ação · Endomkt')">
+      🎯 Planejamento 2027
+    </div>
+    <div class="nav-item" onclick="go('epi',this,'Controle de EPI','Entrega · Devolução · Validade por Colaborador')">
+      🦺 Controle de EPI
+    </div>
     <div class="nav-item" onclick="go('terceiros',this,'Gestão de Terceiros','Compliance')">
       <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>Terceiros & Temp.
     </div>
@@ -492,6 +501,20 @@ tr:last-child td{border-bottom:none}
         <div class="kpi-card"><div class="kpi-lbl">Treino Pendentes</div><div class="kpi-val" style="color:var(--yellow)" id="dash-tr-pendentes">—</div></div>
         <div class="kpi-card"><div class="kpi-lbl">Avaliações Pendentes</div><div class="kpi-val" id="dash-av-pendentes">—</div></div>
         <div class="kpi-card"><div class="kpi-lbl">SST a Agendar</div><div class="kpi-val" style="color:var(--red)" id="dash-sst-agendar">—</div></div>
+      </div>
+      <!-- ANIVERSARIANTES + TEMPO DE EMPRESA -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+        <div class="card" style="padding:12px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+            <div style="font-size:12px;font-weight:700">🎂 Aniversariantes do Mês</div>
+            <span id="dash-aniv-prox" style="font-size:9px;color:var(--g400);display:none"></span>
+          </div>
+          <div id="dash-aniversariantes"><div class="muted" style="font-size:11px;padding:4px 0">Carregando...</div></div>
+        </div>
+        <div class="card" style="padding:12px">
+          <div style="font-size:12px;font-weight:700;margin-bottom:8px">🏆 Aniversários de Empresa</div>
+          <div id="dash-tempo-empresa"><div class="muted" style="font-size:11px;padding:4px 0">Carregando...</div></div>
+        </div>
       </div>
       <div class="charts-grid">
         <div class="chart-card"><div class="chart-ttl">Turnover 12 meses</div><div style="position:relative;height:170px"><canvas id="c-turn"></canvas></div></div>
@@ -1251,7 +1274,8 @@ tr:last-child td{border-bottom:none}
       </div>
       <div class="tabs"><div class="tab active" onclick="swTab(this,'sst-aso')">Exames / ASO</div><div class="tab" onclick="swTab(this,'sst-epi')">EPIs</div><div class="tab" onclick="swTab(this,'sst-afastamentos')">Afastamentos</div><div class="tab" onclick="swTab(this,'sst-acidentes')">Acidentes</div></div>
       <div id="sst-aso" class="tc active">
-             <div style="background:#fff;border:1px solid var(--g200);border-radius:9px;padding:12px;margin-bottom:10px">
+             <div id="sst-alertas-panel" style="margin-bottom:10px"></div>
+      <div style="background:#fff;border:1px solid var(--g200);border-radius:9px;padding:12px;margin-bottom:10px">
         <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
           <div class="srch-wrap" style="flex:2;min-width:180px"><input class="finp" style="width:100%" id="sst-search" placeholder="🔎 Buscar colaborador ou cargo..." oninput="sstAdvCtrl.filter()"></div>
           <select class="fsel" data-fid="sst" style="min-width:160px" onchange="sstAdvCtrl.setFilter('situacao',this.value)"><option value="">🟢 Todas as situações</option><option>Em dia</option><option>Agendar</option><option>Vence em breve</option><option>Vencido</option></select><select class="fsel" data-fid="sst" style="min-width:160px" onchange="sstAdvCtrl.setFilter('tipoExame',this.value)"><option value="">🩺 Todos os tipos</option><option>Admissional</option><option>Periódico</option><option>Retorno</option><option>Mudança de função</option><option>Demissional</option></select>
@@ -1433,6 +1457,12 @@ tr:last-child td{border-bottom:none}
             <div class="alert al-b" style="margin-bottom:10px"><div>📤</div><div><div class="al-title">Backup / Exportação Completa — Ativa</div><div class="al-sub">Acesse Dados / Backup neste painel para exportar todos os módulos em um Excel multi-aba.</div></div></div>
             <div class="alert al-b"><div>📱</div><div><div class="al-title">eSocial — Planejado</div><div class="al-sub">Eventos S-2200 (admissão), S-2206 (alteração), S-2230 (afastamento), S-2240 (acidente). Prioridade: S-2200 para novos admitidos.</div></div></div>
             <div style="margin-top:16px;border-top:1px solid var(--g100);padding-top:14px">
+              <div style="font-size:12px;font-weight:700;margin-bottom:10px">📅 Feriados 2027 — Santa Bárbara d'Oeste</div>
+              <div id="feriados-2027-list">
+                <div class="muted" style="font-size:11px">Carregando...</div>
+              </div>
+            </div>
+            <div style="margin-top:16px;border-top:1px solid var(--g100);padding-top:14px">
               <div style="font-size:12px;font-weight:700;margin-bottom:10px">🔴 Supabase — Banco de Dados Online</div>
               <div class="muted" style="margin-bottom:10px;font-size:11px">Status: <strong id="db-status-badge" style="color:var(--yellow-t)">🟡 LocalStorage — Apenas este navegador</strong></div>
               <div class="fg">
@@ -1488,6 +1518,13 @@ tr:last-child td{border-bottom:none}
         </div>
       </div>
       <div class="alert al-b" style="margin-bottom:14px"><div>ℹ</div><div><div class="al-title">Este é um espelho simplificado para consulta interna — não substitui o holerite oficial</div><div class="al-sub">Use para que os colaboradores consultem o resumo da competência. O holerite oficial é emitido pelo contador/sistema de folha.</div></div></div>
+      <!-- T&D Consolidado -->
+      <div class="kpi-grid" style="margin-bottom:10px">
+        <div class="kpi-card"><div class="kpi-lbl">Sessões T&D (Jan–Ago)</div><div class="kpi-val" id="pa-td-sessoes">80</div><div class="kpi-delta">DDS + Treinamentos operacionais</div></div>
+        <div class="kpi-card"><div class="kpi-lbl">Total Participações</div><div class="kpi-val" id="pa-td-participacoes">1.694</div><div class="kpi-delta">Soma de presenças no período</div></div>
+        <div class="kpi-card"><div class="kpi-lbl">Horas/Pessoa Estimadas</div><div class="kpi-val" id="pa-td-horas-pessoa">—</div><div class="kpi-delta">Meta 2027: 2h/pessoa</div></div>
+        <div class="kpi-card"><div class="kpi-lbl">Principal Tema</div><div class="kpi-val" style="font-size:13px">DDS</div><div class="kpi-delta">Diálogo diário de segurança</div></div>
+      </div>
       <div class="kpi-grid">
         <div class="kpi-card"><div class="kpi-lbl">Holerites Emitidos</div><div class="kpi-val" id="hol-total-crud">—</div></div>
         <div class="kpi-card"><div class="kpi-lbl">Total Salários Base</div><div class="kpi-val" style="font-size:16px" id="hol-folha-crud">—</div></div>
@@ -1544,6 +1581,291 @@ tr:last-child td{border-bottom:none}
       </div>
       <div id="comunicado-cards-crud" style="margin-bottom:8px"></div>
       <div style="display:flex;align-items:center;justify-content:flex-end;gap:4px" id="comunicado-pagination"></div>
+    </div>
+
+    <!-- ══ INDICADORES RH 2026 ══ -->
+    <div id="page-ind-rh" class="page">
+      <div class="layer-badge lb-st">● Estratégico — Indicadores</div>
+      <div class="section-hdr">
+        <div class="sec-title">📊 Indicadores de RH — 2026</div>
+        <span class="badge bb">Jan – Jul/2026</span>
+      </div>
+
+      <!-- ABAS -->
+      <div style="display:flex;gap:6px;margin-bottom:16px;border-bottom:2px solid var(--g100);padding-bottom:0">
+        <button class="btn btn-p btn-sm" id="ind-tab-to" onclick="indTab('to')" style="border-radius:6px 6px 0 0;border-bottom:2px solid var(--navy)">Turn-Over</button>
+        <button class="btn btn-s btn-sm" id="ind-tab-eng" onclick="indTab('eng')" style="border-radius:6px 6px 0 0">Engajamento</button>
+        <button class="btn btn-s btn-sm" id="ind-tab-td" onclick="indTab('td')" style="border-radius:6px 6px 0 0">T&D</button>
+      </div>
+
+      <!-- ABA TURNOVER -->
+      <div id="ind-pane-to">
+        <!-- KPIs Turnover -->
+        <div class="kpi-grid">
+          <div class="kpi-card"><div class="kpi-lbl">Média TO Efetivos</div><div class="kpi-val" style="color:var(--green)">2%</div><div class="kpi-delta">Jan–Ago/2026</div></div>
+          <div class="kpi-card"><div class="kpi-lbl">Total Desligamentos</div><div class="kpi-val" style="color:var(--red)">9</div><div class="kpi-delta">Efetivos no período</div></div>
+          <div class="kpi-card"><div class="kpi-lbl">Total Entradas</div><div class="kpi-val" style="color:var(--green)">7</div><div class="kpi-delta">Efetivos no período</div></div>
+          <div class="kpi-card"><div class="kpi-lbl">Trainee Rotatividade</div><div class="kpi-val" style="color:var(--yellow)">Alta</div><div class="kpi-delta">15 saídas Trainee</div></div>
+        </div>
+        <!-- Gráfico TO -->
+        <div class="card" style="margin-bottom:14px">
+          <div class="chart-ttl">Turnover Mensal — Efetivos 2026 (%)</div>
+          <div style="position:relative;height:220px"><canvas id="chart-to-efetivos"></canvas></div>
+        </div>
+        <!-- Tabela TO -->
+        <div class="card" style="padding:0">
+          <div class="card-hdr" style="justify-content:space-between">
+            <span>Detalhamento Mensal — Efetivos</span>
+            <button class="btn btn-s btn-xs" onclick="exportIndTurnover()">⬇ Excel</button>
+          </div>
+          <table><thead><tr>
+            <th>Mês</th><th>Início</th><th>Fim</th><th>Entrada</th><th>Saída</th><th>Deslig. Colab.</th><th>Deslig. Empresa</th><th>Taxa TO</th><th>Nomes</th>
+          </tr></thead><tbody id="tbody-to"></tbody></table>
+        </div>
+        <div class="alert al-y" style="margin-top:12px"><div>📋</div><div>
+          <div class="al-title">Trainee e Jovem Aprendiz — Alta rotatividade normal</div>
+          <div class="al-sub">Contratos de experiência (45/90 dias) e aprendizes têm rotatividade estrutural. Monitorar efetivos é o indicador crítico.</div>
+        </div></div>
+      </div>
+
+      <!-- ABA ENGAJAMENTO -->
+      <div id="ind-pane-eng" style="display:none">
+        <div class="kpi-grid">
+          <div class="kpi-card"><div class="kpi-lbl">Contribuição para Resultados</div><div class="kpi-val" style="color:var(--green)">4,23</div><div class="kpi-delta">Média Jan–Jul/2026 (escala 1–5)</div></div>
+          <div class="kpi-card"><div class="kpi-lbl">Segurança e Bem-Estar</div><div class="kpi-val" style="color:var(--yellow)">3,84</div><div class="kpi-delta">Ponto de atenção — abaixo de 4,0</div></div>
+          <div class="kpi-card"><div class="kpi-lbl">Liderança Acessível</div><div class="kpi-val" style="color:var(--green)">4,11</div><div class="kpi-delta">Média Jan–Jul/2026</div></div>
+          <div class="kpi-card"><div class="kpi-lbl">Confiança no RH</div><div class="kpi-val" style="color:var(--green)">4,38</div><div class="kpi-delta">Ponto forte da empresa</div></div>
+        </div>
+        <!-- Gráfico Engajamento -->
+        <div class="card" style="margin-bottom:14px">
+          <div class="chart-ttl">Evolução do Engajamento — Jan a Ago/2026 (escala 1–5)</div>
+          <div style="position:relative;height:240px"><canvas id="chart-eng-evolucao"></canvas></div>
+        </div>
+        <!-- Resultado por Setor Agosto -->
+        <div class="card" style="margin-bottom:14px">
+          <div class="card-hdr" style="justify-content:space-between">
+            <span id="eng-setor-titulo">Resultado por Setor</span>
+            <select class="fsel" id="eng-mes-select" style="width:140px" onchange="buildEngSetorTable(this.value)">
+              <option value="Julho">Julho/2026</option>
+              <option value="Junho">Junho/2026</option>
+              <option value="Maio">Maio/2026</option>
+              <option value="Abril">Abril/2026</option>
+              <option value="Janeiro">Janeiro/2026</option>
+            </select>
+          </div>
+          <table><thead><tr><th>Setor</th><th>Participantes</th><th>P1 Contribuição</th><th>P2 Segurança</th><th>P3 Liderança</th><th>P4 RH</th><th>Média Setor</th></tr></thead>
+          <tbody id="tbody-eng-setor"></tbody></table>
+        </div>
+        <div class="alert al-r"><div>⚠</div><div>
+          <div class="al-title">Segurança e Bem-Estar — nota 3,83 — abaixo de 4,0 em todos os meses</div>
+          <div class="al-sub">Ponto de atenção consistente no ano. Recomenda-se ação focada: DDS específico de SST, revisão de EPIs e escuta ativa por setor.</div>
+        </div></div>
+        <div class="alert al-g" style="margin-top:8px"><div>✅</div><div>
+          <div class="al-title">Confiança no RH — nota média 4,36 — maior índice do questionário</div>
+          <div class="al-sub">Colaboradores se sentem à vontade para procurar o RH. Resultado forte que deve ser mantido.</div>
+        </div></div>
+      </div>
+
+      <!-- ABA T&D -->
+      <div id="ind-pane-td" style="display:none">
+        <div class="kpi-grid">
+          <div class="kpi-card"><div class="kpi-lbl">Sessões Realizadas</div><div class="kpi-val">80</div><div class="kpi-delta">Jan–Ago/2026</div></div>
+          <div class="kpi-card"><div class="kpi-lbl">Total Participações</div><div class="kpi-val">1.694</div><div class="kpi-delta">Soma de presenças</div></div>
+          <div class="kpi-card"><div class="kpi-lbl">Média por Mês</div><div class="kpi-val">10</div><div class="kpi-delta">sessões/mês</div></div>
+          <div class="kpi-card"><div class="kpi-lbl">Principal Tipo</div><div class="kpi-val" style="font-size:14px">DDS</div><div class="kpi-delta">Diálogos diários de segurança</div></div>
+        </div>
+        <!-- Gráfico T&D -->
+        <div class="card" style="margin-bottom:14px">
+          <div class="chart-ttl">Sessões de T&D por Mês — 2026</div>
+          <div style="position:relative;height:200px"><canvas id="chart-td-mensal"></canvas></div>
+        </div>
+        <!-- Filtros T&D -->
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px">
+          <div class="srch-wrap" style="flex:2;min-width:180px"><input class="finp" style="width:100%" id="td-search" placeholder="🔎 Buscar tema ou departamento..." oninput="tdFiltrar()"></div>
+          <select class="fsel" id="td-filter-mes" style="min-width:130px" onchange="tdFiltrar()">
+            <option value="">📅 Todos os meses</option>
+            <option>JANEIRO</option><option>FEVEREIRO</option><option>MARÇO</option><option>ABRIL</option>
+            <option>MAIO</option><option>JUNHO</option><option>JULHO</option><option>AGOSTO</option>
+          </select>
+          <select class="fsel" id="td-filter-dept" style="min-width:140px" onchange="tdFiltrar()">
+            <option value="">🏭 Todos os depts</option>
+            <option>USINAGEM</option><option>FUNDIÇÃO</option><option>USI / FDC / FDA</option><option>MANUTENÇÃO</option>
+          </select>
+          <span class="chip" id="td-count">— sessões</span>
+          <button class="btn btn-s btn-xs" onclick="tdLimpar()">🔄 Limpar</button>
+          <select class="fsel" style="width:72px" onchange="tdPageSize=+this.value;tdPage=1;tdRender()">
+            <option value="10" selected>10</option><option value="25">25</option><option value="50">50</option>
+          </select>
+        </div>
+        <div class="card" style="padding:0">
+          <table><thead><tr><th>Data</th><th>Mês</th><th>Departamento</th><th>Participantes</th><th>Tema</th></tr></thead>
+          <tbody id="tbody-td"></tbody></table>
+          <div style="padding:10px 14px;display:flex;align-items:center;justify-content:flex-end;gap:4px;border-top:1px solid var(--g100)" id="td-pagination"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ PLANEJAMENTO ESTRATÉGICO 2027 ══ -->
+    <div id="page-planejamento" class="page">
+      <div class="layer-badge lb-st">● Estratégico — Planejamento 2027</div>
+      <div class="section-hdr">
+        <div class="sec-title">🎯 Planejamento Estratégico RH — 2027</div>
+        <button class="btn btn-p btn-sm" onclick="openCrudModal(MOD_PLANO,null)">+ Nova Ação</button>
+      </div>
+
+      <!-- MISSÃO / VISÃO / METAS -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+        <div class="card" style="padding:12px">
+          <div style="font-size:10px;font-weight:700;color:var(--g400);text-transform:uppercase;margin-bottom:6px">Missão do RH</div>
+          <div style="font-size:11px;color:var(--g700);line-height:1.5">Garantir que as pessoas e a cultura sustentem o crescimento sustentável da empresa.</div>
+          <div style="font-size:10px;font-weight:700;color:var(--g400);text-transform:uppercase;margin:10px 0 6px">Visão do RH</div>
+          <div style="font-size:11px;color:var(--g700);line-height:1.5">Ser reconhecido como um RH estratégico e parceiro do negócio.</div>
+          <div style="font-size:10px;font-weight:700;color:var(--g400);text-transform:uppercase;margin:10px 0 6px">Valores</div>
+          <div style="font-size:11px;color:var(--g700)">Integridade · Colaboração · Inovação · Resultado</div>
+        </div>
+        <div class="card" style="padding:12px">
+          <div style="font-size:10px;font-weight:700;color:var(--g400);text-transform:uppercase;margin-bottom:10px">Metas Estratégicas 2027</div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:var(--g50);border-radius:6px;border-left:3px solid var(--green)">
+              <span style="font-size:11px;font-weight:600">Turnover</span>
+              <span style="font-size:16px;font-weight:700;color:var(--green)">≤ 2%</span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:var(--g50);border-radius:6px;border-left:3px solid var(--blue)">
+              <span style="font-size:11px;font-weight:600">Engajamento (P. Contribuição)</span>
+              <span style="font-size:16px;font-weight:700;color:var(--blue)">≥ 4,0</span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:var(--g50);border-radius:6px;border-left:3px solid var(--purple)">
+              <span style="font-size:11px;font-weight:600">Cultura de Treinamento</span>
+              <span style="font-size:16px;font-weight:700;color:var(--purple)">2h/pessoa</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- KPIs do Plano -->
+      <div class="kpi-grid" style="margin-bottom:14px">
+        <div class="kpi-card"><div class="kpi-lbl">Total de Ações</div><div class="kpi-val" id="plano-total">—</div></div>
+        <div class="kpi-card"><div class="kpi-lbl">Em Andamento</div><div class="kpi-val" style="color:var(--blue)" id="plano-andamento">—</div></div>
+        <div class="kpi-card"><div class="kpi-lbl">Concluídas</div><div class="kpi-val" style="color:var(--green)" id="plano-concluidas">—</div></div>
+        <div class="kpi-card"><div class="kpi-lbl">Atrasadas</div><div class="kpi-val" style="color:var(--red)" id="plano-atrasadas">—</div></div>
+      </div>
+
+      <!-- Filtros -->
+      <div style="background:#fff;border:1px solid var(--g200);border-radius:9px;padding:12px;margin-bottom:10px">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+          <div class="srch-wrap" style="flex:2;min-width:180px"><input class="finp" style="width:100%" id="plano-search" placeholder="🔎 Buscar ação, responsável ou observação..." oninput="planoCtrl&&planoCtrl.filter()"></div>
+          <select class="fsel" data-fid="plano" style="min-width:160px" onchange="planoCtrl&&planoCtrl.setFilter('status',this.value)">
+            <option value="">🟢 Todos os status</option>
+            <option>Planejado</option><option>Em andamento</option><option>Concluído</option>
+            <option>Em pausa</option><option>Atrasado</option><option>Em revisão</option><option>Cancelado</option>
+          </select>
+          <select class="fsel" data-fid="plano" style="min-width:140px" onchange="planoCtrl&&planoCtrl.setFilter('responsavel',this.value)">
+            <option value="">👤 Todos</option>
+            <option>Patrícia</option><option>Jakeline</option><option>Francielle</option>
+          </select>
+          <span class="chip" id="plano-count">— ações</span>
+          <button class="btn btn-s btn-xs" onclick="planoCtrl&&planoCtrl.clearAll()">🔄 Limpar</button>
+          <button class="btn btn-s btn-xs" onclick="planoCtrl&&planoCtrl.load();atualizarKPIsPlano()">🔃</button>
+          <select class="fsel" style="width:72px" onchange="planoCtrl&&(planoCtrl._pageSize=+this.value,planoCtrl._page=1,planoCtrl.render())">
+            <option value="10" selected>10</option><option value="25">25</option><option value="50">50</option>
+          </select>
+          <button class="btn btn-s btn-xs" onclick="exportTableToExcel('plano_acoes',[{field:'acao',label:'O que',width:40},{field:'porque',label:'Por quê',width:30},{field:'onde',label:'Onde',width:20},{field:'responsavel',label:'Quem',width:18},{field:'quando',label:'Quando',width:14},{field:'como',label:'Como',width:30},{field:'quanto',label:'Quanto R$',width:12},{field:'status',label:'Status',width:16},{field:'observacao',label:'Observações',width:30}],'Plano_Acoes_2027')">⬇ Excel</button>
+        </div>
+      </div>
+
+      <!-- Tabela 5W2H -->
+      <div class="card" style="padding:0">
+        <table>
+          <thead><tr>
+            <th>O que? (What)</th><th>Por quê? (Why)</th><th>Onde? (Where)</th>
+            <th>Quem? (Who)</th><th>Quando? (When)</th><th>Como? (How)</th>
+            <th>Quanto? (R$)</th><th>Status</th><th>Observações</th><th>Ações</th>
+          </tr></thead>
+          <tbody id="plano-tbody"></tbody>
+        </table>
+        <div style="padding:10px 14px;display:flex;align-items:center;justify-content:flex-end;gap:4px;border-top:1px solid var(--g100)" id="plano-pag"></div>
+      </div>
+
+      <!-- ENDOMKT 2027 -->
+      <div style="margin-top:20px">
+        <div class="section-hdr">
+          <div class="sec-title" style="font-size:13px">📅 Calendário Endomarketing — 2027</div>
+          <button class="btn btn-p btn-sm" onclick="openCrudModal(MOD_ENDOMKT,null)">+ Nova Ação</button>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px">
+          <select class="fsel" id="endomkt-filter-mes" style="min-width:130px" onchange="endomktFiltrar()">
+            <option value="">📅 Todos os meses</option>
+            <option>Janeiro</option><option>Fevereiro</option><option>Março</option><option>Abril</option>
+            <option>Maio</option><option>Junho</option><option>Julho</option><option>Agosto</option>
+            <option>Setembro</option><option>Outubro</option><option>Novembro</option><option>Dezembro</option>
+          </select>
+          <select class="fsel" id="endomkt-filter-cat" style="min-width:160px" onchange="endomktFiltrar()">
+            <option value="">📋 Todas as categorias</option>
+            <option>Endomarketing</option><option>Segurança do Trabalho</option><option>Reconhecimento</option>
+            <option>Aviso Geral</option><option>RH Informa</option>
+          </select>
+          <span class="chip" id="endomkt-count">— ações</span>
+          <button class="btn btn-s btn-xs" onclick="document.getElementById('endomkt-filter-mes').value='';document.getElementById('endomkt-filter-cat').value='';endomktFiltrar()">🔄</button>
+        </div>
+        <div id="endomkt-grid" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px"></div>
+      </div>
+    </div>
+
+    <!-- ══ CONTROLE DE EPI ══ -->
+    <div id="page-epi" class="page">
+      <div class="layer-badge lb-co">● Compliance — SST</div>
+      <div class="section-hdr">
+        <div class="sec-title">🦺 Controle de EPI — Entrega e Devolução</div>
+        <button class="btn btn-p btn-sm" onclick="openCrudModal(MOD_EPI,null)">+ Registrar Entrega</button>
+      </div>
+
+      <!-- KPIs EPI -->
+      <div class="kpi-grid">
+        <div class="kpi-card"><div class="kpi-lbl">Entregas Registradas</div><div class="kpi-val" id="epi-total">—</div></div>
+        <div class="kpi-card"><div class="kpi-lbl">EPIs Vencendo em 30d</div><div class="kpi-val" style="color:var(--yellow)" id="epi-vencendo">—</div></div>
+        <div class="kpi-card"><div class="kpi-lbl">EPIs Vencidos</div><div class="kpi-val" style="color:var(--red)" id="epi-vencidos">—</div></div>
+        <div class="kpi-card"><div class="kpi-lbl">Colaboradores sem EPI</div><div class="kpi-val" style="color:var(--red)" id="epi-sem">—</div></div>
+      </div>
+
+      <!-- Alertas EPI -->
+      <div id="epi-alertas" style="margin-bottom:12px"></div>
+
+      <!-- Filtros -->
+      <div style="background:#fff;border:1px solid var(--g200);border-radius:9px;padding:12px;margin-bottom:10px">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+          <div class="srch-wrap" style="flex:2;min-width:180px"><input class="finp" style="width:100%" id="epi-search" placeholder="🔎 Buscar colaborador ou EPI..." oninput="epiCtrl&&epiCtrl.filter()"></div>
+          <select class="fsel" data-fid="epi" style="min-width:155px" onchange="epiCtrl&&epiCtrl.setFilter('nomeEpi',this.value)">
+            <option value="">🦺 Todos os EPIs</option>
+            <option>Capacete</option><option>Óculos de Proteção</option><option>Luva de Raspa</option>
+            <option>Luva de Látex</option><option>Botina de Segurança</option><option>Protetor Auricular</option>
+            <option>Avental de Raspa</option><option>Máscara Respiratória</option><option>Cinto de Segurança</option>
+            <option>Uniforme</option><option>Óculos de Solda</option><option>Perneira</option>
+          </select>
+          <select class="fsel" data-fid="epi" style="min-width:130px" onchange="epiCtrl&&epiCtrl.setFilter('situacao',this.value)">
+            <option value="">🟢 Todos os status</option>
+            <option>Em uso</option><option>Vencendo</option><option>Vencido</option><option>Devolvido</option><option>Extraviado</option>
+          </select>
+          <select class="fsel" data-fid="epi" style="min-width:120px" onchange="epiCtrl&&epiCtrl.setFilter('setor',this.value)">
+            <option value="">📌 Todos os setores</option>
+            <option>Fundição</option><option>Usinagem</option><option>Manutenção</option><option>Administrativo</option><option>Qualidade</option>
+          </select>
+          <span class="chip" id="epi-count">— registros</span>
+          <button class="btn btn-s btn-xs" onclick="epiCtrl&&epiCtrl.clearAll()">🔄 Limpar</button>
+          <button class="btn btn-s btn-xs" onclick="epiCtrl&&epiCtrl.load();atualizarKPIsEPI()">🔃</button>
+          <select class="fsel" style="width:72px" onchange="epiCtrl&&(epiCtrl._pageSize=+this.value,epiCtrl._page=1,epiCtrl.render())">
+            <option value="10" selected>10</option><option value="25">25</option><option value="50">50</option>
+          </select>
+          <button class="btn btn-s btn-xs" onclick="exportTableToExcel('epi',[{field:'colaborador',label:'Colaborador',width:35},{field:'setor',label:'Setor',width:14},{field:'nomeEpi',label:'EPI',width:22},{field:'ca',label:'CA',width:10},{field:'dataEntrega',label:'Entrega',width:12},{field:'dataValidade',label:'Validade',width:12},{field:'situacao',label:'Situação',width:12}],'Controle_EPI')">⬇ Excel</button>
+        </div>
+      </div>
+
+      <div class="card" style="padding:0">
+        <table><thead><tr>
+          <th>Colaborador</th><th>Setor</th><th>EPI</th><th>CA</th>
+          <th>Qtd</th><th>Entrega</th><th>Validade</th><th>Assinatura</th><th>Situação</th><th>Ações</th>
+        </tr></thead><tbody id="epi-tbody"></tbody></table>
+        <div style="padding:10px 14px;display:flex;align-items:center;justify-content:flex-end;gap:4px;border-top:1px solid var(--g100)" id="epi-pag"></div>
+      </div>
     </div>
 
   </div><!-- /content -->
@@ -1756,7 +2078,7 @@ function applyUser(p){
 
 function go(id,el,title,bread){
   if(id==='indicadores'){setTimeout(()=>{try{buildPeopleAnalytics();}catch(e){}},80);}
-  if(id==='dashboard'){setTimeout(()=>{try{atualizarKPIsDash();}catch(e){}},100);}
+  if(id==='dashboard'){setTimeout(()=>{try{atualizarKPIsDash();buildAniversariantesWidget();}catch(e){}},100);}
   if(id==='colaboradores'){setTimeout(()=>{
     try{
       colabPopularCargos();
@@ -1768,6 +2090,10 @@ function go(id,el,title,bread){
   if(id==='holerite'){setTimeout(()=>{try{if(tcHolerite)tcHolerite.refresh();atualizarKPIsHolerite();}catch(e){}},80);}
   if(id==='comunicados'){setTimeout(()=>{try{if(tcComunicado)tcComunicado.refresh();atualizarKPIsComunicados();}catch(e){}},80);}
   if(id==='configuracoes'){setTimeout(()=>{try{initConfiguracoes();}catch(e){}},80);}
+  if(id==='ind-rh'){setTimeout(()=>{try{initIndRH();}catch(e){console.warn('indRH:',e);}},150);}
+  if(id==='planejamento'){setTimeout(()=>{try{initPlanejamento();}catch(e){console.warn('plano:',e);}},150);}
+  if(id==='epi'){setTimeout(()=>{try{initEPITable();atualizarKPIsEPI();}catch(e){}},150);}
+  if(id==='sst'){setTimeout(()=>{try{atualizarKPIsSST();}catch(e){}},150);}
   const advMap={'ferias':'feriasCtrl','treinamentos':'treinoCtrl','avaliacoes':'avalCtrl','clima':'climaCtrl','sucessao':'sucCtrl',
     'sst':'sstAdvCtrl','admissao':'admCtrl','recrutamento':'vagaCtrl',
     'beneficios':'benefCtrl','cargos':'cargoAdvCtrl','ponto':'pontoCtrl',
@@ -1784,7 +2110,7 @@ function go(id,el,title,bread){
   if(id==='clima'&&!chartsBuilt.clima){setTimeout(()=>{buildClimaCharts();chartsBuilt.clima=true},60);}
 }
 
-function buildAll(){buildCal();buildCompForm();initCrudModules();initLote2Modules();initLote3Modules();initLote4Modules();initLote5Modules();initLote6Modules();tryRestoreSupabase();initAllAdvFilters();setTimeout(()=>{atualizarKPIsDash();colabPopularCargos();colabFiltrado=loadData('colaboradores');colabFiltrar();},100);}
+function buildAll(){buildCal();buildCompForm();initCrudModules();initLote2Modules();initLote3Modules();initLote4Modules();initLote5Modules();initLote6Modules();tryRestoreSupabase();initAllAdvFilters();initLote7();setTimeout(()=>{atualizarKPIsDash();colabPopularCargos();colabFiltrado=loadData('colaboradores');colabFiltrar();},100);}
 
 
 
@@ -4025,6 +4351,9 @@ function initTerceiroTable() {
 
 function buildTerceirosSeed() {
   if (loadData('terceiros').length) return;
+  // Obrigações do Planejamento 2027
+  const obrigSeed = [{"empresa": "AC Metalúrgica", "contrato": "—", "tipo": "Consultoria", "servico": "LTCAT - Laudo Técnico das Condições Ambientais", "vigenciaInicio": "", "vigenciaFim": "", "valor": null, "colaboradores": null, "sla": "", "docs": "Não iniciado", "situacao": "Ativo"}, {"empresa": "Brass Metal", "contrato": "—", "tipo": "Consultoria", "servico": "LTCAT - Laudo Técnico das Condições Ambientais", "vigenciaInicio": "", "vigenciaFim": "", "valor": null, "colaboradores": null, "sla": "", "docs": "Não iniciado", "situacao": "Ativo"}, {"empresa": "AC Metalúrgica", "contrato": "—", "tipo": "Consultoria", "servico": "PCMSO - Programa de Controle Médico de Saúde Ocupacional", "vigenciaInicio": "", "vigenciaFim": "", "valor": null, "colaboradores": null, "sla": "", "docs": "Não iniciado", "situacao": "Ativo"}, {"empresa": "Brass Metal", "contrato": "—", "tipo": "Consultoria", "servico": "PCMSO - Programa de Controle Médico de Saúde Ocupacional", "vigenciaInicio": "", "vigenciaFim": "", "valor": null, "colaboradores": null, "sla": "", "docs": "Não iniciado", "situacao": "Ativo"}, {"empresa": "AC Metalúrgica", "contrato": "—", "tipo": "Consultoria", "servico": "PGR - Programa de Gerenciamento de Riscos", "vigenciaInicio": "", "vigenciaFim": "", "valor": null, "colaboradores": null, "sla": "", "docs": "Não iniciado", "situacao": "Ativo"}, {"empresa": "Brass Metal", "contrato": "—", "tipo": "Consultoria", "servico": "PGR - Programa de Gerenciamento de Riscos", "vigenciaInicio": "", "vigenciaFim": "", "valor": null, "colaboradores": null, "sla": "", "docs": "Não iniciado", "situacao": "Ativo"}, {"empresa": "ALLIANZ (SEGERAL)", "contrato": "—", "tipo": "Prestador de Serviço", "servico": "Seguro de Vida - AC Metalúrgica", "vigenciaInicio": "19/08/2026", "vigenciaFim": "19/08/2027", "valor": null, "colaboradores": null, "sla": "", "docs": "OK", "situacao": "Ativo"}, {"empresa": "YELUM", "contrato": "—", "tipo": "Prestador de Serviço", "servico": "Seguro de Vida - Brass Metal", "vigenciaInicio": "26/02/2026", "vigenciaFim": "26/02/2027", "valor": null, "colaboradores": null, "sla": "", "docs": "OK", "situacao": "Vencendo em 60d"}];
+  obrigSeed.forEach(o => crudCreate('terceiros', o, {modulo:'Terceiros', label: o.empresa + ' — ' + o.servico}));
   const seed = [
     {empresa:'SegurTech — Vigilância Patrimonial', contrato:'2024-011', tipo:'Prestador de Serviço', servico:'Vigilância', vigenciaInicio:'01/01/2024', vigenciaFim:'31/12/2026', valor:14200, colaboradores:4, sla:'9.1', docs:'OK', situacao:'Ativo'},
     {empresa:'LimpMax — Limpeza & Conservação', contrato:'2025-003', tipo:'Prestador de Serviço', servico:'Limpeza', vigenciaInicio:'01/03/2025', vigenciaFim:'28/02/2027', valor:8400, colaboradores:6, sla:'8.7', docs:'OK', situacao:'Ativo'},
@@ -4385,6 +4714,7 @@ function initConfiguracoes() {
   renderUsuariosTable();
   carregarEmpresa();
   carregarMetas();
+  try { buildFeriadosWidget(); } catch(e) {}
 }
 
 /* ═══════════════ INIT LOTE 5 ═══════════════ */
@@ -5878,6 +6208,649 @@ function initAllAdvFilters() {
   try { initClimaAdvFilters(); } catch(e){ console.warn('clima adv:', e); }
   try { initSucAdvFilters(); }   catch(e){ console.warn('suc adv:', e); }
   try { updateSSTBanner(); }     catch(e){}
+}
+
+
+
+/* ═══════ INDICADORES RH 2026 ═══════ */
+
+/* ═══════════ INDICADORES RH 2026 ═══════════ */
+
+const IND_TURNOVER = [{"mes": "Janeiro", "efetivosIni": 49, "efetivosF": 48, "efEntrada": 0, "efSaida": 1, "desligColab": 1, "desligEmp": 0, "taxaTO": 0.02, "traineeIni": 0, "traineeF": 3, "trEntrada": 5, "trSaida": 2, "trDesligC": 1, "trDesligE": 1, "taxaTR": null, "jaIni": 2, "jaF": 2, "jaEntrada": 0, "jaSaida": 0, "desligadosNomes": "Antonio Sergio (E); Edson Dechen, Mateus Vitor (TR)"}, {"mes": "Fevereiro", "efetivosIni": 48, "efetivosF": 47, "efEntrada": 0, "efSaida": 1, "desligColab": 0, "desligEmp": 1, "taxaTO": 0.02, "traineeIni": 3, "traineeF": 6, "trEntrada": 3, "trSaida": 0, "trDesligC": 0, "trDesligE": 0, "taxaTR": null, "jaIni": 2, "jaF": 2, "jaEntrada": 0, "jaSaida": 0, "desligadosNomes": "Jhonat F. Viana (E); Filipe Vedotto, Nicolly Vassalo, Leonardo Pereira (TR)"}, {"mes": "Março", "efetivosIni": 47, "efetivosF": 46, "efEntrada": 0, "efSaida": 1, "desligColab": 0, "desligEmp": 1, "taxaTO": 0.02, "traineeIni": 6, "traineeF": 6, "trEntrada": 3, "trSaida": 3, "trDesligC": 3, "trDesligE": 0, "taxaTR": null, "jaIni": 2, "jaF": 2, "jaEntrada": 0, "jaSaida": 0, "desligadosNomes": "Andre Tadeu (E); Francisco Sanches, Abner Marins, Josuel Soares (TR)"}, {"mes": "Abril", "efetivosIni": 46, "efetivosF": 47, "efEntrada": 3, "efSaida": 2, "desligColab": 2, "desligEmp": 0, "taxaTO": 0.02, "traineeIni": 6, "traineeF": 2, "trEntrada": 0, "trSaida": 4, "trDesligC": 2, "trDesligE": 0, "taxaTR": 0.66, "jaIni": 2, "jaF": 2, "jaEntrada": 0, "jaSaida": 0, "desligadosNomes": "Romilson, Valdir (E); Enzo Bispo, Leonardo Pereira, Luan Souza, Matheus França (TR)"}, {"mes": "Maio", "efetivosIni": 47, "efetivosF": 48, "efEntrada": 2, "efSaida": 1, "desligColab": 1, "desligEmp": 0, "taxaTO": 0.02, "traineeIni": 2, "traineeF": 2, "trEntrada": 1, "trSaida": 1, "trDesligC": 0, "trDesligE": 1, "taxaTR": null, "jaIni": 2, "jaF": 2, "jaEntrada": 0, "jaSaida": 0, "desligadosNomes": "Nicolly Vassalo, Waldemar Liboni (E); Gabriel H. B. Martins (TR)"}, {"mes": "Junho", "efetivosIni": 48, "efetivosF": 48, "efEntrada": 1, "efSaida": 1, "desligColab": 1, "desligEmp": 0, "taxaTO": 0.0, "traineeIni": 2, "traineeF": 5, "trEntrada": 4, "trSaida": 1, "trDesligC": 0, "trDesligE": 0, "taxaTR": 1.5, "jaIni": 2, "jaF": 1, "jaEntrada": 0, "jaSaida": 1, "desligadosNomes": "Edson Junior (E); Abner (TR)"}, {"mes": "Julho", "efetivosIni": 48, "efetivosF": 47, "efEntrada": 0, "efSaida": 1, "desligColab": 1, "desligEmp": 0, "taxaTO": 0.02, "traineeIni": 5, "traineeF": 6, "trEntrada": 2, "trSaida": 1, "trDesligC": 1, "trDesligE": 0, "taxaTR": 0.2, "jaIni": 1, "jaF": 2, "jaEntrada": 1, "jaSaida": 0, "desligadosNomes": "Matheus França (E); Ryan (TR)"}, {"mes": "Agosto", "efetivosIni": 47, "efetivosF": 47, "efEntrada": 1, "efSaida": 1, "desligColab": 0, "desligEmp": 1, "taxaTO": 0.0, "traineeIni": 6, "traineeF": 5, "trEntrada": 2, "trSaida": 3, "trDesligC": 0, "trDesligE": 0, "taxaTR": 0.16, "jaIni": 2, "jaF": 2, "jaEntrada": 0, "jaSaida": 0, "desligadosNomes": "Gabriel Henrique, Odair (E); Edielson, Asafe (TR)"}];
+const IND_ENGAJAMENTO = [{"mes": "Janeiro", "total": 46, "p1": 4.37, "p2": 3.87, "p3": 4.09, "p4": 4.39, "media": 4.18}, {"mes": "Fevereiro", "total": 47, "p1": 4.23, "p2": 4.0, "p3": 4.15, "p4": 4.5, "media": 4.22}, {"mes": "Março", "total": 48, "p1": 4.35, "p2": 3.79, "p3": 4.1, "p4": 4.52, "media": 4.19}, {"mes": "Abril", "total": 44, "p1": 4.34, "p2": 3.89, "p3": 4.2, "p4": 4.48, "media": 4.23}, {"mes": "Maio", "total": 46, "p1": 4.22, "p2": 3.8, "p3": 4.11, "p4": 4.41, "media": 4.13}, {"mes": "Junho", "total": 49, "p1": 3.96, "p2": 3.73, "p3": 4.02, "p4": 4.12, "media": 3.96}, {"mes": "Julho", "total": 47, "p1": 4.11, "p2": 3.81, "p3": 4.13, "p4": 4.23, "media": 4.07}];
+const IND_ENG_SETORES = {"Janeiro": {"ADM": {"total": 8, "medias": [4.25, 3.88, 4.25, 4.38], "mediaGeral": 4.19}, "Fundição I": {"total": 11, "medias": [4.55, 3.73, 3.36, 4.55], "mediaGeral": 4.05}, "Usinagem": {"total": 27, "medias": [4.37, 3.93, 4.33, 4.33], "mediaGeral": 4.24}}, "Abril": {"ADM": {"total": 8, "medias": [4.12, 2.88, 3.75, 4.12], "mediaGeral": 3.72}, "Fundição I": {"total": 7, "medias": [4.57, 4.14, 4.43, 4.43], "mediaGeral": 4.39}, "Fundição II": {"total": 3, "medias": [4.33, 4.67, 4.67, 5.0], "mediaGeral": 4.67}, "Usinagem": {"total": 26, "medias": [4.35, 4.04, 4.23, 4.54], "mediaGeral": 4.29}}, "Maio": {"ADM": {"total": 8, "medias": [4.0, 3.62, 4.0, 4.0], "mediaGeral": 3.91}, "Fundição I": {"total": 10, "medias": [4.2, 3.8, 4.3, 4.3], "mediaGeral": 4.15}, "Fundição II": {"total": 3, "medias": [3.33, 4.33, 4.0, 4.33], "mediaGeral": 4.0}, "Usinagem": {"total": 25, "medias": [4.4, 3.8, 4.08, 4.6], "mediaGeral": 4.22}}, "Junho": {"ADM": {"total": 9, "medias": [3.67, 3.22, 4.0, 3.78], "mediaGeral": 3.67}, "Fundição I": {"total": 11, "medias": [3.55, 3.64, 3.73, 3.73], "mediaGeral": 3.66}, "Fundição II": {"total": 3, "medias": [4.0, 3.33, 3.67, 4.33], "mediaGeral": 3.83}, "Usinagem": {"total": 26, "medias": [4.23, 4.0, 4.19, 4.38], "mediaGeral": 4.2}}, "Julho": {"ADM": {"total": 8, "medias": [3.75, 3.38, 4.0, 3.62], "mediaGeral": 3.69}, "Fundição I": {"total": 10, "medias": [4.5, 3.6, 4.3, 4.3], "mediaGeral": 4.17}, "Fundição II": {"total": 3, "medias": [3.33, 4.0, 3.33, 4.67], "mediaGeral": 3.83}, "Usinagem": {"total": 26, "medias": [4.15, 4.0, 4.19, 4.35], "mediaGeral": 4.17}}}
+const IND_TD = [{"mes": "JANEIRO", "data": "13/01/2026", "qtdColabs": 38, "departamento": "USI / FDC / FDA", "tema": "Procedimento Operacionais, Coleta Reciclavél, Horarios Pausa Café, 5S, Prazo e Controle de Refugo e Comprometimento. Faturamento.", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "JANEIRO", "data": "16/01/2026", "qtdColabs": 39, "departamento": "USI / FDC / FDA", "tema": "Prazo de Entrega,  Prazo e Controle de Refugo, Peças de Amostras. Faturamento.", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "JANEIRO", "data": "19/01/2026", "qtdColabs": 39, "departamento": "USI / FDC / FDA", "tema": "RNC de Cliente, Liberação de Setup, Prazo de Entrega,  Prazo e Controle de Refugo de Refugo. Faturamento.", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "JANEIRO", "data": "23/01/2026", "qtdColabs": 39, "departamento": "USI / FDC / FDA", "tema": "Uso de EPI, Entrega de EPI pelo Almoxarifado, Orientação sobre marcação de Ponto Correta, Prazo de Entrega,  Prazo e Controle de Refugo de Refugo, Peç", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "JANEIRO", "data": "26/01/2026", "qtdColabs": 38, "departamento": "USI / FDC / FDA", "tema": "Produtividade, Peças de estoque Almoxarifado (lider), Problemas de ligas, Tabelas de ligas disponivéis pela area fabril. Refugo e Faturamento.", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "JANEIRO", "data": "30/01/2026", "qtdColabs": 38, "departamento": "USI / FDC / FDA", "tema": "Preenchimento das O.P, Apresentação dos novos Colaboradores Matheus, Enzo e Luan, campanha de conscientização Janeiro Branco. Divulgação do Controle d", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "FEVEREIRO", "data": "02/02/2026", "qtdColabs": 38, "departamento": "USI / FDC / FDA / ADM", "tema": "Divulgação dos Resultados de indicadores de Janeiro e compartilhamento da bonificação com café da tarde por cumprimentos de metas.", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "FEVEREIRO", "data": "03/02/2026", "qtdColabs": 6, "departamento": "FDC", "tema": "Prazo e Controle de Refugo, Rendimento Metalico. Entrega e uso de EPI, Entrega de EPI pelo Almoxarifado somente a lider.", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "FEVEREIRO", "data": "06/02/2026", "qtdColabs": 32, "departamento": "USI / FDC ", "tema": "Prazo de entrega, refugo. Organização dos armarios e fiscalização semana. Apresentação dos novos colaboradores Nicolly e Filipe a todos. campanha de c", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "FEVEREIRO", "data": "09/02/2026", "qtdColabs": 33, "departamento": "USI / FDC ", "tema": "Procedimentos operacionais, será aplicado treinamento de preenchimento de O.P. Processo de contaminação de componentes de materia prima. Prazo de entr", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "FEVEREIRO", "data": "13/02/2026", "qtdColabs": 31, "departamento": "USI / FDC ", "tema": "Prazos e quadro de avisos, organização do local de trabalho. Coperação em grupo. Faturamento e resultados gerais. ", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "FEVEREIRO", "data": "16/02/2026", "qtdColabs": 31, "departamento": "USI / FDC ", "tema": "Prazos, cavaco a separa. Organização e conservação do local de trabalho. Apresentação do Albim TST a equipe, resumo de como ira trabalhar e uso de EPI", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "FEVEREIRO", "data": "17/02/2026", "qtdColabs": 4, "departamento": "MANUTENÇÃO", "tema": "Prenchimento das OPS e Especificação de tipo de manutenção.", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "FEVEREIRO", "data": "20/02/2026", "qtdColabs": 32, "departamento": "USI / FDC ", "tema": "Procedimento Operacionais, Prazo e Controle de Refugo e Comprometimento. Faturamento. Preenchimento correto de O.P. Parabenização a equipe pelo desenv", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "FEVEREIRO", "data": "23/02/2026", "qtdColabs": 32, "departamento": "USINAGEM", "tema": "Apresentação dos resultados de Indicadores. Foco na produtividade. Preocupação com a Segurança dos funcionarios. Atenção com os pedidos equipe CNC x C", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "FEVEREIRO", "data": "23/02/2026", "qtdColabs": 5, "departamento": "FDC ", "tema": "Indicadores da fundição. Materia prima Bronze e Cobre. Fundição de material errado. Checlist para acompanhamento. Pesagem de material. Apresentação do", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "FEVEREIRO", "data": "23/02/2026", "qtdColabs": 3, "departamento": "Fundição", "tema": "Prenchimento de checklist. Conferencia medidas das ferramentas antes de fundir a peça. Organização das ferramentas.", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "FEVEREIRO", "data": "27/02/2026", "qtdColabs": 31, "departamento": "USI / FDC / FDA / ADM", "tema": "Divulgação dos Resultados de indicadores de Fevereiro e Informar que haverá o compartilhamento da bonificação com café da tarde por cumprimentos de me", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "MARÇO", "data": "02/03/2026", "qtdColabs": 39, "departamento": "USI / FDC / FDA / ADM", "tema": "Agradecimento e Divulgação dos Resultados de indicadores de fevereiro e compartilhamento da bonificação com café da tarde por cumprimentos de metas. R", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "MARÇO", "data": "06/03/2026", "qtdColabs": 28, "departamento": "USINAGEM", "tema": "Prazos e quadro de avisos, organização do local de trabalho. Coperação em grupo. Reforçando a importancia de manter o foco na qualidade das peças e en", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "MARÇO", "data": "09/03/2026", "qtdColabs": 28, "departamento": "USINAGEM", "tema": "Procedimentos Operacionais. Prazos e quadro de avisos, organização do local de trabalho. Coperação em grupo. Faturamento e resultados gerais. ", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "MARÇO", "data": "13/03/2026", "qtdColabs": 28, "departamento": "USINAGEM", "tema": "Procedimentos Operacionais. Prazos e quadro de avisos, organização do local de trabalho. Coperação em grupo. Faturamento e resultados gerais. ", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "MARÇO", "data": "13/03/2026", "qtdColabs": 3, "departamento": "FUNDIÇÃO", "tema": "Padronização de como e qual cabeça sera utilizada de acordo com tamanhos dos tarugos que serão fundidos. Padrão do tamanhp da cabeça quente. PCP revis", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "MARÇO", "data": "16/03/2026", "qtdColabs": 28, "departamento": "USINAGEM", "tema": "Procedimentos Operacionais. Prazos e quadro de avisos, organização do local de trabalho. Coperação em grupo. Faturamento e resultados gerais. ", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "MARÇO", "data": "20/03/2026", "qtdColabs": 28, "departamento": "USINAGEM", "tema": "Procedimentos Operacionais. Prazos e quadro de avisos, organização do local de trabalho. Coperação em grupo. Faturamento e resultados gerais. ", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "MARÇO", "data": "23/03/2026", "qtdColabs": 28, "departamento": "USINAGEM", "tema": "Procedimento Operacionais, Prazo e Controle de Refugo e Comprometimento. Faturamento. Preenchimento correto de O.P. Parabenização a equipe pelo desenv", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "MARÇO", "data": "27/03/2026", "qtdColabs": 28, "departamento": "USINAGEM", "tema": "Procedimentos Operacionais. Prazos e quadro de avisos, organização do local de trabalho. Coperação em grupo. Faturamento e resultados gerais. ", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "MARÇO", "data": "30/03/2026", "qtdColabs": 28, "departamento": "USINAGEM", "tema": "Prazos e quadro de avisos, organização do local de trabalho. Coperação em grupo. Faturamento e resultados gerais. ", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "ABRIL", "data": "06/04/2026", "qtdColabs": 30, "departamento": "USI / FDC / FDA / ADM", "tema": "Agradecimento e Divulgação dos Resultados de indicadores de Março e compartilhamento da bonificação com café da tarde por cumprimentos de metas. Refor", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "ABRIL", "data": "10/04/2026", "qtdColabs": 29, "departamento": "USINAGEM", "tema": "Procedimentos Operacionais. Prazos e quadro de avisos, organização do local de trabalho. Coperação em grupo. Faturamento e resultados gerais, campanha", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "ABRIL", "data": "13/04/2026", "qtdColabs": 28, "departamento": "USINAGEM", "tema": "Procedimentos Operacionais. Prazos e quadro de avisos, organização do local de trabalho. Coperação em grupo. Faturamento e resultados gerais. ", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "ABRIL", "data": "17/04/2026", "qtdColabs": 28, "departamento": "USINAGEM", "tema": "Procedimentos Operacionais. Prazos e quadro de avisos, organização do local de trabalho. Coperação em grupo. Faturamento e resultados gerais. ", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "ABRIL", "data": "20/04/2026", "qtdColabs": 27, "departamento": "FUNDIÇÃO", "tema": "Procedimentos Operacionais. Prazos e quadro de avisos, organização do local de trabalho. Coperação em grupo. Faturamento e resultados gerais. ", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "ABRIL", "data": "24/04/2026", "qtdColabs": 30, "departamento": "USINAGEM", "tema": "Procedimentos Operacionais. Prazos e quadro de avisos, organização do local de trabalho. Coperação em grupo. Faturamento e resultados gerais. ", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "ABRIL", "data": "27/04/2026", "qtdColabs": 30, "departamento": "USINAGEM", "tema": "Procedimentos Operacionais. Prazos e quadro de avisos, organização do local de trabalho. Coperação em grupo. Faturamento e resultados gerais. ", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "ABRIL", "data": "30/04/2026", "qtdColabs": 6, "departamento": "USINAGEM", "tema": "Procedimentos Operacionais. Organização do local de trabalho. Coperação em grupo.", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "MAIO", "data": "04/05/2026", "qtdColabs": 29, "departamento": "USINAGEM", "tema": "Procedimentos Operacionais. Prazos e quadro de avisos, organização do local de trabalho. Coperação em grupo. Faturamento e resultados gerais, campanha", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "MAIO", "data": "08/05/2026", "qtdColabs": 29, "departamento": "USINAGEM", "tema": "Procedimentos Operacionais. Prazos e quadro de avisos, organização do local de trabalho. Coperação em grupo. Faturamento e resultados gerais. ", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "MAIO", "data": "11/05/2026", "qtdColabs": 29, "departamento": "USINAGEM", "tema": "Procedimentos Operacionais. Prazos e quadro de avisos, organização do local de trabalho. Coperação em grupo. Faturamento e resultados gerais. ", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "MAIO", "data": "15/05/2026", "qtdColabs": 29, "departamento": "USINAGEM", "tema": "Procedimentos Operacionais. Prazos e quadro de avisos, organização do local de trabalho. Coperação em grupo. Faturamento e resultados gerais. ", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "MAIO", "data": "18/05/2026", "qtdColabs": 29, "departamento": "USINAGEM", "tema": "Procedimentos Operacionais. Prazos e quadro de avisos, organização do local de trabalho. Coperação em grupo. Faturamento e resultados gerais. ", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "MAIO", "data": "22/05/2026", "qtdColabs": 29, "departamento": "USINAGEM", "tema": "Procedimentos Operacionais. Prazos e quadro de avisos, organização do local de trabalho. Coperação em grupo. Faturamento e resultados gerais. ", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "MAIO", "data": "25/05/2026", "qtdColabs": 29, "departamento": "USINAGEM", "tema": "Procedimentos Operacionais. Prazos e quadro de avisos, organização do local de trabalho. Coperação em grupo. Faturamento e resultados gerais. ", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "MAIO", "data": "25/05/2026", "qtdColabs": 1, "departamento": "COMPRAS", "tema": "Treinamento de Integração", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "MAIO", "data": "29/05/2026", "qtdColabs": 29, "departamento": "USINAGEM", "tema": "Procedimentos Operacionais. Prazos e quadro de avisos, organização do local de trabalho. Coperação em grupo. Faturamento e resultados gerais. ", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "JUNHO", "data": "01/06/2026", "qtdColabs": 29, "departamento": "USINAGEM", "tema": "Procedimentos Operacionais. Prazos e quadro de avisos, organização do local de trabalho. Coperação em grupo. Faturamento e resultados gerais, campanha", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "JUNHO", "data": "02/06/2026", "qtdColabs": 11, "departamento": "USINAGEM", "tema": "Procedimentos Operacionais para estabelecer um padrão e desenvolvimento do funcionario. Peça calibrada onix cod.3001005244020. FESTA JULINA SOLIDARIA", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "JUNHO", "data": "05/06/2026", "qtdColabs": 28, "departamento": "USINAGEM", "tema": "Procedimentos Operacionais. Prazo de entrega. Organização do local de trabalho. Pró-Atividade e cooperação em grupo. Faturamento e resultados gerais. ", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "JUNHO", "data": "08/06/2026", "qtdColabs": 30, "departamento": "USINAGEM", "tema": "Procedimentos Operacionais. Prazo de entrega. Organização do local de trabalho. Pró-Atividade e cooperação em grupo. Faturamento e resultados gerais. ", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "JUNHO", "data": "12/06/2026", "qtdColabs": 30, "departamento": "USINAGEM", "tema": "Procedimentos Operacionais. Prazo de entrega. Organização do local de trabalho. Pró-Atividade e cooperação em grupo. Faturamento e resultados gerais. ", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "JUNHO", "data": "15/06/2026", "qtdColabs": 30, "departamento": "USINAGEM", "tema": "Procedimentos Operacionais. Prazo de entrega. Organização do local de trabalho. Pró-Atividade e cooperação em grupo. Faturamento e resultados gerais. ", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "JUNHO", "data": "19/06/2026", "qtdColabs": 28, "departamento": "USINAGEM", "tema": "Procedimentos Operacionais. Prazo de entrega. Organização do local de trabalho. Pró-Atividade e cooperação em grupo. Faturamento e resultados gerais. ", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "JUNHO", "data": "22/06/2026", "qtdColabs": 29, "departamento": "USINAGEM", "tema": "Procedimentos Operacionais. Prazo de entrega. Organização do local de trabalho. Pró-Atividade e cooperação em grupo. Faturamento e resultados gerais. ", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "JUNHO", "data": "26/06/2026", "qtdColabs": 30, "departamento": "USINAGEM", "tema": "Procedimentos Operacionais. Prazo de entrega. Organização do local de trabalho. Pró-Atividade e cooperação em grupo. Faturamento e resultados gerais. ", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "JUNHO", "data": "29/06/2026", "qtdColabs": 30, "departamento": "USINAGEM", "tema": "Procedimentos Operacionais. Prazo de entrega. Organização do local de trabalho. Pró-Atividade e cooperação em grupo. Faturamento e resultados gerais. ", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "JUNHO", "data": "29/06/2029", "qtdColabs": 3, "departamento": "USINAGEM / FUNDIÇÃO", "tema": "Treinamento de Integração", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "JULHO", "data": "03/07/2026", "qtdColabs": 0, "departamento": "USINAGEM", "tema": "Procedimentos Operacionais. Prazo de entrega. Faturamento e resultados gerais. Ordem de produção. Campanha de conscientização de Julho. Agradecimento ", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "JULHO", "data": "06/07/2026", "qtdColabs": 0, "departamento": "USINAGEM", "tema": "Procedimentos Operacionais. Prazo de entrega. Organização do local de trabalho. Pró-Atividade e cooperação em grupo. Faturamento e resultados gerais. ", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "JULHO", "data": "10/07/2026", "qtdColabs": 0, "departamento": "USINAGEM", "tema": "Procedimentos Operacionais. Prazo de entrega. Organização do local de trabalho. Pró-Atividade e cooperação em grupo. Faturamento e resultados gerais. ", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "JULHO", "data": "13/07/2026", "qtdColabs": 0, "departamento": "USINAGEM", "tema": "Procedimentos Operacionais. Prazo de entrega. Organização do local de trabalho. Pró-Atividade e cooperação em grupo. Faturamento e resultados gerais. ", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "JULHO", "data": "17/07/2026", "qtdColabs": 0, "departamento": "USINAGEM", "tema": "Procedimentos Operacionais. Prazo de entrega. Organização do local de trabalho. Pró-Atividade e cooperação em grupo. Faturamento e resultados gerais. ", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "JULHO", "data": "20/07/2026", "qtdColabs": 0, "departamento": "USINAGEM", "tema": "Procedimentos Operacionais. Prazo de entrega. Organização do local de trabalho. Pró-Atividade e cooperação em grupo. Faturamento e resultados gerais. ", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "JULHO", "data": "24/07/2026", "qtdColabs": 0, "departamento": "USINAGEM", "tema": "Procedimentos Operacionais. Prazo de entrega. Organização do local de trabalho. Pró-Atividade e cooperação em grupo. Faturamento e resultados gerais. ", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "JULHO", "data": "27/07/2026", "qtdColabs": 0, "departamento": "CONVENCIONAL", "tema": "Organização Geral. Organização das maquinas, ferramentas e ambiente de trabalho, abertura de espaço para sugestão e melhorias.", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "JULHO", "data": "27/07/2026", "qtdColabs": 0, "departamento": "USINAGEM", "tema": "Treinamento de preenchimento de ordem de produção. Preencher, fechar e entregar.", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "JULHO", "data": "31/07/2026", "qtdColabs": 0, "departamento": "USINAGEM", "tema": "Procedimentos Operacionais. Prazo de entrega. Organização do local de trabalho. Pró-Atividade e cooperação em grupo. Faturamento e resultados gerais. ", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "AGOSTO", "data": "03/08/2026", "qtdColabs": 0, "departamento": "USINAGEM", "tema": "Procedimentos Operacionais e resultados gerais. Ordem de produção. Treinamento e alinhamento da importancia de entregar as peças no prazo. Campanha de", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "AGOSTO", "data": "03/08/2026", "qtdColabs": 0, "departamento": "CONVENCIONAL", "tema": "Organização Geral. Organização das maquinas, uso de ferramentas e e melhorias para o ambiente de trabalho, pessoal informou as ferramentas basicas que", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "AGOSTO", "data": "07/08/2026", "qtdColabs": 0, "departamento": "USINAGEM", "tema": "Procedimentos Operacionais. Prazo de entrega. Organização do local de trabalho. Pró-Atividade. Faturamento e resultados gerais. Ordem de produção. Apl", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "AGOSTO", "data": "10/08/2026", "qtdColabs": 0, "departamento": "USINAGEM", "tema": "Alinhamento produtivo com enfase em refugo , pridução e retrabalho.", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "AGOSTO", "data": "11/08/2026", "qtdColabs": 0, "departamento": "CONVENCIONAL", "tema": "Organização Geral. Planejamento semanal (relação de pedidos)", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "AGOSTO", "data": "14/08/2026", "qtdColabs": 0, "departamento": "USINAGEM", "tema": "Alinhamento produtivo, refufo e prazo de entrega, ordem de produção, atenção no material que esta produzindo para evitar erros e perdas. Foi enviados ", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "AGOSTO", "data": "17/08/2026", "qtdColabs": 0, "departamento": "CONVENCIONAL", "tema": "Organização Geral. Planejamento semanal (relação de pedidos) e orientações de segurança. ", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "AGOSTO", "data": "17/08/2026", "qtdColabs": 0, "departamento": "USINAGEM", "tema": "Treinamento preenchimento Ordem de Produção. Preenchimento de campos correto, revezamento de operador separado, preenchimento do setup, pedir ajuda pa", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "AGOSTO", "data": "21/08/2026", "qtdColabs": 0, "departamento": "USINAGEM", "tema": "Falha de medida no eixo carter 30044251, a medida correta era 42,6 e foi um peça para o cliente com a medida de 43,98. Prazo de usinagem, fundição com", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "AGOSTO", "data": "24/08/2026", "qtdColabs": 0, "departamento": "USINAGEM", "tema": "Uso inadequado da pasta desengraxante. Pausa para café de 5 minutos e estão ultrapassando. Permissão para fumar em analise, jogar bitucas e lixo no lo", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "AGOSTO", "data": "24/08/2026", "qtdColabs": 0, "departamento": "CONVENCIONAL", "tema": "NÃO FOI REALIZADO ", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "AGOSTO", "data": "28/08/2026", "qtdColabs": 0, "departamento": "USINAGEM", "tema": "NÃO FOI REALIZADO ", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "AGOSTO", "data": "31/08/2026", "qtdColabs": 0, "departamento": "CONVENCIONAL", "tema": "Organização geral das maquinas e setores. Pausa para café de 5 minutos. Segurança - uso correto dos EPI.", "tipo": "DDS", "situacao": "Concluído"}, {"mes": "AGOSTO", "data": "31/08/2026", "qtdColabs": 0, "departamento": "USINAGEM", "tema": "Alinhamento produtivo com enfase em refugo , pridução e retrabalho. Fechamentos dos resultados. Registro do ponto correto. Aplicativo RHID.", "tipo": "DDS", "situacao": "Concluído"}];
+
+let _indChartsBuilt = false;
+let tdFiltrado = IND_TD.slice();
+let tdPageSize = 10;
+let tdPage = 1;
+
+function indTab(tab) {
+  ['to','eng','td'].forEach(t => {
+    document.getElementById('ind-pane-'+t).style.display = t===tab?'':'none';
+    const btn = document.getElementById('ind-tab-'+t);
+    if(btn) {
+      btn.className = t===tab ? 'btn btn-p btn-sm' : 'btn btn-s btn-sm';
+      btn.style.borderBottom = t===tab ? '2px solid var(--navy)' : '';
+      btn.style.borderRadius = '6px 6px 0 0';
+    }
+  });
+  if(!_indChartsBuilt) { buildIndCharts(); _indChartsBuilt=true; }
+  if(tab==='to') buildTOTable();
+  if(tab==='eng') buildEngSetorTable();
+  if(tab==='td') tdFiltrar();
+}
+
+function buildIndCharts() {
+  // Turnover chart
+  try {
+    const ctx = document.getElementById('chart-to-efetivos');
+    if(ctx && window.Chart) {
+      if(window._chartTO) window._chartTO.destroy();
+      window._chartTO = new Chart(ctx.getContext('2d'), {
+        type:'bar',
+        data:{
+          labels: IND_TURNOVER.map(t=>t.mes.substring(0,3)),
+          datasets:[
+            {label:'Taxa TO (%)',data:IND_TURNOVER.map(t=>t.taxaTO*100),backgroundColor:'rgba(26,63,111,.7)',borderRadius:4},
+          ]
+        },
+        options:{responsive:true,maintainAspectRatio:false,
+          plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.parsed.y.toFixed(1)+'%'}}},
+          scales:{y:{ticks:{callback:v=>v+'%',font:{size:10}},grid:{color:'#f1f5f9'}},x:{ticks:{font:{size:10}}}}
+        }
+      });
+    }
+  } catch(e){}
+
+  // Engajamento evolution chart
+  try {
+    const ctx2 = document.getElementById('chart-eng-evolucao');
+    if(ctx2 && window.Chart) {
+      if(window._chartEng) window._chartEng.destroy();
+      const meses = IND_ENGAJAMENTO.map(e=>e.mes.substring(0,3));
+      window._chartEng = new Chart(ctx2.getContext('2d'), {
+        type:'line',
+        data:{
+          labels: meses,
+          datasets:[
+            {label:'P1 Contribuição',data:IND_ENGAJAMENTO.map(e=>e.p1),borderColor:'#1a3f6f',backgroundColor:'transparent',tension:.4,pointRadius:4},
+            {label:'P2 Segurança',data:IND_ENGAJAMENTO.map(e=>e.p2),borderColor:'#dc2626',backgroundColor:'transparent',tension:.4,pointRadius:4},
+            {label:'P3 Liderança',data:IND_ENGAJAMENTO.map(e=>e.p3),borderColor:'#0d9488',backgroundColor:'transparent',tension:.4,pointRadius:4},
+            {label:'P4 RH',data:IND_ENGAJAMENTO.map(e=>e.p4),borderColor:'#7e22ce',backgroundColor:'transparent',tension:.4,pointRadius:4},
+          ]
+        },
+        options:{responsive:true,maintainAspectRatio:false,
+          plugins:{legend:{position:'bottom',labels:{font:{size:10}}}},
+          scales:{
+            y:{min:3.5,max:5,ticks:{font:{size:10}},grid:{color:'#f1f5f9'}},
+            x:{ticks:{font:{size:10}}}
+          }
+        }
+      });
+    }
+  } catch(e){}
+
+  // T&D mensal
+  try {
+    const ctx3 = document.getElementById('chart-td-mensal');
+    if(ctx3 && window.Chart) {
+      if(window._chartTD) window._chartTD.destroy();
+      const mesesTD = ['JANEIRO','FEVEREIRO','MARÇO','ABRIL','MAIO','JUNHO','JULHO','AGOSTO'];
+      const sessByMonth = mesesTD.map(m => IND_TD.filter(s=>s.mes===m).length);
+      const partByMonth = mesesTD.map(m => IND_TD.filter(s=>s.mes===m).reduce((a,s)=>a+(s.qtdColabs||0),0));
+      window._chartTD = new Chart(ctx3.getContext('2d'), {
+        type:'bar',
+        data:{
+          labels: mesesTD.map(m=>m.substring(0,3)),
+          datasets:[
+            {label:'Sessões',data:sessByMonth,backgroundColor:'rgba(26,63,111,.7)',borderRadius:4,yAxisID:'y'},
+            {label:'Participações',data:partByMonth,backgroundColor:'rgba(13,154,136,.3)',borderRadius:4,yAxisID:'y1'},
+          ]
+        },
+        options:{responsive:true,maintainAspectRatio:false,
+          plugins:{legend:{position:'bottom',labels:{font:{size:10}}}},
+          scales:{
+            y:{type:'linear',position:'left',ticks:{font:{size:10}},grid:{color:'#f1f5f9'}},
+            y1:{type:'linear',position:'right',ticks:{font:{size:10}},grid:{drawOnChartArea:false}},
+            x:{ticks:{font:{size:10}}}
+          }
+        }
+      });
+    }
+  } catch(e){}
+}
+
+function buildTOTable() {
+  const tbody = document.getElementById('tbody-to');
+  if(!tbody) return;
+  tbody.innerHTML = IND_TURNOVER.map(t => {
+    const taxaCor = t.taxaTO > 0.03 ? 'var(--red)' : t.taxaTO > 0 ? 'var(--yellow)' : 'var(--green)';
+    return `<tr>
+      <td style="font-weight:600">${t.mes}</td>
+      <td class="mono">${t.efetivosIni}</td>
+      <td class="mono">${t.efetivosF}</td>
+      <td class="mono dg">${t.efEntrada}</td>
+      <td class="mono dr">${t.efSaida}</td>
+      <td class="mono">${t.desligColab}</td>
+      <td class="mono">${t.desligEmp}</td>
+      <td class="mono" style="font-weight:700;color:${taxaCor}">${(t.taxaTO*100).toFixed(0)}%</td>
+      <td style="font-size:10px;color:var(--g600)">${t.desligadosNomes}</td>
+    </tr>`;
+  }).join('');
+}
+
+function buildEngSetorTable(mes) {
+  const tbody = document.getElementById('tbody-eng-setor');
+  if(!tbody) return;
+  mes = mes || 'Julho';
+  const titulo = document.getElementById('eng-setor-titulo');
+  if(titulo) titulo.textContent = 'Resultado por Setor — ' + mes + '/2026';
+  const dadosMes = (typeof IND_ENG_SETORES !== 'undefined') ? IND_ENG_SETORES[mes] : null;
+  if(!dadosMes || Object.keys(dadosMes).length===0) {
+    tbody.innerHTML = '<tr><td colspan="7" class="muted" style="text-align:center;padding:16px">Dados por setor não disponíveis para ' + mes + '</td></tr>';
+    return;
+  }
+  tbody.innerHTML = Object.entries(dadosMes).map(([s, v]) => {
+    const m = v.medias;
+    const media = v.mediaGeral.toFixed(2);
+    const mc = +media>=4.2?'var(--green)':+media>=3.8?'var(--blue)':'var(--yellow)';
+    const cell = val => `<td class="mono" style="color:${+val<3.8?'var(--yellow)':+val>=4.2?'var(--green)':'var(--blue)'}">${(+val).toFixed(2)}</td>`;
+    return `<tr>
+      <td style="font-weight:600">${s}</td>
+      <td>${v.total}</td>
+      ${cell(m[0])}${cell(m[1])}${cell(m[2])}${cell(m[3])}
+      <td class="mono" style="font-weight:700;color:${mc}">${media}</td>
+    </tr>`;
+  }).join('');
+}
+
+let tdFiltradoArr = IND_TD.slice();
+function tdFiltrar() {
+  const busca = (document.getElementById('td-search')||{}).value||'';
+  const mes = (document.getElementById('td-filter-mes')||{}).value||'';
+  const dept = (document.getElementById('td-filter-dept')||{}).value||'';
+  tdFiltradoArr = IND_TD.filter(s => {
+    if(busca && !(s.tema.toLowerCase().includes(busca.toLowerCase()) || s.departamento.toLowerCase().includes(busca.toLowerCase()))) return false;
+    if(mes && s.mes !== mes) return false;
+    if(dept && !s.departamento.includes(dept)) return false;
+    return true;
+  });
+  tdPage = 1;
+  tdRender();
+}
+
+function tdLimpar() {
+  ['td-search','td-filter-mes','td-filter-dept'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+  tdFiltrar();
+}
+
+function tdRender() {
+  const total = tdFiltradoArr.length;
+  const totalPages = Math.max(1, Math.ceil(total/tdPageSize));
+  const start = (tdPage-1)*tdPageSize;
+  const pageData = tdFiltradoArr.slice(start, start+tdPageSize);
+  const countEl = document.getElementById('td-count');
+  if(countEl) countEl.textContent = total + ' sessão' + (total!==1?'es':'');
+  const tbody = document.getElementById('tbody-td');
+  if(tbody) tbody.innerHTML = pageData.map(s => `<tr>
+    <td class="mono">${s.data}</td>
+    <td><span class="chip">${s.mes.substring(0,3)}</span></td>
+    <td style="font-size:10px">${s.departamento}</td>
+    <td style="text-align:center;font-weight:600">${s.qtdColabs}</td>
+    <td style="font-size:10px">${s.tema}</td>
+  </tr>`).join('');
+  const pag = document.getElementById('td-pagination');
+  if(pag) {
+    if(totalPages<=1) { pag.innerHTML=`<span class="muted">${total} sessões</span>`; return; }
+    const s=start+1, e=Math.min(start+tdPageSize,total);
+    pag.innerHTML=`<span class="muted">${s}–${e} de ${total}</span><div style="display:flex;gap:3px;margin-left:auto">
+      <button class="btn btn-s btn-xs" ${tdPage<=1?'disabled':''} onclick="tdPage--;tdRender()">‹</button>
+      <span style="margin:0 6px;font-size:11px;font-weight:600;align-self:center">${tdPage}/${totalPages}</span>
+      <button class="btn btn-s btn-xs" ${tdPage>=totalPages?'disabled':''} onclick="tdPage++;tdRender()">›</button>
+    </div>`;
+  }
+}
+
+function exportIndTurnover() {
+  exportTableToExcel('_ind_to_virtual',[],null,'Turnover_2026');
+  // Fallback: create CSV
+  const headers = 'Mês,Efetivos Início,Efetivos Fim,Entradas,Saídas,Deslig Colab,Deslig Empresa,Taxa TO,Nomes';
+  const rows = IND_TURNOVER.map(t => [t.mes,t.efetivosIni,t.efetivosF,t.efEntrada,t.efSaida,t.desligColab,t.desligEmp,(t.taxaTO*100).toFixed(0)+'%','"'+t.desligadosNomes+'"'].join(','));
+  const csv = [headers,...rows].join('\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(csv);
+  a.download = 'Turnover_2026.csv';
+  a.click();
+}
+
+function initIndRH() {
+  // Build TO table by default (first tab)
+  buildTOTable();
+  buildEngSetorTable();
+  tdFiltrar();
+  // Build charts after short delay (canvas needs to be visible)
+  setTimeout(buildIndCharts, 100);
+  _indChartsBuilt = true;
+}
+
+
+
+/* ═══ PLANEJAMENTO 2027 ═══ */
+
+/* ═══════════ PLANEJAMENTO ESTRATÉGICO 2027 ═══════════ */
+
+const FERIADOS_2027 = [{"data": "01/01/2027", "diaSemana": "Sexta-feira", "nome": "Ano Novo", "tipo": "Feriado Nacional"}, {"data": "12/02/2027", "diaSemana": "Sexta-feira", "nome": "Carnaval", "tipo": "Ponto Facultativo"}, {"data": "13/02/2027", "diaSemana": "Sábado", "nome": "Carnaval", "tipo": "Ponto Facultativo"}, {"data": "14/02/2027", "diaSemana": "Domingo", "nome": "Carnaval", "tipo": "Ponto Facultativo"}, {"data": "17/02/2027", "diaSemana": "Quarta-feira", "nome": "Quarta-feira de Cinzas", "tipo": "Ponto Facultativo"}, {"data": "26/03/2027", "diaSemana": "Sexta-feira", "nome": "Paixão de Cristo", "tipo": "Feriado Nacional"}, {"data": "21/04/2027", "diaSemana": "Quarta-feira", "nome": "Tiradentes", "tipo": "Feriado Nacional"}, {"data": "01/05/2027", "diaSemana": "Sábado", "nome": "Dia do Trabalhador", "tipo": "Feriado Nacional"}, {"data": "03/06/2027", "diaSemana": "Quinta-feira", "nome": "Corpus Christi", "tipo": "Feriado Municipal"}, {"data": "09/07/2027", "diaSemana": "Sexta-feira", "nome": "Revolução Constitucionalista", "tipo": "Feriado Estadual"}, {"data": "07/09/2027", "diaSemana": "Terça-feira", "nome": "Independência do Brasil", "tipo": "Feriado Nacional"}, {"data": "12/10/2027", "diaSemana": "Terça-feira", "nome": "Nossa Senhora Aparecida", "tipo": "Feriado Nacional"}, {"data": "02/11/2027", "diaSemana": "Terça-feira", "nome": "Finados", "tipo": "Feriado Nacional"}, {"data": "15/11/2027", "diaSemana": "Segunda-feira", "nome": "Proclamação da República", "tipo": "Feriado Nacional"}, {"data": "20/11/2027", "diaSemana": "Sábado", "nome": "Consciência Negra", "tipo": "Feriado Estadual"}, {"data": "25/10/2027", "diaSemana": "Segunda-feira", "nome": "Aniversário de Santa Bárbara d'Oeste", "tipo": "Feriado Municipal"}, {"data": "25/12/2027", "diaSemana": "Sábado", "nome": "Natal", "tipo": "Feriado Nacional"}];
+const ENDOMKT_2027 = [{"acao": "Janeiro Branco — Saúde Mental", "mes": "Janeiro", "categoria": "Segurança do Trabalho"}, {"acao": "Confraternização — Ano Novo / Retorno das Atividades", "mes": "Janeiro", "categoria": "Endomarketing"}, {"acao": "Dia Internacional da Mulher", "mes": "Março", "categoria": "Reconhecimento"}, {"acao": "Paixão de Cristo", "mes": "Março", "categoria": "Aviso Geral"}, {"acao": "Páscoa", "mes": "Março", "categoria": "Endomarketing"}, {"acao": "Dia do Engenheiro Metalúrgico", "mes": "Abril", "categoria": "Reconhecimento"}, {"acao": "Tiradentes", "mes": "Abril", "categoria": "Aviso Geral"}, {"acao": "Dia do Metalúrgico — Usinagem e Fundição", "mes": "Abril", "categoria": "Reconhecimento"}, {"acao": "Dia Mundial da Segurança e Saúde no Trabalho — SEMANA SIPAT", "mes": "Abril", "categoria": "Segurança do Trabalho"}, {"acao": "Maio Amarelo — Prevenção de Acidentes no Trânsito", "mes": "Maio", "categoria": "Segurança do Trabalho"}, {"acao": "Dia do Trabalhador", "mes": "Maio", "categoria": "Reconhecimento"}, {"acao": "Dia das Mães", "mes": "Maio", "categoria": "Endomarketing"}, {"acao": "Dia do RH", "mes": "Maio", "categoria": "RH Informa"}, {"acao": "Dia da Indústria", "mes": "Maio", "categoria": "Endomarketing"}, {"acao": "Semana Mundial do Meio Ambiente", "mes": "Junho", "categoria": "Segurança do Trabalho"}, {"acao": "Corpus Christi", "mes": "Junho", "categoria": "Aviso Geral"}, {"acao": "Revolução de 9 de Julho", "mes": "Julho", "categoria": "Aviso Geral"}, {"acao": "Dia Nacional de Prevenção de Acidentes do Trabalho", "mes": "Julho", "categoria": "Segurança do Trabalho"}, {"acao": "Dia dos Pais", "mes": "Agosto", "categoria": "Endomarketing"}, {"acao": "Proclamação da Independência", "mes": "Setembro", "categoria": "Aviso Geral"}, {"acao": "SIPAT — Kits Personalizados", "mes": "Setembro", "categoria": "Segurança do Trabalho"}, {"acao": "Outubro Rosa", "mes": "Outubro", "categoria": "Segurança do Trabalho"}, {"acao": "Dia do Administrador", "mes": "Outubro", "categoria": "Reconhecimento"}, {"acao": "Dia do Financeiro", "mes": "Outubro", "categoria": "Reconhecimento"}, {"acao": "Dia do Cliente", "mes": "Outubro", "categoria": "Endomarketing"}, {"acao": "Dia das Crianças e Nossa Sra. Aparecida", "mes": "Outubro", "categoria": "Endomarketing"}, {"acao": "Novembro Azul", "mes": "Novembro", "categoria": "Segurança do Trabalho"}, {"acao": "Finados", "mes": "Novembro", "categoria": "Aviso Geral"}, {"acao": "Aniversário da Empresa", "mes": "Novembro", "categoria": "Endomarketing"}, {"acao": "Semana Mundial da Qualidade", "mes": "Novembro", "categoria": "Endomarketing"}, {"acao": "Proclamação da República", "mes": "Novembro", "categoria": "Aviso Geral"}, {"acao": "Consciência Negra", "mes": "Novembro", "categoria": "Reconhecimento"}, {"acao": "Aniversário da Cidade — Santa Bárbara d'Oeste", "mes": "Outubro", "categoria": "Endomarketing"}, {"acao": "Dia do Fundidor", "mes": "Novembro", "categoria": "Reconhecimento"}, {"acao": "Natal", "mes": "Dezembro", "categoria": "Endomarketing"}];
+
+/* ── MOD_PLANO: 5W2H CRUD ── */
+const MOD_PLANO = {
+  table: 'plano_acoes',
+  label: 'Ação 5W2H',
+  fields: [
+    {field:'acao',     label:'O que? (What)',      required:true, full:true},
+    {field:'porque',   label:'Por quê? (Why)',      full:true},
+    {field:'onde',     label:'Onde? (Where)'},
+    {field:'responsavel', label:'Quem? (Who)', type:'select', options:['Patrícia','Jakeline','Francielle','Direção','RH','Externo']},
+    {field:'quando',   label:'Quando? (When)',      placeholder:'Ex: Março/2027 ou 01/03/2027'},
+    {field:'como',     label:'Como? (How)',         type:'textarea', full:true},
+    {field:'quanto',   label:'Quanto? R$',          type:'number', step:'0.01'},
+    {field:'status',   label:'Status', type:'select', options:['Planejado','Em andamento','Concluído','Em pausa','Atrasado','Em revisão','Cancelado']},
+    {field:'observacao', label:'Observações / Evidências', type:'textarea', full:true},
+    {field:'indicador',  label:'Indicador de Sucesso'},
+  ],
+  beforeSave: obj => { if(!obj.status) obj.status='Planejado'; },
+  onSave: () => { if(planoCtrl) planoCtrl.load(); atualizarKPIsPlano(); }
+};
+
+/* ── MOD_ENDOMKT: Calendário 2027 ── */
+const MOD_ENDOMKT = {
+  table: 'endomkt_2027',
+  label: 'Ação Endomarketing',
+  fields: [
+    {field:'acao',       label:'Nome da Ação',       required:true, full:true},
+    {field:'mes',        label:'Mês', type:'select', options:['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro']},
+    {field:'data',       label:'Data',               placeholder:'dd/mm/aaaa'},
+    {field:'categoria',  label:'Categoria', type:'select', options:['Endomarketing','Segurança do Trabalho','Reconhecimento','Aviso Geral','RH Informa']},
+    {field:'responsavel',label:'Responsável', type:'select', options:['Patrícia','Jakeline','Francielle','RH','Direção']},
+    {field:'canal',      label:'Canal', type:'select', options:['WhatsApp','Quadro de avisos','E-mail','Reunião','Todos']},
+    {field:'valor',      label:'Valor estimado R$',  type:'number', step:'0.01'},
+    {field:'situacao',   label:'Status', type:'select', options:['Planejado','Em andamento','Concluído','Cancelado']},
+    {field:'status',     label:'Registro', type:'select', options:['Ativo','Inativo']},
+  ],
+  onSave: () => { endomktFiltrar(); }
+};
+
+/* ── Plano CRUD render ── */
+function planoRowRender(rows) {
+  const STATUS_BADGE = {'Planejado':'bgy','Em andamento':'bb','Concluído':'bg','Em pausa':'bo','Atrasado':'br','Em revisão':'by','Cancelado':'bgy'};
+  return rows.map(p => {
+    const sb = STATUS_BADGE[p.status]||'bgy';
+    const inativo = p.status==='Cancelado';
+    return `<tr style="${inativo?'opacity:.5':''}">
+      <td style="font-size:11px;font-weight:600;max-width:180px">${p.acao}</td>
+      <td style="font-size:10px;max-width:140px">${p.porque||'—'}</td>
+      <td style="font-size:10px">${p.onde||'—'}</td>
+      <td><span class="chip">${p.responsavel||'—'}</span></td>
+      <td style="font-size:10px">${p.quando||'—'}</td>
+      <td style="font-size:10px;max-width:130px">${(p.como||'—').slice(0,60)}${p.como&&p.como.length>60?'…':''}</td>
+      <td class="mono" style="font-size:10px">${p.quanto?'R$'+(+p.quanto).toLocaleString('pt-BR',{minimumFractionDigits:0}):'—'}</td>
+      <td><span class="badge ${sb}">${p.status||'—'}</span></td>
+      <td style="font-size:10px;max-width:120px">${(p.observacao||'—').slice(0,50)}${p.observacao&&p.observacao.length>50?'…':''}</td>
+      <td style="white-space:nowrap">
+        <button class="btn btn-s btn-xs" onclick="openCrudModal(MOD_PLANO,${p.id})">✏</button>
+        <button class="btn btn-s btn-xs" onclick="crudDeleteAction(MOD_PLANO,${p.id},'${escAttr(p.acao)}')">🗑</button>
+      </td></tr>`;
+  }).join('');
+}
+
+let planoCtrl;
+function initPlanoTable() {
+  planoCtrl = makeAdvCtrl({
+    id:'plano', table:'plano_acoes', tbodyId:'plano-tbody', countId:'plano-count',
+    paginationId:'plano-pag', searchFields:['acao','porque','responsavel','observacao'],
+    pageSize:10, sortField:'quando',
+    render: planoRowRender,
+  });
+  window.planoCtrl = planoCtrl;
+  planoCtrl.load();
+  atualizarKPIsPlano();
+}
+
+function atualizarKPIsPlano() {
+  const acoes = loadData('plano_acoes').filter(a=>a.status!=='Inativo');
+  setText('plano-total',      acoes.length);
+  setText('plano-andamento',  acoes.filter(a=>a.status==='Em andamento').length);
+  setText('plano-concluidas', acoes.filter(a=>a.status==='Concluído').length);
+  setText('plano-atrasadas',  acoes.filter(a=>a.status==='Atrasado').length);
+}
+
+/* ── Endomkt ── */
+function buildEndomktSeed() {
+  if(loadData('endomkt_2027').length) return;
+  ENDOMKT_2027.forEach(e => crudCreate('endomkt_2027', {
+    acao: e.acao, mes: e.mes, categoria: e.categoria,
+    responsavel: 'Patrícia', canal: 'Todos',
+    situacao: 'Planejado', status: 'Ativo',
+  }, {modulo:'Endomkt', label: e.acao}));
+}
+
+let endomktFiltrado2027 = [];
+function endomktFiltrar() {
+  const mes = (document.getElementById('endomkt-filter-mes')||{}).value||'';
+  const cat = (document.getElementById('endomkt-filter-cat')||{}).value||'';
+  let dados = loadData('endomkt_2027').filter(e=>e.status!=='Inativo');
+  if(mes) dados = dados.filter(e=>e.mes===mes);
+  if(cat) dados = dados.filter(e=>e.categoria===cat);
+  const countEl = document.getElementById('endomkt-count');
+  if(countEl) countEl.textContent = dados.length + ' ação' + (dados.length!==1?'ões':'');
+  const grid = document.getElementById('endomkt-grid');
+  if(!grid) return;
+  const CAT_ICON = {'Endomarketing':'🎯','Segurança do Trabalho':'🛡','Reconhecimento':'🏆','Aviso Geral':'📢','RH Informa':'📋'};
+  const SIT_BADGE = {'Planejado':'bgy','Em andamento':'bb','Concluído':'bg','Cancelado':'br'};
+  const MESES_ORDEM = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  dados.sort((a,b)=>MESES_ORDEM.indexOf(a.mes)-MESES_ORDEM.indexOf(b.mes));
+  grid.innerHTML = dados.map(e => {
+    const icon = CAT_ICON[e.categoria]||'📌';
+    const sb = SIT_BADGE[e.situacao]||'bgy';
+    return `<div class="card" style="padding:12px;position:relative">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:6px">
+        <div>
+          <div style="font-size:11px;font-weight:700;margin-bottom:4px">${icon} ${e.acao}</div>
+          <div style="display:flex;gap:4px;flex-wrap:wrap">
+            <span class="badge bgy" style="font-size:9px">${e.mes}</span>
+            <span class="badge ${sb}" style="font-size:9px">${e.situacao}</span>
+          </div>
+          <div style="font-size:9px;color:var(--g400);margin-top:4px">${e.responsavel||'—'} · ${e.data||'a definir'}</div>
+        </div>
+        <button class="btn btn-s btn-xs" onclick="openCrudModal(MOD_ENDOMKT,${e.id})">✏</button>
+      </div>
+    </div>`;
+  }).join('') || '<div class="muted" style="grid-column:1/-1;text-align:center;padding:20px">Nenhuma ação encontrada</div>';
+}
+
+/* ── Feriados 2027 em Configurações ── */
+function buildFeriadosWidget() {
+  const el = document.getElementById('feriados-2027-list');
+  if(!el) return;
+  el.innerHTML = FERIADOS_2027.map(f => `
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--g100)">
+      <div>
+        <span style="font-size:11px;font-weight:600">${f.nome}</span>
+        <span class="badge ${f.tipo==='Feriado Nacional'?'br':f.tipo==='Ponto Facultativo'?'by':'bb'}" style="font-size:9px;margin-left:6px">${f.tipo}</span>
+      </div>
+      <span class="mono" style="font-size:10px;color:var(--g400)">${f.data} · ${f.diaSemana}</span>
+    </div>`).join('');
+}
+
+/* ── INIT ── */
+function initPlanejamento() {
+  buildEndomktSeed();
+  initPlanoTable();
+  endomktFiltrar();
+}
+
+
+
+/* ═══ LOTE 7: ANIVERSARIANTES + SST COMPLETO + EPI ═══ */
+
+/* ═══════════ ANIVERSARIANTES + TEMPO DE EMPRESA ═══════════ */
+const ANIVERSARIANTES_2026 = [{"nome": "GILMAR MARQUES DE BRITO", "empresa": "AC", "mes": "JANEIRO", "nascimento": "05/01/1982", "idade": "44 anos, 8 meses, 5 dias"}, {"nome": "STEFANI MONIZE MONTEIRO", "empresa": "BRAS", "mes": "JANEIRO", "nascimento": "05/01/1996", "idade": "30 anos, 8 meses, 5 dias"}, {"nome": "ADRIANE AP. TAIOQUI LOPES", "empresa": "AC", "mes": "JANEIRO", "nascimento": "10/01/1977", "idade": "49 anos, 8 meses, 0 dias"}, {"nome": "LEONARDO SOBRINHO DE BARROS", "empresa": "AC", "mes": "JANEIRO", "nascimento": "17/01/1997", "idade": "29 anos, 7 meses, 24 dias"}, {"nome": "ALBIM", "empresa": "AC", "mes": "JANEIRO", "nascimento": "17/01/1974", "idade": "52 anos, 7 meses, 24 dias"}, {"nome": "RAPHAEL HENRIQUE DE CARVALHO", "empresa": "BRASS", "mes": "JANEIRO", "nascimento": "20/01/1985", "idade": "41 anos, 7 meses, 21 dias"}, {"nome": "SERGIO HENRIQUE BUSINARI", "empresa": "BRASS", "mes": "FEVEREIRO", "nascimento": "02/02/1972", "idade": "54 anos, 7 meses, 8 dias"}, {"nome": "ASAFE DE CARVALHO BONOMO", "empresa": "AC", "mes": "FEVEREIRO", "nascimento": "07/02/2007", "idade": "19 anos, 7 meses, 3 dias"}, {"nome": "ROQUE BATISTA MACHADO", "empresa": "AC", "mes": "FEVEREIRO", "nascimento": "08/02/1961", "idade": "65 anos, 7 meses, 2 dias"}, {"nome": "ANDERSON CORTINHAS", "empresa": "AC", "mes": "FEVEREIRO", "nascimento": "11/02/2025", "idade": "1 anos, 6 meses, 30 dias"}, {"nome": "LEONARDO GOMES LANDIM DOS SANTOS", "empresa": "BRASS", "mes": "FEVEREIRO", "nascimento": "22/02/2005", "idade": "21 anos, 6 meses, 19 dias"}, {"nome": "EDIELSON FERNANDO BRITO CEZA", "empresa": "AC", "mes": "FEVEREIRO", "nascimento": "27/02/1991", "idade": "35 anos, 6 meses, 14 dias"}, {"nome": "LUIS CARLOS DE BRITTO", "empresa": "AC", "mes": "MARÇO", "nascimento": "04/03/2005", "idade": "21 anos, 6 meses, 6 dias"}, {"nome": "EDSON DECHEN", "empresa": "AC", "mes": "MARÇO", "nascimento": "06/03/1985", "idade": "41 anos, 6 meses, 4 dias"}, {"nome": "VICTOR MARQUES DUARTE", "empresa": "AC", "mes": "MARÇO", "nascimento": "11/03/1992", "idade": "34 anos, 5 meses, 30 dias"}, {"nome": "BRUNO DA SILVA NASCIMENTO", "empresa": "BRAS", "mes": "MARÇO", "nascimento": "30/03/2005", "idade": "21 anos, 5 meses, 11 dias"}, {"nome": "EDUARDO RODRIGUES LIMA", "empresa": "BRASS", "mes": "ABRIL", "nascimento": "01/04/1979", "idade": "47 anos, 5 meses, 9 dias"}, {"nome": "RAFAEL MANTOVANI", "empresa": "AC", "mes": "ABRIL", "nascimento": "07/04/1992", "idade": "34 anos, 5 meses, 3 dias"}, {"nome": "GUSTAVO NOGEIRA ROSSANEZI", "empresa": "AC", "mes": "ABRIL", "nascimento": "22/04/2005", "idade": "21 anos, 4 meses, 19 dias"}, {"nome": "ADEMIR XAVIER PIRES", "empresa": "AC", "mes": "ABRIL", "nascimento": "30/04/1968", "idade": "58 anos, 4 meses, 11 dias"}, {"nome": "MATHEUS HENRIQUE GOMES", "empresa": "BRAS", "mes": "MAIO", "nascimento": "02/05/2001", "idade": "25 anos, 4 meses, 8 dias"}, {"nome": "GABRIEL HENRIQUE BARCELO MARTINS", "empresa": "AC", "mes": "MAIO", "nascimento": "13/05/2008", "idade": "18 anos, 3 meses, 28 dias"}, {"nome": "NICOLAS ALEXANDRE BRAGA DO AMARAL", "empresa": "AC", "mes": "MAIO", "nascimento": "20/05/2007", "idade": "19 anos, 3 meses, 21 dias"}, {"nome": "AROLDO JOSÉ ISAIAS", "empresa": "AC", "mes": "MAIO", "nascimento": "24/05/1975", "idade": "51 anos, 3 meses, 17 dias"}, {"nome": "ALESSANDRO LUIZ DA COSTA", "empresa": "BRASS", "mes": "JUNHO", "nascimento": "04/06/1984", "idade": "42 anos, 3 meses, 6 dias"}, {"nome": "ANTONIO CABRERA JUNIOR", "empresa": "AC", "mes": "JUNHO", "nascimento": "13/06/1965", "idade": "61 anos, 2 meses, 28 dias"}, {"nome": "ANTONIO CABRERA", "empresa": "AC", "mes": "JUNHO", "nascimento": "13/06/1994", "idade": "32 anos, 2 meses, 28 dias"}, {"nome": "MARCOS ANTONIO MINHOTO MARTINS", "empresa": "AC", "mes": "JUNHO", "nascimento": "13/06/1976", "idade": "50 anos, 2 meses, 28 dias"}, {"nome": "GABRIEL ANTONIO FERREIRA GARCIA DOS ANJOS", "empresa": "BRASS", "mes": "JUNHO", "nascimento": "26/06/2000", "idade": "26 anos, 2 meses, 15 dias"}, {"nome": "CLEYTON SANTOS DE SOUSA", "empresa": "BRAS", "mes": "JUNHO", "nascimento": "28/06/1991", "idade": "35 anos, 2 meses, 13 dias"}, {"nome": "ANDREY PAULINO", "empresa": "AC", "mes": "JULHO", "nascimento": "14/07/1983", "idade": "43 anos, 1 meses, 27 dias"}, {"nome": "JAKELINE CABRERA", "empresa": "AC", "mes": "JULHO", "nascimento": "17/07/1985", "idade": "41 anos, 1 meses, 24 dias"}, {"nome": "JOAO VITOR CAMARGO", "empresa": "AC", "mes": "JULHO", "nascimento": "30/07/2002", "idade": "24 anos, 1 meses, 11 dias"}, {"nome": "FRANCIELLE CRISTINA ASCARI", "empresa": "AC", "mes": "AGOSTO", "nascimento": "02/08/1984", "idade": "42 anos, 1 meses, 8 dias"}, {"nome": "ABNER MARINS PRUDENCIO", "empresa": "AC", "mes": "AGOSTO", "nascimento": "05/08/1999", "idade": "27 anos, 1 meses, 5 dias"}, {"nome": "LUIS FERNANDO SOUZA DOS SANTOS", "empresa": "AC", "mes": "AGOSTO", "nascimento": "22/08/2005", "idade": "21 anos, 0 meses, 19 dias"}, {"nome": "JURANDIR DIAS", "empresa": "AC", "mes": "AGOSTO", "nascimento": "25/08/1966", "idade": "60 anos, 0 meses, 16 dias"}, {"nome": "CLEOMAR MUNIZ ALVES", "empresa": "AC", "mes": "AGOSTO", "nascimento": "26/08/1995", "idade": "31 anos, 0 meses, 15 dias"}, {"nome": "JOAO ANTONIO DE OLIVEIRA", "empresa": "AC", "mes": "SETEMBRO", "nascimento": "06/09/1964", "idade": "62 anos, 0 meses, 4 dias"}, {"nome": "TOMY OGATA", "empresa": "BRASS", "mes": "SETEMBRO", "nascimento": "14/09/1969", "idade": "56 anos, 11 meses, 27 dias"}, {"nome": "JOSE ADAUTO DE JESUS", "empresa": "AC", "mes": "SETEMBRO", "nascimento": "24/09/1986", "idade": "39 anos, 11 meses, 17 dias"}, {"nome": "THIAGO RODRIGO MELLO", "empresa": "AC", "mes": "SETEMBRO", "nascimento": "24/09/1982", "idade": "43 anos, 11 meses, 17 dias"}, {"nome": "ANA CLAUDIA TELES MENESES DE SOUZA", "empresa": "AC", "mes": "SETEMBRO", "nascimento": "25/09/1974", "idade": "51 anos, 11 meses, 16 dias"}, {"nome": "JOAO GABRIEL ROBIS DE ALMEIDA", "empresa": "AC", "mes": "SETEMBRO", "nascimento": "26/09/2008", "idade": "17 anos, 11 meses, 15 dias"}, {"nome": "PATRICIA APARECIDA MARTINS DE SOUZA", "empresa": "AC", "mes": "SETEMBRO", "nascimento": "30/09/1983", "idade": "42 anos, 11 meses, 11 dias"}, {"nome": "JOSE ITAMAR ESTEVES DE MENDONÇA", "empresa": "AC", "mes": "OUTUBRO", "nascimento": "06/10/1961", "idade": "64 anos, 11 meses, 4 dias"}, {"nome": "RENATO PEREIRA DA ROCHA", "empresa": "AC", "mes": "OUTUBRO", "nascimento": "18/10/1978", "idade": "47 anos, 10 meses, 23 dias"}, {"nome": "NICOLLY VASSALO IGNACIO", "empresa": "AC", "mes": "OUTUBRO", "nascimento": "27/10/2003", "idade": "22 anos, 10 meses, 14 dias"}, {"nome": "JOSE HENRIQUE DE BRITO NASCIMENTO", "empresa": "AC", "mes": "NOVEMBRO", "nascimento": "08/11/1996", "idade": "29 anos, 10 meses, 2 dias"}, {"nome": "REBECCA CAMPOS DE ALMEIDA", "empresa": "AC", "mes": "NOVEMBRO", "nascimento": "19/11/2008", "idade": "17 anos, 9 meses, 22 dias"}, {"nome": "JHONI OLIVEIRA ALVES", "empresa": "AC", "mes": "NOVEMBRO", "nascimento": "21/11/1993", "idade": "32 anos, 9 meses, 20 dias"}, {"nome": "ANDRE LUIS BEZERRA DA SILVA", "empresa": "AC", "mes": "NOVEMBRO", "nascimento": "21/11/1984", "idade": "41 anos, 9 meses, 20 dias"}, {"nome": "GUSTAVO BISPO DOS SANTOS", "empresa": "BRASS", "mes": "DEZEMBRO", "nascimento": "26/12/2004", "idade": "21 anos, 8 meses, 15 dias"}, {"nome": "JOAO PEDRO CABRERA", "empresa": "BRASS", "mes": "DEZEMBRO", "nascimento": "28/12/2010", "idade": "15 anos, 8 meses, 13 dias"}];
+const TEMPO_EMPRESA_2026 = [{"nome": "ANTONIO CABRERA JUNIOR", "empresa": "AC", "mes": "JANEIRO", "admissao": "03/01/2011", "tempoTexto": "15 anos, 0 meses, 0 dias", "anosCompletos": 15, "presente": "CARTÃO + COOKIES", "status": "OK"}, {"nome": "ANDERSON FURTADO CORTINHAS", "empresa": "AC", "mes": "JANEIRO", "admissao": "08/01/2022", "tempoTexto": "4 anos, 0 meses, 0 dias", "anosCompletos": 4, "presente": "CARTÃO + COOKIES", "status": ""}, {"nome": "MARCOS ANTONIO MINHOTO MARTINS", "empresa": "AC", "mes": "JANEIRO", "admissao": "18/01/2021", "tempoTexto": "5 anos, 0 meses, 0 dias", "anosCompletos": 5, "presente": "KIT FACA", "status": "OK"}, {"nome": "GUSTAVO NOGEIRA ROSSANEZI", "empresa": "AC", "mes": "JANEIRO", "admissao": "20/01/2025", "tempoTexto": "1 anos, 0 meses, 0 dias", "anosCompletos": 1, "presente": "CARTÃO + COOKIES", "status": "OK"}, {"nome": "RAPHAEL HENRIQUE DE CARVALHO", "empresa": "BRASS", "mes": "JANEIRO", "admissao": "23/01/2024", "tempoTexto": "2 anos, 0 meses, 0 dias", "anosCompletos": 2, "presente": "CARTÃO + COOKIES", "status": "OK"}, {"nome": "NICOLLY VASSALO IGNACIO", "empresa": "AC", "mes": "FEVEREIRO", "admissao": "03/02/2026", "tempoTexto": "0 anos, 0 meses, 0 dias", "anosCompletos": 0, "presente": "", "status": ""}, {"nome": "LUIS FERNANDO SOUZA DOS SANTOS", "empresa": "AC", "mes": "FEVEREIRO", "admissao": "05/02/2025", "tempoTexto": "1 anos, 0 meses, 0 dias", "anosCompletos": 1, "presente": "CARTÃO + COOKIES", "status": "OK"}, {"nome": "FRANCIELLE CRISTINA ASCARI", "empresa": "AC", "mes": "FEVEREIRO", "admissao": "12/02/2018", "tempoTexto": "8 anos, 0 meses, 0 dias", "anosCompletos": 8, "presente": "CARTÃO + COOKIES", "status": "OK"}, {"nome": "RENATO PEREIRA DA ROCHA", "empresa": "AC", "mes": "FEVEREIRO", "admissao": "25/02/2013", "tempoTexto": "13 anos, 0 meses, 0 dias", "anosCompletos": 13, "presente": "CARTÃO + COOKIES", "status": "OK"}, {"nome": "LEONARDO SOBRINHO DE BARROS", "empresa": "BRASS", "mes": "MARÇO", "admissao": "01/03/2018", "tempoTexto": "8 anos, 0 meses, 0 dias", "anosCompletos": 8, "presente": "CARTÃO + COOKIES", "status": "OK"}, {"nome": "TOMY OGATA", "empresa": "BRASS", "mes": "MARÇO", "admissao": "07/03/2021", "tempoTexto": "5 anos, 0 meses, 0 dias", "anosCompletos": 5, "presente": "KIT MÃO CHURRASCO", "status": "OK"}, {"nome": "ABNER MARINS PRUDENCIO", "empresa": "AC", "mes": "MARÇO", "admissao": "09/03/2026", "tempoTexto": "0 anos, 0 meses, 0 dias", "anosCompletos": 0, "presente": "", "status": ""}, {"nome": "LEONARDO GOMES LANDIM DOS SANTOS", "empresa": "BRASS", "mes": "MARÇO", "admissao": "20/03/2025", "tempoTexto": "1 anos, 0 meses, 0 dias", "anosCompletos": 1, "presente": "CARTÃO + COOKIES", "status": "OK"}, {"nome": "GABRIEL ANTONIO FERREIRA GARCIA DOS ANJOS", "empresa": "BRASS", "mes": "MARÇO", "admissao": "24/03/2021", "tempoTexto": "5 anos, 0 meses, 0 dias", "anosCompletos": 5, "presente": "CAFETEIRA", "status": "OK"}, {"nome": "JOSE ITAMAR ESTEVES DE MENDONÇA", "empresa": "AC", "mes": "MARÇO", "admissao": "28/03/2023", "tempoTexto": "3 anos, 0 meses, 0 dias", "anosCompletos": 3, "presente": "CANECA PERSONALIZADA", "status": "OK"}, {"nome": "GILMAR MARQUES DE BRITO", "empresa": "AC", "mes": "ABRIL", "admissao": "07/04/2021", "tempoTexto": "5 anos, 0 meses, 0 dias", "anosCompletos": 5, "presente": "KIT FACA", "status": "OK"}, {"nome": "BRUNO DA SILVA NASCIMENTO VICHESI", "empresa": "BRAS", "mes": "ABRIL", "admissao": "11/04/2023", "tempoTexto": "3 anos, 0 meses, 0 dias", "anosCompletos": 3, "presente": "CANECA PERSONALIZADA", "status": "OK"}, {"nome": "ANDRE LUIS BEZERRA DA SILVA", "empresa": "AC", "mes": "ABRIL", "admissao": "11/04/2022", "tempoTexto": "4 anos, 0 meses, 0 dias", "anosCompletos": 4, "presente": "CARTÃO + COOKIES", "status": "OK"}, {"nome": "VICTOR MARQUES", "empresa": "AC", "mes": "ABRIL", "admissao": "20/04/2026", "tempoTexto": "0 anos, 0 meses, 0 dias", "anosCompletos": 0, "presente": "", "status": ""}, {"nome": "RAFAEL MANTOVANI", "empresa": "AC", "mes": "ABRIL", "admissao": "26/04/2021", "tempoTexto": "5 anos, 0 meses, 0 dias", "anosCompletos": 5, "presente": "KIT FACA", "status": "OK"}, {"nome": "STEFANI MONIZE MONTEIRO", "empresa": "BRAS", "mes": "ABRIL", "admissao": "28/04/2025", "tempoTexto": "1 anos, 0 meses, 0 dias", "anosCompletos": 1, "presente": "CARTÃO + COOKIES", "status": "OK"}, {"nome": "JURANDIR DIAS", "empresa": "BRAS", "mes": "ABRIL", "admissao": "29/04/2025", "tempoTexto": "0 anos, 11 meses, 30 dias", "anosCompletos": 0, "presente": "CANECA PERSONALIZADA", "status": "OK"}, {"nome": "GABRIEL HENRIQUE BARCELO MARTINS", "empresa": "AC", "mes": "MAIO", "admissao": "07/05/2026", "tempoTexto": "0 anos, 0 meses, 0 dias", "anosCompletos": 0, "presente": "", "status": ""}, {"nome": "JHONI OLIVEIRA ALVES", "empresa": "AC", "mes": "MAIO", "admissao": "13/05/2013", "tempoTexto": "13 anos, 0 meses, 0 dias", "anosCompletos": 13, "presente": "CARTÃO + COOKIES", "status": "OK"}, {"nome": "CLEYTON SANTOS DE SOUSA", "empresa": "BRAS", "mes": "MAIO", "admissao": "16/05/2022", "tempoTexto": "4 anos, 0 meses, 0 dias", "anosCompletos": 4, "presente": "CARTÃO + COOKIES", "status": "OK"}, {"nome": "JOSE ADAUTO DE JESUS", "empresa": "AC", "mes": "MAIO", "admissao": "17/05/2023", "tempoTexto": "3 anos, 0 meses, 0 dias", "anosCompletos": 3, "presente": "CANECA PERSONALIZADA", "status": "OK"}, {"nome": "REBECCA CAMPOS DE ALMEIDA", "empresa": "AC", "mes": "JUNHO", "admissao": "22/06/2026", "tempoTexto": "0 anos, 0 meses, 0 dias", "anosCompletos": 0, "presente": "", "status": ""}, {"nome": "LUIS CARLOS DE BRITTO", "empresa": "AC", "mes": "JUNHO", "admissao": "29/06/2026", "tempoTexto": "0 anos, 0 meses, 0 dias", "anosCompletos": 0, "presente": "", "status": ""}, {"nome": "JOAO VITOR CAMARGO", "empresa": "AC", "mes": "JUNHO", "admissao": "30/06/2025", "tempoTexto": "1 anos, 0 meses, 0 dias", "anosCompletos": 1, "presente": "CARTÃO + COOKIES", "status": "OK"}, {"nome": "EDSON DECHEN", "empresa": "AC", "mes": "JULHO", "admissao": "01/07/2026", "tempoTexto": "0 anos, 0 meses, 0 dias", "anosCompletos": 0, "presente": "", "status": ""}, {"nome": "JOAO GABRIEL ROBIS DE ALMEIDA", "empresa": "AC", "mes": "JULHO", "admissao": "22/07/2026", "tempoTexto": "0 anos, 0 meses, 0 dias", "anosCompletos": 0, "presente": "", "status": ""}, {"nome": "NICOLAS ALEXANDRE BRAGA DO AMARAL", "empresa": "AC", "mes": "JULHO", "admissao": "28/07/2025", "tempoTexto": "1 anos, 0 meses, 0 dias", "anosCompletos": 1, "presente": "CARTÃO + COOKIES", "status": "OK"}, {"nome": "ADRIANE AP. TAIOQUI LOPES", "empresa": "AC", "mes": "AGOSTO", "admissao": "05/08/2024", "tempoTexto": "2 anos, 0 meses, 0 dias", "anosCompletos": 2, "presente": "CARTÃO + COOKIES", "status": "OK"}, {"nome": "ALESSANDRO LUIZ DA COSTA", "empresa": "BRASS", "mes": "AGOSTO", "admissao": "12/08/2025", "tempoTexto": "1 anos, 0 meses, 0 dias", "anosCompletos": 1, "presente": "CARTÃO + COOKIES", "status": "OK"}, {"nome": "EDIELSON FERNANDO BRITO CEZA", "empresa": "AC", "mes": "AGOSTO", "admissao": "12/08/2026", "tempoTexto": "0 anos, 0 meses, 0 dias", "anosCompletos": 0, "presente": "", "status": ""}, {"nome": "ASAFE DE CARVALHO BONOMO", "empresa": "AC", "mes": "AGOSTO", "admissao": "12/08/2026", "tempoTexto": "0 anos, 0 meses, 0 dias", "anosCompletos": 0, "presente": "", "status": ""}, {"nome": "ADEMIR XAVIER PIRES", "empresa": "AC", "mes": "AGOSTO", "admissao": "15/08/2019", "tempoTexto": "7 anos, 0 meses, 0 dias", "anosCompletos": 7, "presente": "CARTÃO + COOKIES", "status": "OK"}, {"nome": "ANA CLAUDIA TELES MENESES DE SOUZA", "empresa": "AC", "mes": "AGOSTO", "admissao": "25/08/2025", "tempoTexto": "1 anos, 0 meses, 0 dias", "anosCompletos": 1, "presente": "CARTÃO + COOKIES", "status": "OK"}, {"nome": "JAKELINE CABRERA", "empresa": "AC", "mes": "SETEMBRO", "admissao": "01/09/2001", "tempoTexto": "25 anos, 0 meses, 0 dias", "anosCompletos": 25, "presente": "", "status": ""}, {"nome": "THIAGO RODRIGO MELLO", "empresa": "AC", "mes": "SETEMBRO", "admissao": "01/09/2025", "tempoTexto": "1 anos, 0 meses, 0 dias", "anosCompletos": 1, "presente": "CARTÃO + COOKIES", "status": ""}, {"nome": "JOSE HENRIQUE DE BRITO NASCIMENTO", "empresa": "AC", "mes": "SETEMBRO", "admissao": "05/09/2024", "tempoTexto": "2 anos, 0 meses, 0 dias", "anosCompletos": 2, "presente": "CARTÃO + COOKIES", "status": ""}, {"nome": "MATHEUS HENRIQUE GOMES", "empresa": "BRAS", "mes": "SETEMBRO", "admissao": "06/09/2025", "tempoTexto": "1 anos, 0 meses, 0 dias", "anosCompletos": 1, "presente": "CARTÃO + COOKIES", "status": ""}, {"nome": "GUSTAVO BISPO DOS SANTOS", "empresa": "BRAS", "mes": "SETEMBRO", "admissao": "09/09/2025", "tempoTexto": "1 anos, 0 meses, 0 dias", "anosCompletos": 1, "presente": "CARTÃO + COOKIES", "status": ""}, {"nome": "LARA CRISTINA DA SILVA OLIVEIRA DOS SANTOS", "empresa": "BRAS", "mes": "SETEMBRO", "admissao": "15/09/2025", "tempoTexto": "1 anos, 0 meses, 0 dias", "anosCompletos": 1, "presente": "CARTÃO + COOKIES", "status": ""}, {"nome": "PATRICIA APARECIDA MARTINS DE SOUZA", "empresa": "AC", "mes": "SETEMBRO", "admissao": "16/09/2025", "tempoTexto": "1 anos, 0 meses, 0 dias", "anosCompletos": 1, "presente": "CARTÃO + COOKIES", "status": ""}, {"nome": "EDUARDO RODRIGUES LIMA", "empresa": "BRAS", "mes": "SETEMBRO", "admissao": "24/09/2025", "tempoTexto": "1 anos, 0 meses, 0 dias", "anosCompletos": 1, "presente": "CARTÃO + COOKIES", "status": ""}, {"nome": "SERGIO HENRIQUE BUSINARI", "empresa": "AC", "mes": "OUTUBRO", "admissao": "02/10/2023", "tempoTexto": "3 anos, 0 meses, 0 dias", "anosCompletos": 3, "presente": "CANECA PERSONALIZADA", "status": ""}, {"nome": "ROQUE BATISTA MACHADO", "empresa": "AC", "mes": "OUTUBRO", "admissao": "14/10/2024", "tempoTexto": "2 anos, 0 meses, 0 dias", "anosCompletos": 2, "presente": "CARTÃO + COOKIES", "status": ""}, {"nome": "JOÃO ANTÔNIO DE OLIVEIRA", "empresa": "AC", "mes": "DEZEMBRO", "admissao": "01/12/2020", "tempoTexto": "6 anos, 0 meses, 0 dias", "anosCompletos": 6, "presente": "CARTÃO + COOKIES", "status": ""}, {"nome": "CLEOMAR MUNIZ ALVES", "empresa": "AC", "mes": "DEZEMBRO", "admissao": "16/12/2021", "tempoTexto": "5 anos, 0 meses, 0 dias", "anosCompletos": 5, "presente": "KIT FACA", "status": ""}];
+
+const MESES_PT = ['JANEIRO','FEVEREIRO','MARÇO','ABRIL','MAIO','JUNHO','JULHO','AGOSTO','SETEMBRO','OUTUBRO','NOVEMBRO','DEZEMBRO'];
+
+function getMesAtual() {
+  return MESES_PT[new Date().getMonth()];
+}
+function getMesProximo() {
+  return MESES_PT[(new Date().getMonth()+1)%12];
+}
+
+function buildAniversariantesWidget() {
+  const mesAtual = getMesAtual();
+  const mesProx  = getMesProximo();
+  const anivMes  = ANIVERSARIANTES_2026.filter(a => a.mes === mesAtual);
+  const anivProx = ANIVERSARIANTES_2026.filter(a => a.mes === mesProx);
+  const tempoMes = TEMPO_EMPRESA_2026.filter(t => t.mes === mesAtual);
+
+  // Atualiza widget do dashboard
+  const elAniv = document.getElementById('dash-aniversariantes');
+  if (elAniv) {
+    elAniv.innerHTML = anivMes.length === 0
+      ? '<div class="muted" style="font-size:11px;padding:4px 0">Nenhum aniversariante este mês</div>'
+      : anivMes.map(a => {
+          const ini = a.nome.split(' ').slice(0,2).map(n=>n[0]).join('');
+          const cor = a.empresa==='AC'||a.empresa==='AC'?'#1a3f6f':'#7e22ce';
+          const primeiroNome = a.nome.split(' ')[0];
+          return `<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--g100)">
+            <div class="avatar" style="background:${cor};font-size:10px;width:28px;height:28px;min-width:28px">${ini}</div>
+            <div style="flex:1">
+              <div style="font-size:11px;font-weight:600">${primeiroNome}</div>
+              <div style="font-size:9px;color:var(--g400)">${a.empresa} · ${a.idade.split(',')[0]}</div>
+            </div>
+            <span style="font-size:18px">🎂</span>
+          </div>`;
+        }).join('');
+  }
+
+  // Widget tempo de empresa
+  const elTempo = document.getElementById('dash-tempo-empresa');
+  if (elTempo) {
+    elTempo.innerHTML = tempoMes.length === 0
+      ? '<div class="muted" style="font-size:11px;padding:4px 0">Nenhum aniversário de empresa este mês</div>'
+      : tempoMes.map(t => {
+          const ini = t.nome.split(' ').slice(0,2).map(n=>n[0]).join('');
+          const cor = t.empresa==='AC'||t.empresa==='AC'?'#1a3f6f':'#7e22ce';
+          const anos = t.anosCompletos;
+          const presente = t.presente;
+          const badge = presente ? `<span class="badge bg" style="font-size:9px">${presente}</span>` : '';
+          return `<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--g100)">
+            <div class="avatar" style="background:${cor};font-size:10px;width:28px;height:28px;min-width:28px">${ini}</div>
+            <div style="flex:1">
+              <div style="font-size:11px;font-weight:600">${t.nome.split(' ').slice(0,3).join(' ')}</div>
+              <div style="font-size:9px;color:var(--g400);display:flex;align-items:center;gap:4px">
+                ${t.empresa} · ${anos} ano${anos!==1?'s':''} de empresa ${badge}
+              </div>
+            </div>
+            <span style="font-size:18px">${anos>=10?'🏆':anos>=5?'⭐':'🎉'}</span>
+          </div>`;
+        }).join('');
+  }
+
+  // Próximo mês preview
+  const elProx = document.getElementById('dash-aniv-prox');
+  if (elProx && anivProx.length > 0) {
+    elProx.textContent = anivProx.length + ' aniversariante' + (anivProx.length!==1?'s':'') + ' em ' + mesProx.charAt(0) + mesProx.slice(1).toLowerCase();
+    elProx.style.display = 'block';
+  }
+}
+
+/* ═══════════ SST COMPLETO ═══════════ */
+const MOD_SST_COMPLETO = {
+  table: 'sst',
+  label: 'Registro SST',
+  fields: [
+    {field:'colaborador',  label:'Colaborador',        required:true, full:true},
+    {field:'cargo',        label:'Cargo',               required:true},
+    {field:'setor',        label:'Setor',               required:true},
+    {field:'tipoExame',    label:'Tipo de Exame', type:'select', required:true,
+      options:['Admissional','Periódico','Retorno ao Trabalho','Mudança de Função','Demissional']},
+    {field:'dataExame',    label:'Data do Exame',       placeholder:'dd/mm/aaaa'},
+    {field:'proximoExame', label:'Próximo Exame',       placeholder:'dd/mm/aaaa'},
+    {field:'clinica',      label:'Clínica / Médico'},
+    {field:'riscos',       label:'Riscos Ocupacionais (PCMSO)', type:'textarea'},
+    {field:'restricoes',   label:'Restrições / Aptidão', type:'select',
+      options:['Apto','Apto com Restrições','Inapto Temporário','Inapto']},
+    {field:'nr_pendentes', label:'NRs Pendentes (separar por vírgula)'},
+    {field:'pcmso',        label:'Status PCMSO', type:'select',
+      options:['Regular','Pendente renovação','Vencido','Não aplicável']},
+    {field:'pgr',          label:'Status PGR', type:'select',
+      options:['Regular','Pendente renovação','Vencido','Não aplicável']},
+    {field:'ltcat',        label:'Status LTCAT', type:'select',
+      options:['Regular','Pendente renovação','Vencido','Não aplicável']},
+    {field:'observacao',   label:'Observações',        type:'textarea', full:true},
+    {field:'situacao',     label:'Situação ASO', type:'select',
+      options:['Em dia','Agendar','Vence em breve','Vencido']},
+    {field:'status',       label:'Registro', type:'select', options:['Ativo','Inativo']},
+  ],
+  onSave: () => { if(sstAdvCtrl) sstAdvCtrl.load(); atualizarKPIsSST(); updateSSTBanner(); }
+};
+
+function atualizarKPIsSST() {
+  const sst = loadData('sst').filter(s=>s.status!=='Inativo');
+  const total   = sst.length;
+  const emDia   = sst.filter(s=>s.situacao==='Em dia').length;
+  const agendar = sst.filter(s=>s.situacao==='Agendar').length;
+  const vencendo= sst.filter(s=>s.situacao==='Vence em breve').length;
+  const vencido = sst.filter(s=>s.situacao==='Vencido').length;
+  // Update all possible ID variants
+  ['sst-total-crud','sst-kpi-total'].forEach(id=>setText(id,total));
+  ['sst-emdia-crud','sst-kpi-emdia'].forEach(id=>setText(id,emDia));
+  ['sst-agendar-crud','sst-kpi-agendar'].forEach(id=>setText(id,agendar));
+  ['sst-venceram-crud','sst-kpi-vencendo'].forEach(id=>setText(id,vencendo+vencido));
+  ['sst-kpi-vencido'].forEach(id=>setText(id,vencido));
+  // Alertas panel
+  const el = document.getElementById('sst-alertas-panel');
+  if(el) {
+    const msgs = [];
+    const urgentes = sst.filter(s=>s.situacao==='Vencido'||s.situacao==='Agendar');
+    if(urgentes.length) msgs.push(`<div class="alert al-r" style="margin-bottom:8px"><div>⚠</div><div><div class="al-title">${urgentes.length} ASO(s) com ação urgente</div><div class="al-sub">${urgentes.map(s=>s.colaborador.split(' ')[0]+'('+s.situacao+')').join(', ')}</div></div></div>`);
+    if(vencendo) msgs.push(`<div class="alert al-y" style="margin-bottom:8px"><div>⏰</div><div><div class="al-title">${vencendo} ASO(s) vencendo em breve — agendar com antecedência</div></div></div>`);
+    el.innerHTML = msgs.join('');
+  }
+}
+
+/* ═══════════ EPI — CRUD COMPLETO ═══════════ */
+const MOD_EPI = {
+  table: 'epi',
+  label: 'Entrega de EPI',
+  fields: [
+    {field:'colaborador',  label:'Colaborador',         required:true, full:true},
+    {field:'setor',        label:'Setor', type:'select', required:true,
+      options:['Fundição','Usinagem','Manutenção','Administrativo','Qualidade','Produção']},
+    {field:'nomeEpi',      label:'Nome do EPI', type:'select', required:true,
+      options:['Capacete','Óculos de Proteção','Luva de Raspa','Luva de Látex','Botina de Segurança','Protetor Auricular','Avental de Raspa','Máscara Respiratória','Cinto de Segurança','Uniforme','Óculos de Solda','Perneira','Mangote','Escudo Facial','Luva de Malha de Aço','Outro']},
+    {field:'ca',           label:'Nº CA (Certificado de Aprovação)'},
+    {field:'quantidade',   label:'Quantidade',           type:'number', step:'1'},
+    {field:'dataEntrega',  label:'Data de Entrega',      required:true, placeholder:'dd/mm/aaaa'},
+    {field:'dataValidade', label:'Validade do EPI',      placeholder:'dd/mm/aaaa ou Indeterminado'},
+    {field:'motivoEntrega',label:'Motivo', type:'select',
+      options:['Admissão','Reposição por uso','Reposição por extravio','Reposição por defeito','Troca periódica']},
+    {field:'assinatura',   label:'Colaborador assinou?', type:'select',
+      options:['Sim — assinatura física','Sim — digital','Pendente']},
+    {field:'devolucao',    label:'Data de Devolução',    placeholder:'dd/mm/aaaa (se devolvido)'},
+    {field:'situacao',     label:'Situação', type:'select',
+      options:['Em uso','Vencendo','Vencido','Devolvido','Extraviado']},
+    {field:'observacao',   label:'Observações',         type:'textarea', full:true},
+    {field:'status',       label:'Registro', type:'select', options:['Ativo','Inativo']},
+  ],
+  beforeSave: obj => {
+    if(!obj.situacao) obj.situacao = 'Em uso';
+    // Auto-situacao baseada na validade
+    if(obj.dataValidade && obj.dataValidade !== 'Indeterminado') {
+      try {
+        const parts = obj.dataValidade.split('/');
+        const val = new Date(+parts[2], +parts[1]-1, +parts[0]);
+        const hoje = new Date();
+        const diff = (val - hoje) / (1000*60*60*24);
+        if(diff < 0) obj.situacao = 'Vencido';
+        else if(diff < 30) obj.situacao = 'Vencendo';
+      } catch(e) {}
+    }
+  },
+  onSave: () => { if(epiCtrl) epiCtrl.load(); atualizarKPIsEPI(); }
+};
+
+function epiRowRender(rows) {
+  const SIT_BADGE = {'Em uso':'bg','Vencendo':'bo','Vencido':'br','Devolvido':'bgy','Extraviado':'br'};
+  const ASSIN_BADGE = {'Sim — assinatura física':'bg','Sim — digital':'bb','Pendente':'by'};
+  return rows.map(e => {
+    const sb = SIT_BADGE[e.situacao]||'bgy';
+    const ab = ASSIN_BADGE[e.assinatura]||'bgy';
+    const inativo = e.status==='Inativo';
+    return `<tr style="${inativo?'opacity:.5':''}">
+      <td style="font-size:11px;font-weight:600">${e.colaborador}</td>
+      <td style="font-size:10px">${e.setor||'—'}</td>
+      <td><span class="chip">${e.nomeEpi||'—'}</span></td>
+      <td class="mono" style="font-size:10px">${e.ca||'—'}</td>
+      <td style="text-align:center">${e.quantidade||1}</td>
+      <td>${e.dataEntrega||'—'}</td>
+      <td style="${e.situacao==='Vencido'?'color:var(--red);font-weight:700':''}">${e.dataValidade||'—'}</td>
+      <td><span class="badge ${ab}" style="font-size:9px">${e.assinatura||'—'}</span></td>
+      <td><span class="badge ${sb}">${e.situacao||'—'}</span></td>
+      <td style="white-space:nowrap">
+        <button class="btn btn-s btn-xs" onclick="openCrudModal(MOD_EPI,${e.id})">✏</button>
+        ${inativo
+          ? `<button class="btn btn-s btn-xs" onclick="crudRestoreAction(MOD_EPI,${e.id},'${escAttr(e.colaborador)}')">↩</button>`
+          : `<button class="btn btn-s btn-xs" onclick="crudDeleteAction(MOD_EPI,${e.id},'${escAttr(e.colaborador)}')">🗑</button>`}
+      </td></tr>`;
+  }).join('');
+}
+
+let epiCtrl;
+function initEPITable() {
+  epiCtrl = makeAdvCtrl({
+    id:'epi', table:'epi', tbodyId:'epi-tbody', countId:'epi-count',
+    paginationId:'epi-pag', searchFields:['colaborador','nomeEpi','ca','setor'],
+    pageSize:10, sortField:'dataEntrega', sortDir:-1,
+    render: epiRowRender,
+  });
+  window.epiCtrl = epiCtrl;
+  epiCtrl.load();
+  atualizarKPIsEPI();
+}
+
+function atualizarKPIsEPI() {
+  const epis = loadData('epi').filter(e=>e.status!=='Inativo');
+  const total = epis.filter(e=>e.situacao!=='Devolvido').length;
+  const vencendo = epis.filter(e=>e.situacao==='Vencendo').length;
+  const vencidos = epis.filter(e=>e.situacao==='Vencido').length;
+  // Colaboradores ativos sem nenhum EPI registrado
+  const colabs = loadData('colaboradores').filter(c=>c.status!=='Inativo');
+  const colabsComEPI = new Set(epis.filter(e=>e.situacao==='Em uso'||e.situacao==='Vencendo').map(e=>e.colaborador));
+  const semEPI = colabs.filter(c=>!colabsComEPI.has(c.nome)).length;
+  setText('epi-total',   total);
+  setText('epi-vencendo',vencendo);
+  setText('epi-vencidos',vencidos);
+  setText('epi-sem',     semEPI);
+  // Alertas
+  const alertas = document.getElementById('epi-alertas');
+  if(alertas) {
+    const msgs = [];
+    if(vencidos>0) msgs.push(`<div class="alert al-r"><div>⚠</div><div><div class="al-title">${vencidos} EPI(s) vencidos — substituir imediatamente</div><div class="al-sub">${epis.filter(e=>e.situacao==='Vencido').map(e=>e.colaborador.split(' ')[0]+' ('+e.nomeEpi+')').join(', ')}</div></div></div>`);
+    if(vencendo>0) msgs.push(`<div class="alert al-y"><div>⏰</div><div><div class="al-title">${vencendo} EPI(s) vencendo em menos de 30 dias</div><div class="al-sub">Providenciar reposição com antecedência.</div></div></div>`);
+    const pendAssin = epis.filter(e=>e.assinatura==='Pendente').length;
+    if(pendAssin>0) msgs.push(`<div class="alert al-y"><div>✍</div><div><div class="al-title">${pendAssin} entrega(s) sem assinatura do colaborador</div><div class="al-sub">Necessário para fins legais e fiscalização.</div></div></div>`);
+    alertas.innerHTML = msgs.join('');
+  }
+}
+
+/* ═══════════ T&D CONSOLIDADO NO PEOPLE ANALYTICS ═══════════ */
+function buildPATD(colabs) {
+  const sessions = typeof IND_TD !== 'undefined' ? IND_TD : [];
+  const totalSess = sessions.length;
+  const totalPart = sessions.reduce((s,x)=>s+(x.qtdColabs||0),0);
+  const mediaHoras = colabs.length > 0 ? (totalPart * 0.5 / colabs.length).toFixed(1) : '—'; // estimativa 30min/sessão
+  setText('pa-td-sessoes', totalSess);
+  setText('pa-td-participacoes', totalPart);
+  setText('pa-td-horas-pessoa', mediaHoras + 'h');
+}
+
+/* ═══════════ WIRE INTO buildPeopleAnalytics ═══════════ */
+const _origBuildPA = buildPeopleAnalytics;
+function buildPeopleAnalytics() {
+  _origBuildPA();
+  try { buildPATD(loadData('colaboradores').filter(c=>c.status!=='Inativo')); } catch(e){}
+}
+
+/* ═══════════ INIT EPI ═══════════ */
+function initLote7() {
+  buildAniversariantesWidget();
+  // Substituir MOD_SST pelo completo
+  window.MOD_SST = MOD_SST_COMPLETO;
+  atualizarKPIsSST();
 }
 
 </script>
