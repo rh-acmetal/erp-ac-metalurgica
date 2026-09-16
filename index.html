@@ -337,7 +337,7 @@ tr:last-child td{border-bottom:none}
   <div class="l-box">
     <div class="l-logo">
       <div class="l-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
-      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.2 — Status de Conexão Corrigido</div></div>
+      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.3 — Bug de Login Corrigido</div></div>
     </div>
     <div class="f-row"><label>Usuário</label><input type="text" id="l-user" value="jakeline@acmetalurgica.com.br"></div>
     <div class="f-row"><label>Senha</label><input type="password" id="l-pass" value="••••••••"></div>
@@ -2118,13 +2118,28 @@ function go(id,el,title,bread){
   if(id==='clima'&&!chartsBuilt.clima){setTimeout(()=>{buildClimaCharts();chartsBuilt.clima=true},60);}
 }
 
-function buildAll(){buildCal();buildCompForm();initCrudModules();initLote2Modules();initLote3Modules();initLote4Modules();initLote5Modules();initLote6Modules();tryRestoreSupabase();initAllAdvFilters();initLote7();setTimeout(()=>{atualizarKPIsDash();colabPopularCargos();colabFiltrado=loadData('colaboradores');colabFiltrar();},100);}
+function buildAll(){
+  try{buildCal();}catch(e){console.warn('buildCal:',e);}
+  try{buildCompForm();}catch(e){console.warn('buildCompForm:',e);}
+  try{initCrudModules();}catch(e){console.warn('initCrudModules:',e);}
+  try{initLote2Modules();}catch(e){console.warn('initLote2Modules:',e);}
+  try{initLote3Modules();}catch(e){console.warn('initLote3Modules:',e);}
+  try{initLote4Modules();}catch(e){console.warn('initLote4Modules:',e);}
+  try{initLote5Modules();}catch(e){console.warn('initLote5Modules:',e);}
+  try{initLote6Modules();}catch(e){console.warn('initLote6Modules:',e);}
+  try{tryRestoreSupabase();}catch(e){console.warn('tryRestoreSupabase:',e); updateDBStatusBadge('error');}
+  try{initAllAdvFilters();}catch(e){console.warn('initAllAdvFilters:',e);}
+  try{initLote7();}catch(e){console.warn('initLote7:',e);}
+  setTimeout(()=>{atualizarKPIsDash();colabPopularCargos();colabFiltrado=loadData('colaboradores');colabFiltrar();},100);
+}
 
 
 
 // (buildAdmissaoCards/togChk substituídos por initAdmissaoTable/toggleAdmissaoCheck no módulo CRUD)
 
 function buildCal(){
+  const el = document.getElementById('cal-ferias');
+  if (!el) return; // elemento não existe nesta tela — nada a fazer
   const ev={2:'fg2',6:'fp',10:'fp',15:'fv',16:'fg2',17:'fg2',22:'fp',23:'fp',28:'fv'};
   const nm={2:'M.Silva',6:'A.Costa',10:'P.Rocha',15:'C.Ferreira',16:'M.Silva',17:'M.Silva',22:'J.Santos',23:'L.Mendes',28:'A.Lima'};
   let h='';
@@ -2134,7 +2149,7 @@ function buildCal(){
     const ecl=e==='fp'?'ev-p':e==='fv'?'ev-v':'ev-g';
     h+=`<div class="${cls}"><strong>${d}</strong>${e?`<div class="cal-ev ${ecl}">${nm[d]}</div>`:''}</div>`;
   }
-  document.getElementById('cal-ferias').innerHTML=h;
+  el.innerHTML=h;
 }
 
 // (buildAvalTable substituído por initAvalTable/avalRowRender no módulo CRUD)
