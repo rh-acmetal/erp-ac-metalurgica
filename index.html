@@ -337,7 +337,7 @@ tr:last-child td{border-bottom:none}
   <div class="l-box">
     <div class="l-logo">
       <div class="l-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
-      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.1 — Backup Automático + Central de Alertas</div></div>
+      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.2 — Status de Conexão Corrigido</div></div>
     </div>
     <div class="f-row"><label>Usuário</label><input type="text" id="l-user" value="jakeline@acmetalurgica.com.br"></div>
     <div class="f-row"><label>Senha</label><input type="password" id="l-pass" value="••••••••"></div>
@@ -2346,6 +2346,7 @@ function confirmarExcel(){
 
 function atualizarKPIsDash(){
   try{ buildCentralAlertas(); }catch(e){ console.warn('Central de Alertas:', e); }
+  try{ refreshDBStatus(); }catch(e){ console.warn('Status DB:', e); }
   const hoje=new Date();
   const colabs=loadData('colaboradores').filter(c=>c.status!=='Inativo');
   const total=colabs.length;
@@ -4923,9 +4924,26 @@ function updateDBStatusBadge(mode) {
   if (mode === 'online') {
     el.innerHTML = '🟢 Supabase — Multi-usuário ativo';
     el.style.color = 'var(--green)';
+  } else if (mode === 'error') {
+    el.innerHTML = '🔴 Erro ao conectar — salvando só neste navegador';
+    el.style.color = 'var(--red)';
   } else {
     el.innerHTML = '🟡 LocalStorage — Apenas este navegador';
     el.style.color = 'var(--yellow-t)';
+  }
+}
+
+// Testa a conexão DE VERDADE (não só se o objeto foi criado) e corrige o badge.
+// Chamada sempre que o Dashboard é aberto, então nunca fica travada em "Verificando...".
+async function refreshDBStatus() {
+  if (DB_MODE !== 'supabase' || !supabaseClient) { updateDBStatusBadge('local'); return; }
+  try {
+    const { error } = await supabaseClient.from('ac_erp_registros').select('id').limit(1);
+    if (error) { console.warn('Teste de conexão Supabase falhou:', error.message); updateDBStatusBadge('error'); }
+    else { updateDBStatusBadge('online'); }
+  } catch(e) {
+    console.warn('Teste de conexão Supabase falhou:', e.message);
+    updateDBStatusBadge('error');
   }
 }
 
