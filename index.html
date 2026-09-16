@@ -328,6 +328,13 @@ tr:last-child td{border-bottom:none}
 .ps-l{font-size:9px;color:var(--g400);text-transform:uppercase;letter-spacing:.5px}
 
 @media print{.sidebar,.topbar,.btn-logout,.filters,.modal-overlay{display:none!important}body{overflow:visible;height:auto}.main-area{height:auto}.content{overflow:visible}.page{display:block!important;page-break-after:always}}
+@media print {
+  body *{visibility:hidden}
+  #m-recibo{display:flex!important}
+  #recibo-preview,#recibo-preview *{visibility:visible}
+  #recibo-preview{position:absolute;left:0;top:0;width:100%}
+  .no-print{display:none !important}
+}
 </style>
 </head>
 <body>
@@ -337,7 +344,7 @@ tr:last-child td{border-bottom:none}
   <div class="l-box">
     <div class="l-logo">
       <div class="l-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
-      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.3 — Bug de Login Corrigido</div></div>
+      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.8 — Descrição de Cargos & CBO</div></div>
     </div>
     <div class="f-row"><label>Usuário</label><input type="text" id="l-user" value="jakeline@acmetalurgica.com.br"></div>
     <div class="f-row"><label>Senha</label><input type="password" id="l-pass" value="••••••••"></div>
@@ -382,8 +389,17 @@ tr:last-child td{border-bottom:none}
     <div class="nav-item" onclick="go('beneficios',this,'Benefícios','Controle')">
       <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>Benefícios
     </div>
+    <div class="nav-item" onclick="go('cestavegas',this,'Cesta Básica & Vegas','Controle')">
+      <svg viewBox="0 0 24 24"><path d="M12.89 1.45l8 4A2 2 0 0 1 22 7.24v9.53a2 2 0 0 1-1.11 1.79l-8 4a2 2 0 0 1-1.79 0l-8-4a2 2 0 0 1-1.1-1.8V7.24a2 2 0 0 1 1.11-1.79l8-4a2 2 0 0 1 1.78 0z"/><polyline points="2.32 6.16 12 11 21.68 6.16"/><line x1="12" y1="22.76" x2="12" y2="11"/></svg>Cesta & Vegas
+    </div>
     <div class="nav-item" onclick="go('admissao',this,'Admissão','Controle')">
       <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>Admissão
+    </div>
+    <div class="nav-item" onclick="go('feedback90',this,'Acompanhamento 90 Dias','Controle')">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Acompanh. 90 Dias
+    </div>
+    <div class="nav-item" onclick="go('desccargos',this,'Descrição de Cargos','Manual de Referência')">
+      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>Descrição de Cargos
     </div>
     <div class="nav-item" onclick="go('ferias',this,'Férias','Gestão')">
       <svg viewBox="0 0 24 24"><path d="M8 3v3m8-3v3M3 8h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/></svg>Férias
@@ -728,6 +744,83 @@ tr:last-child td{border-bottom:none}
         <tbody id="benef-tbody"></tbody></table>
         <div style="padding:10px 14px;display:flex;align-items:center;justify-content:flex-end;gap:4px;border-top:1px solid var(--g100)" id="benef-pag"></div>
       </div>
+    </div>
+
+    <!-- ══ CESTA BÁSICA & VEGAS ══ -->
+    <div id="page-cestavegas" class="page">
+      <div class="layer-badge lb-op">● Operacional</div>
+      <div class="section-hdr">
+        <div class="sec-title"><svg viewBox="0 0 24 24"><path d="M12.89 1.45l8 4A2 2 0 0 1 22 7.24v9.53a2 2 0 0 1-1.11 1.79l-8 4a2 2 0 0 1-1.79 0l-8-4a2 2 0 0 1-1.1-1.8V7.24a2 2 0 0 1 1.11-1.79l8-4a2 2 0 0 1 1.78 0z"/><polyline points="2.32 6.16 12 11 21.68 6.16"/><line x1="12" y1="22.76" x2="12" y2="11"/></svg>Cesta Básica & Cartão Vegas</div>
+        <button class="btn btn-p" onclick="openCrudModal(MOD_CESTAVEGAS,null)">+ Novo Registro</button>
+        <button class="btn btn-s" onclick="openReciboModal()">🖨 Gerar Recibo de Entrega</button>
+      </div>
+      <div class="filters" style="margin-bottom:12px">
+        <select class="fsel" id="cv-mes-sel" onchange="renderCestaVegas(this.value)">
+          <option value="1">Janeiro/2026</option><option value="2">Fevereiro/2026</option>
+          <option value="3">Março/2026</option><option value="4">Abril/2026</option>
+          <option value="5">Maio/2026</option><option value="6">Junho/2026</option>
+          <option value="7">Julho/2026</option><option value="8">Agosto/2026</option>
+          <option value="9">Setembro/2026</option><option value="10" selected>Outubro/2026</option>
+        </select>
+        <span class="chip" id="cv-count">— registros</span>
+        <button class="btn btn-s btn-sm" onclick="exportTableToExcel('cesta_vegas',[{field:'colaborador',label:'Colaborador',width:35},{field:'mes',label:'Mês',width:14},{field:'cnpj',label:'CNPJ',width:10},{field:'cesta',label:'Cesta',width:10},{field:'vegas',label:'Vegas',width:10},{field:'qtdCesta',label:'Qtd',width:8},{field:'observacoes',label:'Observações',width:35}],'CestaVegas')">⬇ Exportar</button>
+      </div>
+      <div class="kpi-grid">
+        <div class="kpi-card"><div class="kpi-lbl">Colaboradores no mês</div><div class="kpi-val" id="cv-kpi-total">—</div></div>
+        <div class="kpi-card"><div class="kpi-lbl">Com direito à cesta</div><div class="kpi-val" style="color:var(--green)" id="cv-kpi-com">—</div></div>
+        <div class="kpi-card"><div class="kpi-lbl">Sem direito (motivo)</div><div class="kpi-val" style="color:var(--red)" id="cv-kpi-sem">—</div></div>
+        <div class="kpi-card"><div class="kpi-lbl">Total de cestas a comprar</div><div class="kpi-val" style="color:var(--blue)" id="cv-kpi-comprar">—</div></div>
+      </div>
+      <div class="card" style="padding:0;margin-bottom:14px">
+        <div class="card-hdr">Controle do Mês</div>
+        <table><thead><tr><th>Colaborador</th><th>CNPJ</th><th>Cesta</th><th>Vegas</th><th>Qtd</th><th>Observações</th><th>Ações</th></tr></thead>
+        <tbody id="cv-tbody"></tbody></table>
+      </div>
+      <div class="card" style="padding:12px">
+        <div class="card-hdr" style="padding:0 0 10px 0">📊 Histórico Anual — Cestas Entregues por Mês</div>
+        <div style="height:220px"><canvas id="cv-chart-historico"></canvas></div>
+      </div>
+    </div>
+
+    <!-- ══ ACOMPANHAMENTO 90 DIAS ══ -->
+    <div id="page-feedback90" class="page">
+      <div class="layer-badge lb-op">● Operacional</div>
+      <div class="section-hdr">
+        <div class="sec-title"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Acompanhamento de Experiência — Feedback 90 Dias</div>
+      </div>
+      <div class="filters" style="margin-bottom:12px">
+        <span class="chip" id="fb90-count">— colaboradores</span>
+        <span style="font-size:10px;color:var(--g500);display:flex;gap:8px;align-items:center">
+          <span style="display:inline-flex;align-items:center;gap:3px"><span style="width:9px;height:9px;border-radius:50%;background:#92D050;display:inline-block"></span>Realizado</span>
+          <span style="display:inline-flex;align-items:center;gap:3px"><span style="width:9px;height:9px;border-radius:50%;background:#2E75B6;display:inline-block"></span>Agendado</span>
+          <span style="display:inline-flex;align-items:center;gap:3px"><span style="width:9px;height:9px;border-radius:50%;background:#FFC000;display:inline-block"></span>Pendente</span>
+          <span style="display:inline-flex;align-items:center;gap:3px"><span style="width:9px;height:9px;border-radius:50%;background:#FF0000;display:inline-block"></span>Não realizado</span>
+        </span>
+      </div>
+      <div class="card" style="padding:0;overflow-x:auto">
+        <table style="min-width:1100px"><thead><tr>
+          <th>Colaborador</th><th>Admissão</th><th>7d</th><th>14d</th><th>21d</th><th>30d</th><th>Av.Integ.</th><th>45d</th><th>60d</th><th>75d</th><th>90d</th><th>Observações</th><th>Ações</th>
+        </tr></thead>
+        <tbody id="fb90-tbody"></tbody></table>
+      </div>
+    </div>
+
+    <!-- ══ DESCRIÇÃO DE CARGOS ══ -->
+    <div id="page-desccargos" class="page">
+      <div class="layer-badge lb-op">● Operacional</div>
+      <div class="section-hdr">
+        <div class="sec-title"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>Descrição de Cargos & CBO</div>
+        <button class="btn btn-p" onclick="openCrudModal(MOD_DESCCARGO,null)">+ Novo Cargo</button>
+      </div>
+      <div class="filters" style="margin-bottom:12px">
+        <div class="srch-wrap"><input class="finp" type="text" id="dc-search" placeholder="🔎 Buscar cargo ou CBO..." oninput="renderDescCargos()"></div>
+        <select class="fsel" id="dc-area-sel" onchange="renderDescCargos()">
+          <option value="">Todas as áreas</option>
+          <option>Administrativo</option><option>Qualidade E Expedição</option><option>Usinagem</option><option>Fundição</option><option>Geral</option>
+        </select>
+        <span class="chip" id="dc-count">— cargos</span>
+      </div>
+      <div id="dc-lista"></div>
     </div>
 
     <!-- ══ ADMISSÃO ══ -->
@@ -2097,6 +2190,9 @@ function go(id,el,title,bread){
   },200);}
   if(id==='holerite'){setTimeout(()=>{try{if(tcHolerite)tcHolerite.refresh();atualizarKPIsHolerite();}catch(e){}},80);}
   if(id==='comunicados'){setTimeout(()=>{try{if(tcComunicado)tcComunicado.refresh();atualizarKPIsComunicados();}catch(e){}},80);}
+  if(id==='cestavegas'){setTimeout(()=>{try{const sel=document.getElementById('cv-mes-sel');renderCestaVegas(sel?sel.value:10);buildCestaVegasHistorico();}catch(e){console.warn('cestavegas:',e);}},80);}
+  if(id==='feedback90'){setTimeout(()=>{try{renderFeedback90();}catch(e){console.warn('feedback90:',e);}},80);}
+  if(id==='desccargos'){setTimeout(()=>{try{renderDescCargos();}catch(e){console.warn('desccargos:',e);}},80);}
   if(id==='configuracoes'){setTimeout(()=>{try{initConfiguracoes();}catch(e){}},80);}
   if(id==='ind-rh'){setTimeout(()=>{try{initIndRH();}catch(e){console.warn('indRH:',e);}},150);}
   if(id==='planejamento'){setTimeout(()=>{try{initPlanejamento();}catch(e){console.warn('plano:',e);}},150);}
@@ -2127,6 +2223,10 @@ function buildAll(){
   try{initLote4Modules();}catch(e){console.warn('initLote4Modules:',e);}
   try{initLote5Modules();}catch(e){console.warn('initLote5Modules:',e);}
   try{initLote6Modules();}catch(e){console.warn('initLote6Modules:',e);}
+  try{buildCestaVegasSeed();}catch(e){console.warn('buildCestaVegasSeed:',e);}
+  try{buildFeriasRealSeed();}catch(e){console.warn('buildFeriasRealSeed:',e);}
+  try{buildFeedback90Seed();}catch(e){console.warn('buildFeedback90Seed:',e);}
+  try{buildDescCargosSeed();}catch(e){console.warn('buildDescCargosSeed:',e);}
   try{tryRestoreSupabase();}catch(e){console.warn('tryRestoreSupabase:',e); updateDBStatusBadge('error');}
   try{initAllAdvFilters();}catch(e){console.warn('initAllAdvFilters:',e);}
   try{initLote7();}catch(e){console.warn('initLote7:',e);}
@@ -3195,16 +3295,95 @@ const MOD_FERIAS = {
     {field:'colaborador', label:'Colaborador', required:true, full:true},
     {field:'cargo', label:'Cargo'},
     {field:'setor', label:'Setor', type:'select', options:SETORES},
+    {field:'cnpj', label:'CNPJ', type:'select', options:['AC','BRASS','PJ']},
     {field:'periodoInicio', label:'Início Período Aquisitivo', placeholder:'dd/mm/aaaa'},
     {field:'periodoFim', label:'Fim Período Aquisitivo', placeholder:'dd/mm/aaaa'},
     {field:'inicioGozo', label:'Início Gozo (Programado)', placeholder:'dd/mm/aaaa'},
     {field:'fimGozo', label:'Fim Gozo (Programado)', placeholder:'dd/mm/aaaa'},
     {field:'dias', label:'Dias de Férias', type:'number', placeholder:'30'},
+    {field:'limiteGozo', label:'Limite Legal p/ Gozo', placeholder:'dd/mm/aaaa'},
     {field:'situacao', label:'Situação', type:'select', options:['Em aquisição','Elegível','Programada','Em gozo','Vencida','Gozada']},
     {field:'status', label:'Status', type:'select', options:['Ativo','Inativo']},
   ],
   onSave: () => { if(tcFerias) tcFerias.refresh(); buildFeriasFromColabs(); }
 };
+
+const FERIAS_SEED_REAL = [
+{colaborador:'RAFAEL MANTOVANI',cnpj:'AC',periodoInicio:'23/12/2024',periodoFim:'22/12/2025',inicioGozo:'',fimGozo:'',dias:30,limiteGozo:'13/12/2026',situacao:'Elegível'},
+{colaborador:'RAFAEL MANTOVANI',cnpj:'AC',periodoInicio:'23/12/2025',periodoFim:'22/12/2026',inicioGozo:'',fimGozo:'',dias:20,limiteGozo:'23/11/2027',situacao:'Em aquisição'},
+{colaborador:'CLEOMAR MUNIZ ALVES',cnpj:'AC',periodoInicio:'10/01/2025',periodoFim:'09/01/2026',inicioGozo:'',fimGozo:'',dias:30,limiteGozo:'11/12/2026',situacao:'Elegível'},
+{colaborador:'CLEOMAR MUNIZ ALVES',cnpj:'AC',periodoInicio:'10/01/2026',periodoFim:'09/01/2027',inicioGozo:'',fimGozo:'',dias:20,limiteGozo:'11/12/2027',situacao:'Em aquisição'},
+{colaborador:'GUSTAVO NOGUEIRA ROSSANEZI',cnpj:'AC',periodoInicio:'20/01/2025',periodoFim:'19/01/2026',inicioGozo:'',fimGozo:'',dias:30,limiteGozo:'21/12/2026',situacao:'Elegível'},
+{colaborador:'GUSTAVO NOGUEIRA ROSSANEZI',cnpj:'AC',periodoInicio:'20/01/2026',periodoFim:'19/01/2027',inicioGozo:'',fimGozo:'',dias:20,limiteGozo:'21/12/2027',situacao:'Em aquisição'},
+{colaborador:'LUIS FERNANDO SOUZA DOS SANTOS',cnpj:'AC',periodoInicio:'05/02/2025',periodoFim:'04/02/2026',inicioGozo:'',fimGozo:'',dias:30,limiteGozo:'06/01/2027',situacao:'Elegível'},
+{colaborador:'LUIS FERNANDO SOUZA DOS SANTOS',cnpj:'AC',periodoInicio:'05/02/2026',periodoFim:'04/02/2027',inicioGozo:'',fimGozo:'',dias:17.5,limiteGozo:'06/01/2028',situacao:'Em aquisição'},
+{colaborador:'ANDRE LUIS DA SILVA BEZERRA',cnpj:'AC',periodoInicio:'11/04/2025',periodoFim:'10/04/2026',inicioGozo:'',fimGozo:'',dias:30,limiteGozo:'12/03/2027',situacao:'Elegível'},
+{colaborador:'ANDRE LUIS DA SILVA BEZERRA',cnpj:'AC',periodoInicio:'11/04/2026',periodoFim:'10/04/2027',inicioGozo:'',fimGozo:'',dias:12.5,limiteGozo:'12/03/2028',situacao:'Em aquisição'},
+{colaborador:'JURANDIR DIAS',cnpj:'AC',periodoInicio:'29/04/2025',periodoFim:'28/04/2026',inicioGozo:'',fimGozo:'',dias:30,limiteGozo:'30/03/2027',situacao:'Elegível'},
+{colaborador:'JURANDIR DIAS',cnpj:'AC',periodoInicio:'29/04/2026',periodoFim:'28/04/2027',inicioGozo:'',fimGozo:'',dias:10,limiteGozo:'30/03/2028',situacao:'Em aquisição'},
+{colaborador:'JHONI DE OLIVEIRA ALVES',cnpj:'AC',periodoInicio:'13/05/2025',periodoFim:'12/05/2026',inicioGozo:'',fimGozo:'',dias:30,limiteGozo:'13/04/2027',situacao:'Elegível'},
+{colaborador:'JHONI DE OLIVEIRA ALVES',cnpj:'AC',periodoInicio:'13/05/2026',periodoFim:'12/05/2027',inicioGozo:'',fimGozo:'',dias:10,limiteGozo:'13/04/2028',situacao:'Em aquisição'},
+{colaborador:'JOAO VITOR CAMARGO',cnpj:'AC',periodoInicio:'30/06/2025',periodoFim:'29/06/2026',inicioGozo:'',fimGozo:'',dias:30,limiteGozo:'31/05/2027',situacao:'Elegível'},
+{colaborador:'JOAO VITOR CAMARGO',cnpj:'AC',periodoInicio:'30/06/2026',periodoFim:'29/06/2027',inicioGozo:'',fimGozo:'',dias:5,limiteGozo:'31/05/2028',situacao:'Em aquisição'},
+{colaborador:'NICOLAS ALEXANDRE BRAGA DO AMARAL',cnpj:'AC',periodoInicio:'28/07/2025',periodoFim:'27/07/2026',inicioGozo:'',fimGozo:'',dias:30,limiteGozo:'28/06/2027',situacao:'Elegível'},
+{colaborador:'NICOLAS ALEXANDRE BRAGA DO AMARAL',cnpj:'AC',periodoInicio:'28/07/2026',periodoFim:'27/07/2027',inicioGozo:'',fimGozo:'',dias:2.5,limiteGozo:'28/06/2028',situacao:'Em aquisição'},
+{colaborador:'ADRIANE APARECIDA TAIOQUI LOPES',cnpj:'AC',periodoInicio:'05/08/2025',periodoFim:'04/08/2026',inicioGozo:'',fimGozo:'',dias:30,limiteGozo:'06/07/2027',situacao:'Elegível'},
+{colaborador:'ADRIANE APARECIDA TAIOQUI LOPES',cnpj:'AC',periodoInicio:'05/08/2026',periodoFim:'04/08/2027',inicioGozo:'',fimGozo:'',dias:2.5,limiteGozo:'06/07/2028',situacao:'Em aquisição'},
+{colaborador:'JOSE HENRIQUE DE BRITO NASCIMENTO',cnpj:'AC',periodoInicio:'05/09/2025',periodoFim:'04/09/2026',inicioGozo:'',fimGozo:'',dias:30,limiteGozo:'06/08/2027',situacao:'Elegível'},
+{colaborador:'FRANCIELLE CRISTINA ASCARI RODRIGUES',cnpj:'AC',periodoInicio:'01/10/2025',periodoFim:'30/09/2026',inicioGozo:'',fimGozo:'',dias:27.5,limiteGozo:'01/09/2027',situacao:'Em aquisição'},
+{colaborador:'ROQUE BATISTA MACHADO',cnpj:'AC',periodoInicio:'14/10/2025',periodoFim:'13/10/2026',inicioGozo:'',fimGozo:'',dias:27.5,limiteGozo:'14/09/2027',situacao:'Em aquisição'},
+{colaborador:'JOSE ADAUTO DE JESUS',cnpj:'AC',periodoInicio:'20/12/2025',periodoFim:'19/12/2026',inicioGozo:'',fimGozo:'',dias:22.5,limiteGozo:'20/11/2027',situacao:'Em aquisição'},
+{colaborador:'JOSE ITAMAR ESTEVES DE MENDONÇA',cnpj:'AC',periodoInicio:'20/12/2025',periodoFim:'19/12/2026',inicioGozo:'',fimGozo:'',dias:22.5,limiteGozo:'20/11/2027',situacao:'Em aquisição'},
+{colaborador:'GILMAR MARQUES DE BRITO',cnpj:'AC',periodoInicio:'23/12/2025',periodoFim:'22/12/2026',inicioGozo:'',fimGozo:'',dias:20,limiteGozo:'23/11/2027',situacao:'Em aquisição'},
+{colaborador:'RENATO PEREIRA DA ROCHA',cnpj:'AC',periodoInicio:'23/12/2025',periodoFim:'22/12/2026',inicioGozo:'',fimGozo:'',dias:20,limiteGozo:'23/11/2027',situacao:'Em aquisição'},
+{colaborador:'MARCOS ANTONIO MINHOTO MARTINS',cnpj:'AC',periodoInicio:'13/03/2026',periodoFim:'12/03/2027',inicioGozo:'',fimGozo:'',dias:15,limiteGozo:'12/02/2028',situacao:'Em aquisição'},
+{colaborador:'LEONARDO SOBRINHO DE BARROS',cnpj:'AC',periodoInicio:'04/05/2026',periodoFim:'03/05/2027',inicioGozo:'',fimGozo:'',dias:10,limiteGozo:'04/04/2028',situacao:'Em aquisição'},
+{colaborador:'NICOLLY VASSALO IGNACIO',cnpj:'AC',periodoInicio:'04/05/2026',periodoFim:'03/05/2027',inicioGozo:'',fimGozo:'',dias:10,limiteGozo:'04/04/2028',situacao:'Em aquisição'},
+{colaborador:'GABRIEL HENRIQUE BARCELO MARTINS',cnpj:'AC',periodoInicio:'07/05/2026',periodoFim:'06/05/2027',inicioGozo:'',fimGozo:'',dias:10,limiteGozo:'07/04/2028',situacao:'Em aquisição'},
+{colaborador:'REBECCA CAMPOS DE ALMEIDA',cnpj:'AC',periodoInicio:'22/06/2026',periodoFim:'21/06/2027',inicioGozo:'',fimGozo:'',dias:5,limiteGozo:'23/05/2028',situacao:'Em aquisição'},
+{colaborador:'LUIS CARLOS DE BRITO',cnpj:'AC',periodoInicio:'29/06/2026',periodoFim:'28/06/2027',inicioGozo:'',fimGozo:'',dias:5,limiteGozo:'30/05/2028',situacao:'Em aquisição'},
+{colaborador:'ANA CLAUDIA TELES MENESES DE SOUZA',cnpj:'AC',periodoInicio:'01/07/2026',periodoFim:'30/06/2027',inicioGozo:'',fimGozo:'',dias:5,limiteGozo:'01/06/2028',situacao:'Em aquisição'},
+{colaborador:'EDSON DECHEN',cnpj:'AC',periodoInicio:'01/07/2026',periodoFim:'30/06/2027',inicioGozo:'',fimGozo:'',dias:5,limiteGozo:'01/06/2028',situacao:'Em aquisição'},
+{colaborador:'JOAO GABRIEL ROBIS DE ALMEIDA',cnpj:'AC',periodoInicio:'22/07/2026',periodoFim:'21/07/2027',inicioGozo:'',fimGozo:'',dias:2.5,limiteGozo:'22/06/2028',situacao:'Em aquisição'},
+{colaborador:'EDIELSON FERNANDO BRITO CEZA',cnpj:'AC',periodoInicio:'12/08/2026',periodoFim:'11/08/2027',inicioGozo:'',fimGozo:'',dias:2.5,limiteGozo:'13/07/2028',situacao:'Em aquisição'},
+{colaborador:'PATRICIA APARECIDA MARTINS DE SOUZA',cnpj:'AC',periodoInicio:'01/09/2026',periodoFim:'31/08/2027',inicioGozo:'',fimGozo:'',dias:0,limiteGozo:'02/08/2028',situacao:'Em aquisição'},
+{colaborador:'AROLDO JOSE ISAIAS DE MORAES JUNIOR',cnpj:'BRASS',periodoInicio:'23/12/2025',periodoFim:'22/12/2026',inicioGozo:'',fimGozo:'',dias:22.5,limiteGozo:'23/11/2027',situacao:'Em aquisição'},
+{colaborador:'TOMY OGATA',cnpj:'BRASS',periodoInicio:'07/03/2025',periodoFim:'06/03/2026',inicioGozo:'',fimGozo:'',dias:30,limiteGozo:'20/02/2027',situacao:'Elegível'},
+{colaborador:'TOMY OGATA',cnpj:'BRASS',periodoInicio:'07/03/2026',periodoFim:'06/03/2027',inicioGozo:'',fimGozo:'',dias:15,limiteGozo:'06/02/2028',situacao:'Em aquisição'},
+{colaborador:'GABRIEL ANTONIO FERREIRA GARCIA DOS ANJOS',cnpj:'BRASS',periodoInicio:'24/03/2025',periodoFim:'23/03/2026',inicioGozo:'',fimGozo:'',dias:30,limiteGozo:'22/02/2027',situacao:'Elegível'},
+{colaborador:'GABRIEL ANTONIO FERREIRA GARCIA DOS ANJOS',cnpj:'BRASS',periodoInicio:'24/03/2026',periodoFim:'23/03/2027',inicioGozo:'',fimGozo:'',dias:15,limiteGozo:'23/02/2028',situacao:'Em aquisição'},
+{colaborador:'CLEYTON SANTOS DE SOUZA',cnpj:'BRASS',periodoInicio:'16/05/2025',periodoFim:'15/05/2026',inicioGozo:'',fimGozo:'',dias:30,limiteGozo:'16/04/2027',situacao:'Elegível'},
+{colaborador:'CLEYTON SANTOS DE SOUZA',cnpj:'BRASS',periodoInicio:'16/05/2026',periodoFim:'15/05/2027',inicioGozo:'',fimGozo:'',dias:10,limiteGozo:'16/04/2028',situacao:'Em aquisição'},
+{colaborador:'BRUNO DA SILVA NASCIMENTO VICHESI',cnpj:'BRASS',periodoInicio:'20/12/2025',periodoFim:'19/12/2026',inicioGozo:'',fimGozo:'',dias:22.5,limiteGozo:'20/11/2027',situacao:'Em aquisição'},
+{colaborador:'SERGIO HENRIQUE BUSINARI',cnpj:'BRASS',periodoInicio:'20/12/2025',periodoFim:'19/12/2026',inicioGozo:'',fimGozo:'',dias:22.5,limiteGozo:'20/11/2027',situacao:'Em aquisição'},
+{colaborador:'RAPHAEL HENRIQUE DE CARVALHO',cnpj:'BRASS',periodoInicio:'23/01/2025',periodoFim:'22/01/2026',inicioGozo:'',fimGozo:'',dias:30,limiteGozo:'08/01/2027',situacao:'Elegível'},
+{colaborador:'RAPHAEL HENRIQUE DE CARVALHO',cnpj:'BRASS',periodoInicio:'23/01/2026',periodoFim:'22/01/2027',inicioGozo:'',fimGozo:'',dias:20,limiteGozo:'24/12/2027',situacao:'Em aquisição'},
+{colaborador:'LEONARDO GOMES LANDIM DOS SANTOS',cnpj:'BRASS',periodoInicio:'20/03/2025',periodoFim:'19/03/2026',inicioGozo:'',fimGozo:'',dias:30,limiteGozo:'18/02/2027',situacao:'Elegível'},
+{colaborador:'LEONARDO GOMES LANDIM DOS SANTOS',cnpj:'BRASS',periodoInicio:'20/03/2026',periodoFim:'19/03/2027',inicioGozo:'',fimGozo:'',dias:15,limiteGozo:'19/02/2028',situacao:'Em aquisição'},
+{colaborador:'STEFANI MONIZE MONTEIRO',cnpj:'BRASS',periodoInicio:'28/04/2025',periodoFim:'27/04/2026',inicioGozo:'',fimGozo:'',dias:30,limiteGozo:'29/03/2027',situacao:'Elegível'},
+{colaborador:'STEFANI MONIZE MONTEIRO',cnpj:'BRASS',periodoInicio:'28/04/2026',periodoFim:'27/04/2027',inicioGozo:'',fimGozo:'',dias:12.5,limiteGozo:'29/03/2028',situacao:'Em aquisição'},
+{colaborador:'ALESSANDRO LUIZ DA COSTA',cnpj:'BRASS',periodoInicio:'12/08/2026',periodoFim:'11/08/2027',inicioGozo:'',fimGozo:'',dias:2.5,limiteGozo:'13/07/2028',situacao:'Em aquisição'},
+{colaborador:'MATHEUS HENRIQUE GOMES',cnpj:'BRASS',periodoInicio:'08/09/2025',periodoFim:'07/09/2026',inicioGozo:'',fimGozo:'',dias:30,limiteGozo:'09/08/2027',situacao:'Elegível'},
+{colaborador:'MATHEUS HENRIQUE GOMES',cnpj:'BRASS',periodoInicio:'08/09/2026',periodoFim:'07/09/2027',inicioGozo:'',fimGozo:'',dias:0,limiteGozo:'09/08/2028',situacao:'Em aquisição'},
+{colaborador:'GUSTAVO BISPO DOS SANTOS',cnpj:'BRASS',periodoInicio:'09/09/2025',periodoFim:'08/09/2026',inicioGozo:'',fimGozo:'',dias:30,limiteGozo:'10/08/2027',situacao:'Elegível'},
+{colaborador:'GUSTAVO BISPO DOS SANTOS',cnpj:'BRASS',periodoInicio:'09/09/2026',periodoFim:'08/09/2027',inicioGozo:'',fimGozo:'',dias:0,limiteGozo:'10/08/2028',situacao:'Em aquisição'},
+{colaborador:'LARA CRISTINA DA SILVA OLIVEIRA DOS SANTOS',cnpj:'BRASS',periodoInicio:'15/09/2025',periodoFim:'14/09/2026',inicioGozo:'',fimGozo:'',dias:30,limiteGozo:'16/08/2027',situacao:'Elegível'},
+{colaborador:'LARA CRISTINA DA SILVA OLIVEIRA DOS SANTOS',cnpj:'BRASS',periodoInicio:'15/09/2026',periodoFim:'14/09/2027',inicioGozo:'',fimGozo:'',dias:0,limiteGozo:'16/08/2028',situacao:'Em aquisição'},
+{colaborador:'EDUARDO RODRIGUES LIMA',cnpj:'BRASS',periodoInicio:'24/09/2025',periodoFim:'23/09/2026',inicioGozo:'',fimGozo:'',dias:30,limiteGozo:'25/08/2027',situacao:'Elegível'}
+];
+
+/* Importação única dos dados reais oficiais de férias (relatório folha de pagamento AC + Brass, set/2026) */
+function buildFeriasRealSeed() {
+  if (localStorage.getItem('ac_ferias_real_v1')) return;
+  const now = nowStr();
+  const seeded = FERIAS_SEED_REAL.map((s, i) => Object.assign({}, s, {
+    id: i + 1, status: 'Ativo', criadoEm: now, atualizadoEm: now
+  }));
+  saveData('ferias', seeded);
+  logAudit('Férias', 'Atualização', 0, `Importação de dados reais — ${seeded.length} períodos (relatório oficial folha de pagamento, AC+Brass)`);
+  seeded.forEach(r => syncRecordToCloud('ferias', r));
+  localStorage.setItem('ac_ferias_real_v1', '1');
+}
 
 function feriasRowRender(rows) {
   return rows.map(f => {
@@ -3965,6 +4144,993 @@ function atualizarKPIsBeneficios() {
   setText('ben-inclusoes-crud', inclusoesMes);
   setText('ben-exclusoes-crud', exclusoesMes);
 }
+
+/* ═══════════════ MÓDULO: CESTA BÁSICA & CARTÃO VEGAS ═══════════════ */
+const MOD_CESTAVEGAS = {
+  table: 'cesta_vegas',
+  label: 'Cesta Básica / Vegas',
+  onSave: function(){ try{ renderCestaVegas(document.getElementById('cv-mes-sel').value); buildCestaVegasHistorico(); }catch(e){} },
+  fields: [
+    {field:'colaborador', label:'Colaborador', required:true, full:true},
+    {field:'mes', label:'Mês', type:'select', required:true, options:['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro']},
+    {field:'ano', label:'Ano', required:true, placeholder:'2026'},
+    {field:'cnpj', label:'CNPJ', type:'select', options:['AC','BRASS','PJ']},
+    {field:'cesta', label:'Cesta Básica', type:'select', required:true, options:['SIM','NÃO']},
+    {field:'vegas', label:'Cartão Vegas', type:'select', required:true, options:['SIM','NÃO']},
+    {field:'qtdCesta', label:'Qtd Cesta', placeholder:'1'},
+    {field:'observacoes', label:'Observações', type:'textarea', full:true},
+  ]
+};
+
+const MESES_NOME_NUM = {'Janeiro':1,'Fevereiro':2,'Março':3,'Abril':4,'Maio':5,'Junho':6,'Julho':7,'Agosto':8,'Setembro':9,'Outubro':10,'Novembro':11,'Dezembro':12};
+
+const CESTA_VEGAS_SEED = [
+{colaborador:'ADEMIR XAVIER PIRES',mes:'Janeiro',mesNum:1,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ADRIANE AP. TAIOQUI LOPES',mes:'Janeiro',mesNum:1,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ALESSANDRO LUIZ DA COSTA',mes:'Janeiro',mesNum:1,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ANA CLAUDIA TELES MENESES DE SOUZA',mes:'Janeiro',mesNum:1,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ANDERSON CORTINHAS',mes:'Janeiro',mesNum:1,ano:2026,cnpj:'AC',cesta:'NÃO',vegas:'SIM',qtdCesta:0,observacoes:''},
+{colaborador:'ANDRE LUIS DA SILVA BEZERRA',mes:'Janeiro',mesNum:1,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ANDRE TADEU',mes:'Janeiro',mesNum:1,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:'Entregar duas cestas'},
+{colaborador:'ANDREY PAULINO',mes:'Janeiro',mesNum:1,ano:2026,cnpj:'PJ',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ANTONIO CABRERA JUNIOR',mes:'Janeiro',mesNum:1,ano:2026,cnpj:'AC',cesta:'NÃO',vegas:'SIM',qtdCesta:0,observacoes:''},
+{colaborador:'ANTONIO SERGIO DE CAMPOS',mes:'Janeiro',mesNum:1,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'BRUNO DA SILVA NASCIMENTO',mes:'Janeiro',mesNum:1,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'CLEOMAR MUNIZ ALVES',mes:'Janeiro',mesNum:1,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'CLEYTON SANTOS DE SOUZA',mes:'Janeiro',mesNum:1,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'EDSON WILIAN ALVES JUNIOR',mes:'Janeiro',mesNum:1,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'EDUARDO RODRIGUES LIMA',mes:'Janeiro',mesNum:1,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'FRANCIELLE C ASCARI RODRIGUES',mes:'Janeiro',mesNum:1,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'GABRIEL ANTONIO F. GARCIA DOS ANJOS',mes:'Janeiro',mesNum:1,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'GILMAR MARQUES DE BRITO',mes:'Janeiro',mesNum:1,ano:2026,cnpj:'AC',cesta:'NÃO',vegas:'NÃO',qtdCesta:0,observacoes:'ATESTADO MÉDICO 5 DIAS'},
+{colaborador:'GUSTAVO BISPO DOS SANTOS',mes:'Janeiro',mesNum:1,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'GUSTAVO NOGUEIRA ROSSANEZI',mes:'Janeiro',mesNum:1,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JAKELINE CABRERA',mes:'Janeiro',mesNum:1,ano:2026,cnpj:'BRASS',cesta:'NÃO',vegas:'SIM',qtdCesta:0,observacoes:''},
+{colaborador:'JHONATA FERNANDES VIANA',mes:'Janeiro',mesNum:1,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JHONI OLIVEIRA ALVES',mes:'Janeiro',mesNum:1,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JOÃO ANTONIO DE OLIVEIRA',mes:'Janeiro',mesNum:1,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JOÃO VITOR CAMARGO',mes:'Janeiro',mesNum:1,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JOSE ADAUTO DE JESUS',mes:'Janeiro',mesNum:1,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JOSE HENRIQUE DE BRITO',mes:'Janeiro',mesNum:1,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JOSE ITAMAR ESTEVES',mes:'Janeiro',mesNum:1,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JURANDIR DIAS',mes:'Janeiro',mesNum:1,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'LARA CRISTINA DA S. O. SANTOS',mes:'Janeiro',mesNum:1,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'LEONARDO GOMES LANDIM DOS SANTOS',mes:'Janeiro',mesNum:1,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'LEONARDO SOBRINHO DE BARROS',mes:'Janeiro',mesNum:1,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'LUIS FERNANDO SOUZA',mes:'Janeiro',mesNum:1,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'MARCOS ANTONIO MINHOTO MARTINS',mes:'Janeiro',mesNum:1,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'MATHEUS HENRIQUE GOMES',mes:'Janeiro',mesNum:1,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'NICOLAS ALEXANDRE BRAGA DO AMARAL',mes:'Janeiro',mesNum:1,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'PATRICIA APARECIDA MARTINS DE SOUZA',mes:'Janeiro',mesNum:1,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ODAIR JOSE SANTOS OLIVEIRA',mes:'Janeiro',mesNum:1,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'RAFAEL MANTOVANI',mes:'Janeiro',mesNum:1,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'RAPHAEL HENRIQUE DE CARVALHO',mes:'Janeiro',mesNum:1,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'RENATO PEREIRA DA ROCHA',mes:'Janeiro',mesNum:1,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ROMILSON FEBRONIO DA SILVA',mes:'Janeiro',mesNum:1,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ROQUE BATISTA MACHADO',mes:'Janeiro',mesNum:1,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'RYAN HENRIQUE ALMEIDA DE SOUZA',mes:'Janeiro',mesNum:1,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'SERGIO HENRIQUE BUSINARI',mes:'Janeiro',mesNum:1,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'STEFANI MONIZE MOREIRA',mes:'Janeiro',mesNum:1,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'THIAGO RODRIGO MELLO',mes:'Janeiro',mesNum:1,ano:2026,cnpj:'AC',cesta:'NÃO',vegas:'NÃO',qtdCesta:0,observacoes:'AFASTADO DE 26/10/25 A 23/01/26'},
+{colaborador:'TOMY OGATA',mes:'Janeiro',mesNum:1,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'VALDIR BEZERRA GOMES',mes:'Janeiro',mesNum:1,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ZEZINHA',mes:'Janeiro',mesNum:1,ano:2026,cnpj:'BRASS',cesta:'NÃO',vegas:'SIM',qtdCesta:0,observacoes:''},
+{colaborador:'ADEMIR XAVIER PIRES',mes:'Fevereiro',mesNum:2,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ADRIANE AP. TAIOQUI LOPES',mes:'Fevereiro',mesNum:2,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ALESSANDRO LUIZ DA COSTA',mes:'Fevereiro',mesNum:2,ano:2026,cnpj:'BRASS',cesta:'NÃO',vegas:'NÃO',qtdCesta:0,observacoes:'ATESTADO DE 13/01 A 24/01'},
+{colaborador:'ANA CLAUDIA TELES MENESES DE SOUZA',mes:'Fevereiro',mesNum:2,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ANDERSON CORTINHAS',mes:'Fevereiro',mesNum:2,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ANDRE LUIS DA SILVA BEZERRA',mes:'Fevereiro',mesNum:2,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ANDRE TADEU',mes:'Fevereiro',mesNum:2,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ANDREY PAULINO',mes:'Fevereiro',mesNum:2,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ANTONIO CABRERA JUNIOR',mes:'Fevereiro',mesNum:2,ano:2026,cnpj:'AC',cesta:'NÃO',vegas:'SIM',qtdCesta:0,observacoes:''},
+{colaborador:'BRUNO DA SILVA NASCIMENTO',mes:'Fevereiro',mesNum:2,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'CLEOMAR MUNIZ ALVES',mes:'Fevereiro',mesNum:2,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'CLEYTON SANTOS DE SOUZA',mes:'Fevereiro',mesNum:2,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'EDSON WILIAN ALVES JUNIOR',mes:'Fevereiro',mesNum:2,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'EDUARDO RODRIGUES LIMA',mes:'Fevereiro',mesNum:2,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ENZO BISPO ALVES DOS SANTOS',mes:'Fevereiro',mesNum:2,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'NÃO',qtdCesta:1,observacoes:''},
+{colaborador:'FRANCIELLE C ASCARI RODRIGUES',mes:'Fevereiro',mesNum:2,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'GABRIEL ANTONIO F. GARCIA DOS ANJOS',mes:'Fevereiro',mesNum:2,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'GILMAR MARQUES DE BRITO',mes:'Fevereiro',mesNum:2,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'GUSTAVO BISPO DOS SANTOS',mes:'Fevereiro',mesNum:2,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'GUSTAVO NOGUEIRA ROSSANEZI',mes:'Fevereiro',mesNum:2,ano:2026,cnpj:'AC',cesta:'NÃO',vegas:'NÃO',qtdCesta:0,observacoes:'ATESTADO DIA 05/01/26'},
+{colaborador:'JAKELINE CABRERA',mes:'Fevereiro',mesNum:2,ano:2026,cnpj:'BRASS',cesta:'NÃO',vegas:'SIM',qtdCesta:0,observacoes:''},
+{colaborador:'JHONATA FERNANDES VIANA',mes:'Fevereiro',mesNum:2,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JHONI OLIVEIRA ALVES',mes:'Fevereiro',mesNum:2,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JOÃO ANTONIO DE OLIVEIRA',mes:'Fevereiro',mesNum:2,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JOÃO VITOR CAMARGO',mes:'Fevereiro',mesNum:2,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JOSE ADAUTO DE JESUS',mes:'Fevereiro',mesNum:2,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JOSE HENRIQUE DE BRITO NASCIMENTO',mes:'Fevereiro',mesNum:2,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JOSE ITAMAR ESTEVES DE MENDONÇA',mes:'Fevereiro',mesNum:2,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JURANDIR DIAS',mes:'Fevereiro',mesNum:2,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'LARA CRISTINA DA S. O. SANTOS',mes:'Fevereiro',mesNum:2,ano:2026,cnpj:'BRASS',cesta:'NÃO',vegas:'NÃO',qtdCesta:0,observacoes:'ATESTADO DE 12/01/26 A 13/01/26'},
+{colaborador:'LEONARDO GOMES LANDIM DOS SANTOS',mes:'Fevereiro',mesNum:2,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'LEONARDO SOBRINHO DE BARROS',mes:'Fevereiro',mesNum:2,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'LUIS FERNANDO SOUZA DOS SANTOS',mes:'Fevereiro',mesNum:2,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'LUAN SOUZA BRAGA',mes:'Fevereiro',mesNum:2,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'NÃO',qtdCesta:1,observacoes:''},
+{colaborador:'MARCOS ANTONIO MINHOTO MARTINS',mes:'Fevereiro',mesNum:2,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'MATHEUS FRANÇA JORGE',mes:'Fevereiro',mesNum:2,ano:2026,cnpj:'BRASS',cesta:'NÃO',vegas:'NÃO',qtdCesta:0,observacoes:'HORA FALTA NO DIA 23/01 + ATRASO 30/01'},
+{colaborador:'MATHEUS HENRIQUE GOMES',mes:'Fevereiro',mesNum:2,ano:2026,cnpj:'BRASS',cesta:'NÃO',vegas:'NÃO',qtdCesta:0,observacoes:'ATESTADO DE 05/01 A 07/01 + FALTA 08/01'},
+{colaborador:'NICOLAS ALEXANDRE BRAGA DO AMARAL',mes:'Fevereiro',mesNum:2,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ODAIR JOSE SANTOS OLIVEIRA',mes:'Fevereiro',mesNum:2,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'PATRICIA APARECIDA MARTINS DE SOUZA',mes:'Fevereiro',mesNum:2,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'RAFAEL MANTOVANI',mes:'Fevereiro',mesNum:2,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'RAPHAEL HENRIQUE DE CARVALHO',mes:'Fevereiro',mesNum:2,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'RENATO PEREIRA DA ROCHA',mes:'Fevereiro',mesNum:2,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ROMILSON FEBRONIO DA SILVA',mes:'Fevereiro',mesNum:2,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ROQUE BATISTA MACHADO',mes:'Fevereiro',mesNum:2,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'RYAN HENRIQUE ALMEIDA DE SOUZA',mes:'Fevereiro',mesNum:2,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'SERGIO HENRIQUE BUSINARI',mes:'Fevereiro',mesNum:2,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'STEFANI MONIZE MOREIRA',mes:'Fevereiro',mesNum:2,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'THIAGO RODRIGO MELLO',mes:'Fevereiro',mesNum:2,ano:2026,cnpj:'AC',cesta:'NÃO',vegas:'NÃO',qtdCesta:0,observacoes:'AFASTADO ATÉ 23/01'},
+{colaborador:'TOMY OGATA',mes:'Fevereiro',mesNum:2,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'VALDIR BEZERRA GOMES',mes:'Fevereiro',mesNum:2,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ZEZINHA',mes:'Fevereiro',mesNum:2,ano:2026,cnpj:'BRASS',cesta:'NÃO',vegas:'SIM',qtdCesta:0,observacoes:''},
+{colaborador:'ADEMIR XAVIER PIRES',mes:'Março',mesNum:3,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ADRIANE AP. TAIOQUI LOPES',mes:'Março',mesNum:3,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ALESSANDRO LUIZ DA COSTA',mes:'Março',mesNum:3,ano:2026,cnpj:'BRASS',cesta:'NÃO',vegas:'NÃO',qtdCesta:0,observacoes:'AFASTADO'},
+{colaborador:'ANA CLAUDIA TELES MENESES DE SOUZA',mes:'Março',mesNum:3,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ANDERSON CORTINHAS',mes:'Março',mesNum:3,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ANDRE LUIS DA SILVA BEZERRA',mes:'Março',mesNum:3,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ANDRE TADEU',mes:'Março',mesNum:3,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ANDREY PAULINO',mes:'Março',mesNum:3,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ANTONIO CABRERA JUNIOR',mes:'Março',mesNum:3,ano:2026,cnpj:'AC',cesta:'NÃO',vegas:'SIM',qtdCesta:0,observacoes:''},
+{colaborador:'BRUNO DA SILVA NASCIMENTO',mes:'Março',mesNum:3,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'CLEOMAR MUNIZ ALVES',mes:'Março',mesNum:3,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'CLEYTON SANTOS DE SOUZA',mes:'Março',mesNum:3,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'EDSON WILIAN ALVES JUNIOR',mes:'Março',mesNum:3,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'EDUARDO RODRIGUES LIMA',mes:'Março',mesNum:3,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ENZO BISPO ALVES DOS SANTOS',mes:'Março',mesNum:3,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'FILIPE QUAGLIATTO VIDOTTO',mes:'Março',mesNum:3,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'FRANCIELLE C ASCARI RODRIGUES',mes:'Março',mesNum:3,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'GABRIEL ANTONIO F. GARCIA DOS ANJOS',mes:'Março',mesNum:3,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'GILMAR MARQUES DE BRITO',mes:'Março',mesNum:3,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'GUSTAVO BISPO DOS SANTOS',mes:'Março',mesNum:3,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'GUSTAVO NOGUEIRA ROSSANEZI',mes:'Março',mesNum:3,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JAKELINE CABRERA',mes:'Março',mesNum:3,ano:2026,cnpj:'BRASS',cesta:'NÃO',vegas:'SIM',qtdCesta:0,observacoes:''},
+{colaborador:'JHONI OLIVEIRA ALVES',mes:'Março',mesNum:3,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JOÃO ANTONIO DE OLIVEIRA',mes:'Março',mesNum:3,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JOÃO VITOR CAMARGO',mes:'Março',mesNum:3,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JOSE ADAUTO DE JESUS',mes:'Março',mesNum:3,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JOSE HENRIQUE DE BRITO NASCIMENTO',mes:'Março',mesNum:3,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JOSE ITAMAR ESTEVES DE MENDONÇA',mes:'Março',mesNum:3,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JURANDIR DIAS',mes:'Março',mesNum:3,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'LARA CRISTINA DA S. O. SANTOS',mes:'Março',mesNum:3,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'LEONARDO GOMES LANDIM DOS SANTOS',mes:'Março',mesNum:3,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'LEONARDO PEREIRA GOMES',mes:'Março',mesNum:3,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'NÃO',qtdCesta:1,observacoes:''},
+{colaborador:'LEONARDO SOBRINHO DE BARROS',mes:'Março',mesNum:3,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'LUIS FERNANDO SOUZA DOS SANTOS',mes:'Março',mesNum:3,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'LUAN SOUZA BRAGA',mes:'Março',mesNum:3,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'NÃO',qtdCesta:1,observacoes:''},
+{colaborador:'MARCOS ANTONIO MINHOTO MARTINS',mes:'Março',mesNum:3,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'MATHEUS FRANÇA JORGE',mes:'Março',mesNum:3,ano:2026,cnpj:'BRASS',cesta:'NÃO',vegas:'NÃO',qtdCesta:0,observacoes:'ATESTADO 26/02 A 28/02 - NÃO COMPENSOU'},
+{colaborador:'MATHEUS HENRIQUE GOMES',mes:'Março',mesNum:3,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'NICOLAS ALEXANDRE BRAGA DO AMARAL',mes:'Março',mesNum:3,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'NICOLLY VASSALO IGNACIO',mes:'Março',mesNum:3,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'NÃO',qtdCesta:1,observacoes:''},
+{colaborador:'ODAIR JOSE SANTOS OLIVEIRA',mes:'Março',mesNum:3,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'PATRICIA APARECIDA MARTINS DE SOUZA',mes:'Março',mesNum:3,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'RAFAEL MANTOVANI',mes:'Março',mesNum:3,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'RAPHAEL HENRIQUE DE CARVALHO',mes:'Março',mesNum:3,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'RENATO PEREIRA DA ROCHA',mes:'Março',mesNum:3,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ROMILSON FEBRONIO DA SILVA',mes:'Março',mesNum:3,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ROQUE BATISTA MACHADO',mes:'Março',mesNum:3,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'RYAN HENRIQUE ALMEIDA DE SOUZA',mes:'Março',mesNum:3,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'SERGIO HENRIQUE BUSINARI',mes:'Março',mesNum:3,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'STEFANI MONIZE MOREIRA',mes:'Março',mesNum:3,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'THIAGO RODRIGO MELLO',mes:'Março',mesNum:3,ano:2026,cnpj:'AC',cesta:'NÃO',vegas:'NÃO',qtdCesta:0,observacoes:'AFASTADO'},
+{colaborador:'TOMY OGATA',mes:'Março',mesNum:3,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'VALDIR BEZERRA GOMES',mes:'Março',mesNum:3,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ZEZINHA',mes:'Março',mesNum:3,ano:2026,cnpj:'BRASS',cesta:'NÃO',vegas:'SIM',qtdCesta:0,observacoes:''},
+{colaborador:'ABNER MARINS PRUDENCIO',mes:'Abril',mesNum:4,ano:2026,cnpj:'AC',cesta:'NÃO',vegas:'NÃO',qtdCesta:0,observacoes:'FALTAS 20/03, 23/03, 24/03 e 25/03'},
+{colaborador:'ADEMIR XAVIER PIRES',mes:'Abril',mesNum:4,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ADRIANE AP. TAIOQUI LOPES',mes:'Abril',mesNum:4,ano:2026,cnpj:'AC',cesta:'NÃO',vegas:'NÃO',qtdCesta:0,observacoes:'ATESTADO DIA 11/03 A 20/03'},
+{colaborador:'ALESSANDRO LUIZ DA COSTA',mes:'Abril',mesNum:4,ano:2026,cnpj:'BRASS',cesta:'NÃO',vegas:'NÃO',qtdCesta:0,observacoes:'AFASTADO ATÉ 16/03/26 - ATESTADO 27/03'},
+{colaborador:'ANA CLAUDIA TELES MENESES DE SOUZA',mes:'Abril',mesNum:4,ano:2026,cnpj:'BRASS',cesta:'NÃO',vegas:'SIM',qtdCesta:0,observacoes:'ATESTADO DIA 31/03'},
+{colaborador:'ANDERSON CORTINHAS',mes:'Abril',mesNum:4,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ANDRE LUIS DA SILVA BEZERRA',mes:'Abril',mesNum:4,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ANDREY PAULINO',mes:'Abril',mesNum:4,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ANTONIO CABRERA JUNIOR',mes:'Abril',mesNum:4,ano:2026,cnpj:'AC',cesta:'NÃO',vegas:'SIM',qtdCesta:0,observacoes:''},
+{colaborador:'BRUNO DA SILVA NASCIMENTO',mes:'Abril',mesNum:4,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'CLEOMAR MUNIZ ALVES',mes:'Abril',mesNum:4,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'CLEYTON SANTOS DE SOUZA',mes:'Abril',mesNum:4,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'EDSON WILIAN ALVES JUNIOR',mes:'Abril',mesNum:4,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'EDUARDO RODRIGUES LIMA',mes:'Abril',mesNum:4,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ENZO BISPO ALVES DOS SANTOS',mes:'Abril',mesNum:4,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'FRANCIELLE C ASCARI RODRIGUES',mes:'Abril',mesNum:4,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'GABRIEL ANTONIO F. GARCIA DOS ANJOS',mes:'Abril',mesNum:4,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'GILMAR MARQUES DE BRITO',mes:'Abril',mesNum:4,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'GUSTAVO BISPO DOS SANTOS',mes:'Abril',mesNum:4,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'GUSTAVO NOGUEIRA ROSSANEZI',mes:'Abril',mesNum:4,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JAKELINE CABRERA',mes:'Abril',mesNum:4,ano:2026,cnpj:'BRASS',cesta:'NÃO',vegas:'SIM',qtdCesta:0,observacoes:''},
+{colaborador:'JHONI OLIVEIRA ALVES',mes:'Abril',mesNum:4,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JOÃO ANTONIO DE OLIVEIRA',mes:'Abril',mesNum:4,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JOÃO VITOR CAMARGO',mes:'Abril',mesNum:4,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JOSE ADAUTO DE JESUS',mes:'Abril',mesNum:4,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JOSE HENRIQUE DE BRITO NASCIMENTO',mes:'Abril',mesNum:4,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JOSE ITAMAR ESTEVES DE MENDONÇA',mes:'Abril',mesNum:4,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JURANDIR DIAS',mes:'Abril',mesNum:4,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'LARA CRISTINA DA S. O. SANTOS',mes:'Abril',mesNum:4,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'LEONARDO GOMES LANDIM DOS SANTOS',mes:'Abril',mesNum:4,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'LEONARDO PEREIRA GOMES',mes:'Abril',mesNum:4,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'NÃO',qtdCesta:1,observacoes:''},
+{colaborador:'LEONARDO SOBRINHO DE BARROS',mes:'Abril',mesNum:4,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'LUIS FERNANDO SOUZA DOS SANTOS',mes:'Abril',mesNum:4,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'LUAN SOUZA BRAGA',mes:'Abril',mesNum:4,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'NÃO',qtdCesta:1,observacoes:''},
+{colaborador:'MARCOS ANTONIO MINHOTO MARTINS',mes:'Abril',mesNum:4,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'MATHEUS FRANÇA JORGE',mes:'Abril',mesNum:4,ano:2026,cnpj:'BRASS',cesta:'NÃO',vegas:'NÃO',qtdCesta:0,observacoes:'ATESTADO DIA 05/03 e 06/03'},
+{colaborador:'MATHEUS HENRIQUE GOMES',mes:'Abril',mesNum:4,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'NICOLAS ALEXANDRE BRAGA DO AMARAL',mes:'Abril',mesNum:4,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'NICOLLY VASSALO IGNACIO',mes:'Abril',mesNum:4,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'NÃO',qtdCesta:1,observacoes:''},
+{colaborador:'ODAIR JOSE SANTOS OLIVEIRA',mes:'Abril',mesNum:4,ano:2026,cnpj:'AC',cesta:'NÃO',vegas:'NÃO',qtdCesta:0,observacoes:'ATESTADO DIA 02/03 A 11/03 E 27/03/26'},
+{colaborador:'PATRICIA APARECIDA MARTINS DE SOUZA',mes:'Abril',mesNum:4,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'RAFAEL MANTOVANI',mes:'Abril',mesNum:4,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'RAPHAEL HENRIQUE DE CARVALHO',mes:'Abril',mesNum:4,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'RENATO PEREIRA DA ROCHA',mes:'Abril',mesNum:4,ano:2026,cnpj:'AC',cesta:'NÃO',vegas:'NÃO',qtdCesta:0,observacoes:'ATESTADO DIA 27/03/2026'},
+{colaborador:'ROMILSON FEBRONIO DA SILVA',mes:'Abril',mesNum:4,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ROQUE BATISTA MACHADO',mes:'Abril',mesNum:4,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'RYAN HENRIQUE ALMEIDA DE SOUZA',mes:'Abril',mesNum:4,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'SERGIO HENRIQUE BUSINARI',mes:'Abril',mesNum:4,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'STEFANI MONIZE MOREIRA',mes:'Abril',mesNum:4,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'THIAGO RODRIGO MELLO',mes:'Abril',mesNum:4,ano:2026,cnpj:'AC',cesta:'NÃO',vegas:'NÃO',qtdCesta:0,observacoes:'AFASTADO'},
+{colaborador:'TOMY OGATA',mes:'Abril',mesNum:4,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'VALDIR BEZERRA GOMES',mes:'Abril',mesNum:4,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ZEZINHA',mes:'Abril',mesNum:4,ano:2026,cnpj:'BRASS',cesta:'NÃO',vegas:'SIM',qtdCesta:0,observacoes:''},
+{colaborador:'ABNER MARINS PRUDENCIO',mes:'Maio',mesNum:5,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'NÃO',qtdCesta:1,observacoes:''},
+{colaborador:'ADEMIR XAVIER PIRES',mes:'Maio',mesNum:5,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ADRIANE AP. TAIOQUI LOPES',mes:'Maio',mesNum:5,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ALESSANDRO LUIZ DA COSTA',mes:'Maio',mesNum:5,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ANA CLAUDIA TELES MENESES DE SOUZA',mes:'Maio',mesNum:5,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ANDERSON CORTINHAS',mes:'Maio',mesNum:5,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ANDRE LUIS DA SILVA BEZERRA',mes:'Maio',mesNum:5,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ANDREY PAULINO',mes:'Maio',mesNum:5,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ANTONIO CABRERA JUNIOR',mes:'Maio',mesNum:5,ano:2026,cnpj:'AC',cesta:'NÃO',vegas:'SIM',qtdCesta:0,observacoes:''},
+{colaborador:'BRUNO DA SILVA NASCIMENTO',mes:'Maio',mesNum:5,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'CLEOMAR MUNIZ ALVES',mes:'Maio',mesNum:5,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'CLEYTON SANTOS DE SOUZA',mes:'Maio',mesNum:5,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'EDSON WILIAN ALVES JUNIOR',mes:'Maio',mesNum:5,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'EDUARDO RODRIGUES LIMA',mes:'Maio',mesNum:5,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'FRANCIELLE C ASCARI RODRIGUES',mes:'Maio',mesNum:5,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'GABRIEL ANTONIO F. GARCIA DOS ANJOS',mes:'Maio',mesNum:5,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'GILMAR MARQUES DE BRITO',mes:'Maio',mesNum:5,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'GUSTAVO BISPO DOS SANTOS',mes:'Maio',mesNum:5,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'GUSTAVO NOGUEIRA ROSSANEZI',mes:'Maio',mesNum:5,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JAKELINE CABRERA',mes:'Maio',mesNum:5,ano:2026,cnpj:'BRASS',cesta:'NÃO',vegas:'SIM',qtdCesta:0,observacoes:''},
+{colaborador:'JHONI OLIVEIRA ALVES',mes:'Maio',mesNum:5,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JOÃO ANTONIO DE OLIVEIRA',mes:'Maio',mesNum:5,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JOÃO VITOR CAMARGO',mes:'Maio',mesNum:5,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JOSE ADAUTO DE JESUS',mes:'Maio',mesNum:5,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JOSE HENRIQUE DE BRITO NASCIMENTO',mes:'Maio',mesNum:5,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JOSE ITAMAR ESTEVES DE MENDONÇA',mes:'Maio',mesNum:5,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JURANDIR DIAS',mes:'Maio',mesNum:5,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'LARA CRISTINA DA S. O. SANTOS',mes:'Maio',mesNum:5,ano:2026,cnpj:'BRASS',cesta:'NÃO',vegas:'NÃO',qtdCesta:0,observacoes:'ATESTADO 01/04 A 03/04 - NÃO VAI COMPENSAR'},
+{colaborador:'LEONARDO GOMES LANDIM DOS SANTOS',mes:'Maio',mesNum:5,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'LEONARDO SOBRINHO DE BARROS',mes:'Maio',mesNum:5,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'LUIS FERNANDO SOUZA DOS SANTOS',mes:'Maio',mesNum:5,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'LUAN SOUZA BRAGA',mes:'Maio',mesNum:5,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'MARCOS ANTONIO MINHOTO MARTINS',mes:'Maio',mesNum:5,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'MATHEUS FRANÇA JORGE',mes:'Maio',mesNum:5,ano:2026,cnpj:'BRASS',cesta:'NÃO',vegas:'NÃO',qtdCesta:0,observacoes:'ATESTADO 16/04 E 17/04'},
+{colaborador:'MATHEUS HENRIQUE GOMES',mes:'Maio',mesNum:5,ano:2026,cnpj:'BRASS',cesta:'NÃO',vegas:'NÃO',qtdCesta:0,observacoes:'ATESTADOS DE 06/04 A 04/04 - DE 13/04 A 18/04'},
+{colaborador:'NICOLAS ALEXANDRE BRAGA DO AMARAL',mes:'Maio',mesNum:5,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'NICOLLY VASSALO IGNACIO',mes:'Maio',mesNum:5,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'NÃO',qtdCesta:1,observacoes:''},
+{colaborador:'ODAIR JOSE SANTOS OLIVEIRA',mes:'Maio',mesNum:5,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'PATRICIA APARECIDA MARTINS DE SOUZA',mes:'Maio',mesNum:5,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'RAFAEL MANTOVANI',mes:'Maio',mesNum:5,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'RAPHAEL HENRIQUE DE CARVALHO',mes:'Maio',mesNum:5,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'RENATO PEREIRA DA ROCHA',mes:'Maio',mesNum:5,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ROQUE BATISTA MACHADO',mes:'Maio',mesNum:5,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'RYAN HENRIQUE ALMEIDA DE SOUZA',mes:'Maio',mesNum:5,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'SERGIO HENRIQUE BUSINARI',mes:'Maio',mesNum:5,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'STEFANI MONIZE MOREIRA',mes:'Maio',mesNum:5,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'THIAGO RODRIGO MELLO',mes:'Maio',mesNum:5,ano:2026,cnpj:'AC',cesta:'NÃO',vegas:'NÃO',qtdCesta:0,observacoes:'AFASTADO ATÉ 31.12.26'},
+{colaborador:'TOMY OGATA',mes:'Maio',mesNum:5,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ZEZINHA',mes:'Maio',mesNum:5,ano:2026,cnpj:'BRASS',cesta:'NÃO',vegas:'SIM',qtdCesta:0,observacoes:''},
+{colaborador:'ABNER MARINS PRUDENCIO',mes:'Junho',mesNum:6,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'NÃO',qtdCesta:1,observacoes:''},
+{colaborador:'ADEMIR XAVIER PIRES',mes:'Junho',mesNum:6,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ADRIANE AP. TAIOQUI LOPES',mes:'Junho',mesNum:6,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ALESSANDRO LUIZ DA COSTA',mes:'Junho',mesNum:6,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ANA CLAUDIA TELES MENESES DE SOUZA',mes:'Junho',mesNum:6,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ANDERSON CORTINHAS',mes:'Junho',mesNum:6,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ANDRE LUIS DA SILVA BEZERRA',mes:'Junho',mesNum:6,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ANDREY PAULINO',mes:'Junho',mesNum:6,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ANTONIO CABRERA JUNIOR',mes:'Junho',mesNum:6,ano:2026,cnpj:'AC',cesta:'NÃO',vegas:'SIM',qtdCesta:0,observacoes:''},
+{colaborador:'BRUNO DA SILVA NASCIMENTO',mes:'Junho',mesNum:6,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'CLEOMAR MUNIZ ALVES',mes:'Junho',mesNum:6,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'CLEYTON SANTOS DE SOUZA',mes:'Junho',mesNum:6,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'EDSON WILIAN ALVES JUNIOR',mes:'Junho',mesNum:6,ano:2026,cnpj:'AC',cesta:'NÃO',vegas:'NÃO',qtdCesta:0,observacoes:''},
+{colaborador:'EDUARDO RODRIGUES LIMA',mes:'Junho',mesNum:6,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'FRANCIELLE C ASCARI RODRIGUES',mes:'Junho',mesNum:6,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'GABRIEL ANTONIO F. GARCIA DOS ANJOS',mes:'Junho',mesNum:6,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'GABRIEL HENRIQUE BARCELO MARTINS',mes:'Junho',mesNum:6,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'NÃO',qtdCesta:1,observacoes:''},
+{colaborador:'GILMAR MARQUES DE BRITO',mes:'Junho',mesNum:6,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'GUSTAVO BISPO DOS SANTOS',mes:'Junho',mesNum:6,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'GUSTAVO NOGUEIRA ROSSANEZI',mes:'Junho',mesNum:6,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JAKELINE CABRERA',mes:'Junho',mesNum:6,ano:2026,cnpj:'BRASS',cesta:'NÃO',vegas:'SIM',qtdCesta:0,observacoes:''},
+{colaborador:'JHONI OLIVEIRA ALVES',mes:'Junho',mesNum:6,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JOÃO ANTONIO DE OLIVEIRA',mes:'Junho',mesNum:6,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JOÃO VITOR CAMARGO',mes:'Junho',mesNum:6,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JOSE ADAUTO DE JESUS',mes:'Junho',mesNum:6,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JOSE HENRIQUE DE BRITO NASCIMENTO',mes:'Junho',mesNum:6,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JOSE ITAMAR ESTEVES DE MENDONÇA',mes:'Junho',mesNum:6,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JURANDIR DIAS',mes:'Junho',mesNum:6,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'LARA CRISTINA DA S. O. SANTOS',mes:'Junho',mesNum:6,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'LEONARDO GOMES LANDIM DOS SANTOS',mes:'Junho',mesNum:6,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'LEONARDO SOBRINHO DE BARROS',mes:'Junho',mesNum:6,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'LUIS FERNANDO SOUZA DOS SANTOS',mes:'Junho',mesNum:6,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'MARCOS ANTONIO MINHOTO MARTINS',mes:'Junho',mesNum:6,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'MATHEUS FRANÇA JORGE',mes:'Junho',mesNum:6,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'MATHEUS HENRIQUE GOMES',mes:'Junho',mesNum:6,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'NICOLAS ALEXANDRE BRAGA DO AMARAL',mes:'Junho',mesNum:6,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'NICOLLY VASSALO IGNACIO',mes:'Junho',mesNum:6,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ODAIR JOSE SANTOS OLIVEIRA',mes:'Junho',mesNum:6,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'PATRICIA APARECIDA MARTINS DE SOUZA',mes:'Junho',mesNum:6,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'RAFAEL MANTOVANI',mes:'Junho',mesNum:6,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'RAPHAEL HENRIQUE DE CARVALHO',mes:'Junho',mesNum:6,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'RENATO PEREIRA DA ROCHA',mes:'Junho',mesNum:6,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ROQUE BATISTA MACHADO',mes:'Junho',mesNum:6,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'RYAN HENRIQUE ALMEIDA DE SOUZA',mes:'Junho',mesNum:6,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'SERGIO HENRIQUE BUSINARI',mes:'Junho',mesNum:6,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'STEFANI MONIZE MOREIRA',mes:'Junho',mesNum:6,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'THIAGO RODRIGO MELLO',mes:'Junho',mesNum:6,ano:2026,cnpj:'AC',cesta:'NÃO',vegas:'NÃO',qtdCesta:0,observacoes:''},
+{colaborador:'TOMY OGATA',mes:'Junho',mesNum:6,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'VICTOR MARQUES DUARTE',mes:'Junho',mesNum:6,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'WALDEMAR LIBONI ALCALA',mes:'Junho',mesNum:6,ano:2026,cnpj:'AC',cesta:'NÃO',vegas:'NÃO',qtdCesta:0,observacoes:'INICIO DIA 25/05'},
+{colaborador:'ZEZINHA',mes:'Junho',mesNum:6,ano:2026,cnpj:'BRASS',cesta:'NÃO',vegas:'SIM',qtdCesta:0,observacoes:''},
+{colaborador:'ABNER MARINS PRUDENCIO',mes:'Julho',mesNum:7,ano:2026,cnpj:'AC',cesta:'NÃO',vegas:'NÃO',qtdCesta:0,observacoes:'ATESTADO, SEM COMPENSAÇÃO'},
+{colaborador:'ADEMIR XAVIER PIRES',mes:'Julho',mesNum:7,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ADRIANE AP. TAIOQUI LOPES',mes:'Julho',mesNum:7,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ALESSANDRO LUIZ DA COSTA',mes:'Julho',mesNum:7,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ANA CLAUDIA TELES MENESES DE SOUZA',mes:'Julho',mesNum:7,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ANDERSON CORTINHAS',mes:'Julho',mesNum:7,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ANDRE LUIS DA SILVA BEZERRA',mes:'Julho',mesNum:7,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ANDREY PAULINO',mes:'Julho',mesNum:7,ano:2026,cnpj:'AC',cesta:'NÃO',vegas:'NÃO',qtdCesta:0,observacoes:'FALTOU MEIO PERIODO 08/06/26'},
+{colaborador:'ANTONIO CABRERA JUNIOR',mes:'Julho',mesNum:7,ano:2026,cnpj:'AC',cesta:'NÃO',vegas:'SIM',qtdCesta:0,observacoes:''},
+{colaborador:'BRUNO DA SILVA NASCIMENTO',mes:'Julho',mesNum:7,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'CLEOMAR MUNIZ ALVES',mes:'Julho',mesNum:7,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'CLEYTON SANTOS DE SOUZA',mes:'Julho',mesNum:7,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'EDUARDO RODRIGUES LIMA',mes:'Julho',mesNum:7,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'EDVALDO BARBOSA DOS SANTOS',mes:'Julho',mesNum:7,ano:2026,cnpj:'AC',cesta:'NÃO',vegas:'NÃO',qtdCesta:0,observacoes:'INICIO EM 29/06'},
+{colaborador:'FRANCIELLE CRISTINA ASCARI RODRIGUES',mes:'Julho',mesNum:7,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'GABRIEL ANTONIO F. GARCIA DOS ANJOS',mes:'Julho',mesNum:7,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'GABRIEL HENRIQUE BARCELO MARTINS',mes:'Julho',mesNum:7,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'NÃO',qtdCesta:1,observacoes:''},
+{colaborador:'GILMAR MARQUES DE BRITO',mes:'Julho',mesNum:7,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'GUSTAVO BISPO DOS SANTOS',mes:'Julho',mesNum:7,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'GUSTAVO NOGUEIRA ROSSANEZI',mes:'Julho',mesNum:7,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JAKELINE CABRERA',mes:'Julho',mesNum:7,ano:2026,cnpj:'BRASS',cesta:'NÃO',vegas:'SIM',qtdCesta:0,observacoes:''},
+{colaborador:'JHONI OLIVEIRA ALVES',mes:'Julho',mesNum:7,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JOÃO ANTONIO DE OLIVEIRA',mes:'Julho',mesNum:7,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JOÃO VITOR CAMARGO',mes:'Julho',mesNum:7,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JOSE ADAUTO DE JESUS',mes:'Julho',mesNum:7,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JOSE HENRIQUE DE BRITO NASCIMENTO',mes:'Julho',mesNum:7,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JOSE ITAMAR ESTEVES DE MENDONÇA',mes:'Julho',mesNum:7,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JURANDIR DIAS',mes:'Julho',mesNum:7,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'LARA CRISTINA DA S. O. SANTOS',mes:'Julho',mesNum:7,ano:2026,cnpj:'BRASS',cesta:'NÃO',vegas:'NÃO',qtdCesta:0,observacoes:'ATESTADO, SEM COMPENSAÇÃO'},
+{colaborador:'LEONARDO GOMES LANDIM DOS SANTOS',mes:'Julho',mesNum:7,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'LEONARDO SOBRINHO DE BARROS',mes:'Julho',mesNum:7,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'LUIS CARLOS DE BRITTO',mes:'Julho',mesNum:7,ano:2026,cnpj:'AC',cesta:'NÃO',vegas:'NÃO',qtdCesta:0,observacoes:'INICIO EM 29/06'},
+{colaborador:'LUIS FERNANDO SOUZA DOS SANTOS',mes:'Julho',mesNum:7,ano:2026,cnpj:'AC',cesta:'NÃO',vegas:'NÃO',qtdCesta:0,observacoes:'ATESTADO SEM COMPENSAÇÃO'},
+{colaborador:'MARCOS ANTONIO MINHOTO MARTINS',mes:'Julho',mesNum:7,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'MATHEUS FRANÇA JORGE',mes:'Julho',mesNum:7,ano:2026,cnpj:'AC',cesta:'NÃO',vegas:'NÃO',qtdCesta:0,observacoes:'ATESTADO E FALTAS, SEM COMPENSAÇÃO'},
+{colaborador:'MATHEUS HENRIQUE GOMES',mes:'Julho',mesNum:7,ano:2026,cnpj:'BRASS',cesta:'NÃO',vegas:'NÃO',qtdCesta:0,observacoes:'ATESTADO SEM COMPENSAÇÃO'},
+{colaborador:'NICOLAS ALEXANDRE BRAGA DO AMARAL',mes:'Julho',mesNum:7,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'NICOLLY VASSALO IGNACIO',mes:'Julho',mesNum:7,ano:2026,cnpj:'AC',cesta:'NÃO',vegas:'NÃO',qtdCesta:0,observacoes:'ATESTADO E FALTAS, SEM COMPENSAÇÃO'},
+{colaborador:'ODAIR JOSE SANTOS OLIVEIRA',mes:'Julho',mesNum:7,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'PATRICIA APARECIDA MARTINS DE SOUZA',mes:'Julho',mesNum:7,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'RAFAEL MANTOVANI',mes:'Julho',mesNum:7,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'RAPHAEL HENRIQUE DE CARVALHO',mes:'Julho',mesNum:7,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'REBECCA CAMPOS DE ALMEIDA',mes:'Julho',mesNum:7,ano:2026,cnpj:'AC',cesta:'NÃO',vegas:'NÃO',qtdCesta:0,observacoes:'INICIO EM 22/06'},
+{colaborador:'RENATO PEREIRA DA ROCHA',mes:'Julho',mesNum:7,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ROQUE BATISTA MACHADO',mes:'Julho',mesNum:7,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'RYAN HENRIQUE ALMEIDA DE SOUZA',mes:'Julho',mesNum:7,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'SERGIO HENRIQUE BUSINARI',mes:'Julho',mesNum:7,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'STEFANI MONIZE MOREIRA',mes:'Julho',mesNum:7,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'THIAGO RODRIGO MELLO',mes:'Julho',mesNum:7,ano:2026,cnpj:'AC',cesta:'NÃO',vegas:'NÃO',qtdCesta:0,observacoes:'AFASTADO PELO INSS'},
+{colaborador:'TOMY OGATA',mes:'Julho',mesNum:7,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'VICTOR MARQUES DUARTE',mes:'Julho',mesNum:7,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'WALDEMAR LIBONI ALCALA',mes:'Julho',mesNum:7,ano:2026,cnpj:'AC',cesta:'NÃO',vegas:'SIM',qtdCesta:0,observacoes:'ACORDO - NÃO TEM CESTA BASICA FISICA'},
+{colaborador:'ZEZINHA',mes:'Julho',mesNum:7,ano:2026,cnpj:'BRASS',cesta:'NÃO',vegas:'SIM',qtdCesta:0,observacoes:''},
+{colaborador:'ABNER MARINS PRUDENCIO',mes:'Agosto',mesNum:8,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ADEMIR XAVIER PIRES',mes:'Agosto',mesNum:8,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ADRIANE AP. TAIOQUI LOPES',mes:'Agosto',mesNum:8,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ALESSANDRO LUIZ DA COSTA',mes:'Agosto',mesNum:8,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ANA CLAUDIA TELES MENESES DE SOUZA',mes:'Agosto',mesNum:8,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ANDERSON CORTINHAS',mes:'Agosto',mesNum:8,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ANDRE LUIS DA SILVA BEZERRA',mes:'Agosto',mesNum:8,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ANDREY PAULINO',mes:'Agosto',mesNum:8,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ANTONIO CABRERA JUNIOR',mes:'Agosto',mesNum:8,ano:2026,cnpj:'AC',cesta:'NÃO',vegas:'SIM',qtdCesta:0,observacoes:'NÃO TEM CESTA BASICA FISICA'},
+{colaborador:'BRUNO DA SILVA NASCIMENTO',mes:'Agosto',mesNum:8,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'CLEOMAR MUNIZ ALVES',mes:'Agosto',mesNum:8,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'CLEYTON SANTOS DE SOUZA',mes:'Agosto',mesNum:8,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'EDSON DECHEN',mes:'Agosto',mesNum:8,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'NÃO',qtdCesta:1,observacoes:''},
+{colaborador:'EDUARDO RODRIGUES LIMA',mes:'Agosto',mesNum:8,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'EDVALDO BARBOSA DOS SANTOS',mes:'Agosto',mesNum:8,ano:2026,cnpj:'AC',cesta:'NÃO',vegas:'NÃO',qtdCesta:0,observacoes:'FALTA NÃO COMPENSADA 10/07 e 22/07'},
+{colaborador:'FRANCIELLE CRISTINA ASCARI RODRIGUES',mes:'Agosto',mesNum:8,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'GABRIEL ANTONIO F. GARCIA DOS ANJOS',mes:'Agosto',mesNum:8,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'GABRIEL HENRIQUE BARCELO MARTINS',mes:'Agosto',mesNum:8,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'NÃO',qtdCesta:1,observacoes:''},
+{colaborador:'GILMAR MARQUES DE BRITO',mes:'Agosto',mesNum:8,ano:2026,cnpj:'AC',cesta:'NÃO',vegas:'NÃO',qtdCesta:0,observacoes:'ATESTADO 24/07 A 07/08 - 15 DIAS'},
+{colaborador:'GUSTAVO BISPO DOS SANTOS',mes:'Agosto',mesNum:8,ano:2026,cnpj:'BRASS',cesta:'NÃO',vegas:'NÃO',qtdCesta:0,observacoes:'FALTA NÃO COMPENSADA 06/07'},
+{colaborador:'GUSTAVO NOGUEIRA ROSSANEZI',mes:'Agosto',mesNum:8,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JAKELINE CABRERA',mes:'Agosto',mesNum:8,ano:2026,cnpj:'BRASS',cesta:'NÃO',vegas:'SIM',qtdCesta:0,observacoes:'NÃO TEM CESTA BASICA FISICA'},
+{colaborador:'JHONI OLIVEIRA ALVES',mes:'Agosto',mesNum:8,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JOÃO ANTONIO DE OLIVEIRA',mes:'Agosto',mesNum:8,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JOAO GABRIEL ROBIS DE ALMEIDA',mes:'Agosto',mesNum:8,ano:2026,cnpj:'AC',cesta:'NÃO',vegas:'NÃO',qtdCesta:0,observacoes:''},
+{colaborador:'JOÃO VITOR CAMARGO',mes:'Agosto',mesNum:8,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JOSE ADAUTO DE JESUS',mes:'Agosto',mesNum:8,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JOSE HENRIQUE DE BRITO NASCIMENTO',mes:'Agosto',mesNum:8,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JOSE ITAMAR ESTEVES DE MENDONÇA',mes:'Agosto',mesNum:8,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JURANDIR DIAS',mes:'Agosto',mesNum:8,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'LARA CRISTINA DA S. O. SANTOS',mes:'Agosto',mesNum:8,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'LEONARDO GOMES LANDIM DOS SANTOS',mes:'Agosto',mesNum:8,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'LEONARDO SOBRINHO DE BARROS',mes:'Agosto',mesNum:8,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'LUIS CARLOS DE BRITTO',mes:'Agosto',mesNum:8,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'NÃO',qtdCesta:1,observacoes:''},
+{colaborador:'LUIS FERNANDO SOUZA DOS SANTOS',mes:'Agosto',mesNum:8,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'MARCOS ANTONIO MINHOTO MARTINS',mes:'Agosto',mesNum:8,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'MATHEUS FRANÇA JORGE',mes:'Agosto',mesNum:8,ano:2026,cnpj:'AC',cesta:'NÃO',vegas:'NÃO',qtdCesta:0,observacoes:'DOAÇÃO DE SANGUE 07/07- ATESTADO 17/07'},
+{colaborador:'MATHEUS HENRIQUE GOMES',mes:'Agosto',mesNum:8,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'NICOLAS ALEXANDRE BRAGA DO AMARAL',mes:'Agosto',mesNum:8,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'NICOLLY VASSALO IGNACIO',mes:'Agosto',mesNum:8,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ODAIR JOSE SANTOS OLIVEIRA',mes:'Agosto',mesNum:8,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'PATRICIA APARECIDA MARTINS DE SOUZA',mes:'Agosto',mesNum:8,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'RAFAEL MANTOVANI',mes:'Agosto',mesNum:8,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'RAPHAEL HENRIQUE DE CARVALHO',mes:'Agosto',mesNum:8,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'REBECCA CAMPOS DE ALMEIDA',mes:'Agosto',mesNum:8,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'NÃO',qtdCesta:1,observacoes:''},
+{colaborador:'RENATO PEREIRA DA ROCHA',mes:'Agosto',mesNum:8,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ROQUE BATISTA MACHADO',mes:'Agosto',mesNum:8,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'SERGIO AMARO DA SILVA',mes:'Agosto',mesNum:8,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'NÃO',qtdCesta:1,observacoes:''},
+{colaborador:'SERGIO HENRIQUE BUSINARI',mes:'Agosto',mesNum:8,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'STEFANI MONIZE MOREIRA',mes:'Agosto',mesNum:8,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'THIAGO RODRIGO MELLO',mes:'Agosto',mesNum:8,ano:2026,cnpj:'AC',cesta:'NÃO',vegas:'NÃO',qtdCesta:0,observacoes:'AFASTADO PELO INSS'},
+{colaborador:'TOMY OGATA',mes:'Agosto',mesNum:8,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'VICTOR MARQUES DUARTE',mes:'Agosto',mesNum:8,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ZEZINHA CINTRA JACOBE',mes:'Agosto',mesNum:8,ano:2026,cnpj:'AC',cesta:'NÃO',vegas:'SIM',qtdCesta:0,observacoes:'ACORDO - NÃO TEM CESTA BASICA FISICA'},
+{colaborador:'WALDEMAR LIBONI ALCALA',mes:'Agosto',mesNum:8,ano:2026,cnpj:'AC',cesta:'NÃO',vegas:'SIM',qtdCesta:0,observacoes:'ACORDO - NÃO TEM CESTA BASICA FISICA'},
+{colaborador:'ABNER MARINS PRUDENCIO',mes:'Setembro',mesNum:9,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ADEMIR XAVIER PIRES',mes:'Setembro',mesNum:9,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ADRIANE AP. TAIOQUI LOPES',mes:'Setembro',mesNum:9,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ALESSANDRO LUIZ DA COSTA',mes:'Setembro',mesNum:9,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ANA CLAUDIA TELES MENESES DE SOUZA',mes:'Setembro',mesNum:9,ano:2026,cnpj:'AC',cesta:'NÃO',vegas:'NÃO',qtdCesta:0,observacoes:'ATESTADO 06/08 A 11/08'},
+{colaborador:'ANDERSON CORTINHAS',mes:'Setembro',mesNum:9,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ANDRE LUIS DA SILVA BEZERRA',mes:'Setembro',mesNum:9,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ANDREY PAULINO',mes:'Setembro',mesNum:9,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ANTONIO CABRERA JUNIOR',mes:'Setembro',mesNum:9,ano:2026,cnpj:'AC',cesta:'NÃO',vegas:'SIM',qtdCesta:0,observacoes:''},
+{colaborador:'ASAFE DE CARVALHO BONOMO',mes:'Setembro',mesNum:9,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'NÃO',qtdCesta:1,observacoes:''},
+{colaborador:'BRUNO DA SILVA NASCIMENTO',mes:'Setembro',mesNum:9,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'CLEOMAR MUNIZ ALVES',mes:'Setembro',mesNum:9,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'CLEYTON SANTOS DE SOUZA',mes:'Setembro',mesNum:9,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'EDIELSON FERNANDO BRITO CEZA',mes:'Setembro',mesNum:9,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'NÃO',qtdCesta:1,observacoes:''},
+{colaborador:'EDSON DECHEN',mes:'Setembro',mesNum:9,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'NÃO',qtdCesta:1,observacoes:''},
+{colaborador:'EDUARDO RODRIGUES LIMA',mes:'Setembro',mesNum:9,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'FRANCIELLE CRISTINA ASCARI RODRIGUES',mes:'Setembro',mesNum:9,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'GABRIEL ANTONIO F. GARCIA DOS ANJOS',mes:'Setembro',mesNum:9,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'GABRIEL HENRIQUE BARCELO MARTINS',mes:'Setembro',mesNum:9,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'GILMAR MARQUES DE BRITO',mes:'Setembro',mesNum:9,ano:2026,cnpj:'AC',cesta:'NÃO',vegas:'NÃO',qtdCesta:0,observacoes:'AFASTADO PELO INSS'},
+{colaborador:'GUSTAVO BISPO DOS SANTOS',mes:'Setembro',mesNum:9,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'GUSTAVO NOGUEIRA ROSSANEZI',mes:'Setembro',mesNum:9,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JAKELINE CABRERA',mes:'Setembro',mesNum:9,ano:2026,cnpj:'BRASS',cesta:'NÃO',vegas:'SIM',qtdCesta:0,observacoes:''},
+{colaborador:'JHONI OLIVEIRA ALVES',mes:'Setembro',mesNum:9,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JOÃO ANTONIO DE OLIVEIRA',mes:'Setembro',mesNum:9,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JOAO GABRIEL ROBIS DE ALMEIDA',mes:'Setembro',mesNum:9,ano:2026,cnpj:'AC',cesta:'NÃO',vegas:'NÃO',qtdCesta:0,observacoes:''},
+{colaborador:'JOÃO VITOR CAMARGO',mes:'Setembro',mesNum:9,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JOSE ADAUTO DE JESUS',mes:'Setembro',mesNum:9,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JOSE HENRIQUE DE BRITO NASCIMENTO',mes:'Setembro',mesNum:9,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JOSE ITAMAR ESTEVES DE MENDONÇA',mes:'Setembro',mesNum:9,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JURANDIR DIAS',mes:'Setembro',mesNum:9,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'LARA CRISTINA DA S. O. SANTOS',mes:'Setembro',mesNum:9,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'LEONARDO GOMES LANDIM DOS SANTOS',mes:'Setembro',mesNum:9,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'LEONARDO SOBRINHO DE BARROS',mes:'Setembro',mesNum:9,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'LUIS CARLOS DE BRITTO',mes:'Setembro',mesNum:9,ano:2026,cnpj:'AC',cesta:'NÃO',vegas:'NÃO',qtdCesta:0,observacoes:'HORAS FALTAS 25/08 - 02:15h'},
+{colaborador:'LUIS FERNANDO SOUZA DOS SANTOS',mes:'Setembro',mesNum:9,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'MARCOS ANTONIO MINHOTO MARTINS',mes:'Setembro',mesNum:9,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'MATHEUS HENRIQUE GOMES',mes:'Setembro',mesNum:9,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'NICOLAS ALEXANDRE BRAGA DO AMARAL',mes:'Setembro',mesNum:9,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'NICOLLY VASSALO IGNACIO',mes:'Setembro',mesNum:9,ano:2026,cnpj:'AC',cesta:'NÃO',vegas:'NÃO',qtdCesta:0,observacoes:'ATESTADO 04/08 A 05/08'},
+{colaborador:'PATRICIA APARECIDA MARTINS DE SOUZA',mes:'Setembro',mesNum:9,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'RAFAEL MANTOVANI',mes:'Setembro',mesNum:9,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'RAPHAEL HENRIQUE DE CARVALHO',mes:'Setembro',mesNum:9,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'REBECCA CAMPOS DE ALMEIDA',mes:'Setembro',mesNum:9,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'NÃO',qtdCesta:1,observacoes:''},
+{colaborador:'RENATO PEREIRA DA ROCHA',mes:'Setembro',mesNum:9,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ROQUE BATISTA MACHADO',mes:'Setembro',mesNum:9,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'SERGIO HENRIQUE BUSINARI',mes:'Setembro',mesNum:9,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'STEFANI MONIZE MOREIRA',mes:'Setembro',mesNum:9,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'THIAGO RODRIGO MELLO',mes:'Setembro',mesNum:9,ano:2026,cnpj:'AC',cesta:'NÃO',vegas:'NÃO',qtdCesta:0,observacoes:'AFASTADO PELO INSS'},
+{colaborador:'TOMY OGATA',mes:'Setembro',mesNum:9,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'VICTOR MARQUES DUARTE',mes:'Setembro',mesNum:9,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ZEZINHA',mes:'Setembro',mesNum:9,ano:2026,cnpj:'AC',cesta:'NÃO',vegas:'SIM',qtdCesta:0,observacoes:''},
+{colaborador:'ABNER MARINS PRUDENCIO',mes:'Outubro',mesNum:10,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ADEMIR XAVIER PIRES',mes:'Outubro',mesNum:10,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ADRIANE AP. TAIOQUI LOPES',mes:'Outubro',mesNum:10,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ALESSANDRO LUIZ DA COSTA',mes:'Outubro',mesNum:10,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ANA CLAUDIA TELES MENESES DE SOUZA',mes:'Outubro',mesNum:10,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ANDERSON CORTINHAS',mes:'Outubro',mesNum:10,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ANDRE LUIS DA SILVA BEZERRA',mes:'Outubro',mesNum:10,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ANDREY PAULINO',mes:'Outubro',mesNum:10,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ANTONIO CABRERA JUNIOR',mes:'Outubro',mesNum:10,ano:2026,cnpj:'AC',cesta:'NÃO',vegas:'SIM',qtdCesta:0,observacoes:'ACORDO NÃO TEM CESTA BASICA'},
+{colaborador:'ASAFE DE CARVALHO BONOMO',mes:'Outubro',mesNum:10,ano:2026,cnpj:'AC',cesta:'NÃO',vegas:'NÃO',qtdCesta:0,observacoes:'FALTAS 11/09 A 19/09'},
+{colaborador:'BRUNO DA SILVA NASCIMENTO',mes:'Outubro',mesNum:10,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'CLEOMAR MUNIZ ALVES',mes:'Outubro',mesNum:10,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'CLEYTON SANTOS DE SOUZA',mes:'Outubro',mesNum:10,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'EDIELSON FERNANDO BRITO CEZA',mes:'Outubro',mesNum:10,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'NÃO',qtdCesta:1,observacoes:''},
+{colaborador:'EDSON DECHEN',mes:'Outubro',mesNum:10,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'NÃO',qtdCesta:1,observacoes:''},
+{colaborador:'EDUARDO RODRIGUES LIMA',mes:'Outubro',mesNum:10,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'FRANCIELLE CRISTINA ASCARI RODRIGUES',mes:'Outubro',mesNum:10,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'GABRIEL ANTONIO F. GARCIA DOS ANJOS',mes:'Outubro',mesNum:10,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'GABRIEL HENRIQUE BARCELO MARTINS',mes:'Outubro',mesNum:10,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'GILMAR MARQUES DE BRITO',mes:'Outubro',mesNum:10,ano:2026,cnpj:'AC',cesta:'NÃO',vegas:'NÃO',qtdCesta:0,observacoes:'AFASTADO PELO INSS'},
+{colaborador:'GUSTAVO BISPO DOS SANTOS',mes:'Outubro',mesNum:10,ano:2026,cnpj:'BRASS',cesta:'NÃO',vegas:'NÃO',qtdCesta:0,observacoes:'FALTA 11/09'},
+{colaborador:'GUSTAVO NOGUEIRA ROSSANEZI',mes:'Outubro',mesNum:10,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JAKELINE CABRERA',mes:'Outubro',mesNum:10,ano:2026,cnpj:'BRASS',cesta:'NÃO',vegas:'SIM',qtdCesta:0,observacoes:'ACORDO NÃO TEM CESTA BASICA'},
+{colaborador:'JHONI OLIVEIRA ALVES',mes:'Outubro',mesNum:10,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JOÃO ANTONIO DE OLIVEIRA',mes:'Outubro',mesNum:10,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JOAO GABRIEL ROBIS DE ALMEIDA',mes:'Outubro',mesNum:10,ano:2026,cnpj:'AC',cesta:'NÃO',vegas:'NÃO',qtdCesta:0,observacoes:'FALTA 10/09'},
+{colaborador:'JOÃO VITOR CAMARGO',mes:'Outubro',mesNum:10,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JOSE ADAUTO DE JESUS',mes:'Outubro',mesNum:10,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JOSE HENRIQUE DE BRITO NASCIMENTO',mes:'Outubro',mesNum:10,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JOSE ITAMAR ESTEVES DE MENDONÇA',mes:'Outubro',mesNum:10,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'JURANDIR DIAS',mes:'Outubro',mesNum:10,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'LARA CRISTINA DA S. O. SANTOS',mes:'Outubro',mesNum:10,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'LEONARDO GOMES LANDIM DOS SANTOS',mes:'Outubro',mesNum:10,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'LEONARDO SOBRINHO DE BARROS',mes:'Outubro',mesNum:10,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'LUIS CARLOS DE BRITTO',mes:'Outubro',mesNum:10,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'NÃO',qtdCesta:1,observacoes:''},
+{colaborador:'LUIS FERNANDO SOUZA DOS SANTOS',mes:'Outubro',mesNum:10,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'MARCOS ANTONIO MINHOTO MARTINS',mes:'Outubro',mesNum:10,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'MATHEUS HENRIQUE GOMES',mes:'Outubro',mesNum:10,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'NICOLAS ALEXANDRE BRAGA DO AMARAL',mes:'Outubro',mesNum:10,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'NICOLLY VASSALO IGNACIO',mes:'Outubro',mesNum:10,ano:2026,cnpj:'AC',cesta:'NÃO',vegas:'NÃO',qtdCesta:0,observacoes:'DECLARAÇÃO / ATESTADO / ATRASOS'},
+{colaborador:'PATRICIA APARECIDA MARTINS DE SOUZA',mes:'Outubro',mesNum:10,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'RAFAEL MANTOVANI',mes:'Outubro',mesNum:10,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'RAPHAEL HENRIQUE DE CARVALHO',mes:'Outubro',mesNum:10,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'REBECCA CAMPOS DE ALMEIDA',mes:'Outubro',mesNum:10,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'NÃO',qtdCesta:1,observacoes:''},
+{colaborador:'RENATO PEREIRA DA ROCHA',mes:'Outubro',mesNum:10,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'ROQUE BATISTA MACHADO',mes:'Outubro',mesNum:10,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'SERGIO HENRIQUE BUSINARI',mes:'Outubro',mesNum:10,ano:2026,cnpj:'BRASS',cesta:'NÃO',vegas:'NÃO',qtdCesta:0,observacoes:'ATESTADO 04/09 A 11/09'},
+{colaborador:'STEFANI MONIZE MOREIRA',mes:'Outubro',mesNum:10,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'THIAGO RODRIGO MELLO',mes:'Outubro',mesNum:10,ano:2026,cnpj:'AC',cesta:'NÃO',vegas:'NÃO',qtdCesta:0,observacoes:'AFASTADO PELO INSS'},
+{colaborador:'TOMY OGATA',mes:'Outubro',mesNum:10,ano:2026,cnpj:'BRASS',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:''},
+{colaborador:'VICTOR MARQUES DUARTE',mes:'Outubro',mesNum:10,ano:2026,cnpj:'AC',cesta:'SIM',vegas:'SIM',qtdCesta:1,observacoes:'FALTAS 21/09 a 25/09 - CAMINHO DA FÉ'},
+{colaborador:'ZEZINHA',mes:'Outubro',mesNum:10,ano:2026,cnpj:'AC',cesta:'NÃO',vegas:'SIM',qtdCesta:0,observacoes:'ACORDO NÃO TEM CESTA BASICA'}
+];
+
+function buildCestaVegasSeed() {
+  let data = loadData('cesta_vegas');
+  if (data.length) return;
+  const now = nowStr();
+  const seeded = CESTA_VEGAS_SEED.map((s, i) => Object.assign({}, s, {
+    id: i + 1, status: 'Ativo', criadoEm: now, atualizadoEm: now
+  }));
+  saveData('cesta_vegas', seeded);
+  logAudit('Cesta Básica / Vegas', 'Inclusão', 0, `Importação inicial — ${seeded.length} registros (Jan–Out/2026, planilha real)`);
+  seeded.forEach(r => syncRecordToCloud('cesta_vegas', r));
+}
+
+function cvRowRender(r) {
+  const cestaBadge = r.cesta === 'SIM' ? '<span class="badge bg">SIM</span>' : '<span class="badge br">NÃO</span>';
+  const vegasBadge = r.vegas === 'SIM' ? '<span class="badge bg">SIM</span>' : '<span class="badge br">NÃO</span>';
+  return `<tr>
+    <td>${r.colaborador}</td>
+    <td>${r.cnpj||'—'}</td>
+    <td>${cestaBadge}</td>
+    <td>${vegasBadge}</td>
+    <td>${r.qtdCesta!=null?r.qtdCesta:'—'}</td>
+    <td style="font-size:11px;color:var(--g500)">${r.observacoes||'—'}</td>
+    <td style="white-space:nowrap">
+      <button class="btn btn-s btn-xs" onclick="openCrudModal(MOD_CESTAVEGAS,${r.id})">✏</button>
+      <button class="btn btn-s btn-xs" onclick="crudDeleteAction(MOD_CESTAVEGAS,${r.id},'${escAttr(r.colaborador)}')">🗑</button>
+    </td>
+  </tr>`;
+}
+
+function renderCestaVegas(mesNumStr) {
+  const mesNum = parseInt(mesNumStr, 10);
+  const all = loadData('cesta_vegas').filter(r => r.status !== 'Inativo' && r.mesNum === mesNum && r.ano === 2026);
+  const tbody = document.getElementById('cv-tbody');
+  if (!tbody) return;
+  tbody.innerHTML = all.length
+    ? all.sort((a,b)=>a.colaborador.localeCompare(b.colaborador)).map(cvRowRender).join('')
+    : '<tr><td colspan="7" class="muted" style="text-align:center;padding:16px">Nenhum registro para este mês.</td></tr>';
+  setText('cv-count', all.length + ' registros');
+  const total = all.length;
+  const com = all.filter(r=>r.cesta==='SIM').length;
+  const sem = total - com;
+  const comprar = all.reduce((s,r)=> s + (r.cesta==='SIM' ? (r.qtdCesta||1) : 0), 0);
+  setText('cv-kpi-total', total);
+  setText('cv-kpi-com', com);
+  setText('cv-kpi-sem', sem);
+  setText('cv-kpi-comprar', comprar);
+}
+
+let cvHistoricoChart;
+function buildCestaVegasHistorico() {
+  const canvas = document.getElementById('cv-chart-historico');
+  if (!canvas || typeof Chart === 'undefined') return;
+  const all = loadData('cesta_vegas').filter(r => r.status !== 'Inativo' && r.ano === 2026);
+  const nomesMes = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  const totais = Array(10).fill(0); // Jan–Out
+  all.forEach(r => {
+    if (r.mesNum >= 1 && r.mesNum <= 10 && r.cesta === 'SIM') {
+      totais[r.mesNum-1] += (r.qtdCesta || 1);
+    }
+  });
+  if (cvHistoricoChart) cvHistoricoChart.destroy();
+  cvHistoricoChart = new Chart(canvas.getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels: nomesMes.slice(0,10),
+      datasets: [{ label: 'Cestas entregues', data: totais, backgroundColor: '#1a3f6f', borderRadius: 4 }]
+    },
+    options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true}} }
+  });
+}
+
+/* ─── Recibo de Entrega (impressão) ─── */
+const RECIBO_EMPRESAS = {
+  'AC': {nome:'AC Metal Fundição Eireli', cnpj:'00.292.535/0001-83'},
+  'BRASS': {nome:'BRASS METAL LTDA', cnpj:'27.409.417/0001-69'}
+};
+
+function ensureReciboModal() {
+  if (document.getElementById('m-recibo')) return;
+  const div = document.createElement('div');
+  div.id = 'm-recibo';
+  div.className = 'modal-overlay';
+  div.onclick = (e) => { if (e.target === div) closeReciboModal(); };
+  div.innerHTML = `
+    <div class="modal" style="width:800px">
+      <div class="m-hdr no-print">
+        <div class="m-title">🖨 Recibo de Entrega — Cesta Básica</div>
+        <button class="m-close" onclick="closeReciboModal()">×</button>
+      </div>
+      <div class="m-body">
+        <div class="no-print" id="recibo-date-fields" style="display:flex;gap:14px;margin-bottom:14px;flex-wrap:wrap">
+          <div><label style="font-size:11px;font-weight:600;display:block;margin-bottom:4px">Data Início Retirada</label><input type="date" id="recibo-data-ini" class="finp"></div>
+          <div><label style="font-size:11px;font-weight:600;display:block;margin-bottom:4px">Data Final Retirada</label><input type="date" id="recibo-data-fim" class="finp"></div>
+        </div>
+        <div id="recibo-preview"></div>
+        <div class="no-print" style="display:flex;justify-content:flex-end;gap:8px;margin-top:18px;padding-top:14px;border-top:1px solid var(--g100)">
+          <button class="btn btn-s" onclick="closeReciboModal()">Fechar</button>
+          <button class="btn btn-p" onclick="window.print()">🖨 Imprimir</button>
+        </div>
+      </div>
+    </div>`;
+  document.body.appendChild(div);
+}
+
+function renderReciboPreview() {
+  const mesSel = document.getElementById('cv-mes-sel');
+  const mesNum = mesSel ? parseInt(mesSel.value, 10) : 10;
+  const mesNomes = ['','Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  const mesNome = mesNomes[mesNum] || '';
+  const iniEl = document.getElementById('recibo-data-ini');
+  const fimEl = document.getElementById('recibo-data-fim');
+  const dataIniFmt = iniEl && iniEl.value ? iniEl.value.split('-').reverse().join('/') : '__/__/____';
+  const dataFimFmt = fimEl && fimEl.value ? fimEl.value.split('-').reverse().join('/') : '__/__/____';
+
+  const all = loadData('cesta_vegas').filter(r => r.status !== 'Inativo' && r.mesNum === mesNum && r.ano === 2026 && r.cesta === 'SIM');
+
+  let html = '';
+  ['AC','BRASS'].forEach(cnpj => {
+    const emp = RECIBO_EMPRESAS[cnpj];
+    const lista = all.filter(r => r.cnpj === cnpj).sort((a,b) => a.colaborador.localeCompare(b.colaborador));
+    if (!lista.length) return;
+    html += `<div style="page-break-after:always;padding:16px 4px">
+      <h3 style="text-align:center;margin-bottom:8px">CONTROLE E RECIBO DE ENTREGA DA CESTA BÁSICA</h3>
+      <p style="font-size:12px;margin-bottom:10px;line-height:1.5">Declaro que recebi da Empresa ${emp.nome}, inscrita no CNPJ sob Nº ${emp.cnpj}, a cesta básica referente ao mês de ${mesNome.toUpperCase()} de 2026.</p>
+      <p style="font-size:12px;margin-bottom:14px"><strong>DATA INÍCIO RETIRADA:</strong> ${dataIniFmt} &nbsp;&nbsp;&nbsp;&nbsp; <strong>DATA FINAL RETIRADA:</strong> ${dataFimFmt}</p>
+      <table style="width:100%;border-collapse:collapse;font-size:11px">
+        <thead><tr style="border-bottom:1.5px solid #000">
+          <th style="text-align:left;padding:5px 4px;width:30px">Nº</th><th style="text-align:left;padding:5px 4px">NOME</th>
+          <th style="text-align:left;padding:5px 4px;width:160px">ASSINATURA</th><th style="text-align:left;padding:5px 4px;width:110px">DATA DA RETIRADA</th>
+        </tr></thead>
+        <tbody>${lista.map((r,i) => `<tr style="border-bottom:1px solid #ccc">
+          <td style="padding:6px 4px">${i+1}</td><td style="padding:6px 4px">${r.colaborador}</td>
+          <td style="padding:6px 4px">&nbsp;</td><td style="padding:6px 4px">&nbsp;</td>
+        </tr>`).join('')}</tbody>
+      </table>
+    </div>`;
+  });
+  document.getElementById('recibo-preview').innerHTML = html || '<p class="muted">Nenhum colaborador com direito à cesta neste mês.</p>';
+}
+
+function openReciboModal() {
+  ensureReciboModal();
+  document.getElementById('m-recibo').classList.add('open');
+  const dfEl = document.getElementById('recibo-date-fields'); if (dfEl) dfEl.style.display = 'flex';
+  renderReciboPreview();
+  document.getElementById('recibo-data-ini').onchange = renderReciboPreview;
+  document.getElementById('recibo-data-fim').onchange = renderReciboPreview;
+}
+
+function closeReciboModal() {
+  const m = document.getElementById('m-recibo');
+  if (m) m.classList.remove('open');
+}
+
+/* ═══════════════ MÓDULO: ACOMPANHAMENTO 90 DIAS ═══════════════ */
+const FEEDBACK90_SEED = [
+{colaborador:'REBECCA C. ALMEIDA',admissao:'22/06/2026',observacoes:'',d7Data:'28/06/2026',d7Status:'Realizado',d14Data:'05/07/2026',d14Status:'Realizado',d21Data:'12/07/2026',d21Status:'Realizado',d30Data:'21/07/2026',d30Status:'Realizado',avIntData:'21/07/2026',avIntStatus:'Realizado',d45Data:'04/08/2026',d45Status:'Realizado',d60Data:'20/08/2026',d60Status:'Realizado',d75Data:'04/09/2026',d75Status:'Realizado',d90Data:'17/09/2026',d90Status:'Agendado'},
+{colaborador:'LUIS CARLOS BRITTO',admissao:'29/06/2026',observacoes:'FEED 75 - AGENDADO 17/09 AS 15:00H',d7Data:'05/07/2026',d7Status:'Realizado',d14Data:'12/07/2026',d14Status:'Realizado',d21Data:'19/07/2026',d21Status:'Realizado',d30Data:'28/07/2026',d30Status:'Realizado',avIntData:'28/07/2026',avIntStatus:'Realizado',d45Data:'11/08/2026',d45Status:'Realizado',d60Data:'27/08/2026',d60Status:'Não realizado',d75Data:'11/09/2026',d75Status:'Agendado',d90Data:'24/09/2026',d90Status:'Pendente'},
+{colaborador:'EDSON DECHEN',admissao:'01/07/2026',observacoes:'',d7Data:'07/07/2026',d7Status:'Realizado',d14Data:'14/07/2026',d14Status:'Realizado',d21Data:'21/07/2026',d21Status:'Realizado',d30Data:'30/07/2026',d30Status:'Realizado',avIntData:'30/07/2026',avIntStatus:'Realizado',d45Data:'13/08/2026',d45Status:'Realizado',d60Data:'29/08/2026',d60Status:'Não realizado',d75Data:'13/09/2026',d75Status:'Realizado',d90Data:'26/09/2026',d90Status:'Pendente'},
+{colaborador:'EDIELSON CEZA',admissao:'12/08/2026',observacoes:'',d7Data:'18/08/2026',d7Status:'Realizado',d14Data:'25/08/2026',d14Status:'Realizado',d21Data:'02/09/2026',d21Status:'Realizado',d30Data:'10/09/2026',d30Status:'Realizado',avIntData:'10/09/2026',avIntStatus:'Realizado',d45Data:'24/09/2026',d45Status:'Pendente',d60Data:'10/10/2026',d60Status:'Pendente',d75Data:'25/10/2026',d75Status:'Pendente',d90Data:'07/11/2026',d90Status:'Pendente'},
+{colaborador:'ASAFE BONOMO',admissao:'12/08/2026',observacoes:'Colaborador esta faltando',d7Data:'18/08/2026',d7Status:'Realizado',d14Data:'25/08/2026',d14Status:'Realizado',d21Data:'02/09/2026',d21Status:'Realizado',d30Data:'10/09/2026',d30Status:'Pendente',avIntData:'10/09/2026',avIntStatus:'Pendente',d45Data:'24/09/2026',d45Status:'Pendente',d60Data:'10/10/2026',d60Status:'Pendente',d75Data:'25/10/2026',d75Status:'Pendente',d90Data:'07/11/2026',d90Status:'Pendente'}
+];
+
+const FEEDBACK90_STAGE_TEXT = {
+  d7:{titulo:'1º FEEDBACK – 7 DIAS',texto:'É um feedback de PERCEPÇÃO: qual a percepção dessa primeira semana o líder teve sobre o funcionário, também serve para o funcionário falar algo se desejar (exemplo: primeiras impressões, como está sendo a adaptação: cultura da empresa, equipe, dúvidas, pontos que deve ajustar – se houver e etc.)'},
+  d14:{titulo:'2º FEEDBACK – 14 DIAS',texto:'É um feedback sobre o LÍDER: como o funcionário está se sentindo com relação ao seu líder (disponibilidade e presença do líder, clareza e direcionamento nas dúvidas, postura diante das dificuldades, educação, contribuição para desenvolvimento e treinamento, integração com demais áreas etc.)'},
+  d21:{titulo:'3º FEEDBACK – 21 DIAS',texto:'É um feedback sobre o TIME: como está a adaptação do mesmo no time, relacionamento, comunicação, colaboração com a equipe, pontos que deve ajustar (se houver).'},
+  d30:{titulo:'4º FEEDBACK – 30 DIAS',texto:'É um feedback sobre TAREFAS: como vem desempenhando, resultados obtidos, aprendizado, interesse, iniciativa, proatividade, o que precisa ajustar. Também receber feedback do funcionário se está tendo dificuldades e alinhar ação necessária.'},
+  avInt:{titulo:'AVALIAÇÃO DE INTEGRAÇÃO',texto:'Avaliação formal do período de integração do colaborador — consolidar os pontos observados nos primeiros 30 dias com o gestor e RH.'},
+  d45:{titulo:'5º FEEDBACK – 45 DIAS',texto:'É um feedback sobre MELHORAR PERFORMANCE: pontos de dificuldade, onde o resultado precisa melhorar, relatar fatos concretos (não subjetivo), obter retorno do funcionário sobre o que pode ser feito, e o líder se compromete com auxílio caso necessário.'},
+  d60:{titulo:'6º FEEDBACK – 60 DIAS',texto:'É um feedback sobre COBRAR a melhoria na performance: cobrar as melhorias pontuadas nos 45 dias (se houve) e avaliar se de fato houve melhoria e desenvolvimento — citando fatos para dar credibilidade.'},
+  d75:{titulo:'7º FEEDBACK – 75 DIAS',texto:'É um feedback para REPASSAR O MANUAL DO COLABORADOR E CÓDIGO DE CONDUTA (principais pontos): reforçar orientação sobre código de conduta, normas e regulamentos, e alinhar dúvidas se necessário.'},
+  d90:{titulo:'8º FEEDBACK – 90 DIAS',texto:'É um feedback de BOAS-VINDAS (EFETIVAÇÃO) OU RESCISÃO DO CONTRATO: o líder ressalta o que foi melhor avaliado, se haverá reajuste salarial, e alinha pontos pendentes (curso, treinamento, desenvolvimento) com prazo para cobrança da ação. Importante o RH ajudar no acompanhamento do plano de desenvolvimento definido.'}
+};
+
+const FEEDBACK90_STAGES = ['d7','d14','d21','d30','avInt','d45','d60','d75','d90'];
+const FEEDBACK90_STATUS_COLOR = {'Realizado':'#92D050','Agendado':'#2E75B6','Pendente':'#FFC000','Não realizado':'#FF0000'};
+
+function buildFeedback90Seed() {
+  if (localStorage.getItem('ac_fb90_real_v1')) return;
+  const now = nowStr();
+  const seeded = FEEDBACK90_SEED.map((s, i) => Object.assign({}, s, {
+    id: i + 1, status: 'Ativo', criadoEm: now, atualizadoEm: now
+  }));
+  saveData('feedback90', seeded);
+  logAudit('Acompanhamento 90 Dias', 'Inclusão', 0, `Importação inicial — ${seeded.length} colaboradores (calendário real de acompanhamento)`);
+  seeded.forEach(r => syncRecordToCloud('feedback90', r));
+  localStorage.setItem('ac_fb90_real_v1', '1');
+}
+
+function fb90UpdateStatus(id, stage, novoStatus) {
+  const data = loadData('feedback90');
+  const idx = data.findIndex(d => d.id === id);
+  if (idx === -1) return;
+  data[idx][stage+'Status'] = novoStatus;
+  data[idx].atualizadoEm = nowStr();
+  saveData('feedback90', data);
+  logAudit('Acompanhamento 90 Dias', 'Atualização', id, `${data[idx].colaborador} — ${stage}: ${novoStatus}`);
+  syncRecordToCloud('feedback90', data[idx]);
+}
+
+function fb90Cell(r, stage) {
+  const data = r[stage+'Data'] || '—';
+  const status = r[stage+'Status'] || 'Pendente';
+  const color = FEEDBACK90_STATUS_COLOR[status] || '#ccc';
+  return `<td style="text-align:center;white-space:nowrap">
+    <div style="font-size:10px;color:var(--g500);margin-bottom:2px">${data}</div>
+    <select style="font-size:9px;padding:2px 3px;border-radius:4px;border:1px solid ${color};background:${color}22;color:#333" onchange="fb90UpdateStatus(${r.id},'${stage}',this.value)">
+      ${['Pendente','Agendado','Realizado','Não realizado'].map(s=>`<option value="${s}" ${s===status?'selected':''}>${s}</option>`).join('')}
+    </select>
+  </td>`;
+}
+
+function fb90RowRender(r) {
+  return `<tr>
+    <td style="font-weight:600">${r.colaborador}</td>
+    <td>${r.admissao||'—'}</td>
+    ${FEEDBACK90_STAGES.map(st => fb90Cell(r, st)).join('')}
+    <td style="font-size:10px;color:var(--g500);max-width:160px">${r.observacoes||'—'}</td>
+    <td style="white-space:nowrap">
+      <button class="btn btn-s btn-xs" onclick="fb90PrintForm(${r.id})" title="Gerar formulário">🖨</button>
+    </td>
+  </tr>`;
+}
+
+function renderFeedback90() {
+  const all = loadData('feedback90').filter(r => r.status !== 'Inativo').sort((a,b)=>a.colaborador.localeCompare(b.colaborador));
+  const tbody = document.getElementById('fb90-tbody');
+  if (!tbody) return;
+  tbody.innerHTML = all.length ? all.map(fb90RowRender).join('') : '<tr><td colspan="13" class="muted" style="text-align:center;padding:16px">Nenhum colaborador em acompanhamento.</td></tr>';
+  setText('fb90-count', all.length + ' colaboradores');
+}
+
+
+/* ═══════════════ MÓDULO: DESCRIÇÃO DE CARGOS ═══════════════ */
+const MOD_DESCCARGO = {
+  table: 'descricao_cargos',
+  label: 'Descrição de Cargo',
+  onSave: () => { renderDescCargos(); },
+  fields: [
+    {field:'cargo', label:'Nome do Cargo', required:true, full:true},
+    {field:'cbo', label:'Código CBO', placeholder:'0000-00'},
+    {field:'area', label:'Área', type:'select', options:['Administrativo','Qualidade E Expedição','Usinagem','Fundição','Geral']},
+    {field:'descricao', label:'Descrição das Atividades', type:'textarea', full:true},
+  ]
+};
+
+const DESC_CARGOS_SEED = [
+{cargo:'AUXILIAR ADMINISTRATIVO',cbo:'4110-05',area:'Administrativo',descricao:'Prestar assistencia nas atividades gerais administrativas, recepcionar e atender fornecedores e clientes internos e externos, reunindo e compilando dados e informações, digitar, preencher documentos, bem como, dar suporte quando necessário ao time, visando contribuir para o desenvolvimento das atividades e rotinas diversas do setor administrativo.'},
+{cargo:'AUXILIAR DE LIMPEZA',cbo:'5143-20',area:'Administrativo',descricao:'É responsável por manter a higiene e a organização dos ambientes da empresa como escritórios, salas, banheiros, cozinhas e demais espaços, realizar abastecimento e reposição de materiais e conservação dos ambientes aplicando procedimentos de segurança afim de contribuir com a preservação do meio ambiente e eficiência de fábrica.'},
+{cargo:'AUXILIAR DE PRODUÇÃO E LIMPEZA',cbo:'5143-20',area:'Administrativo',descricao:'Executar atividades de limpeza, higienização, organização e conservação das áreas produtivas, administrativas e de uso comum da empresa, garantindo condições adequadas de higiene, segurança e funcionamento. Complementarmente, poderá auxiliar em atividades operacionais simples de apoio à produção, tais como embalagem, separação, identificação, organização e acabamento manual de peças e produtos, observando os procedimentos internos de qualidade, segurança e preservação ambiental, contribuindo para a eficiência dos processos e a organização da fábrica.'},
+{cargo:'ASSISTENTE ADMINISTRATIVO JR',cbo:'4110-10',area:'Administrativo',descricao:'Executar atividades gerais necessárias do setor administrativo mediante supervisão de analistas e ou gestores, também recepcionar e atender fornecedores e clientes internos e externos quando necessário. Obter documentos e dados reunindo, organizando e compilando dados e informações, preencher documentos, bem como, dar suporte quando necessário ao time, visando contribuir para o desenvolvimento das atividades e rotinas diversas do setor administrativo.'},
+{cargo:'ASSISTENTE ADMINISTRATIVO PL',cbo:'4110-10',area:'Administrativo',descricao:'Executar atividades gerais necessárias do setor administrativo mediante supervisão de analistas e ou gestores, também recepcionar e atender fornecedores e clientes internos e externos quando necessário. Obter documentos e dados reunindo, organizando e compilando dados e informações, preencher documentos, bem como, dar suporte quando necessário ao time, visando contribuir para o desenvolvimento das atividades e rotinas diversas do setor administrativo.'},
+{cargo:'ASSISTENTE ADMINISTRATIVO SR',cbo:'4110-10',area:'Administrativo',descricao:'Executar atividades gerais necessárias do setor administrativo mediante supervisão de analistas e ou gestores, também recepcionar e atender fornecedores e clientes internos e externos quando necessário. Obter documentos e dados reunindo, organizando e compilando dados e informações, preencher documentos, bem como, dar suporte quando necessário ao time, visando contribuir para o desenvolvimento das atividades e rotinas diversas do setor administrativo.'},
+{cargo:'ASSISTENTE ADM-FINAN JR',cbo:'4110-10',area:'Administrativo',descricao:'Executar atividades operacionais inerentes à área Administrativa-Financeiro, bem como, monitorar, dar suporte às operações e implementar processos de melhoria para a sua área de atuação, com o objetivo de contribuir para o alcance de metas e atingimento dos objetivos da área, contribuindo com a garantia e a otimização dos resultados da organização.'},
+{cargo:'ASSISTENTE ADM-FINAN PL',cbo:'4110-10',area:'Administrativo',descricao:'Executar atividades operacionais inerentes à área Administrativa-Financeiro, bem como, monitorar, dar suporte às operações e implementar processos de melhoria para a sua área de atuação, com o objetivo de contribuir para o alcance de metas e atingimento dos objetivos da área, contribuindo com a garantia e a otimização dos resultados da organização.'},
+{cargo:'ASSISTENTE ADM-FINAN SR',cbo:'4110-10',area:'Administrativo',descricao:'Executar atividades operacionais inerentes à área Administrativa-Financeiro, bem como, monitorar, dar suporte às operações e implementar processos de melhoria para a sua área de atuação, com o objetivo de contribuir para o alcance de metas e atingimento dos objetivos da área, contribuindo com a garantia e a otimização dos resultados da organização.'},
+{cargo:'ANALISTA ADM- FINAN SR',cbo:'2521-05',area:'Administrativo',descricao:'Participar na elaboração e desenvolvimento do planejamento orçamentário da empresa. Garantir, controlar, analisar, desenvolver e apoiar projetos e atividades inerentes à área Financeira, bem como, monitorar, dar suporte às operações e implementar indicadores para a sua área de atuação, com o objetivo de garantir a demonstração e o alcance de metas e dados reais, contribuindo com a garantia e a otimização dos resultados da organização.'},
+{cargo:'ANALISTA ADM- FINAN PL',cbo:'2521-05',area:'Administrativo',descricao:'Participar na elaboração e desenvolvimento do planejamento orçamentário da empresa. Executar atividades operacionais, controlar, analisar, desenvolver e apoiar projetos e atividades inerentes à área Financeira, bem como, monitorar, dar suporte às operações e implementar processos de melhoria e indicadores para a sua área de atuação,com o objetivo de contribuir para o alcance de metas e atingimento dos objetivos da área, contribuindo com a garantia e a otimização dos resultados da organização.'},
+{cargo:'ANALISTA ADM- FINAN JR',cbo:'2521-05',area:'Administrativo',descricao:'Executar atividades operacionais inerentes à área Financeira e de Recursos Humanos, bem como, monitorar, dar suporte às operações e implementar processos de melhoria para a sua área de atuação, com o objetivo de contribuir para o alcance de metas e atingimento dos objetivos da área, contribuindo com a garantia e a otimização dos resultados da organização.'},
+{cargo:'ASSISTENTE RH-DP JR',cbo:'4110-10',area:'Administrativo',descricao:'Prestar assistencia na operacionalização de atividades inerentes à área de Departamento Pessoal e Recursos Humanos, bem como dar suporte às operações e liderança e no implemento de processos de melhoria para a sua área de atuação, com o objetivo de contribuir para o alcance de metas e atingimento dos objetivos da área, contribuindo com a garantia e a otimização dos resultados da organização'},
+{cargo:'ASSISTENTE RH-DP PL',cbo:'4110-10',area:'Administrativo',descricao:'Prestar assistencia na operacionalização de atividades inerentes à área de Departamento Pessoal e Recursos Humanos, bem como dar suporte às operações e liderança e no implemento de processos de melhoria para a sua área de atuação, com o objetivo de contribuir para o alcance de metas e atingimento dos objetivos da área, contribuindo com a garantia e a otimização dos resultados da organização'},
+{cargo:'ASSISTENTE RH-DP SR',cbo:'4110-10',area:'Administrativo',descricao:'Prestar assistencia na operacionalização de atividades inerentes à área de Departamento Pessoal e Recursos Humanos, bem como dar suporte às operações e liderança e no implemento de processos de melhoria para a sua área de atuação, com o objetivo de contribuir para o alcance de metas e atingimento dos objetivos da área, contribuindo com a garantia e a otimização dos resultados da organização'},
+{cargo:'ANALISTA DE RH/DP SENIOR',cbo:'2524-05',area:'Administrativo',descricao:'Executar, controlar, analisar, desenvolver e apoiar projetos e atividades inerentes à área de Recursos Humanos, bem como, monitorar, dar suporte às operações e implementar indicadores para a sua área de atuação, com o objetivo de garantir a demonstração e o alcance de metas e dados reais, contribuindo com a garantia e a otimização dos resultados da organização.'},
+{cargo:'ANALISTA DE RH/DP PLENO',cbo:'2524-05',area:'Administrativo',descricao:'Executar atividades operacionais inerentes à área de Departamento Pessoal e Recursos Humanos, bem como, monitorar, dar suporte às operações e implementar processos de melhoria para a sua área de atuação, com o objetivo de contribuir para o alcance de metas e atingimento dos objetivos da área, contribuindo com a garantia e a otimização dos resultados da organização.'},
+{cargo:'ANALISTA DE RH/DP JUNIOR',cbo:'2524-05',area:'Administrativo',descricao:'Executar atividades operacionais inerentes à área de Departamento Pessoal e Recursos Humanos, bem como, monitorar, dar suporte às operações e implementar processos de melhoria para a sua área de atuação, com o objetivo de contribuir para o alcance de metas e atingimento dos objetivos da área, contribuindo com a garantia e a otimização dos resultados da organização.'},
+{cargo:'ASSISTENTE DE COMPRAS JR',cbo:'4110-10',area:'Administrativo',descricao:'Prestar assistência e apoio ao setor de compras em tarefas operacionais para o atendimento das demandas gerais da empresa e demais tarefas administrativas, objetivando a colaboração e contribuição total para o alcance de metas e atingimento dos objetivos da área, cosntribuindo com a garantia e a otimização dos resultados da organização.'},
+{cargo:'ASSISTENTE DE COMPRAS PL',cbo:'4110-10',area:'Administrativo',descricao:'Prestar assistência e apoio ao setor de compras em tarefas operacionais para o atendimento das demandas gerais da empresa e demais tarefas administrativas, objetivando a colaboração e contribuição total para o alcance de metas e atingimento dos objetivos da área, cosntribuindo com a garantia e a otimização dos resultados da organização.'},
+{cargo:'ASSISTENTE DE COMPRAS SR',cbo:'4110-10',area:'Administrativo',descricao:'Prestar assistência e apoio ao setor de compras em tarefas operacionais para o atendimento das demandas gerais da empresa e demais tarefas administrativas, objetivando a colaboração e contribuição total para o alcance de metas e atingimento dos objetivos da área, cosntribuindo com a garantia e a otimização dos resultados da organização.'},
+{cargo:'ANALISTA DE COMPRAS JR',cbo:'2521-25',area:'Administrativo',descricao:'Executar atividades operacionais inerentes à área de suprimentos e compras, bem como, monitorar, dar suporte às operações e implementar processos de melhoria para a sua área de atuação, com o objetivo de contribuir para o alcance de metas e atingimento dos objetivos da área, contribuindo com a garantia e a otimização dos resultados da organização. Auxiliar a gestão no desenvolvimento e acompanhamento de relatórios e indicadores, análise da performance de fornecedores e do departamento.'},
+{cargo:'ANALISTA DE COMPRAS PL',cbo:'2521-25',area:'Administrativo',descricao:'Executar atividades operacionais inerentes à área de suprimentos e compras, bem como, monitorar, dar suporte às operações e implementar processos de melhoria para a sua área de atuação, com o objetivo de contribuir para o alcance de metas e atingimento dos objetivos da área, contribuindo com a garantia e a otimização dos resultados da organização. Auxiliar a gestão no desenvolvimento e acompanhamento de relatórios e indicadores, análise da performance de fornecedores e do departamento.'},
+{cargo:'ANALISTA DE COMPRAS SR',cbo:'2521-25',area:'Administrativo',descricao:'Executar atividades operacionais inerentes à área de suprimentos e compras, bem como, monitorar, dar suporte às operações e implementar processos de melhoria para a sua área de atuação, com o objetivo de contribuir para o alcance de metas e atingimento dos objetivos da área, contribuindo com a garantia e a otimização dos resultados da organização. Auxiliar a gestão no desenvolvimento e acompanhamento de relatórios e indicadores, análise da performance de fornecedores e do departamento.'},
+{cargo:'ANALISTA FISCAL JUNIOR',cbo:'2521-05',area:'Administrativo',descricao:''},
+{cargo:'SUPERVISORA ADM-FINANCEIRO',cbo:'4102-25',area:'Administrativo',descricao:'Participar na elaboração e desenvolvimento do planejamento orçamentário da empresa. Executar atividades operacionais, controlar, analisar, desenvolver e apoiar projetos e atividades inerentes à área Financeira, bem como, monitorar, dar suporte às operações e implementar processos de melhoria e indicadores para a sua área de atuação, com o objetivo de contribuir para o alcance de metas e atingimento dos objetivos da área, contribuindo com a garantia e a otimização dos resultados da organização.'},
+{cargo:'SUPERVISOR DE VENDAS TÉCNICA JR',cbo:'5201-10',area:'Administrativo',descricao:'Realizar o planejamento estratégico até o acompanhamento e desenvolvimento individual do time de vendas, garantindo o atingimento de objetivos estratégicos e resultados da empresa, fazer a interação e até mesmo negociações com clientes, acompanhamento de pedidos, folow ups, negociações e interface com a fábrica a fim de prover suporte para vendas e negociações. Realizar análises de mercado identificando oportunidfades e ameaças, acompanhemento e gestão dos indicadores internos, garantir cumprimento dos processos de vendas afim de otimização dos resultados da organização.'},
+{cargo:'VENDEDOR TÉCNICO SR',cbo:'3541-35',area:'Administrativo',descricao:'Realizar análises técnicas de projetos através da leitura e interpretação de desenhos técnicos, possibilitando o levantamento de custos e suporte à area de projetos para desenvolvimento de produtos e atendimento ao cliente. Vender produtos, atender clientes, executar orçamentos, realizar negociações e fechamento de pedidos, pesquisas de mercado, levantamentos de preços, executar ações de apoio ao marketing, desenvolver e aumentar carteira de clientes visando o atingimento de metas de vendas e faturamento, contribuindo para concretização dos objetivos da organização.'},
+{cargo:'VENDEDOR TÉCNICO JR',cbo:'3541-35',area:'Administrativo',descricao:'Realizar análises técnicas de projetos através da leitura e interpretação de desenhos técnicos, possibilitando o levantamento de custos e suporte à area de projetos para desenvolvimento de produtos e atendimento ao cliente. Vender produtos, atender clientes, executar orçamentos, realizar negociações e fechamento de pedidos, pesquisas de mercado, levantamentos de preços, executar ações de apoio ao marketing, desenvolver e aumentar carteira de clientes visando o atingimento de metas de vendas e faturamento, contribuindo para concretização dos objetivos da organização.'},
+{cargo:'VENDEDOR',cbo:'5211-10',area:'Administrativo',descricao:'Realizar prospecções, vender produtos, atender clientes, executar orçamentos, realizar negociações e fechamento de pedidos, pesquisas de mercado, levantamentos de preços, executar ações de apoio ao marketing, desenvolver e aumentar carteira de clientes visando o atingimento de metas de vendas e faturamento, contribuindo para concretização dos objetivos da organização.'},
+{cargo:'ASSISTENTE DE VENDAS',cbo:'3541-25',area:'Administrativo',descricao:'Prestar assistência nas rotinas operacinais de vendas, auxiliar a gestão no controle e elaboração de relatórios do desempenho da área de vendas e seus indicadores, no controle de pedidos, no atendimento ao cliente inicial e na pós-venda e presta auxílio nos demais processos do setor de vendas.'},
+{cargo:'ANALISTA DE VENDAS TÉCNICA JR',cbo:'3541-35',area:'Administrativo',descricao:'Realizar análises e acompanhamentos de processos de vendas como orçamentos, tabelas de preços, pedidos, condições de fornecimentos, documentos, sistema entre outros, de forma a garantir o cumprimento da política comercial na vendas e atingimento dos objetivos da empresa. Prestar suporte ao time de vendas na geração de documentos e relatórios proporcionando agilidade e eficiência no atingimento dos resultados. Atuar na prospecção ativa buscando novos clientes que ainda não conhecem os produtos e serviços bem como atuar na reativação de clientes quando necessário prospecção, visando contribuir com time de vendas no atingimento de metas de vendas e faturamento e consequentemente no fortalecimento da marca.'},
+{cargo:'COORDENADOR DE VENDAS JR',cbo:'5201-10',area:'Administrativo',descricao:'Coordenar a equipe de vendas na realização de atividades comerciais no desenvolvimento e manutenção da carteira de clientes, atendimento e relacionamento com o cliente e parceiros comerciais, execução de orçamentos, negociações e atingimento de metas da área visando o alcance e concretização dos objetivos da organização.'},
+{cargo:'TÉCNICO DE QUALIDADE',cbo:'3912-10',area:'Qualidade E Expedição',descricao:'Atuar nas atividades que suportem e de garantias para que todos os requisitos definidos pelo cliente, pela organização, estatutários, regualamentares e normativos sejam atendidos durante todas as etapas do processo de fabricação ou serviço. Fazer cumprir os procedimentos, instruções, fluxogramas e sistemáticas que contribuem para a conformidade do SGQ, segurança, saúde, higiene e boas práticas de fabricação. Atender aos objetivos, metas e satisfação de clientes, provedores externos e colaboradores. Participar e propor ações de melhorias contínas para a manutenção do SGQ.'},
+{cargo:'INSPETOR DA QUALIDADE',cbo:'3912-05',area:'Qualidade E Expedição',descricao:'Atuar nas atividades que suportem e de garantias para que todos os requisitos definidos pelo cliente, pela organização, estatutários, regualamentares e normativos sejam atendidos durante todas as etapas do processo de fabricação ou serviço. Fazer cumprir os procedimentos, instruções, fluxogramas e sistemáticas que contribuem para a conformidade do SGQ, segurança, saúde, higiene e boas práticas de fabricação. Atender aos objetivos, metas e satisfação de clientes, provedores externos e colaboradores. Participar e propor ações de melhorias contínas para a manutenção do SGQ.'},
+{cargo:'ASSISTENTE DE QUALIDADE',cbo:'3912-15',area:'Qualidade E Expedição',descricao:'Atuar ativamente sob a orientação da supervisão, em atividades que garantam o desenvolvimento do aprendizado e do conhecimento organizacional; Manter, entregar e realizar as atividades demandadas pela organização em conformidade com os requisitos dos produtos e da gestão da qualidade para garantir a manutenção do sistema de gestão da qua'},
+{cargo:'ANALISTA DE LOGISTICA JUNIOR',cbo:'',area:'Qualidade E Expedição',descricao:''},
+{cargo:'MOTORISTA',cbo:'7823-10',area:'Qualidade E Expedição',descricao:'Atuar como auxílio aos processos de logística interna e externa como nas operações de transporte, carregamento e descarregamento de material, abastecimento de postos de trabalho, destinação de materiais aos locais indicados e corretos de armazenamento e organização geral. Assim, como nas operações de recebimento, seleção e separação de materiais, embalagem de produtos e materiais contribuindo para um ambiente de trabalho organizado. Realizar retiradas e entregas de materiais em terceiros (fornecedores / clientes). Aplicar procedimentos de segurança nas atividades desempenhadas de acordo com as normas internas de segurança da organização. O colaborador deve possuir um perfil eclético e colaborativo de forma atuar nas diversas atividades que compõem o processo.'},
+{cargo:'AUXILIAR DE ALMOXARIFADO',cbo:'4141-05',area:'Qualidade E Expedição',descricao:'Auxiliar na recepção, conferecia e armazenagem de produtos e materiais em almoxarifados e depósitos. Fazer lançamentos da movimentação de entradas e saídas e controlar os estoques. Distribuir produtos e materiais a serem expedidos. Organizar o almoxarifado para facilitar a movimentação dos itens armazenados e armazenar, preservando o estoque limpo e organizado. Empacotar ou desempacotar os produtos, realizar expedição de materiais e produtos, examinando-os, providenciando os despachos dos mesmos e auxiliar no processo de logística.'},
+{cargo:'AUXILIAR DE LOGÍSTICA',cbo:'',area:'Qualidade E Expedição',descricao:'Auxiliar equipe de expedição e logística interna e externa nas operações de carregamento e descarregamento de material,destinação de materiais aos locais indicados e corretos de armazenamento e organização geral. Auxili ssim, como nas operações de recebimento, seleção e separação de materiais, embalagem de produtos e materiais. Realizar quando necessário, retiradas e entregas de materiais em terceiros (fornecedores / clientes).'},
+{cargo:'ASSISTENTE DE LOGÍSTICA (JR, PL, SR)',cbo:'',area:'Qualidade E Expedição',descricao:'Atuar como auxílio aos processos de logística interna e externa como nas operações de carregamento e descarregamento de material, abastecimento de postos de trabalho, destinação de materiais aos locais indicados e corretos de armazenamento e organização geral. Assim, como nas operações de recebimento, seleção e separação de materiais, embalagem de produtos e materiais contribuindo para um ambiente de trabalho organizado. Realizar quando solicitado, retiradas e entregas de materiais em terceiros (fornecedores / clientes).'},
+{cargo:'OPERADOR DE LOGÍSTICA',cbo:'4141-40',area:'Qualidade E Expedição',descricao:'Operacionalizar processos de logística interna e externa como nas operações de carregamento e descarregamento de material,destinação de materiais aos locais indicados e corretos de armazenamento e organização geral. Assim, como nas operações de recebimento, seleção e separação de materiais, embalagem de produtos e materiais contribuindo para um ambiente de trabalho organizado. Realizar quando solicitado, retiradas e entregas de materiais em terceiros (fornecedores / clientes). Aplicar procedimentos de segurança nas atividades desempenhadas de acordo com as normas internas de segurança da organização. O colaborador deve possuir um perfil eclético e colaborativo de forma atuar nas diversas atividades que compõem o processo.'},
+{cargo:'LIDER DE CONTROLE DA QUALIDADE',cbo:'3912-10',area:'Qualidade E Expedição',descricao:'Atuar na liderança, orientação, acompanhamento, desenvolvimento e treinamento da equipe da área da qualidade e logística, planejar sequencias e rotinas de atividades garantindo que todos os requisitos definidos pelo cliente, pela organização, estatutários, regualamentares e normativos sejam atendidos durante todas as etapas do processo de fabricação ou serviço. Fazer cumprir os procedimentos, instruções, fluxogramas e sistemáticas que contribuem para a conformidade do SGQ, segurança, saúde, higiene e boas práticas de fabricação. Atender aos objetivos, metas e satisfação de clientes, provedores externos e colaboradores. Participar e propor ações de melhorias contínas para a manutenção do SGQ.'},
+{cargo:'GERENTE DA QUALIDADE',cbo:'3912-10',area:'Qualidade E Expedição',descricao:''},
+{cargo:'ALMOXARIFE',cbo:'4141-05',area:'Qualidade E Expedição',descricao:'Recepcionam, conferem e armazenam produtos e materiais em almoxarifados, armazéns, silos e depósitos. Fazem os lançamentos da movimentação de entradas e saídas e controlam os estoques. Distribuem produtos e materiais a serem expedidos. Organizam o almoxarifado para facilitar a movimentação dos itens armazenados e a armazenar, preservando o estoque limpo e organizado. Empacotam ou desempacotam os produtos, realiza expedição materiais e produtos, examinando-os, providenciando os despachos dos mesmos e auxiliam no processo de logística'},
+{cargo:'OPERADOR DE RECEBIMENTO E EXPEDIÇÃO',cbo:'4141-40',area:'Qualidade E Expedição',descricao:'Executar tarefas de recebimento, expedição, separação de produtos e materiais, embalagens, carregamento e descarregamento, armazenagem e organização de estoques, destinação de materiais aos locais indicados e corretos de armazenamento e organização geral contribuindo para um ambiente de trabalho organizado. Realizar quando necessário abastecimento de postos de trabalho e controle de estoque.'},
+{cargo:'SUPERVISOR DE PRODUÇÃO JR',cbo:'7201-50',area:'Usinagem',descricao:'Acompanhar, supervisionar e liderar toda a produção, atuar no desenvolvimento das lideranças dos setores de forma a garantir atingimento de resultados e cumprimento do planejamento da produção e resultados em conformidade com os requisitos e gestão da qualidade. Planejar e delegar. Fornecer apoio, suporte e orientação à produção necessários ao cumprimento das tarefas e bom desempenho. Orientar, treinar, analisar e desenvolver relatórios bem como índices de desempenho para acompanhamento e solução de problemas e implantação de melhoria contínua.'},
+{cargo:'LIDER DE PRODUÇÃO /USINAGEM',cbo:'7201-50',area:'Usinagem',descricao:'Planejar sequencias de operações e de produção de acordo com critérios da organização e prazos de entrega, executar cálculos técnicos, planejamento e controle recursos como matéria prima, produtos e demais materiais inerentes ao setor, realizar relatório de apontamento de produção e resultados, contribuir com as ações de preservação do meio ambiente, bem como supervisionar, monitorar e dar suporte às operações e aos colaboradores do setor, com o objetivo de garantir a otimização e o alcance de metas. Atuar de modo a supervisionar e executar atividades necessárias no processo de usinagem envolvendo as operações de usinagem convencional e cnc e demais equipamentos relacionados à área, assim como operações correlatas de acabamento. Controlar os parâmetros de processo e a qualidade das peças usinadas, aplicar, acompanhar e supervisionar, procedimentos de segurança nas atividades desempenhadas de acordo com as normas internas de segurança da organização. O colaborador deve possuir um perfil eclético e colaborativo de forma atuar nas diversas atividades que compõem o processo, devido o perfil da demanda diária ser variável e interrupta.'},
+{cargo:'TORNEIRO PRODUÇÃO A',cbo:'7214-30',area:'Usinagem',descricao:'Planejar sequencias de operações e de produção de acordo com critérios da organização e prazos de entrega, executar cálculos técnicos, planejamento e controle recursos como matéria prima, produtos e demais materiais inerentes ao setor. Controlar os parâmetros de processo e a qualidade das peças usinadas, aplicar, acompanhar e procedimentos de segurança nas atividades desempenhadas de acordo com as normas internas de segurança da organização. Dependendo da divisão do trabalho na empresa, pode atuar como abastecedor de equipamentos automáticos, assim como em equipamentos manuais.'},
+{cargo:'TORNEIRO PRODUÇÃO B',cbo:'7212-15',area:'Usinagem',descricao:'Atuar em todo o processo de pré-usinagem e usinagem final envolvendo operações de máquinas e ferramentas que usinam peças de metal e compósitos. Controlar os parâmetros de qualidade das peças usinadas, aplicando procedimentos de segurança e qualidade às tarefas realizadas de acordo com as normas internas de segurança da organização. Executar cálculos técnicos, contribuir com as ações de preservação do meio ambiente. Dependendo da divisão do trabalho na empresa, pode atuar como abastecedor de equipamentos automáticos, assim como em equipamentos manuais.'},
+{cargo:'TORNEIRO PRODUÇÃO C',cbo:'7212-15',area:'Usinagem',descricao:'Atuar em todo o processo de pré-usinagem e usinagem final envolvendo operações de máquinas e ferramentas que usinam peças de metal e compósitos. Controlar os parâmetros de qualidade das peças usinadas, aplicando procedimentos de segurança e qualidade às tarefas realizadas de acordo com as normas internas de segurança da organização. Contribuir com as ações de preservação do meio ambiente. Dependendo da divisão do trabalho na empresa, pode atuar como abastecedor de equipamentos automáticos, assim como em equipamentos manuais.'},
+{cargo:'MECÂNICO DE MANUTENÇÃO',cbo:'9113-05',area:'Usinagem',descricao:'Executar a manutenção mecânica de máquinas, equipamentos e instalações da empresa através de manutenções corretivas, preditivas e preventivas para garantir maior durabilidade do equipamento e menor quantidade de falhas no processo de fabricação, atendendo a uma programação definida pelo superior ou conforme solicitação. Utilizar materiais e aparelhos portáteis, bem como equipamentos e ferramentas necessários para prover recursos físicos como peças e própria manutenção de componnetes necessários para realização completa da tarefa de manutenção. Interpretar desenhos e esquemas mecânicos para localização das falhas e orientações, controlar parâmetros de processos e qualidade dos equipamentos, aplicar procedimentos de segurança nas atividades desempenhas. O colaborador deve possuir o perfil eclético e colaborativo, de forma atuar nas diversas atividades que compõem o processo.'},
+{cargo:'TÉCNICO DE PROCESSOS',cbo:'3911-05',area:'Usinagem',descricao:'Pesquisar, planejar, desenvolver e propor melhorias para os processos e meios de produção, incluindo as atividades, ferramentas, máquinas, equipamentos e as sequências de atividades e dos processos; Manter e controlar o planejamento em conformidade com os requisitos do cliente e da direção para garantir a manutenção do sistema de gestão da qualidade, produtividade e reprodutividade e a satisfação dos clientes, planejar e controlar a operação de desenvolvimento dos projetos de inovação e melhoria, quanto a eficiência, quantidade, qualidade, tipo de produtos e orientações e prazos para os processos envolvidos;'},
+{cargo:'TÉCNICO DE PRODUÇÃO',cbo:'3911-25',area:'Usinagem',descricao:'Executar atividades de planejamento de operações e de produção de acordo com critérios da organização e prazos de entrega, cálculos técnicos, controle de matéria-prima, relatório de apontamento de produção e resultados, contribuir com as ações de assistência à liderança e supervisão da produção e aos colaboradores do setor, com o objetivo de garantir a otimização e alcance de objetivos e metas. Executar, atividades quando necessárias nos processos de fundição e usinagem. Realizar o controle de parâmetros de processos e qualidade de peças fundidas, o acompanhamento dos parâmetros de processos e qualidade e procedimentos de segurança nas atividades desempenhadas de acordo com as normas de segurança da organização. O colaborador deve possuir um perfil eclético e colaborativo de forma atuar nas diversas atividades que compõem o processo.'},
+{cargo:'ASSISTENTE DE PROCESSOS',cbo:'4110-10',area:'Usinagem',descricao:'Atuar no desenvolvimento e implementação de processos, realizar pesquisas, diagnóstico para mapeamento de fluxograma, estruturação e descrição detalhada dos processos de fabricação da usinagem e fundição. Elaborar e divulgar o procedimento relativo ao processo desenvolvido identificando oportunidades de melhoria e das práticas já existentes.'},
+{cargo:'ANALISTA DE PROCESSOS JR',cbo:'3911-05',area:'Usinagem',descricao:'Pesquisar, planejar, desenvolver e propor melhorias para os processos e meios de produção, incluindo as atividades, ferramentas, máquinas, equipamentos e as sequências de atividades e dos processos; Manter e controlar o planejamento em conformidade com os requisitos do cliente e da direção para garantir a manutenção do sistema de gestão da qualidade, produtividade e reprodutividade e a satisfação dos clientes, planejar e controlar a operação de desenvolvimento dos projetos de inovação e melhoria, quanto a eficiência, quantidade, qualidade, tipo de produtos e orientações e prazos para os processos envolvidos.'},
+{cargo:'DESENHISTA',cbo:'3003-05',area:'Usinagem',descricao:'Atuar na elaboração e emissão de desenhos relativos ao projetos de produtos, máquinas e ferramentas da empresa em softwares de desenho. Elaborar fluxogramas, layouts, peças para fabricação e documentação técnica. Usinar peças atuando na implementação, concepção e execução do projeto de forma a obter o produto final objeto do desenho elaborado. Controlar os parâmetros de qualidade dos produtos (desenhos/peças), aplicando procedimentos de segurança e qualidade às tarefas realizadas de acordo com as normas internas de segurança da organização.'},
+{cargo:'OPERADOR DE PROCESSO DE PRODUÇÃO',cbo:'7842-05',area:'Usinagem',descricao:'Organizar, separar e abastecer linhas de produção na usinagem, preparar os materiais que entram para o processo de transformação nas máquinas de usinagem, abastecer máquinas de linha de produção , realizar preparação, corte e destinação dos produtos para as linhas de usinagem e seus estoques.'},
+{cargo:'AUXILIAR DE MANUFATURA',cbo:'7842-05',area:'Usinagem',descricao:'Atuar nos processos que envolvam acabamento manual de peças da produção da usiangem como lixamento, retirada de rebarbas, aplicação de massa, aplicação de spray e limpeza. Atuar na organização e acabamento final em geral. Organizar, identificar e controlar o estoque de peças acabadas e insumos da fabrica. Controlar os parâmetros de qualidade das peças acabadas, aplicando procedimentos de segurança e qualidade às tarefas realizadas de acordo com as normas internas de segurança da organização. Dependendo da divisão do trabalho na empresa, pode atuar como abastecedor de equipamentos automáticos, assim como em equipamentos manuais.'},
+{cargo:'AUXILIAR DE PRODUÇÃO',cbo:'7842-05',area:'Usinagem',descricao:'Atuar na limpeza e organização de setores da usinagem, e organização de materiais. Realizar a limpeza de máquinas de forma a colaborar com a eficiência do processo de produção e cumprimento de prazos. Organizar, identificar e controlar o estoque de retorno, dar o devido direcionamento deste material em seu estoque aplicando procedimentos de segurança e qualidade às tarefas realizadas de acordo com as normas internas de segurança da organização. Dependendo da divisão do trabalho na empresa, pode atuar como auxiliar abastecendo linhas de produção.'},
+{cargo:'MECÂNICO DE USINAGEM (APRENDIZ)',cbo:'7212-15',area:'Usinagem',descricao:'Auxiliar nos processos de pré-usinagem e usinagem final envolvendo operações de máquinas e ferramentas que usinam peças de metal e compósitos. Atuar como abastecedor de equipamentos automáticos, assim como em equipamentos manuais, auxiliar nos processos acabamento de peças como lixamento, roscas, furos, corte e axílio em demais tarefas correlatas ao setor de usinagem com supervisionamento de tutor.'},
+{cargo:'AUXILIAR DE USINAGEM',cbo:'7842-05',area:'Usinagem',descricao:'Auxiliar nos processos de pré-usinagem e usinagem final envolvendo operações de máquinas e ferramentas que usinam peças de metal e compósitos. Controlar os parâmetros de qualidade das peças usinadas, aplicando procedimentos de segurança e qualidade às tarefas realizadas de acordo com as normas internas de segurança da organização. Contribuir com as ações de preservação do meio ambiente. Dependendo da divisão do trabalho na empresa, pode atuar como abastecedor de equipamentos automáticos, assim como em equipamentos manuais.'},
+{cargo:'TORNEIRO PROGRAMADOR C',cbo:'3171-15',area:'Usinagem',descricao:'Atuar em todo o processo de usinagem de peças em metal até seu acabamento final de acordo com requisitos do cliente envolvendo operações de torno CNC e centro de usinagem, programando, preparando e operando tais máquinas, controlando os parâmetros de qualidade das peças durante o processo e, aplicando procedimentos de segurança e qualidade às tarefas realizadas de acordo com as normas internas de segurança da organização. Dependendo da divisão do trabalho na empresa, pode atuar na operação de máquinas de usinagem convencionais.'},
+{cargo:'TORNEIRO PROGRAMADOR B',cbo:'3171-15',area:'Usinagem',descricao:'Atuar em todo o processo de usinagem de peças em metal até seu acabamento final de acordo com requisitos do cliente envolvendo operações de torno CNC e centro de usinagem, programando, preparando e operando tais máquinas, controlando os parâmetros de qualidade das peças durante o processo e, aplicando procedimentos de segurança e qualidade às tarefas realizadas de acordo com as normas internas de segurança da organização. Dependendo da divisão do trabalho na empresa, pode atuar na operação de máquinas de usinagem convencionais.'},
+{cargo:'TORNEIRO PROGRAMADOR A',cbo:'3171-15',area:'Usinagem',descricao:'Atuar no projeto, implementação, implantação e manter programas para operar nas máquinas CNCs da empresa. Responsável também por otimizar e melhorar os sistemas e processos de usinagem, com o objetivo de apoiar a segurança, reduzir os custos operacionais e aumentar a produtividade. Para isso, eles também realizam a leitura e interpretação de desenhos técnicos, operam máquinas e programam em software e atendem ordens de serviços. Também acompanham os processos e monitoram as máquinas em produção'},
+{cargo:'TORNEIRO FERRAMENTEIRO C',cbo:'7211-05',area:'Usinagem',descricao:'Atuar nos processos operacionais de manutenção, construção e desenvolvimento de ferramentas e dispositivos de usinagem, moldes metálicos para fundição e demais ferramentas necessárias para os processos produtivos da fábrica, envolvendo operações de máquinas, equipamentos e ferramentas que usinam e dão acabamento final em materiais de metal e compósitos, fazer o controle dimensional de produtos e peças usinadas e ajustadas, auxiliar no processo de elaboração e planejamento de ferramentas e manutenções de construção de produtos ou protótipos.'},
+{cargo:'TORNEIRO FERRAMENTEIRO B',cbo:'7211-05',area:'Usinagem',descricao:'Atuar nos processos operacionais de manutenção, construção e desenvolvimento de ferramentas e dispositivos de usinagem, moldes metálicos para fundição e demais ferramentas necessárias para os processos produtivos da fábrica, envolvendo operações de máquinas, equipamentos e ferramentas que usinam e dão acabamento final em materiais de metal e compósitos, fazer o controle dimensional de produtos e peças usinadas e ajustadas, auxiliar no processo de elaboração e planejamento de ferramentas e manutenções de construção de produtos ou protótipos.'},
+{cargo:'TORNEIRO FERRAMENTEIRO A',cbo:'7211-05',area:'Usinagem',descricao:'Elaborar projetos e processos de desenvolvimento de ferramentas e melhorias no processos produtivos, atuar nos processos operacionais de manutenção, construção e desenvolvimento de ferramentas e dispositivos de usinagem, moldes metálicos para fundição e demais ferramentas necessárias para os processos produtivos da fábrica, envolvendo operações de máquinas, equipamentos e ferramentas que usinam e dão acabamento final em materiais de metal e compósitos, fazer o controle dimensional de produtos e peças usinadas e ajustadas, auxiliar no processo de elaboração e planejamento de ferramentas e manutenções de construção de produtos ou protótipos.'},
+{cargo:'LÍDER DE FUNDIÇÃO',cbo:'7201-25',area:'Fundição',descricao:'Planejar sequencias de operações e de produção de acordo com critérios da organização e prazos de entrega, executar cálculos técnicos, planejamento e controle de matéria prima, realizar relatório de apontamento de produção e resultados, contribuir com as ações de preservação do meio ambiente, bem como supervisionar, monitorar e dar suporte às operações e aos colaboradores do setor, com o objetivo de garantir a otimização e o alcance de metas. Atuar de modo a acompanhar, controlar e executar atividades necessárias no processo de fundição envolvendo as operações de montagem e preparação das máquinas, equipamentos e ferramentas, fusão , vazamento e operações correlatas de acabamento. Controlar os parâmetros de processo e a qualidade das peças fundidas, aplicar, acompanhar e supervisionar procedimentos de segurança nas atividades desempenhadas de acordo com as normas internas e política de segurança da organização. O colaborador deve possuir um perfil eclético e colaborativo de forma atuar nas diversas atividades que compõem o cargo.'},
+{cargo:'OPERADOR DE MANUFATURA A',cbo:'7222-20',area:'Fundição',descricao:'Atuar em todo o processo de fundição envolvendo as operações de fusão, centrifuga e contínua. Assim como operações correlatas de acabamento. Controlar os parâmetros de processo e a qualidade das peças fundidas, aplicar procedimentos de segurança nas atividades desempenhadas de acordo com as normas internas de segurança da organização. Planejar sequencias de operações de acordo com critérios da organização e prazos de entrega, executar cálculos técnicos, contribuir com as ações de preservação do meio ambiente, bem como supervisionar, monitorar e dar suporte às operações e aos colaboradores do setor, com o objetivo de garantir a otimização e o alcance de metas. O colaborador deve possuir um perfil eclético e colaborativo de forma atuar nas diversas atividades que compõem o processo.'},
+{cargo:'OPERADOR DE MANUFATURA B',cbo:'7222-20',area:'Fundição',descricao:'Atuar em todo o processo de fundição envolvendo as operações de fusão, coquilha, centrifuga e contínua. Assim como nas operações correlatas de acabamento, aplicar procedimentos de segurança nas atividades desempenhadas de acordo com as normas internas de segurança da organização. Executar os procedimentos de preservação do meio ambiente. O colaborador deve possuir um perfil eclético e colaborativo de forma atuar nas diversas atividades que compõem o processo.'},
+{cargo:'AUXILIAR DE FUNDIÇÃO',cbo:'7222-20',area:'Fundição',descricao:'Auxiliar nos processos gerais de fundição envolvendo as operações de fusão, coquilha, centrifuga e contínua. Assim como nas operações correlatas de acabamento, aplicar procedimentos de segurança nas atividades desempenhadas de acordo com as normas internas de segurança da organização. Executar os procedimentos de preservação do meio ambiente. O colaborador deve possuir um perfil eclético e colaborativo de forma atuar nas diversas atividades que compõem o processo.'},
+{cargo:'OPERADOR DE MANUFATURA C',cbo:'7222-20',area:'Fundição',descricao:'Atuar em todo o processo de fundição envolvendo as operações de fusão, coquilha, centrifuga e contínua. Assim como nas operações correlatas de acabamento, aplicar procedimentos de segurança nas atividades desempenhadas de acordo com as normas internas de segurança da organização. Executar os procedimentos de preservação do meio ambiente. O colaborador deve possuir um perfil eclético e colaborativo de forma atuar nas diversas atividades que compõem o processo.'},
+{cargo:'TÉCNICO EM PCP',cbo:'3911-25',area:'Fundição',descricao:'Atuar no planejamento de todas as atividades que compreendem o processo de fabricação de um produto, iniciando no recebimento do pedido de vendas até a expedição dos itens. O ocupante deste cargo deve interagir com todos os processos, propondo soluções, monitorando e auxiliando para que os resultados planejados sejam atingidos. Também é responsavel pela coleta, lançamento, atualização e distribuição das informações de capabilidade, produtividade, disponibilidade e rastreabilidade de pedidos de vendas. Melhorias, desenvolvimento e correções de processos devem ser o foco do PCP e para tanto, controles de matérias primas, de insumos, acompanhamento de manutenções preventivas e corretivas são aitiividades importantes para garantir que atrasos ou retrabalhos contibuam para o não cuprimentos de metas e objetivos da organização. O PCP deve ser atuante e participar, sempre que possível, ativamente das programações e realizações de produção, a fim de aprimorar conhecimento e intercâmbio de experiência, identificando as melhorias em todos os processos de fabricação, e a segurança nos ambientes de trabalho.'},
+{cargo:'ASSISTENTE DE PCP JR',cbo:'7842-05',area:'Fundição',descricao:'Atuar na assistência ao planejamento das atividades que compreendem o processo de fabricação de um produto, iniciando no recebimento do pedido de vendas até a expedição dos itens. O ocupante deste cargo deve interagir com todos os processos, propondo soluções, monitorando e auxiliando para que os resultados planejados sejam atingidos. Realiar coleta, lançamento, atualização e distribuição das informações de capabilidade, produtividade, disponibilidade e rastreabilidade de pedidos de vendas. Atuar em conjunto com a equipe na busca por melhorias, desenvolvimento e correções de processos devem ser o foco do PCP e para tanto, controles de matérias primas, de insumos, acompanhamento de manutenções preventivas e corretivas com foco no atingimento de objetivos.'},
+{cargo:'ANALISTA DE PCP',cbo:'',area:'Fundição',descricao:'Realizar o planejamento das atividades que compreendem o processo de fabricação de um produto, iniciando no recebimento do pedido de vendas até a expedição dos itens. O ocupante deste cargo deve interagir com todos os processos, propondo soluções, monitorando e auxiliando para que os resultados planejados sejam atingidos. Realiar coleta, lançamento, atualização e distribuição das informações de capabilidade, produtividade, disponibilidade e rastreabilidade de pedidos de vendas. Atuar em conjunto com a equipe na busca por melhorias, desenvolvimento e correções de processos devem ser o foco do PCP e para tanto, controles de matérias primas, de insumos, acompanhamento de manutenções preventivas e corretivas com foco no atingimento de objetivos.'},
+{cargo:'MOLDADOR A',cbo:'7223-15',area:'Fundição',descricao:'Executar a moldagem de peças através do processo de areia aplicando alto nível de conhecimento e experiências mínimas necessárias. Bem como preparar e organizar insumos e materiais necessários para realização das atividades de acordo com programação definida e disponibilizar apoio á equipe. Prestar auxílio à liderança no planejamento das atividades de acordo com conhecimento do fluxo, processos, moldes e recursos disponíveis. Realizar a confecção de machos necessários para utilização nos moldes de areia durante o processo de moldagem. Responsabilizar-se pela qualidade das peças e machos confeccionados e por si só garantir a qualidade da moldagem utilizando de maneira correta e extremamente necessária insumos a sua disposição. Bem como prestar auxílio /orientação aos Moldadores C e B quando necessário para execução dos processos. Prestar auxílio quando necessário, aos demais colaboradores do setor quanto a manuseio e transporte de materiais, no procedimento de vazamento de metal nos moldes. Seguir os procedimentos de trabalho e responsabilizar-se pela limpeza e organização do setor qual lhe foi designado para execução das tarefas. Utilizar os Equipamentos de Proteção Individual onde é obrigatório e/ou de acordo com sua função bem como executar as tarefas com segurança.'},
+{cargo:'MOLDADOR B',cbo:'7223-15',area:'Fundição',descricao:'Auxiliar na execução de moldagem de peças através do processo de areia aplicando nível médio de conhecimento e experiências mínimas necessárias. Bem como preparar e organizar insumos e materiais necessários para realização das atividades de acordo com programação e orientação de produção informada pelo Líder ou pelo Moldador A. Auxiliar no processo de confecção de machos necessários para utilização nos moldes de areia durante o processo de moldagem. Responsabilizar-se pela qualidade das peças e machos confeccionados e por si só garantir a qualidade da moldagem utilizando de maneira correta e extremamente necessária insumos a sua disposição. Bem como prestar auxílio /orientação ao Moldador C quando necessário para execução dos processos. Prestar auxílio quando necessário, aos demais colaboradores do setor quanto a manuseio e transporte de materiais, no procedimento de vazamento de metal nos moldes. Seguir os procedimentos de trabalho e responsabilizar-se pela limpeza e organização do setor qual lhe foi designado para execução das tarefas. Utilizar os Equipamentos de Proteção Individual onde é obrigatório e/ou de acordo com sua função bem como executar as tarefas com segurança.'},
+{cargo:'MOLDADOR C',cbo:'7223-15',area:'Fundição',descricao:'Auxiliar na execução de moldagem de peças através do processo de areia. Bem como preparar e organizar insumos e materiais necessários para realização das atividades de acordo com programação e orientação de produção informada pelo Líder ou Moldador A. Auxiliar no processo de confecção de machos necessários para utilização nos moldes de areia durante o processo de moldagem. Prestar auxílio quando necessário, aos demais colaboradores do setor quanto a manuseio e transporte de materiais, no procedimento de vazamento de metal nos moldes. Seguir os procedimentos de trabalho e responsabilizar-se pela limpeza e organização do setor qual lhe foi designado para execução das tarefas. Utilizar os Equipamentos de Proteção Individual onde é obrigatório e/ou de acordo com sua função bem como executar as tarefas com segurança.'},
+{cargo:'FORNEIRO A',cbo:'8212-15',area:'Fundição',descricao:'Atuar nos processo de fundição envolvendo as operações do setor da fusão através da operaçãode fornos, maquinas e equipamentos de preparação e abastecimento bem como operações de auxílio ao vazamento, atividades de carregamento e descarregamento quando necessário. Controlar os parâmetros de processo e a qualidade através de processos seguros aplicando procedimentos de segurança nas atividades desempenhadas de acordo com as normas internas de segurança da organização. O colaborador deve possuir um perfil eclético e colaborativo de forma atuar nas diversas atividades que compõem o processo.'},
+{cargo:'FORNEIRO B',cbo:'8212-15',area:'Fundição',descricao:''},
+{cargo:'LÍDER DE REBARBAÇÃO (prod.)',cbo:'8214-05',area:'Fundição',descricao:'Exercer atividades de acompanhamento, orientação e liderança da equipe da fudição. Planejar e delegar a execução do planejamento e através de seus conhecimentos técnicos e experiências tácitas, oferecer apoio e suporte necessário à produção e responsabilizar-se pelo cumprimento e execuções das tarefas conforme planejamento e padrões de qualidade. Também pode atuar no treinamento e desenvolvimento de de forma a atingir os resultados através de um bom desempenho. Prestar auxílio quando necessário, aos demais colaboradores do setor quanto a manuseio e transporte de materiais, no procedimento de vazamento de metal nos moldes, moldagem, macharia e acabamento de peças. Responsabilizar-se, zelar e cobrar pela limpeza e organização da fábrica e seus setores. Fornecer os EPIs de acordo com a periodicidade, instruções da gestão ou necessidade de troca constatada.Utilizar bem cobrar a utilização pelos liderados dos Equipamentos de Proteção Individual onde é obrigatório e/ou de acordo com sua função bem como executar as tarefas com segurança.'},
+{cargo:'REBARBADOR A',cbo:'8214-50',area:'Fundição',descricao:'Executar atividades de acabamento de peças fundidas em metais (corte, rebarbação, jateamento) removendo rebarbas e irregularidades das superfícies de tais peças aplicando alto nível de conhecimento e experiências mínimas necessárias. Realizar a preparação dos equipamentos, insumos e materiais necessários para realização dos processos da rebarbação. Responsabilizar-se pela entrega de acordo com planejamento e por si só garantir a qualidade do acabamento das peças evitando refugos por meio desse processo e utilizando de maneira correta e extremamente necessária insumos à sua disposição. Bem como prestar orientar e auxiliar ao Rebarbador C e B quando necessário para execução dos processos. Prestar auxílio quando necessário, aos demais colaboradores do setor quanto a manuseio e transporte de materiais. Seguir os procedimentos de trabalho e responsabilizar-se pela limpeza e organização do setor qual lhe foi designado para execução das tarefas. Utilizar os Equipamentos de Proteção Individual onde é obrigatório e/ou de acordo com sua função bem como executar as tarefas com segurança.'},
+{cargo:'REBARBADOR B',cbo:'8214-50',area:'Fundição',descricao:''},
+{cargo:'REBARBADOR C',cbo:'8214-50',area:'Fundição',descricao:'Auxiliar na execução de acabamento de peças fundidas em metais (corte, rebarbação, jateamento) removendo rebarbas e irregularidades das superfícies de tais peças. Auxiliar no processo de preparação dos equipamentos, insumos e materiais necessários para realização dos processos da rebarbação. Prestar auxílio quando necessário, aos demais colaboradores do setor quanto a manuseio e transporte de materiais. Seguir os procedimentos de trabalho e responsabilizar-se pela limpeza e organização do setor qual lhe foi designado para execução das tarefas. Utilizar os Equipamentos de Proteção Individual onde é obrigatório e/ou de acordo com sua função bem como executar as tarefas com segurança.'},
+{cargo:'SUPERVISOR PRODUÇÃO (usinagem)',cbo:'7201-50',area:'Geral',descricao:''},
+{cargo:'LÍDER DE PRODUÇÃO (usinagem)',cbo:'7201-50',area:'Geral',descricao:''},
+{cargo:'TORNEIRO DE PRODUÇÃO A',cbo:'7214-30',area:'Geral',descricao:''},
+{cargo:'TORNEIRO DE PRODUÇÃO B e C',cbo:'7212-15',area:'Geral',descricao:''},
+{cargo:'ANALISTA DE PROCESSO',cbo:'3911-05',area:'Geral',descricao:''},
+{cargo:'ANALISTA DE PCP ou PRODUÇÃO',cbo:'2527-05 (2527-10 - ANALISTA DE PLANEJAMENTO DE MATERIAIS)',area:'Geral',descricao:''},
+{cargo:'ANALISTA DE LOGÍSTICA',cbo:'2527-15',area:'Geral',descricao:''},
+{cargo:'TÉCNICO DE PRODUÇÃO/ TÉCNICO DE PROCESSOS /TÉCNICO ANAL. DE PCP/ANALISTA DE PCP',cbo:'3911-25',area:'Geral',descricao:''},
+{cargo:'TÉCNICO DA QUALIDADE',cbo:'3912-10',area:'Geral',descricao:''},
+{cargo:'ASSISTENTE DA QUALIDADE/ ASSIST. TÉCNICO DA QUALIDADE',cbo:'3912-15',area:'Geral',descricao:''},
+{cargo:'ASSISTENTE DE PCP / ASSIST. ou AUXILIAR DE PRODUÇÃO',cbo:'7842-05',area:'Geral',descricao:''},
+{cargo:'ASSISTENTE DE MANUTENÇÃO',cbo:'PESQUISAR CBO, POIS NÃO TEM PARA ESSE CARGO',area:'Geral',descricao:''},
+{cargo:'OPERADOR DE MANUFATURA C, B e A',cbo:'7222-20',area:'Geral',descricao:''},
+{cargo:'SUPERVISOR FINANCEIRO-ADM',cbo:'4102-25',area:'Geral',descricao:''},
+{cargo:'ASSISTENTE ADMINISTRATIVO',cbo:'4110-10',area:'Geral',descricao:''},
+{cargo:'ANALISTA FISCAL',cbo:'2521-05',area:'Geral',descricao:''},
+{cargo:'ANALISTA DE RH',cbo:'2524-05',area:'Geral',descricao:''},
+{cargo:'ANALISTA DE COMPRAS',cbo:'2521-25',area:'Geral',descricao:''},
+{cargo:'ASSISTENTE DE VENDAS (técnica)',cbo:'3541-25',area:'Geral',descricao:''},
+{cargo:'VENDEDOR TÉCNICO / TÉCNICO DE VENDAS',cbo:'3541-35',area:'Geral',descricao:''}
+];
+
+function buildDescCargosSeed() {
+  if (localStorage.getItem('ac_desccargos_v1')) return;
+  const now = nowStr();
+  const seeded = DESC_CARGOS_SEED.map((s, i) => Object.assign({}, s, {
+    id: i + 1, status: 'Ativo', criadoEm: now, atualizadoEm: now
+  }));
+  saveData('descricao_cargos', seeded);
+  logAudit('Descrição de Cargos', 'Inclusão', 0, `Importação inicial — ${seeded.length} cargos (manual de cargos e CBO)`);
+  seeded.forEach(r => syncRecordToCloud('descricao_cargos', r));
+  localStorage.setItem('ac_desccargos_v1', '1');
+}
+
+function dcToggle(id) {
+  const el = document.getElementById('dc-desc-'+id);
+  if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none';
+}
+
+function dcCardRender(r) {
+  const areaColor = {'Administrativo':'bb','Qualidade E Expedição':'bp','Usinagem':'by','Fundição':'bo','Geral':'bgy'}[r.area] || 'bgy';
+  return `<div class="card" style="padding:12px;margin-bottom:8px">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;cursor:pointer" onclick="dcToggle(${r.id})">
+      <div>
+        <div style="font-weight:700;font-size:13px">${r.cargo}</div>
+        <div style="margin-top:4px;display:flex;gap:6px;align-items:center">
+          <span class="badge ${areaColor}">${r.area||'—'}</span>
+          ${r.cbo ? `<span class="badge bgy" style="font-family:monospace">CBO ${r.cbo}</span>` : '<span class="badge br">CBO não definido</span>'}
+        </div>
+      </div>
+      <div style="white-space:nowrap">
+        <button class="btn btn-s btn-xs" onclick="event.stopPropagation();openCrudModal(MOD_DESCCARGO,${r.id})">✏</button>
+        <button class="btn btn-s btn-xs" onclick="event.stopPropagation();crudDeleteAction(MOD_DESCCARGO,${r.id},'${escAttr(r.cargo)}')">🗑</button>
+      </div>
+    </div>
+    <div id="dc-desc-${r.id}" style="display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--g100);font-size:12px;color:var(--g600);line-height:1.6">
+      ${r.descricao || '<span class="muted">Sem descrição cadastrada.</span>'}
+    </div>
+  </div>`;
+}
+
+function renderDescCargos() {
+  const search = (document.getElementById('dc-search')?.value || '').toUpperCase();
+  const area = document.getElementById('dc-area-sel')?.value || '';
+  let all = loadData('descricao_cargos').filter(r => r.status !== 'Inativo');
+  if (search) all = all.filter(r => r.cargo.toUpperCase().includes(search) || (r.cbo||'').includes(search));
+  if (area) all = all.filter(r => r.area === area);
+  all.sort((a,b) => a.cargo.localeCompare(b.cargo));
+  const box = document.getElementById('dc-lista');
+  if (!box) return;
+  box.innerHTML = all.length ? all.map(dcCardRender).join('') : '<div class="muted" style="text-align:center;padding:20px">Nenhum cargo encontrado.</div>';
+  setText('dc-count', all.length + ' cargos');
+}
+
+function fb90PrintForm(id) {
+  const r = loadData('feedback90').find(d => d.id === id);
+  if (!r) return;
+  const colab = loadData('colaboradores').find(c => (c.nome||'').toUpperCase() === (r.colaborador||'').toUpperCase());
+  const cargo = colab ? colab.cargo : '—';
+  const setor = colab ? colab.setor : '—';
+
+  let html = `<div style="page-break-after:always;padding:10px 4px">
+    <h2 style="text-align:center;margin-bottom:2px">PLANO DE ACOMPANHAMENTO DE EXPERIÊNCIA — FEEDBACK 90 DIAS</h2>
+    <p style="text-align:center;font-size:11px;color:#666;margin-bottom:14px">Recursos Humanos — Uso Interno Confidencial</p>
+    <table style="width:100%;border-collapse:collapse;font-size:12px;margin-bottom:16px">
+      <tr><td style="padding:4px;font-weight:700">Nome do Colaborador:</td><td style="padding:4px">${r.colaborador}</td></tr>
+      <tr><td style="padding:4px;font-weight:700">Data de Admissão:</td><td style="padding:4px">${r.admissao||'—'}</td></tr>
+      <tr><td style="padding:4px;font-weight:700">Cargo Atual:</td><td style="padding:4px">${cargo||'—'}</td></tr>
+      <tr><td style="padding:4px;font-weight:700">Departamento:</td><td style="padding:4px">${setor||'—'}</td></tr>
+    </table>`;
+
+  FEEDBACK90_STAGES.forEach(st => {
+    const info = FEEDBACK90_STAGE_TEXT[st];
+    html += `<div style="margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid #ddd">
+      <div style="font-weight:700;font-size:12px;margin-bottom:4px">${info.titulo} — ${r[st+'Data']||'—'} <span style="font-weight:400;color:#666">(${r[st+'Status']})</span></div>
+      <div style="font-size:10.5px;color:#555;margin-bottom:10px">${info.texto}</div>
+      <div style="border-bottom:1px solid #000;height:40px"></div>
+      <div style="display:flex;justify-content:space-between;font-size:10px;margin-top:2px">
+        <span>ASSINATURA DO COLABORADOR(A)</span><span>ASSINATURA DO GESTOR(A)</span>
+      </div>
+    </div>`;
+  });
+  html += `</div>`;
+
+  ensureReciboModal();
+  document.getElementById('m-recibo').classList.add('open');
+  const dfEl = document.getElementById('recibo-date-fields'); if (dfEl) dfEl.style.display = 'none';
+  document.getElementById('recibo-preview').innerHTML = html;
+}
+
 
 /* ═══════════════ MÓDULO: CARGOS & SALÁRIOS ═══════════════ */
 const MOD_CARGO = {
