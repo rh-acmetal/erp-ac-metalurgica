@@ -345,7 +345,7 @@ tr:last-child td{border-bottom:none}
   <div class="l-box">
     <div class="l-logo">
       <div class="l-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
-      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.13 — Conferência PCMSO × ASO × Valores</div></div>
+      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.16 — Auditoria CRUD: Limpar & Exportar</div></div>
     </div>
     <div class="f-row"><label>Usuário</label><input type="text" id="l-user" value="jakeline@acmetalurgica.com.br"></div>
     <div class="f-row"><label>Senha</label><input type="password" id="l-pass" value="••••••••"></div>
@@ -771,6 +771,7 @@ tr:last-child td{border-bottom:none}
           <option value="9">Setembro/2026</option><option value="10" selected>Outubro/2026</option>
         </select>
         <span class="chip" id="cv-count">— registros</span>
+        <button class="btn btn-s btn-sm" onclick="document.getElementById('cv-mes-sel').value='10';renderCestaVegas('10')">🔄 Limpar</button>
         <button class="btn btn-s btn-sm" onclick="exportTableToExcel('cesta_vegas',[{field:'colaborador',label:'Colaborador',width:35},{field:'mes',label:'Mês',width:14},{field:'cnpj',label:'CNPJ',width:10},{field:'cesta',label:'Cesta',width:10},{field:'vegas',label:'Vegas',width:10},{field:'qtdCesta',label:'Qtd',width:8},{field:'observacoes',label:'Observações',width:35}],'CestaVegas')">⬇ Exportar</button>
       </div>
       <div class="kpi-grid">
@@ -827,6 +828,8 @@ tr:last-child td{border-bottom:none}
           <option>Administrativo</option><option>Qualidade E Expedição</option><option>Usinagem</option><option>Fundição</option><option>Geral</option>
         </select>
         <span class="chip" id="dc-count">— cargos</span>
+        <button class="btn btn-s btn-sm" onclick="document.getElementById('dc-search').value='';document.getElementById('dc-area-sel').value='';renderDescCargos()">🔄 Limpar</button>
+        <button class="btn btn-s btn-sm" onclick="exportTableToExcel('descricao_cargos',[{field:'cargo',label:'Cargo',width:35},{field:'cbo',label:'CBO',width:12},{field:'area',label:'Área',width:20},{field:'descricao',label:'Descrição',width:60}],'DescricaoCargos')">⬇ Exportar</button>
       </div>
       <div id="dc-lista"></div>
     </div>
@@ -842,6 +845,8 @@ tr:last-child td{border-bottom:none}
           <option value="">AC + BRASS</option><option value="AC">AC</option><option value="BRASS">BRASS</option>
         </select>
         <span class="chip" id="sf-count">— períodos</span>
+        <button class="btn btn-s btn-sm" onclick="document.getElementById('sf-cnpj-sel').value='';renderSSTFinanceiro()">🔄 Limpar</button>
+        <button class="btn btn-s btn-sm" onclick="exportTableToExcel('sst_financeiro',[{field:'cnpj',label:'CNPJ',width:10},{field:'periodo',label:'Período',width:18},{field:'qtdVidas',label:'Vidas Ativas',width:14},{field:'totalVidas',label:'Valor Vidas (R$)',width:16},{field:'valorTotalExames',label:'Valor Exames (R$)',width:16},{field:'valorTotalGeral',label:'Valor Total (R$)',width:16}],'FinanceiroSST')">⬇ Exportar</button>
       </div>
       <div class="kpi-grid">
         <div class="kpi-card"><div class="kpi-lbl">Total no ano (filtro atual)</div><div class="kpi-val" style="color:var(--blue)" id="sf-kpi-total">—</div></div>
@@ -879,7 +884,7 @@ tr:last-child td{border-bottom:none}
       </div>
       <div id="pcmso-panel-conf"><div id="pcmso-conf-lista"></div></div>
       <div id="pcmso-panel-val" style="display:none">
-        <div class="card" style="padding:0"><table><thead><tr><th>Colaborador</th><th>Exame</th><th>Data</th><th>Valor Cobrado</th><th>Valor Tabelado</th><th>Diferença</th><th>Status</th></tr></thead>
+        <div class="card" style="padding:0"><table><thead><tr><th>Colaborador</th><th>Exame</th><th>Data</th><th>Valor Cobrado</th><th>Valor Tabelado</th><th>Diferença</th><th>Status</th><th>Ações</th></tr></thead>
         <tbody id="pcmso-val-tbody"></tbody></table></div>
       </div>
       <div id="pcmso-panel-pend" style="display:none"><div id="pcmso-pend-lista"></div></div>
@@ -887,6 +892,7 @@ tr:last-child td{border-bottom:none}
         <div class="filters" style="margin-bottom:10px">
           <input class="finp" type="text" id="matriz-search" placeholder="🔎 Buscar cargo..." oninput="renderMatrizPCMSO()">
           <select class="fsel" id="matriz-empresa-sel" onchange="renderMatrizPCMSO()"><option value="">AC + BRASS</option><option>AC</option><option>BRASS</option></select>
+          <button class="btn btn-s btn-sm" onclick="document.getElementById('matriz-search').value='';document.getElementById('matriz-empresa-sel').value='';renderMatrizPCMSO()">🔄 Limpar</button>
         </div>
         <div class="card" style="padding:0"><table><thead><tr><th>Cargo</th><th>Empresa</th><th>GHE</th><th>Exame</th><th>Periodicidade</th><th>Admis.</th><th>Ret.Trab</th><th>Mud.Risco</th><th>Demissão</th></tr></thead>
         <tbody id="matriz-tbody"></tbody></table></div>
@@ -2302,6 +2308,7 @@ function buildAll(){
   try{buildSSTRealSeed();}catch(e){console.warn('buildSSTRealSeed:',e);}
   try{buildSSTFinSeed();}catch(e){console.warn('buildSSTFinSeed:',e);}
   try{buildPcmsoSeed();}catch(e){console.warn('buildPcmsoSeed:',e);}
+  try{migracaoRealocacoes2026();}catch(e){console.warn('migracaoRealocacoes2026:',e);}
   try{tryRestoreSupabase();}catch(e){console.warn('tryRestoreSupabase:',e); updateDBStatusBadge('error');}
   try{initAllAdvFilters();}catch(e){console.warn('initAllAdvFilters:',e);}
   try{initLote7();}catch(e){console.warn('initLote7:',e);}
@@ -3230,13 +3237,30 @@ const MOD_COLAB = {
     {field:'adm', label:'Data de Admissão (dd/mm/aaaa)', required:true, placeholder:'dd/mm/aaaa'},
     {field:'nascimento', label:'Data de Nascimento (dd/mm/aaaa)', placeholder:'dd/mm/aaaa'},
     {field:'sal', label:'Salário (R$)', placeholder:'R$ 0,00'},
-    {field:'cnpj', label:'CNPJ', type:'select', options:['01','02']},
+    {field:'cnpj', label:'CNPJ', type:'select', options:['01','02','PJ']},
     {field:'rg', label:'RG'},
     {field:'cpf', label:'CPF'},
     {field:'status', label:'Status', type:'select', options:['Ativo','Afastado','Férias','Inativo']},
   ],
   onSave: () => { tcColab.refresh(); }
 };
+
+/* Correção pontual de cadastro — 1x, roda sozinha no próximo login */
+function normSemAcento(s) {
+  return (s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim().toUpperCase();
+}
+function migracaoRealocacoes2026() {
+  if (localStorage.getItem('ac_realoc_v1')) return;
+  const colabs = loadData('colaboradores');
+  const ademir = colabs.find(c => normSemAcento(c.nome).includes('ADEMIR XAVIER PIRES'));
+  if (ademir) crudUpdate('colaboradores', ademir.id, {cnpj:'PJ'}, {modulo:'Colaboradores', label: ademir.nome});
+  const joao = colabs.find(c => normSemAcento(c.nome).includes('JOAO ANTONIO DE OLIVEIRA'));
+  if (joao) crudUpdate('colaboradores', joao.id, {cnpj:'PJ'}, {modulo:'Colaboradores', label: joao.nome});
+  const aroldo = colabs.find(c => normSemAcento(c.nome).includes('AROLDO'));
+  if (aroldo) crudUpdate('colaboradores', aroldo.id, {status:'Inativo'}, {modulo:'Colaboradores', label: aroldo.nome});
+  logAudit('Colaboradores', 'Atualização', 0, `Correção de cadastro: ${ademir?ademir.nome+' → PJ; ':''}${joao?joao.nome+' → PJ; ':''}${aroldo?aroldo.nome+' → Inativo':''}`);
+  localStorage.setItem('ac_realoc_v1', '1');
+}
 
 function colabRowRender(rows) {
   return rows.map((c,i) => {
@@ -6194,8 +6218,16 @@ function pcmsoComputarConformidade() {
   const resultado = [];
   colabs.forEach(c => {
     const nomeCargoUp = (c.cargo||'').trim().toUpperCase();
-    const exigidos = matriz.filter(m => m.cargo.trim().toUpperCase() === nomeCargoUp);
-    if (!exigidos.length) return; // função não mapeada na matriz — não gera pendência falsa
+    const exigidosBrutos = matriz.filter(m => m.cargo.trim().toUpperCase() === nomeCargoUp);
+    if (!exigidosBrutos.length) return; // função não mapeada na matriz — não gera pendência falsa
+    // Um mesmo cargo pode aparecer em mais de um GHE do PCMSO (ex: função compartilhada entre setores).
+    // Um exame com o mesmo nome exigido por mais de um GHE conta uma única vez.
+    const vistos = new Set();
+    const exigidos = [];
+    exigidosBrutos.forEach(e => {
+      const k = e.exame.trim().toUpperCase();
+      if (!vistos.has(k)) { vistos.add(k); exigidos.push(e); }
+    });
 
     exigidos.forEach(req => {
       const feitos = realizados.filter(r => (r.colaborador||'').trim().toUpperCase() === (c.nome||'').trim().toUpperCase()
@@ -6272,7 +6304,11 @@ function renderPcmsoValores() {
     const badgeMap = { 'OK':'bg', 'VALOR DIVERGENTE':'br', 'SEM VALOR CADASTRADO':'by', 'ABAIXO DO TABELADO':'bb' };
     return `<tr><td>${r.colaborador}</td><td>${r.exame}</td><td>${r.dataRealizacao||'—'}</td>
       <td>R$ ${cobrado.toFixed(2)}</td><td>${contratado!=null?'R$ '+contratado.toFixed(2):'—'}</td>
-      <td>${diff!=='—'?'R$ '+diff:'—'}</td><td><span class="badge ${badgeMap[status]}">${status}</span></td></tr>`;
+      <td>${diff!=='—'?'R$ '+diff:'—'}</td><td><span class="badge ${badgeMap[status]}">${status}</span></td>
+      <td style="white-space:nowrap">
+        <button class="btn btn-s btn-xs" onclick="openCrudModal(MOD_EXAMEREAL,${r.id})">✏</button>
+        <button class="btn btn-s btn-xs" onclick="crudDeleteAction(MOD_EXAMEREAL,${r.id},'${escAttr(r.colaborador+' - '+r.exame)}')">🗑</button>
+      </td></tr>`;
   });
   tbody.innerHTML = rows.join('') || '<tr><td colspan="7" class="muted" style="text-align:center;padding:16px">Nenhum exame lançado ainda.</td></tr>';
   setText('pcmso-kpi-divergente', divergentes);
@@ -9109,6 +9145,7 @@ function endomktFiltrar() {
           <div style="font-size:9px;color:var(--g400);margin-top:4px">${e.responsavel||'—'} · ${e.data||'a definir'}</div>
         </div>
         <button class="btn btn-s btn-xs" onclick="openCrudModal(MOD_ENDOMKT,${e.id})">✏</button>
+        <button class="btn btn-s btn-xs" onclick="crudDeleteAction(MOD_ENDOMKT,${e.id},'${escAttr(e.acao)}')">🗑</button>
       </div>
     </div>`;
   }).join('') || '<div class="muted" style="grid-column:1/-1;text-align:center;padding:20px">Nenhuma ação encontrada</div>';
