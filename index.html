@@ -345,7 +345,7 @@ tr:last-child td{border-bottom:none}
   <div class="l-box">
     <div class="l-logo">
       <div class="l-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
-      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.16 — Auditoria CRUD: Limpar & Exportar</div></div>
+      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.17 — Colaboradores: Visão Ficha (Cadastro Completo)</div></div>
     </div>
     <div class="f-row"><label>Usuário</label><input type="text" id="l-user" value="jakeline@acmetalurgica.com.br"></div>
     <div class="f-row"><label>Senha</label><input type="password" id="l-pass" value="••••••••"></div>
@@ -572,11 +572,50 @@ tr:last-child td{border-bottom:none}
       <div class="section-hdr">
         <div class="sec-title"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Colaboradores — <span id="colab-fonte-lbl" style="font-size:11px;font-weight:400;color:var(--g400)">AC Metal + Brass Metal · carregando...</span></div>
         <div style="display:flex;gap:8px">
+          <button class="btn btn-s btn-sm" onclick="colabToggleView()" id="colab-view-toggle-btn">🗂 Visão Ficha</button>
           <button class="btn btn-s btn-sm" onclick="exportarColabExcel()">⬇ Exportar Excel</button>
           <button class="btn btn-s btn-sm" onclick="openCrudModal(MOD_COLAB,null)">+ Novo</button>
           <button class="btn btn-p btn-sm" onclick="go('importar',document.querySelector('.nav-item:nth-child(18)'),'Importar Planilha Excel','Atualizar dados')">📥 Importar Planilha</button>
         </div>
       </div>
+
+      <!-- ══ VISÃO FICHA (lista + abas) ══ -->
+      <div id="colab-ficha-view" style="display:none;margin-bottom:14px">
+        <div style="display:flex;gap:0;border:1px solid var(--g100);border-radius:10px;overflow:hidden;min-height:560px">
+          <div style="width:270px;border-right:1px solid var(--g100);display:flex;flex-direction:column;background:var(--g50,#fafbfc)">
+            <div style="padding:10px;border-bottom:1px solid var(--g100)">
+              <input class="finp" type="text" id="colab-ficha-search" placeholder="🔎 Buscar por nome ou matrícula..." oninput="colabFichaRenderList()" style="width:100%">
+            </div>
+            <div id="colab-ficha-lista" style="flex:1;overflow-y:auto;max-height:520px"></div>
+          </div>
+          <div style="flex:1;display:flex;flex-direction:column">
+            <div style="display:flex;gap:4px;padding:8px 10px;border-bottom:1px solid var(--g100);flex-wrap:wrap;background:var(--g50,#fafbfc)">
+              <button class="btn btn-s btn-xs" onclick="colabFichaAcao('novo')">➕ Novo</button>
+              <button class="btn btn-s btn-xs" onclick="colabFichaAcao('editar')">✏ Editar</button>
+              <button class="btn btn-s btn-xs" onclick="colabFichaAcao('duplicar')">📋 Duplicar</button>
+              <button class="btn btn-s btn-xs" onclick="colabFichaAcao('bloquear')">🔒 Bloquear/Ativar</button>
+              <button class="btn btn-s btn-xs" onclick="colabFichaAcao('excluir')">🗑 Excluir</button>
+              <button class="btn btn-s btn-xs" onclick="colabFichaAcao('ficha')">🖨 Imprimir Ficha</button>
+            </div>
+            <div id="colab-ficha-vazio" style="flex:1;display:flex;align-items:center;justify-content:center;color:var(--g400);font-size:12px">Selecione um colaborador na lista ao lado.</div>
+            <div id="colab-ficha-detalhe" style="display:none;flex:1;flex-direction:column">
+              <div style="padding:14px 16px;border-bottom:1px solid var(--g100)">
+                <div style="font-size:15px;font-weight:700" id="cf-nome">—</div>
+                <div style="font-size:11px;color:var(--g500)" id="cf-sub">—</div>
+              </div>
+              <div class="tabs" style="padding:0 12px;border-bottom:1px solid var(--g100)">
+                <div class="tab active" onclick="colabFichaSwitchTab('cadastrais')">Dados Cadastrais</div>
+                <div class="tab" onclick="colabFichaSwitchTab('endereco')">Endereço</div>
+                <div class="tab" onclick="colabFichaSwitchTab('contratuais')">Dados Contratuais</div>
+                <div class="tab" onclick="colabFichaSwitchTab('folha')">Informações da Folha</div>
+                <div class="tab" onclick="colabFichaSwitchTab('gestao')">Gestão</div>
+              </div>
+              <div style="padding:16px;overflow-y:auto" id="colab-ficha-tabcontent"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="colab-lista-view"></div>
       <div class="kpi-grid">
         <div class="kpi-card"><div class="kpi-lbl">Total Ativos</div><div class="kpi-val" id="colab-kpi-total">—</div><div class="kpi-delta dn" id="colab-fonte-lbl2">carregando...</div></div>
         <div class="kpi-card"><div class="kpi-lbl">CNPJ 01 — AC Metal</div><div class="kpi-val" id="colab-kpi-cnpj01">—</div></div>
@@ -3232,6 +3271,7 @@ const MOD_COLAB = {
   fields: [
     {field:'mat', label:'Matrícula', required:true},
     {field:'nome', label:'Nome Completo', required:true, full:true},
+    {field:'nomeCurto', label:'Nome Curto / Apelido'},
     {field:'cargo', label:'Cargo', required:true},
     {field:'setor', label:'Setor', type:'select', options:SETORES, required:true},
     {field:'adm', label:'Data de Admissão (dd/mm/aaaa)', required:true, placeholder:'dd/mm/aaaa'},
@@ -3240,15 +3280,172 @@ const MOD_COLAB = {
     {field:'cnpj', label:'CNPJ', type:'select', options:['01','02','PJ']},
     {field:'rg', label:'RG'},
     {field:'cpf', label:'CPF'},
+    {field:'pis', label:'PIS/PASEP'},
     {field:'status', label:'Status', type:'select', options:['Ativo','Afastado','Férias','Inativo']},
+    {field:'telefone', label:'Telefone'},
+    {field:'celular', label:'Celular'},
+    {field:'email', label:'E-mail'},
+    {field:'enderecoTipo', label:'Tipo de Logradouro', placeholder:'Rua, Av...'},
+    {field:'endereco', label:'Endereço'},
+    {field:'numero', label:'Número'},
+    {field:'complemento', label:'Complemento'},
+    {field:'bairro', label:'Bairro'},
+    {field:'cidade', label:'Município'},
+    {field:'uf', label:'UF'},
+    {field:'cep', label:'CEP'},
+    {field:'pai', label:'Nome do Pai'},
+    {field:'mae', label:'Nome da Mãe'},
+    {field:'sexo', label:'Sexo', type:'select', options:['Masculino','Feminino']},
+    {field:'estadoCivil', label:'Estado Civil', type:'select', options:['Solteiro(a)','Casado(a)','Divorciado(a)','Viúvo(a)','União Estável']},
+    {field:'grauInstrucao', label:'Grau de Instrução', type:'select', options:['Fundamental Incompleto','Fundamental Completo','Médio Incompleto','Médio Completo','Superior Incompleto','Superior Completo','Pós-graduação']},
+    {field:'corRaca', label:'Cor/Raça', type:'select', options:['Branca','Preta','Parda','Amarela','Indígena','Não informado']},
+    {field:'deficiencia', label:'Deficiência (PCD)', type:'select', options:['Não','Física','Mental','Auditiva','Intelectual','Visual','Reabilitado']},
+    {field:'cbo', label:'CBO'},
+    {field:'sindicato', label:'Sindicato'},
+    {field:'horarioTrabalho', label:'Horário de Trabalho', placeholder:'Ex: 07:00–17:00 (Seg–Sex)'},
+    {field:'matriculaEsocial', label:'Matrícula eSocial'},
+    {field:'observacoes', label:'Observações', type:'textarea', full:true},
   ],
-  onSave: () => { tcColab.refresh(); }
+  onSave: () => { tcColab.refresh(); try{ colabDetailRender(colabDetailAtual); }catch(e){} }
 };
 
 /* Correção pontual de cadastro — 1x, roda sozinha no próximo login */
 function normSemAcento(s) {
   return (s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim().toUpperCase();
 }
+
+/* ═══════════════ COLABORADORES — VISÃO FICHA (lista + abas) ═══════════════ */
+let colabDetailAtual = null;
+let colabFichaAtivo = false;
+
+function colabToggleView() {
+  colabFichaAtivo = !colabFichaAtivo;
+  const page = document.getElementById('page-colaboradores');
+  const fichaView = document.getElementById('colab-ficha-view');
+  const btn = document.getElementById('colab-view-toggle-btn');
+  // esconde/mostra todos os outros filhos diretos da página (KPIs, tabela, gráficos) exceto o cabeçalho e a ficha
+  Array.from(page.children).forEach(child => {
+    if (child === fichaView || child.classList.contains('section-hdr') || child.classList.contains('layer-badge')) return;
+    child.style.display = colabFichaAtivo ? 'none' : '';
+  });
+  fichaView.style.display = colabFichaAtivo ? 'block' : 'none';
+  btn.textContent = colabFichaAtivo ? '📊 Visão Lista' : '🗂 Visão Ficha';
+  if (colabFichaAtivo) colabFichaRenderList();
+}
+
+function colabFichaRenderList() {
+  const q = (document.getElementById('colab-ficha-search')?.value || '').toUpperCase();
+  let all = loadData('colaboradores').filter(c => c.status !== 'Inativo' || q);
+  if (q) all = all.filter(c => (c.nome||'').toUpperCase().includes(q) || (c.mat||'').toString().includes(q));
+  all.sort((a,b) => (a.nome||'').localeCompare(b.nome||''));
+  const box = document.getElementById('colab-ficha-lista');
+  box.innerHTML = all.map(c => `
+    <div onclick="colabFichaSelect(${c.id})" style="padding:9px 12px;border-bottom:1px solid var(--g100);cursor:pointer;${colabDetailAtual===c.id?'background:var(--blue-bg,#eaf1fb)':''}" onmouseover="this.style.background='var(--g100)'" onmouseout="this.style.background='${colabDetailAtual===c.id?'var(--blue-bg,#eaf1fb)':'transparent'}'">
+      <div style="font-size:12px;font-weight:600">${c.nome||'—'}</div>
+      <div style="font-size:10px;color:var(--g500)">Mat. ${c.mat||'—'} · ${c.cargo||'—'}</div>
+    </div>`).join('') || '<div class="muted" style="padding:16px;text-align:center">Nenhum colaborador encontrado.</div>';
+}
+
+function colabFichaSelect(id) {
+  colabDetailAtual = id;
+  colabFichaRenderList();
+  colabDetailRender(id);
+}
+
+function cfField(label, value) {
+  return `<div style="margin-bottom:10px"><div style="font-size:10px;color:var(--g500);text-transform:uppercase;letter-spacing:.03em">${label}</div><div style="font-size:13px;margin-top:2px">${value || '<span class="muted">—</span>'}</div></div>`;
+}
+
+function colabDetailRender(id) {
+  const c = loadData('colaboradores').find(x => x.id === id);
+  const vazio = document.getElementById('colab-ficha-vazio');
+  const det = document.getElementById('colab-ficha-detalhe');
+  if (!c) { vazio.style.display='flex'; det.style.display='none'; return; }
+  vazio.style.display = 'none';
+  det.style.display = 'flex';
+  setText('cf-nome', c.nome);
+  setText('cf-sub', `Matrícula ${c.mat||'—'} · ${c.cargo||'—'} · ${c.setor||'—'} · CNPJ ${c.cnpj||'—'}`);
+  colabFichaSwitchTab(window._cfTabAtiva || 'cadastrais');
+}
+
+function colabFichaSwitchTab(tab) {
+  window._cfTabAtiva = tab;
+  document.querySelectorAll('#colab-ficha-detalhe .tab').forEach(t => t.classList.remove('active'));
+  const idx = ['cadastrais','endereco','contratuais','folha','gestao'].indexOf(tab);
+  const tabs = document.querySelectorAll('#colab-ficha-detalhe .tab');
+  if (tabs[idx]) tabs[idx].classList.add('active');
+
+  const c = loadData('colaboradores').find(x => x.id === colabDetailAtual);
+  if (!c) return;
+  const box = document.getElementById('colab-ficha-tabcontent');
+  const grid = (html) => `<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px 20px">${html}</div>`;
+
+  if (tab === 'cadastrais') {
+    box.innerHTML = grid(
+      cfField('Nome Completo', c.nome) + cfField('Nome Curto/Apelido', c.nomeCurto) + cfField('Matrícula', c.mat) +
+      cfField('Data de Nascimento', c.nascimento) + cfField('Sexo', c.sexo) + cfField('Estado Civil', c.estadoCivil) +
+      cfField('Grau de Instrução', c.grauInstrucao) + cfField('Cor/Raça', c.corRaca) + cfField('Deficiência (PCD)', c.deficiencia) +
+      cfField('Telefone', c.telefone) + cfField('Celular', c.celular) + cfField('E-mail', c.email) +
+      cfField('Nome do Pai', c.pai) + cfField('Nome da Mãe', c.mae) + cfField('RG', c.rg) +
+      cfField('CPF', c.cpf) + cfField('PIS/PASEP', c.pis) + ''
+    );
+  } else if (tab === 'endereco') {
+    box.innerHTML = grid(
+      cfField('Tipo de Logradouro', c.enderecoTipo) + cfField('Endereço', c.endereco) + cfField('Número', c.numero) +
+      cfField('Complemento', c.complemento) + cfField('Bairro', c.bairro) + cfField('Município', c.cidade) +
+      cfField('UF', c.uf) + cfField('CEP', c.cep) + ''
+    );
+  } else if (tab === 'contratuais') {
+    box.innerHTML = grid(
+      cfField('Cargo', c.cargo) + cfField('Setor', c.setor) + cfField('CNPJ', c.cnpj) +
+      cfField('Data de Admissão', c.adm) + cfField('CBO', c.cbo) + cfField('Sindicato', c.sindicato) +
+      cfField('Matrícula eSocial', c.matriculaEsocial) + cfField('Status', c.status) + ''
+    );
+  } else if (tab === 'folha') {
+    box.innerHTML = grid(
+      cfField('Salário', c.sal ? 'R$ '+c.sal : '') + cfField('Horário de Trabalho', c.horarioTrabalho) + ''
+    );
+  } else if (tab === 'gestao') {
+    box.innerHTML = grid(cfField('Status', c.status) + '') + `<div style="margin-top:10px">${cfField('Observações', c.observacoes)}</div>`;
+  }
+}
+
+function colabFichaAcao(acao) {
+  const c = colabDetailAtual ? loadData('colaboradores').find(x => x.id === colabDetailAtual) : null;
+  if (acao === 'novo') { openCrudModal(MOD_COLAB, null); return; }
+  if (!c) { showToast('Selecione um colaborador na lista primeiro', 'warn'); return; }
+  if (acao === 'editar') openCrudModal(MOD_COLAB, c.id);
+  else if (acao === 'duplicar') {
+    const copia = Object.assign({}, c); delete copia.id; delete copia.mat;
+    copia.nome = copia.nome + ' (cópia)';
+    const novo = crudCreate('colaboradores', copia, {modulo:'Colaboradores', label: copia.nome});
+    showToast('📋 Colaborador duplicado — edite os dados antes de salvar de vez');
+    colabFichaSelect(novo.id);
+  }
+  else if (acao === 'bloquear') {
+    const novoStatus = c.status === 'Inativo' ? 'Ativo' : 'Inativo';
+    crudUpdate('colaboradores', c.id, {status: novoStatus}, {modulo:'Colaboradores', label: c.nome});
+    showToast(novoStatus === 'Inativo' ? '🔒 Colaborador bloqueado (inativado)' : '🔓 Colaborador reativado');
+    colabDetailRender(c.id);
+  }
+  else if (acao === 'excluir') crudDeleteAction(MOD_COLAB, c.id, c.nome);
+  else if (acao === 'ficha') {
+    ensureReciboModal();
+    document.getElementById('m-recibo').classList.add('open');
+    const dfEl = document.getElementById('recibo-date-fields'); if (dfEl) dfEl.style.display = 'none';
+    document.getElementById('recibo-preview').innerHTML = `
+      <div style="padding:16px">
+        <h2 style="text-align:center;margin-bottom:14px">FICHA CADASTRAL DO COLABORADOR</h2>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 24px;font-size:12px">
+          ${cfField('Nome', c.nome)}${cfField('Matrícula', c.mat)}${cfField('Cargo', c.cargo)}${cfField('Setor', c.setor)}
+          ${cfField('Admissão', c.adm)}${cfField('CNPJ', c.cnpj)}${cfField('CPF', c.cpf)}${cfField('RG', c.rg)}
+          ${cfField('Endereço', [c.enderecoTipo,c.endereco,c.numero].filter(Boolean).join(' '))}${cfField('Bairro/Cidade', [c.bairro,c.cidade,c.uf].filter(Boolean).join(' - '))}
+          ${cfField('Telefone', c.telefone)}${cfField('Celular', c.celular)}
+        </div>
+      </div>`;
+  }
+}
+
 function migracaoRealocacoes2026() {
   if (localStorage.getItem('ac_realoc_v1')) return;
   const colabs = loadData('colaboradores');
