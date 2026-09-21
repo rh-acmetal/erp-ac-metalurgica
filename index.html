@@ -424,7 +424,7 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
   <div class="l-box">
     <div class="l-logo">
       <div class="l-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
-      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.22 — Visual Clássico (Layout AlterData)</div></div>
+      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.23 — Cesta & Vegas: Edição Inline + Massa + AC/BRASS</div></div>
     </div>
     <div class="f-row"><label>Usuário</label><input type="text" id="l-user" value="jakeline@acmetalurgica.com.br"></div>
     <div class="f-row"><label>Senha</label><input type="password" id="l-pass" value="••••••••"></div>
@@ -884,29 +884,56 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
       <div class="section-hdr">
         <div class="sec-title"><svg viewBox="0 0 24 24"><path d="M12.89 1.45l8 4A2 2 0 0 1 22 7.24v9.53a2 2 0 0 1-1.11 1.79l-8 4a2 2 0 0 1-1.79 0l-8-4a2 2 0 0 1-1.1-1.8V7.24a2 2 0 0 1 1.11-1.79l8-4a2 2 0 0 1 1.78 0z"/><polyline points="2.32 6.16 12 11 21.68 6.16"/><line x1="12" y1="22.76" x2="12" y2="11"/></svg>Cesta Básica & Cartão Vegas</div>
         <button class="btn btn-p" onclick="openCrudModal(MOD_CESTAVEGAS,null)">+ Novo Registro</button>
-        <button class="btn btn-s" onclick="openReciboModal()">🖨 Gerar Recibo de Entrega</button>
+        <button class="btn btn-s" onclick="cvGerarRecibos('AC')">🖨 Gerar Recibos AC</button>
+        <button class="btn btn-s" onclick="cvGerarRecibos('BRASS')">🖨 Gerar Recibos BRASS</button>
       </div>
-      <div class="filters" style="margin-bottom:12px">
-        <select class="fsel" id="cv-mes-sel" onchange="renderCestaVegas(this.value)">
+      <div class="filters" style="margin-bottom:10px;flex-wrap:wrap">
+        <select class="fsel" id="cv-mes-sel" onchange="renderCestaVegas()">
           <option value="1">Janeiro/2026</option><option value="2">Fevereiro/2026</option>
           <option value="3">Março/2026</option><option value="4">Abril/2026</option>
           <option value="5">Maio/2026</option><option value="6">Junho/2026</option>
           <option value="7">Julho/2026</option><option value="8">Agosto/2026</option>
           <option value="9">Setembro/2026</option><option value="10" selected>Outubro/2026</option>
         </select>
+        <select class="fsel" id="cv-empresa-sel" onchange="renderCestaVegas()"><option value="">Todas as empresas</option><option>AC</option><option>BRASS</option></select>
+        <select class="fsel" id="cv-cesta-sel" onchange="renderCestaVegas()"><option value="">Cesta: Todos</option><option value="SIM">Cesta: SIM</option><option value="NÃO">Cesta: NÃO</option></select>
+        <select class="fsel" id="cv-vegas-sel" onchange="renderCestaVegas()"><option value="">Vegas: Todos</option><option value="SIM">Vegas: SIM</option><option value="NÃO">Vegas: NÃO</option></select>
+        <input class="finp" type="text" id="cv-busca" placeholder="🔎 Nome do colaborador..." oninput="renderCestaVegas()" style="width:170px">
         <span class="chip" id="cv-count">— registros</span>
-        <button class="btn btn-s btn-sm" onclick="document.getElementById('cv-mes-sel').value='10';renderCestaVegas('10')">🔄 Limpar</button>
-        <button class="btn btn-s btn-sm" onclick="exportTableToExcel('cesta_vegas',[{field:'colaborador',label:'Colaborador',width:35},{field:'mes',label:'Mês',width:14},{field:'cnpj',label:'CNPJ',width:10},{field:'cesta',label:'Cesta',width:10},{field:'vegas',label:'Vegas',width:10},{field:'qtdCesta',label:'Qtd',width:8},{field:'observacoes',label:'Observações',width:35}],'CestaVegas')">⬇ Exportar</button>
+      </div>
+      <div class="filters" style="margin-bottom:12px">
+        <label style="font-size:11px;color:var(--g500);display:flex;align-items:center;gap:4px">Valor padrão Vegas:
+          <input class="finp" type="number" step="0.01" min="0" id="cv-valor-padrao" style="width:90px" value="200.00" onchange="localStorage.setItem('cv_valor_padrao_vegas', this.value)">
+        </label>
+        <button class="btn btn-s btn-sm" onclick="document.getElementById('cv-mes-sel').value='10';document.getElementById('cv-empresa-sel').value='';document.getElementById('cv-cesta-sel').value='';document.getElementById('cv-vegas-sel').value='';document.getElementById('cv-busca').value='';renderCestaVegas()">🔄 Limpar Filtros</button>
+        <button class="btn btn-s btn-sm" onclick="cvExportarFiltrado()">⬇ Exportar</button>
       </div>
       <div class="kpi-grid">
         <div class="kpi-card"><div class="kpi-lbl">Colaboradores no mês</div><div class="kpi-val" id="cv-kpi-total">—</div></div>
         <div class="kpi-card"><div class="kpi-lbl">Com direito à cesta</div><div class="kpi-val" style="color:var(--green)" id="cv-kpi-com">—</div></div>
         <div class="kpi-card"><div class="kpi-lbl">Sem direito (motivo)</div><div class="kpi-val" style="color:var(--red)" id="cv-kpi-sem">—</div></div>
         <div class="kpi-card"><div class="kpi-lbl">Total de cestas a comprar</div><div class="kpi-val" style="color:var(--blue)" id="cv-kpi-comprar">—</div></div>
+        <div class="kpi-card"><div class="kpi-lbl">Recargas Vegas</div><div class="kpi-val" style="color:var(--purple)" id="cv-kpi-vegasqtd">—</div></div>
+        <div class="kpi-card"><div class="kpi-lbl">Valor Total Vegas</div><div class="kpi-val" style="color:var(--purple)" id="cv-kpi-vegasval">—</div></div>
+        <div class="kpi-card"><div class="kpi-lbl">Valor Total Cestas</div><div class="kpi-val" style="color:var(--blue)" id="cv-kpi-cestaval">—</div></div>
+        <div class="kpi-card"><div class="kpi-lbl">Custo Total (Cesta + Vegas)</div><div class="kpi-val" style="color:var(--orange)" id="cv-kpi-custototal">—</div></div>
       </div>
-      <div class="card" style="padding:0;margin-bottom:14px">
-        <div class="card-hdr">Controle do Mês</div>
-        <table><thead><tr><th>Colaborador</th><th>CNPJ</th><th>Cesta</th><th>Vegas</th><th>Qtd</th><th>Observações</th><th>Ações</th></tr></thead>
+      <div class="card" style="padding:10px 12px;margin-bottom:10px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <label style="display:flex;align-items:center;gap:5px;font-size:11px"><input type="checkbox" id="cv-select-all" onchange="cvToggleSelectAll(this.checked)"> Selecionar todos</label>
+        <span style="color:var(--g300)">|</span>
+        <span style="font-size:11px;color:var(--g500)">Alteração em massa:</span>
+        <select class="fsel" id="cv-massa-campo">
+          <option value="cesta">Cesta Básica</option>
+          <option value="vegas">Vegas</option>
+          <option value="valorVegas">Valor Recarga Vegas</option>
+          <option value="valorCesta">Valor da Cesta</option>
+        </select>
+        <input class="finp" type="text" id="cv-massa-valor" placeholder="Valor (SIM/NÃO ou nº)" style="width:140px">
+        <button class="btn btn-p btn-sm" onclick="cvAplicarEmMassa()">Aplicar aos selecionados</button>
+      </div>
+      <div class="card" style="padding:0;margin-bottom:14px;overflow-x:auto">
+        <div class="card-hdr">Controle do Mês <span class="muted" style="font-weight:400;font-size:10px">— campos com fundo branco são editáveis direto na tabela</span></div>
+        <table style="min-width:1000px"><thead><tr><th style="width:26px"></th><th>Colaborador</th><th>Empresa</th><th>Cesta</th><th>Valor Cesta</th><th>Vegas</th><th>Valor Recarga Vegas</th><th>Qtd</th><th>Observações</th><th>Ações</th></tr></thead>
         <tbody id="cv-tbody"></tbody></table>
       </div>
       <div class="card" style="padding:12px">
@@ -2396,7 +2423,7 @@ function go(id,el,title,bread){
   },200);}
   if(id==='holerite'){setTimeout(()=>{try{if(tcHolerite)tcHolerite.refresh();atualizarKPIsHolerite();}catch(e){}},80);}
   if(id==='comunicados'){setTimeout(()=>{try{if(tcComunicado)tcComunicado.refresh();atualizarKPIsComunicados();}catch(e){}},80);}
-  if(id==='cestavegas'){setTimeout(()=>{try{const sel=document.getElementById('cv-mes-sel');renderCestaVegas(sel?sel.value:10);buildCestaVegasHistorico();}catch(e){console.warn('cestavegas:',e);}},80);}
+  if(id==='cestavegas'){setTimeout(()=>{try{renderCestaVegas();buildCestaVegasHistorico();}catch(e){console.warn('cestavegas:',e);}},80);}
   if(id==='feedback90'){setTimeout(()=>{try{renderFeedback90();}catch(e){console.warn('feedback90:',e);}},80);}
   if(id==='desccargos'){setTimeout(()=>{try{renderDescCargos();}catch(e){console.warn('desccargos:',e);}},80);}
   if(id==='sstfin'){setTimeout(()=>{try{renderSSTFinanceiro();}catch(e){console.warn('sstfin:',e);}},80);}
@@ -4786,14 +4813,16 @@ function atualizarKPIsBeneficios() {
 const MOD_CESTAVEGAS = {
   table: 'cesta_vegas',
   label: 'Cesta Básica / Vegas',
-  onSave: function(){ try{ renderCestaVegas(document.getElementById('cv-mes-sel').value); buildCestaVegasHistorico(); }catch(e){} },
+  onSave: function(){ try{ renderCestaVegas(); buildCestaVegasHistorico(); }catch(e){} },
   fields: [
     {field:'colaborador', label:'Colaborador', required:true, full:true},
     {field:'mes', label:'Mês', type:'select', required:true, options:['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro']},
     {field:'ano', label:'Ano', required:true, placeholder:'2026'},
     {field:'cnpj', label:'CNPJ', type:'select', options:['AC','BRASS','PJ']},
     {field:'cesta', label:'Cesta Básica', type:'select', required:true, options:['SIM','NÃO']},
+    {field:'valorCesta', label:'Valor da Cesta (R$)', type:'number', step:'0.01'},
     {field:'vegas', label:'Cartão Vegas', type:'select', required:true, options:['SIM','NÃO']},
+    {field:'valorVegas', label:'Valor Recarga Vegas (R$)', type:'number', step:'0.01'},
     {field:'qtdCesta', label:'Qtd Cesta', placeholder:'1'},
     {field:'observacoes', label:'Observações', type:'textarea', full:true},
   ]
@@ -5337,16 +5366,94 @@ function buildCestaVegasSeed() {
   seeded.forEach(r => syncRecordToCloud('cesta_vegas', r));
 }
 
+const cvSelecionados = new Set();
+
+function cvInlineUpdate(id, field, value) {
+  const data = loadData('cesta_vegas');
+  const idx = data.findIndex(d => d.id === id);
+  if (idx === -1) return;
+  const rec = data[idx];
+
+  // Validações
+  if (field === 'valorCesta' || field === 'valorVegas') {
+    let num = parseFloat(String(value).replace(',', '.'));
+    if (isNaN(num) || num < 0) num = 0;
+    value = Math.round(num * 100) / 100;
+  }
+  if (field === 'qtdCesta') {
+    let num = parseInt(value, 10);
+    if (isNaN(num) || num < 0) num = 0;
+    value = num;
+  }
+  rec[field] = value;
+  // Regra: Vegas = NÃO zera o valor. Vegas = SIM sem valor -> sugere o valor padrão.
+  if (field === 'vegas') {
+    if (value === 'NÃO') rec.valorVegas = 0;
+    else if (value === 'SIM' && !rec.valorVegas) {
+      const padrao = parseFloat(document.getElementById('cv-valor-padrao')?.value) || 0;
+      rec.valorVegas = padrao;
+    }
+  }
+  if (field === 'cesta' && value === 'NÃO') rec.valorCesta = 0;
+
+  rec.atualizadoEm = nowStr();
+  saveData('cesta_vegas', data);
+  logAudit('Cesta Básica / Vegas', 'Atualização', id, `${rec.colaborador} — ${field}: ${value}`);
+  syncRecordToCloud('cesta_vegas', rec);
+  renderCestaVegas();
+}
+
+function cvToggleSelect(id, checked) {
+  if (checked) cvSelecionados.add(id); else cvSelecionados.delete(id);
+}
+function cvToggleSelectAll(checked) {
+  document.querySelectorAll('.cv-row-check').forEach(cb => { cb.checked = checked; cvToggleSelect(parseInt(cb.dataset.id,10), checked); });
+}
+
+function cvAplicarEmMassa() {
+  if (!cvSelecionados.size) { showToast('Selecione ao menos um colaborador', 'warn'); return; }
+  const campo = document.getElementById('cv-massa-campo').value;
+  let valor = document.getElementById('cv-massa-valor').value.trim();
+  if (!valor) { showToast('Informe o valor a aplicar', 'warn'); return; }
+  if ((campo === 'cesta' || campo === 'vegas') && !['SIM','NÃO'].includes(valor.toUpperCase())) {
+    showToast('Para Cesta/Vegas, digite SIM ou NÃO', 'warn'); return;
+  }
+  if (campo === 'cesta' || campo === 'vegas') valor = valor.toUpperCase();
+  const label = {cesta:'Cesta Básica', vegas:'Cartão Vegas', valorVegas:'Valor Recarga Vegas', valorCesta:'Valor da Cesta'}[campo];
+  confirmAction(`Aplicar "${label} = ${valor}" para ${cvSelecionados.size} colaborador(es) selecionado(s)?`, () => {
+    cvSelecionados.forEach(id => cvInlineUpdate(id, campo, valor));
+    showToast(`✅ Alteração aplicada a ${cvSelecionados.size} colaborador(es)`);
+    cvSelecionados.clear();
+    const selAll = document.getElementById('cv-select-all'); if (selAll) selAll.checked = false;
+  });
+}
+
+function cvFiltrados() {
+  const mesNum = parseInt(document.getElementById('cv-mes-sel')?.value || '10', 10);
+  const empresa = document.getElementById('cv-empresa-sel')?.value || '';
+  const cestaF = document.getElementById('cv-cesta-sel')?.value || '';
+  const vegasF = document.getElementById('cv-vegas-sel')?.value || '';
+  const busca = (document.getElementById('cv-busca')?.value || '').toUpperCase();
+  let all = loadData('cesta_vegas').filter(r => r.status !== 'Inativo' && r.mesNum === mesNum && r.ano === 2026);
+  if (empresa) all = all.filter(r => r.cnpj === empresa);
+  if (cestaF) all = all.filter(r => r.cesta === cestaF);
+  if (vegasF) all = all.filter(r => r.vegas === vegasF);
+  if (busca) all = all.filter(r => r.colaborador.toUpperCase().includes(busca));
+  return all.sort((a,b) => a.colaborador.localeCompare(b.colaborador));
+}
+
 function cvRowRender(r) {
-  const cestaBadge = r.cesta === 'SIM' ? '<span class="badge bg">SIM</span>' : '<span class="badge br">NÃO</span>';
-  const vegasBadge = r.vegas === 'SIM' ? '<span class="badge bg">SIM</span>' : '<span class="badge br">NÃO</span>';
+  const checked = cvSelecionados.has(r.id) ? 'checked' : '';
   return `<tr>
+    <td><input type="checkbox" class="cv-row-check" data-id="${r.id}" ${checked} onchange="cvToggleSelect(${r.id},this.checked)"></td>
     <td>${r.colaborador}</td>
     <td>${r.cnpj||'—'}</td>
-    <td>${cestaBadge}</td>
-    <td>${vegasBadge}</td>
-    <td>${r.qtdCesta!=null?r.qtdCesta:'—'}</td>
-    <td style="font-size:11px;color:var(--g500)">${r.observacoes||'—'}</td>
+    <td><select style="width:70px" onchange="cvInlineUpdate(${r.id},'cesta',this.value)"><option value="SIM" ${r.cesta==='SIM'?'selected':''}>SIM</option><option value="NÃO" ${r.cesta==='NÃO'?'selected':''}>NÃO</option></select></td>
+    <td><input type="number" step="0.01" min="0" style="width:80px" value="${r.valorCesta||0}" onchange="cvInlineUpdate(${r.id},'valorCesta',this.value)" ${r.cesta==='NÃO'?'disabled':''}></td>
+    <td><select style="width:70px" onchange="cvInlineUpdate(${r.id},'vegas',this.value)"><option value="SIM" ${r.vegas==='SIM'?'selected':''}>SIM</option><option value="NÃO" ${r.vegas==='NÃO'?'selected':''}>NÃO</option></select></td>
+    <td><input type="number" step="0.01" min="0" style="width:90px" value="${r.valorVegas||0}" onchange="cvInlineUpdate(${r.id},'valorVegas',this.value)" ${r.vegas==='NÃO'?'disabled':''}></td>
+    <td><input type="number" min="0" style="width:55px" value="${r.qtdCesta!=null?r.qtdCesta:0}" onchange="cvInlineUpdate(${r.id},'qtdCesta',this.value)"></td>
+    <td><input type="text" style="width:150px" value="${escAttr(r.observacoes||'')}" onchange="cvInlineUpdate(${r.id},'observacoes',this.value)"></td>
     <td style="white-space:nowrap">
       <button class="btn btn-s btn-xs" onclick="openCrudModal(MOD_CESTAVEGAS,${r.id})">✏</button>
       <button class="btn btn-s btn-xs" onclick="crudDeleteAction(MOD_CESTAVEGAS,${r.id},'${escAttr(r.colaborador)}')">🗑</button>
@@ -5354,26 +5461,94 @@ function cvRowRender(r) {
   </tr>`;
 }
 
-function renderCestaVegas(mesNumStr) {
-  const mesNum = parseInt(mesNumStr, 10);
-  const all = loadData('cesta_vegas').filter(r => r.status !== 'Inativo' && r.mesNum === mesNum && r.ano === 2026);
+function renderCestaVegas() {
+  const all = cvFiltrados();
   const tbody = document.getElementById('cv-tbody');
   if (!tbody) return;
-  tbody.innerHTML = all.length
-    ? all.sort((a,b)=>a.colaborador.localeCompare(b.colaborador)).map(cvRowRender).join('')
-    : '<tr><td colspan="7" class="muted" style="text-align:center;padding:16px">Nenhum registro para este mês.</td></tr>';
+  tbody.innerHTML = all.length ? all.map(cvRowRender).join('')
+    : '<tr><td colspan="10" class="muted" style="text-align:center;padding:16px">Nenhum registro encontrado com os filtros atuais.</td></tr>';
   setText('cv-count', all.length + ' registros');
+
   const total = all.length;
   const com = all.filter(r=>r.cesta==='SIM').length;
   const sem = total - com;
   const comprar = all.reduce((s,r)=> s + (r.cesta==='SIM' ? (r.qtdCesta||1) : 0), 0);
+  const vegasQtd = all.filter(r=>r.vegas==='SIM').length;
+  const valorVegasTotal = all.reduce((s,r)=> s + (r.vegas==='SIM' ? (parseFloat(r.valorVegas)||0) : 0), 0);
+  const valorCestaTotal = all.reduce((s,r)=> s + (r.cesta==='SIM' ? (parseFloat(r.valorCesta)||0) : 0), 0);
   setText('cv-kpi-total', total);
   setText('cv-kpi-com', com);
   setText('cv-kpi-sem', sem);
   setText('cv-kpi-comprar', comprar);
+  setText('cv-kpi-vegasqtd', vegasQtd);
+  setText('cv-kpi-vegasval', 'R$ ' + valorVegasTotal.toFixed(2));
+  setText('cv-kpi-cestaval', 'R$ ' + valorCestaTotal.toFixed(2));
+  setText('cv-kpi-custototal', 'R$ ' + (valorVegasTotal + valorCestaTotal).toFixed(2));
+}
+
+function cvExportarFiltrado() {
+  if (typeof XLSX === 'undefined') { showToast('Biblioteca XLSX não carregada', 'error'); return; }
+  const all = cvFiltrados();
+  const header = ['Colaborador','Empresa','CNPJ','Cesta','Valor Cesta','Vegas','Valor Recarga Vegas','Qtd','Observações','Competência'];
+  const mesSel = document.getElementById('cv-mes-sel');
+  const competencia = mesSel ? mesSel.options[mesSel.selectedIndex].text : '';
+  const rows = all.map(r => [r.colaborador, r.cnpj||'', r.cnpj||'', r.cesta, r.valorCesta||0, r.vegas, r.valorVegas||0, r.qtdCesta||0, r.observacoes||'', competencia]);
+  const totalCestas = all.filter(r=>r.cesta==='SIM').length;
+  const valorCestas = all.reduce((s,r)=>s+(r.cesta==='SIM'?(parseFloat(r.valorCesta)||0):0),0);
+  const totalVegas = all.filter(r=>r.vegas==='SIM').length;
+  const valorVegas = all.reduce((s,r)=>s+(r.vegas==='SIM'?(parseFloat(r.valorVegas)||0):0),0);
+  rows.push([]);
+  rows.push(['TOTAL CESTAS', totalCestas, '', '', 'VALOR TOTAL CESTAS', valorCestas.toFixed(2)]);
+  rows.push(['TOTAL RECARGAS VEGAS', totalVegas, '', '', 'VALOR TOTAL VEGAS', valorVegas.toFixed(2)]);
+  rows.push(['CUSTO TOTAL', '', '', '', '', (valorCestas+valorVegas).toFixed(2)]);
+  const ws = XLSX.utils.aoa_to_sheet([header, ...rows]);
+  ws['!cols'] = [{wch:32},{wch:10},{wch:10},{wch:8},{wch:12},{wch:8},{wch:14},{wch:8},{wch:30},{wch:16}];
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'CestaVegas');
+  XLSX.writeFile(wb, `CestaVegas_${todayStr().replace(/\//g,'-')}.xlsx`);
+  showToast(`📥 ${all.length} registros exportados`);
+}
+
+const CV_EMPRESA_INFO = {
+  'AC': {nome:'AC Metal Fundição Eireli', cnpj:'00.292.535/0001-83'},
+  'BRASS': {nome:'BRASS METAL LTDA', cnpj:'27.409.417/0001-69'}
+};
+
+function cvGerarRecibos(cnpjEmpresa) {
+  const mesSel = document.getElementById('cv-mes-sel');
+  const mesNum = mesSel ? parseInt(mesSel.value, 10) : 10;
+  const competencia = mesSel ? mesSel.options[mesSel.selectedIndex].text : '';
+  const all = loadData('cesta_vegas').filter(r => r.status !== 'Inativo' && r.mesNum === mesNum && r.ano === 2026 && r.cnpj === cnpjEmpresa && (r.cesta === 'SIM' || r.vegas === 'SIM'));
+  const emp = CV_EMPRESA_INFO[cnpjEmpresa];
+  if (!all.length) { showToast(`Nenhum colaborador da ${cnpjEmpresa} com direito neste mês`, 'warn'); return; }
+
+  let html = '';
+  all.sort((a,b)=>a.colaborador.localeCompare(b.colaborador)).forEach(r => {
+    const colab = loadData('colaboradores').find(c => (c.nome||'').toUpperCase() === r.colaborador.toUpperCase());
+    html += `<div style="page-break-after:always;padding:16px 4px">
+      <h3 style="text-align:center;margin-bottom:4px">RECIBO DE ENTREGA — CESTA BÁSICA / CARTÃO VEGAS</h3>
+      <p style="text-align:center;font-size:11px;color:#666;margin-bottom:14px">${emp.nome} — CNPJ ${emp.cnpj}</p>
+      <table style="width:100%;border-collapse:collapse;font-size:12px;margin-bottom:14px">
+        <tr><td style="padding:4px;font-weight:700;width:160px">Colaborador:</td><td style="padding:4px">${r.colaborador}</td></tr>
+        <tr><td style="padding:4px;font-weight:700">Matrícula:</td><td style="padding:4px">${colab?colab.mat:'—'}</td></tr>
+        <tr><td style="padding:4px;font-weight:700">Competência:</td><td style="padding:4px">${competencia}</td></tr>
+        <tr><td style="padding:4px;font-weight:700">Cesta Básica:</td><td style="padding:4px">${r.cesta} ${r.cesta==='SIM'?'— R$ '+(r.valorCesta||0).toFixed(2):''}</td></tr>
+        <tr><td style="padding:4px;font-weight:700">Cartão Vegas:</td><td style="padding:4px">${r.vegas} ${r.vegas==='SIM'?'— R$ '+(r.valorVegas||0).toFixed(2):''}</td></tr>
+        <tr><td style="padding:4px;font-weight:700">Data de Entrega/Recarga:</td><td style="padding:4px">____/____/________</td></tr>
+      </table>
+      <div style="margin-top:40px;border-top:1px solid #000;width:60%"></div>
+      <div style="font-size:10px;margin-top:2px">ASSINATURA DO COLABORADOR</div>
+    </div>`;
+  });
+
+  ensureReciboModal();
+  document.getElementById('m-recibo').classList.add('open');
+  const dfEl = document.getElementById('recibo-date-fields'); if (dfEl) dfEl.style.display = 'none';
+  document.getElementById('recibo-preview').innerHTML = html;
 }
 
 let cvHistoricoChart;
+
 function buildCestaVegasHistorico() {
   const canvas = document.getElementById('cv-chart-historico');
   if (!canvas || typeof Chart === 'undefined') return;
