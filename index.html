@@ -424,7 +424,7 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
   <div class="l-box">
     <div class="l-logo">
       <div class="l-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
-      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.24 — Recibo no Formato Original (AC/BRASS)</div></div>
+      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.25 — Colunas Mais Compactas (Observações Visível)</div></div>
     </div>
     <div class="f-row"><label>Usuário</label><input type="text" id="l-user" value="jakeline@acmetalurgica.com.br"></div>
     <div class="f-row"><label>Senha</label><input type="password" id="l-pass" value="••••••••"></div>
@@ -933,7 +933,7 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
       </div>
       <div class="card" style="padding:0;margin-bottom:14px;overflow-x:auto">
         <div class="card-hdr">Controle do Mês <span class="muted" style="font-weight:400;font-size:10px">— campos com fundo branco são editáveis direto na tabela</span></div>
-        <table style="min-width:1000px"><thead><tr><th style="width:26px"></th><th>Colaborador</th><th>Empresa</th><th>Cesta</th><th>Valor Cesta</th><th>Vegas</th><th>Valor Recarga Vegas</th><th>Qtd</th><th>Observações</th><th>Ações</th></tr></thead>
+        <table style="min-width:900px;table-layout:fixed"><thead><tr><th style="width:24px"></th><th style="width:150px">Colaborador</th><th style="width:55px">Empresa</th><th style="width:55px">Cesta</th><th style="width:65px">Val.Cesta</th><th style="width:55px">Vegas</th><th style="width:75px">Val.Vegas</th><th style="width:40px">Qtd</th><th>Observações</th><th style="width:60px">Ações</th></tr></thead>
         <tbody id="cv-tbody"></tbody></table>
       </div>
       <div class="card" style="padding:12px">
@@ -5446,14 +5446,14 @@ function cvRowRender(r) {
   const checked = cvSelecionados.has(r.id) ? 'checked' : '';
   return `<tr>
     <td><input type="checkbox" class="cv-row-check" data-id="${r.id}" ${checked} onchange="cvToggleSelect(${r.id},this.checked)"></td>
-    <td>${r.colaborador}</td>
-    <td>${r.cnpj||'—'}</td>
-    <td><select style="width:70px" onchange="cvInlineUpdate(${r.id},'cesta',this.value)"><option value="SIM" ${r.cesta==='SIM'?'selected':''}>SIM</option><option value="NÃO" ${r.cesta==='NÃO'?'selected':''}>NÃO</option></select></td>
-    <td><input type="number" step="0.01" min="0" style="width:80px" value="${r.valorCesta||0}" onchange="cvInlineUpdate(${r.id},'valorCesta',this.value)" ${r.cesta==='NÃO'?'disabled':''}></td>
-    <td><select style="width:70px" onchange="cvInlineUpdate(${r.id},'vegas',this.value)"><option value="SIM" ${r.vegas==='SIM'?'selected':''}>SIM</option><option value="NÃO" ${r.vegas==='NÃO'?'selected':''}>NÃO</option></select></td>
-    <td><input type="number" step="0.01" min="0" style="width:90px" value="${r.valorVegas||0}" onchange="cvInlineUpdate(${r.id},'valorVegas',this.value)" ${r.vegas==='NÃO'?'disabled':''}></td>
-    <td><input type="number" min="0" style="width:55px" value="${r.qtdCesta!=null?r.qtdCesta:0}" onchange="cvInlineUpdate(${r.id},'qtdCesta',this.value)"></td>
-    <td><input type="text" style="width:150px" value="${escAttr(r.observacoes||'')}" onchange="cvInlineUpdate(${r.id},'observacoes',this.value)"></td>
+    <td style="font-size:11px">${r.colaborador}</td>
+    <td style="font-size:11px">${r.cnpj||'—'}</td>
+    <td><select style="width:100%" onchange="cvInlineUpdate(${r.id},'cesta',this.value)"><option value="SIM" ${r.cesta==='SIM'?'selected':''}>SIM</option><option value="NÃO" ${r.cesta==='NÃO'?'selected':''}>NÃO</option></select></td>
+    <td><input type="number" step="0.01" min="0" style="width:100%" value="${r.valorCesta||0}" onchange="cvInlineUpdate(${r.id},'valorCesta',this.value)" ${r.cesta==='NÃO'?'disabled':''}></td>
+    <td><select style="width:100%" onchange="cvInlineUpdate(${r.id},'vegas',this.value)"><option value="SIM" ${r.vegas==='SIM'?'selected':''}>SIM</option><option value="NÃO" ${r.vegas==='NÃO'?'selected':''}>NÃO</option></select></td>
+    <td><input type="number" step="0.01" min="0" style="width:100%" value="${r.valorVegas||0}" onchange="cvInlineUpdate(${r.id},'valorVegas',this.value)" ${r.vegas==='NÃO'?'disabled':''}></td>
+    <td><input type="number" min="0" style="width:100%" value="${r.qtdCesta!=null?r.qtdCesta:0}" onchange="cvInlineUpdate(${r.id},'qtdCesta',this.value)"></td>
+    <td><input type="text" style="width:100%" value="${escAttr(r.observacoes||'')}" onchange="cvInlineUpdate(${r.id},'observacoes',this.value)"></td>
     <td style="white-space:nowrap">
       <button class="btn btn-s btn-xs" onclick="openCrudModal(MOD_CESTAVEGAS,${r.id})">✏</button>
       <button class="btn btn-s btn-xs" onclick="crudDeleteAction(MOD_CESTAVEGAS,${r.id},'${escAttr(r.colaborador)}')">🗑</button>
