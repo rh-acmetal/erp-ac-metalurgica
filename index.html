@@ -336,16 +336,95 @@ tr:last-child td{border-bottom:none}
   #recibo-preview{position:static!important;width:100%}
   .no-print{display:none !important}
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   RESKIN VISUAL — Layout clássico estilo AlterData / Gestão de Pessoas
+   Apenas aparência (cor, borda, fonte, sombra). Nenhuma lógica,
+   nome de campo ou integração foi alterada.
+   ═══════════════════════════════════════════════════════════════ */
+:root{
+  --ad-titlebar1:#3a8fd4; --ad-titlebar2:#1e5a9e; --ad-titlebar3:#0f3d6e;
+  --ad-bg:#e9e9e9; --ad-panel:#f0f0f0; --ad-border:#a0a0a0; --ad-border-dark:#767676;
+  --ad-readonly:#e4e4e4; --ad-required:#fff6b0;
+  --ad-font:'Segoe UI','Tahoma',Arial,sans-serif;
+}
+#login-screen{top:28px!important}
+#app,.erp-wrap,.sidebar{height:calc(100vh - 28px)!important}
+#app{margin-top:28px!important}
+
+#ad-titlebar{position:fixed;top:0;left:0;right:0;height:28px;z-index:1000;
+  background:linear-gradient(180deg,var(--ad-titlebar1) 0%,var(--ad-titlebar2) 55%,var(--ad-titlebar3) 100%);
+  display:flex;align-items:center;justify-content:space-between;padding:0 4px 0 10px;
+  color:#fff;font-size:12px;font-weight:600;font-family:var(--ad-font);border-bottom:1px solid #0a2a50}
+#ad-titlebar .ad-buttons{display:flex;gap:2px}
+#ad-titlebar .ad-btn{width:24px;height:19px;background:#d4d0c8;border:1px solid #808080;border-top-color:#fff;border-left-color:#fff;
+  color:#000;font-size:11px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-family:var(--ad-font)}
+#ad-titlebar .ad-btn:active{border-color:#404040;border-top-color:#404040;border-left-color:#404040}
+#ad-titlebar .ad-btn.close:hover{background:#e81123;color:#fff;border-color:#800}
+
+/* remove cantos arredondados e sombras em todo o sistema */
+.card,.kpi-card,.btn,.badge,input,select,textarea,.modal,.modal-overlay,.chip,.fsel,.finp,
+.nav-item,.tab,.alert,table,th,td,.l-box,.l-icon{border-radius:0!important;box-shadow:none!important}
+
+body{font-family:var(--ad-font)!important;font-size:12px!important;background:var(--ad-bg)!important}
+.sidebar{background:var(--ad-panel)!important;border-right:1px solid var(--ad-border-dark)!important}
+.sidebar,.nav-item{color:#000!important}
+.nav-item.active{background:var(--ad-titlebar2)!important;color:#fff!important}
+.content,.main-area{background:var(--ad-bg)!important}
+
+/* Cards / KPI cards viram "group box" com borda 3D clássica */
+.card,.kpi-card{background:var(--ad-panel)!important;border:1px solid var(--ad-border-dark)!important;
+  border-top-color:#fff!important;border-left-color:#fff!important}
+
+/* Botões estilo Windows clássico */
+.btn{border:1px solid var(--ad-border-dark)!important;border-top-color:#fff!important;border-left-color:#fff!important;
+  background:linear-gradient(180deg,#fdfdfd,#e2e2e2)!important;color:#000!important;font-size:11px!important;font-family:var(--ad-font)!important}
+.btn:active{background:#d0d0d0!important;border-color:#404040!important}
+.btn-p{background:linear-gradient(180deg,#eef4fb,#c9dcf0)!important;color:#000!important;font-weight:600!important}
+
+/* Campos de formulário */
+input,select,textarea{border:1px solid var(--ad-border-dark)!important;background:#fff!important;
+  font-size:12px!important;font-family:var(--ad-font)!important;color:#000!important}
+input[data-required],select[data-required],textarea[data-required]{background:var(--ad-required)!important}
+input[readonly],input:disabled,select:disabled,textarea[readonly],textarea:disabled{background:var(--ad-readonly)!important;color:#555!important}
+.f-grp label{font-family:var(--ad-font)!important;font-size:11px!important;font-weight:600!important;color:#333!important}
+
+/* Tabelas em grade clássica */
+table{border-collapse:collapse!important}
+th{background:#d4d0c8!important;border:1px solid var(--ad-border-dark)!important;font-size:11px!important;font-family:var(--ad-font)!important}
+td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-family:var(--ad-font)!important}
+
+/* Modais */
+.m-hdr{background:linear-gradient(180deg,var(--ad-titlebar1),var(--ad-titlebar2))!important;color:#fff!important;font-family:var(--ad-font)!important}
+.modal{border:1px solid var(--ad-border-dark)!important}
+.modal-overlay{background:rgba(0,0,0,.35)!important}
+
+/* Abas (tabs) estilo pasta clássica */
+.tab{background:#d4d0c8!important;border:1px solid var(--ad-border-dark)!important;border-bottom:none!important;color:#000!important;font-family:var(--ad-font)!important;font-size:11px!important}
+.tab.active{background:var(--ad-panel)!important;font-weight:700!important}
 </style>
 </head>
 <body>
+
+<!-- ═══════════ BARRA DE TÍTULO ESTILO JANELA (visual) ═══════════ -->
+<div id="ad-titlebar">
+  <div style="display:flex;align-items:center;gap:6px">
+    <span style="font-size:13px">🏢</span>
+    <span id="ad-titlebar-text">AC Metalúrgica — Sistema de Gestão de Pessoas</span>
+  </div>
+  <div class="ad-buttons">
+    <div class="ad-btn" title="Minimizar">─</div>
+    <div class="ad-btn" title="Maximizar">☐</div>
+    <div class="ad-btn close" title="Sair" onclick="if(typeof doLogout==='function')doLogout();">✕</div>
+  </div>
+</div>
 
 <!-- ═══════════════════════════ LOGIN ═══════════════════════════ -->
 <div id="login-screen">
   <div class="l-box">
     <div class="l-logo">
       <div class="l-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
-      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.19 — Anexo de Documentos & Foto</div></div>
+      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.22 — Visual Clássico (Layout AlterData)</div></div>
     </div>
     <div class="f-row"><label>Usuário</label><input type="text" id="l-user" value="jakeline@acmetalurgica.com.br"></div>
     <div class="f-row"><label>Senha</label><input type="password" id="l-pass" value="••••••••"></div>
@@ -3330,7 +3409,15 @@ const MOD_COLAB = {
     {field:'matriculaEsocial', label:'Matrícula eSocial'},
     {field:'observacoes', label:'Observações', type:'textarea', full:true},
   ],
-  onSave: () => { tcColab.refresh(); try{ colabDetailRender(colabDetailAtual); }catch(e){} }
+  onSave: () => {
+    tcColab.refresh();
+    try{ colabDetailRender(colabDetailAtual); }catch(e){}
+    // Gera na hora os registros estimados derivados (Férias, Treinamentos, Avaliações, SST) para quem ainda não tem
+    try{ buildFeriasFromColabs(); if(tcFerias) tcFerias.refresh(); atualizarKPIsFerias(); }catch(e){console.warn('ferias:',e);}
+    try{ buildTreinosFromColabs(); if(tcTreino) tcTreino.refresh(); atualizarKPIsTreinamentos(); }catch(e){console.warn('treinos:',e);}
+    try{ buildAvalFromColabs(); if(tcAval) tcAval.refresh(); atualizarKPIsAvaliacoes(); }catch(e){console.warn('aval:',e);}
+    try{ buildSSTFromColabs(); if(tcSST) tcSST.refresh(); atualizarKPIsSST(); }catch(e){console.warn('sst:',e);}
+  }
 };
 
 /* Correção pontual de cadastro — 1x, roda sozinha no próximo login */
@@ -3438,6 +3525,13 @@ function colabFichaSwitchTab(tab) {
   }
 }
 
+
+function sanitizeStorageKey(s) {
+  return (s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'') // remove acentos
+    .replace(/[^a-zA-Z0-9._\-\/]/g, '_') // troca qualquer caractere não seguro por _
+    .replace(/_+/g, '_');
+}
+
 const COLAB_DOC_CATEGORIAS = ['Acordos - Termos','Advertências','Atestados','Avaliação de Desempenho','Documentos Admissionais','Feedbacks','Férias','Ficha de EPI','Processo Seletivo','Registro E-Social / Integração / Efetivação / ASO','Treinamentos','Histórico de Salário'];
 
 function colabDocumentosHtml(c) {
@@ -3476,7 +3570,7 @@ async function colabUploadFoto(file) {
   if (!file || !colabDetailAtual) return;
   if (!supabaseClient) { showToast('Conecte a nuvem primeiro (veja o Dashboard)', 'error'); return; }
   const c = loadData('colaboradores').find(x => x.id === colabDetailAtual);
-  const path = `colaboradores/${c.id}/foto_${Date.now()}_${file.name}`;
+  const path = `colaboradores/${c.id}/foto_${Date.now()}_${sanitizeStorageKey(file.name)}`;
   showToast('📤 Enviando foto...');
   try {
     const { error } = await supabaseClient.storage.from('documentos-rh').upload(path, file, {upsert:true});
@@ -3492,7 +3586,7 @@ async function colabUploadDocumento(file, categoria) {
   if (!file || !colabDetailAtual) return;
   if (!supabaseClient) { showToast('Conecte a nuvem primeiro (veja o Dashboard)', 'error'); return; }
   const c = loadData('colaboradores').find(x => x.id === colabDetailAtual);
-  const path = `colaboradores/${c.id}/${categoria}/${Date.now()}_${file.name}`;
+  const path = `colaboradores/${c.id}/${sanitizeStorageKey(categoria)}/${Date.now()}_${sanitizeStorageKey(file.name)}`;
   showToast('📤 Enviando arquivo...');
   try {
     const { error } = await supabaseClient.storage.from('documentos-rh').upload(path, file);
