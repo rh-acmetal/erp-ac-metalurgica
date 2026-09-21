@@ -424,7 +424,7 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
   <div class="l-box">
     <div class="l-logo">
       <div class="l-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
-      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.29 — Anos até 2050 + Filtro CNPJ (Benefícios/EPI/PCMSO)</div></div>
+      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.31 — Benefícios: CRUD Corrigido + Catálogo Editável</div></div>
     </div>
     <div class="f-row"><label>Usuário</label><input type="text" id="l-user" value="jakeline@acmetalurgica.com.br"></div>
     <div class="f-row"><label>Senha</label><input type="password" id="l-pass" value="••••••••"></div>
@@ -493,9 +493,6 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
     <div class="nav-item" onclick="go('ferias',this,'Férias','Gestão')">
       <svg viewBox="0 0 24 24"><path d="M8 3v3m8-3v3M3 8h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/></svg>Férias
     </div>
-    <div class="nav-item" onclick="go('ponto',this,'Ponto & Jornada','Controle')">
-      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Ponto / Jornada
-    </div>
 
     <div class="sb-layer layer-ta"><div class="sb-dot dot-ta"></div>Tático</div>
     <div class="nav-item" onclick="go('recrutamento',this,'Recrutamento & Seleção','R&S')">
@@ -543,12 +540,6 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
     </div>
     <div class="nav-item" onclick="go('importar',this,'Importar Planilha Excel','Atualizar dados dos módulos')">
       <svg viewBox="0 0 24 24"><polyline points="8 17 12 21 16 17"/><line x1="12" y1="3" x2="12" y2="21"/></svg>Importar Excel
-    </div>
-    <div class="nav-item" onclick="go('holerite',this,'Holerite Simplificado','Espelho da folha para consulta interna')">
-      💰 Holerite
-    </div>
-    <div class="nav-item" onclick="go('comunicados',this,'Comunicados & Endomarketing','Avisos, campanhas e comunicação interna')">
-      📢 Comunicados
     </div>
     <div class="nav-item" onclick="go('configuracoes',this,'Configurações','Sistema')">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Configurações
@@ -829,54 +820,42 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
       <div class="layer-badge lb-op">● Operacional</div>
       <div class="section-hdr">
         <div class="sec-title"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>Controle de Benefícios</div>
+        <button class="btn btn-s" onclick="openCrudModal(MOD_BENEFTIPO,null)">+ Novo Tipo de Benefício</button>
         <button class="btn btn-p" onclick="openCrudModal(MOD_BENEFICIO,null)">+ Inclusão / Exclusão</button>
       </div>
       <div class="kpi-grid">
-        <div class="kpi-card"><div class="kpi-lbl">Custo Total Benefícios</div><div class="kpi-val" style="font-size:18px">R$68.4k</div><div class="kpi-delta dn">mês corrente (estimado)</div></div>
+        <div class="kpi-card"><div class="kpi-lbl">Tipos de Benefício Ativos</div><div class="kpi-val" id="ben-tipos-count">—</div></div>
         <div class="kpi-card"><div class="kpi-lbl">Movimentações</div><div class="kpi-val" id="ben-total-crud">—</div></div>
-        <div class="kpi-card"><div class="kpi-lbl">Pendências</div><div class="kpi-val" style="color:var(--yellow)" id="ben-pendencias-crud">—</div><div class="kpi-delta dr">documentação/análise</div></div>
-        <div class="kpi-card"><div class="kpi-lbl">Inclusões / Exclusões</div><div class="kpi-val" style="font-size:18px" id="ben-inclusoes-crud">—</div><div class="kpi-delta dr" id="ben-exclusoes-crud-wrap"><span id="ben-exclusoes-crud">—</span> exclusões</div></div>
+        <div class="kpi-card"><div class="kpi-lbl">Pendências</div><div class="kpi-val" style="color:var(--yellow)" id="ben-pendencias-crud">—</div></div>
+        <div class="kpi-card"><div class="kpi-lbl">Inclusões / Exclusões</div><div class="kpi-val" style="font-size:18px" id="ben-inclusoes-crud">—</div><div class="kpi-delta dr"><span id="ben-exclusoes-crud">—</span> exclusões</div></div>
       </div>
-      <div class="ben-card"><div class="ben-icon" style="background:#dbeafe">🚌</div><div class="ben-info"><div class="ben-name">Vale-Transporte</div><div class="ben-sub">Cartão eletrônico — Empresa: 6% do salário / Colaborador: 6%</div><div class="ben-stats"><div class="ben-stat"><div class="ben-stat-val">134</div><div class="ben-stat-lbl">Beneficiários</div></div><div class="ben-stat"><div class="ben-stat-val" style="font-size:14px">R$18.2k</div><div class="ben-stat-lbl">Custo mês</div></div><div class="ben-stat"><div class="ben-stat-val">2</div><div class="ben-stat-lbl">Pendentes</div></div></div></div><div><span class="badge bg">Ativo</span></div></div>
-      <div class="ben-card"><div class="ben-icon" style="background:#dcfce7">🍽</div><div class="ben-info"><div class="ben-name">Vale-Refeição / Alimentação</div><div class="ben-sub">Cartão — R$ 35,00/dia útil (VR) + R$ 450,00/mês (VA)</div><div class="ben-stats"><div class="ben-stat"><div class="ben-stat-val">148</div><div class="ben-stat-lbl">Beneficiários</div></div><div class="ben-stat"><div class="ben-stat-val" style="font-size:14px">R$28.8k</div><div class="ben-stat-lbl">Custo mês</div></div><div class="ben-stat"><div class="ben-stat-val">0</div><div class="ben-stat-lbl">Pendentes</div></div></div></div><div><span class="badge bg">Ativo</span></div></div>
-      <div class="ben-card"><div class="ben-icon" style="background:#f3e8ff">🏥</div><div class="ben-info"><div class="ben-name">Convênio Médico — Unimed</div><div class="ben-sub">Plano Empresarial · Coparticipação 30% · Titulares + dependentes</div><div class="ben-stats"><div class="ben-stat"><div class="ben-stat-val">131</div><div class="ben-stat-lbl">Titulares</div></div><div class="ben-stat"><div class="ben-stat-val">48</div><div class="ben-stat-lbl">Dependentes</div></div><div class="ben-stat"><div class="ben-stat-val" style="font-size:14px">R$15.6k</div><div class="ben-stat-lbl">Custo mês</div></div></div></div><div><span class="badge bg">Ativo</span></div></div>
-      <div class="ben-card"><div class="ben-icon" style="background:#fef9c3">🛡</div><div class="ben-info"><div class="ben-name">Seguro de Vida em Grupo</div><div class="ben-sub">Cobertura 24h · Morte natural e acidental · Invalidez permanente</div><div class="ben-stats"><div class="ben-stat"><div class="ben-stat-val">148</div><div class="ben-stat-lbl">Cobertos</div></div><div class="ben-stat"><div class="ben-stat-val" style="font-size:14px">R$5.8k</div><div class="ben-stat-lbl">Prêmio mês</div></div></div></div><div><span class="badge bg">Ativo</span></div></div>
-      <div class="filters" style="margin-top:14px">
-        <div class="srch-wrap"><input class="finp" type="text" placeholder="Buscar colaborador ou benefício..." oninput="tcBeneficio.setSearch(this.value)"></div>
-        <select class="fsel" onchange="tcBeneficio.setFilter('tipo', this.value)">
-          <option value="">Todos os tipos</option><option>Inclusão</option><option>Exclusão</option><option>Inclusão dep.</option><option>Exclusão dep.</option><option>Alteração</option>
-        </select>
-        <select class="fsel" onchange="tcBeneficio.setFilter('mes', this.value?parseInt(this.value,10):'')">
-          <option value="">Todos os meses</option><option value="1">Janeiro</option><option value="2">Fevereiro</option><option value="3">Março</option><option value="4">Abril</option><option value="5">Maio</option><option value="6">Junho</option><option value="7">Julho</option><option value="8">Agosto</option><option value="9">Setembro</option><option value="10">Outubro</option><option value="11">Novembro</option><option value="12">Dezembro</option>
-        </select>
-        <select class="fsel" onchange="tcBeneficio.setFilter('ano', this.value?parseInt(this.value,10):'')">
-          <option value="">Todos os anos</option><option>2026</option><option>2027</option><option>2028</option><option>2029</option><option>2030</option><option>2031</option><option>2032</option><option>2033</option><option>2034</option><option>2035</option><option>2036</option><option>2037</option><option>2038</option><option>2039</option><option>2040</option><option>2041</option><option>2042</option><option>2043</option><option>2044</option><option>2045</option><option>2046</option><option>2047</option><option>2048</option><option>2049</option><option>2050</option>
-        </select>
-        <select class="fsel" onchange="tcBeneficio.setFilter('empresa', this.value)">
-          <option value="">Todas as empresas</option><option>AC</option><option>BRASS</option><option>PJ</option>
-        </select>
-        <select class="fsel" onchange="tcBeneficio.setFilter('situacao', this.value)">
-          <option value="">Todas as situações</option><option>Pendente docs</option><option>Em análise</option><option>Concluído</option>
-        </select>
-        <span class="chip" id="beneficio-count">— registros</span>
-        <button class="btn btn-s btn-sm" onclick="exportTableToExcel('beneficios_mov',[{field:'colaborador',label:'Colaborador',width:35},{field:'beneficio',label:'Benefício',width:25},{field:'tipo',label:'Tipo',width:16},{field:'data',label:'Data',width:12},{field:'motivo',label:'Motivo',width:25},{field:'situacao',label:'Situação',width:14}],'Beneficios')">⬇ Exportar</button>
-      </div>
+      <div id="ben-tipos-lista" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;margin-bottom:16px"></div>
       <div style="background:#fff;border:1px solid var(--g200);border-radius:9px;padding:12px;margin-bottom:10px">
         <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
           <div class="srch-wrap" style="flex:2;min-width:180px"><input class="finp" style="width:100%" id="benef-search" placeholder="🔎 Buscar colaborador ou benefício..." oninput="benefCtrl.filter()"></div>
           <select class="fsel" data-fid="benef" style="min-width:145px" onchange="benefCtrl.setFilter('beneficio',this.value)">
             <option value="">💳 Todos os benefícios</option>
-            <option>VT</option><option>VR</option><option>Convênio Médico</option><option>Seguro de Vida</option><option>Odontológico</option>
+            <option>Vale-Transporte</option><option>Convênio Médico</option><option>Convênio Farmácia</option><option>Seguro de Vida</option><option>Dep. Plano Médico</option>
           </select>
-          <select class="fsel" data-fid="benef" style="min-width:130px" onchange="benefCtrl.setFilter('tipoMov',this.value)">
-            <option value="">📋 Todos os tipos</option><option>Inclusão</option><option>Exclusão</option>
+          <select class="fsel" data-fid="benef" style="min-width:130px" onchange="benefCtrl.setFilter('tipo',this.value)">
+            <option value="">📋 Todos os tipos</option><option>Inclusão</option><option>Exclusão</option><option>Inclusão dep.</option><option>Exclusão dep.</option><option>Alteração</option>
           </select>
           <select class="fsel" data-fid="benef" style="min-width:130px" onchange="benefCtrl.setFilter('situacao',this.value)">
             <option value="">🟢 Todas as situações</option><option>Concluída</option><option>Pendente</option><option>Cancelada</option>
           </select>
+          <select class="fsel" data-fid="benef" style="min-width:110px" onchange="benefCtrl.setFilter('mes',this.value?parseInt(this.value,10):'')">
+            <option value="">Todos os meses</option><option value="1">Janeiro</option><option value="2">Fevereiro</option><option value="3">Março</option><option value="4">Abril</option><option value="5">Maio</option><option value="6">Junho</option><option value="7">Julho</option><option value="8">Agosto</option><option value="9">Setembro</option><option value="10">Outubro</option><option value="11">Novembro</option><option value="12">Dezembro</option>
+          </select>
+          <select class="fsel" data-fid="benef" style="min-width:90px" onchange="benefCtrl.setFilter('ano',this.value?parseInt(this.value,10):'')">
+            <option value="">Todos os anos</option><option>2026</option><option>2027</option><option>2028</option><option>2029</option><option>2030</option><option>2031</option><option>2032</option><option>2033</option><option>2034</option><option>2035</option><option>2036</option><option>2037</option><option>2038</option><option>2039</option><option>2040</option><option>2041</option><option>2042</option><option>2043</option><option>2044</option><option>2045</option><option>2046</option><option>2047</option><option>2048</option><option>2049</option><option>2050</option>
+          </select>
+          <select class="fsel" data-fid="benef" style="min-width:110px" onchange="benefCtrl.setFilter('empresa',this.value)">
+            <option value="">Todas as empresas</option><option>AC</option><option>BRASS</option><option>PJ</option>
+          </select>
           <span class="chip" id="benef-count">— registros</span>
           <button class="btn btn-s btn-xs" onclick="benefCtrl.clearAll()" title="Limpar">🔄 Limpar</button>
           <button class="btn btn-s btn-xs" onclick="benefCtrl.load();showToast('🔃 Atualizado')" title="Atualizar">🔃</button>
+          <button class="btn btn-s btn-xs" onclick="exportTableToExcel('beneficios_mov',[{field:'colaborador',label:'Colaborador',width:35},{field:'empresa',label:'Empresa',width:10},{field:'beneficio',label:'Benefício',width:25},{field:'tipo',label:'Tipo',width:16},{field:'data',label:'Data',width:12},{field:'motivo',label:'Motivo',width:25},{field:'situacao',label:'Situação',width:14}],'Beneficios')">⬇ Exportar</button>
           <select class="fsel" style="width:72px" onchange="benefCtrl._pageSize=+this.value;benefCtrl._page=1;benefCtrl.render()">
             <option value="10" selected>10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option>
           </select>
@@ -1173,37 +1152,6 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
         <tbody id="ferias-tbody"></tbody></table>
         <div style="padding:10px 14px;display:flex;align-items:center;justify-content:flex-end;gap:4px;border-top:1px solid var(--g100)" id="ferias-pag"></div>
       </div>
-    </div>
-
-    <!-- ══ PONTO ══ -->
-    <div id="page-ponto" class="page">
-      <div class="layer-badge lb-op">● Operacional</div>
-      <div class="sec-title" style="margin-bottom:14px"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Ponto & Jornada</div>
-      <div class="kpi-grid"><div class="kpi-card"><div class="kpi-lbl">Horas Extra (lançadas)</div><div class="kpi-val" id="pt-he-crud">—</div></div><div class="kpi-card"><div class="kpi-lbl">Saldo Banco de Horas</div><div class="kpi-val" id="pt-banco-crud">—</div></div><div class="kpi-card"><div class="kpi-lbl">Faltas Injust.</div><div class="kpi-val" style="color:var(--yellow)" id="pt-faltas-crud">—</div></div><div class="kpi-card"><div class="kpi-lbl">Atrasos</div><div class="kpi-val" id="pt-atrasos-crud">—</div></div></div>
-      <div class="alert al-b" style="margin-bottom:12px"><div>🔌</div><div><div class="al-title">Lançamento manual ativo — integração com relógio de ponto pendente</div><div class="al-sub">Enquanto a integração via API não é configurada, registre aqui horas extras, faltas, atrasos e movimentações de banco de horas.</div></div></div>
-      <div class="section-hdr">
-        <div class="sec-title" style="font-size:13px">Lançamentos de Ponto</div>
-        <button class="btn btn-p btn-sm" onclick="openCrudModal(MOD_PONTO,null)">+ Novo Lançamento</button>
-      </div>
-           <div style="background:#fff;border:1px solid var(--g200);border-radius:9px;padding:12px;margin-bottom:10px">
-        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-          <div class="srch-wrap" style="flex:2;min-width:180px"><input class="finp" style="width:100%" id="ponto-search" placeholder="🔎 Buscar colaborador ou justificativa..." oninput="pontoCtrl.filter()"></div>
-          <select class="fsel" data-fid="ponto" style="min-width:180px" onchange="pontoCtrl.setFilter('tipo',this.value)"><option value="">📋 Todos os tipos</option><option>Hora Extra</option><option>Falta Injustificada</option><option>Falta Justificada</option><option>Atraso</option><option>Banco de Horas</option><option>Atestado</option></select><select class="fsel" data-fid="ponto" style="min-width:165px" onchange="pontoCtrl.setFilter('situacao',this.value)"><option value="">🟢 Todas as situações</option><option>Pendente aprovação</option><option>Aprovado</option><option>Rejeitado</option></select>
-          <span class="chip" id="ponto-count">— registros</span>
-          <button class="btn btn-s btn-xs" onclick="pontoCtrl.clearAll()" title="Limpar">🔄 Limpar</button>
-          <button class="btn btn-s btn-xs" onclick="pontoCtrl.load();showToast('🔃 Atualizado')" title="Atualizar">🔃</button>
-          <select class="fsel" style="width:72px" onchange="pontoCtrl._pageSize=+this.value;pontoCtrl._page=1;pontoCtrl.render()">
-            <option value="10" selected>10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option>
-          </select>
-          <button class="btn btn-s btn-xs" onclick="exportTableToExcel('ponto',[{field:'colaborador',label:'Colaborador',width:35},{field:'data',label:'Data',width:12},{field:'tipo',label:'Tipo',width:22},{field:'quantidade',label:'Qtd',width:8},{field:'justificativa',label:'Justificativa',width:30},{field:'situacao',label:'Situação',width:18}],'Ponto')">⬇ Excel</button>
-        </div>
-      </div>
-      <div class="card" style="padding:0">
-        <table><thead><tr><th>Colaborador</th><th>Data</th><th>Tipo</th><th>Horas/Qtd</th><th>Justificativa</th><th>Situação</th><th>Ações</th></tr></thead>
-        <tbody id="ponto-tbody"></tbody></table>
-        <div style="padding:10px 14px;display:flex;align-items:center;justify-content:flex-end;gap:4px;border-top:1px solid var(--g100)" id="ponto-pag"></div>
-      </div>
-      <div class="card" style="text-align:center;padding:20px;margin-top:12px"><div style="font-size:28px;margin-bottom:6px">🔌</div><div style="font-size:12px;font-weight:700;margin-bottom:4px">Integração com relógio de ponto</div><div class="muted" style="max-width:360px;margin:0 auto 10px;font-size:11px">Quando configurada, os lançamentos passam a ser importados automaticamente via API.</div><button class="btn btn-s btn-sm">⚙ Configurar Integração</button></div>
     </div>
 
     <!-- ══ RECRUTAMENTO ══ -->
@@ -1902,81 +1850,6 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
       </div>
     </div>
 
-    <!-- ══ HOLERITE ══ -->
-    <div id="page-holerite" class="page">
-      <div class="layer-badge lb-op">● Operacional — Folha</div>
-      <div class="section-hdr">
-        <div class="sec-title">💰 Holerite Simplificado — Espelho Interno</div>
-        <div style="display:flex;gap:8px">
-          <button class="btn btn-p" onclick="openCrudModal(MOD_HOLERITE,null)">+ Novo Holerite</button>
-        </div>
-      </div>
-      <div class="alert al-b" style="margin-bottom:14px"><div>ℹ</div><div><div class="al-title">Este é um espelho simplificado para consulta interna — não substitui o holerite oficial</div><div class="al-sub">Use para que os colaboradores consultem o resumo da competência. O holerite oficial é emitido pelo contador/sistema de folha.</div></div></div>
-      <!-- T&D Consolidado -->
-      <div class="kpi-grid" style="margin-bottom:10px">
-        <div class="kpi-card"><div class="kpi-lbl">Sessões T&D (Jan–Ago)</div><div class="kpi-val" id="pa-td-sessoes">80</div><div class="kpi-delta">DDS + Treinamentos operacionais</div></div>
-        <div class="kpi-card"><div class="kpi-lbl">Total Participações</div><div class="kpi-val" id="pa-td-participacoes">1.694</div><div class="kpi-delta">Soma de presenças no período</div></div>
-        <div class="kpi-card"><div class="kpi-lbl">Horas/Pessoa Estimadas</div><div class="kpi-val" id="pa-td-horas-pessoa">—</div><div class="kpi-delta">Meta 2027: 2h/pessoa</div></div>
-        <div class="kpi-card"><div class="kpi-lbl">Principal Tema</div><div class="kpi-val" style="font-size:13px">DDS</div><div class="kpi-delta">Diálogo diário de segurança</div></div>
-      </div>
-      <div class="kpi-grid">
-        <div class="kpi-card"><div class="kpi-lbl">Holerites Emitidos</div><div class="kpi-val" id="hol-total-crud">—</div></div>
-        <div class="kpi-card"><div class="kpi-lbl">Total Salários Base</div><div class="kpi-val" style="font-size:16px" id="hol-folha-crud">—</div></div>
-        <div class="kpi-card"><div class="kpi-lbl">Total Líquido</div><div class="kpi-val" style="font-size:16px;color:var(--blue)" id="hol-liq-crud">—</div></div>
-        <div class="kpi-card"><div class="kpi-lbl">FGTS Total (enc. empresa)</div><div class="kpi-val" style="font-size:16px" id="hol-fgts-crud">—</div></div>
-      </div>
-           <div style="background:#fff;border:1px solid var(--g200);border-radius:9px;padding:12px;margin-bottom:10px">
-        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-          <div class="srch-wrap" style="flex:2;min-width:180px"><input class="finp" style="width:100%" id="hole-search" placeholder="🔎 Buscar colaborador, cargo ou competência..." oninput="holeCtrl.filter()"></div>
-          <select class="fsel" data-fid="hole" style="min-width:165px" onchange="holeCtrl.setFilter('competencia',this.value)"><option value="">📅 Todas as competências</option><option>Jun/2026</option><option>Mai/2026</option><option>Abr/2026</option><option>Mar/2026</option></select>
-          <span class="chip" id="holerite-count">— registros</span>
-          <button class="btn btn-s btn-xs" onclick="holeCtrl.clearAll()" title="Limpar">🔄 Limpar</button>
-          <button class="btn btn-s btn-xs" onclick="holeCtrl.load();showToast('🔃 Atualizado')" title="Atualizar">🔃</button>
-          <select class="fsel" style="width:72px" onchange="holeCtrl._pageSize=+this.value;holeCtrl._page=1;holeCtrl.render()">
-            <option value="10" selected>10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option>
-          </select>
-          <button class="btn btn-s btn-xs" onclick="exportTableToExcel('holerites',[{field:'colaborador',label:'Colaborador',width:35},{field:'cargo',label:'Cargo',width:28},{field:'competencia',label:'Competência',width:12},{field:'salarioBase',label:'Sal.Base',width:12},{field:'liquido',label:'Líquido',width:12}],'Holerites')">⬇ Excel</button>
-        </div>
-      </div>
-      <div class="card" style="padding:0">
-        <table><thead><tr><th>Colaborador</th><th>Cargo</th><th>Competência</th><th>Salário Base</th><th>Total Proventos</th><th>Total Descontos</th><th>Líquido</th><th>FGTS</th><th>Ações</th></tr></thead>
-        <tbody id="holerite-tbody-crud"></tbody></table>
-        <div style="padding:10px 14px;display:flex;align-items:center;justify-content:flex-end;gap:4px;border-top:1px solid var(--g100)" id="holerite-pagination"></div>
-      </div>
-    </div>
-
-    <!-- ══ COMUNICADOS ══ -->
-    <div id="page-comunicados" class="page">
-      <div class="layer-badge lb-co">● Comunicação Interna</div>
-      <div class="section-hdr">
-        <div class="sec-title">📢 Comunicados & Endomarketing</div>
-        <div style="display:flex;gap:8px">
-          <button class="btn btn-p" onclick="openCrudModal(MOD_COMUNICADO,null)">+ Novo Comunicado</button>
-        </div>
-      </div>
-      <div class="kpi-grid">
-        <div class="kpi-card"><div class="kpi-lbl">Total</div><div class="kpi-val" id="com-total-crud">—</div></div>
-        <div class="kpi-card"><div class="kpi-lbl">Publicados</div><div class="kpi-val dg" id="com-publicados-crud">—</div></div>
-        <div class="kpi-card"><div class="kpi-lbl">Rascunhos</div><div class="kpi-val" style="color:var(--yellow)" id="com-rascunhos-crud">—</div></div>
-        <div class="kpi-card"><div class="kpi-lbl">Categorias Ativas</div><div class="kpi-val" id="com-categorias-crud">—</div></div>
-      </div>
-           <div style="background:#fff;border:1px solid var(--g200);border-radius:9px;padding:12px;margin-bottom:10px">
-        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-          <div class="srch-wrap" style="flex:2;min-width:180px"><input class="finp" style="width:100%" id="com-search" placeholder="🔎 Buscar título, categoria ou conteúdo..." oninput="comCtrl.filter()"></div>
-          <select class="fsel" data-fid="com" style="min-width:180px" onchange="comCtrl.setFilter('categoria',this.value)"><option value="">📋 Todas as categorias</option><option>Aviso Geral</option><option>Segurança do Trabalho</option><option>Benefícios</option><option>Férias</option><option>Treinamento</option><option>Processo Seletivo</option><option>Reconhecimento</option><option>Aniversariantes</option><option>Resultado & Metas</option><option>Endomarketing</option><option>RH Informa</option></select><select class="fsel" data-fid="com" style="min-width:150px" onchange="comCtrl.setFilter('canal',this.value)"><option value="">📣 Todos os canais</option><option>WhatsApp</option><option>Quadro de avisos</option><option>E-mail</option><option>Reunião</option><option>App</option><option>Todos</option></select><select class="fsel" data-fid="com" style="min-width:160px" onchange="comCtrl.setFilter('destinatario',this.value)"><option value="">👥 Todos</option><option>Todos os colaboradores</option><option>Produção</option><option>Usinagem</option><option>Fundição</option><option>Qualidade</option><option>Manutenção</option><option>Administrativo</option><option>Liderança</option></select><select class="fsel" data-fid="com" style="min-width:140px" onchange="comCtrl.setFilter('situacao',this.value)"><option value="">🟢 Todos os status</option><option>Rascunho</option><option>Publicado</option><option>Arquivado</option></select>
-          <span class="chip" id="comunicado-count">— registros</span>
-          <button class="btn btn-s btn-xs" onclick="comCtrl.clearAll()" title="Limpar">🔄 Limpar</button>
-          <button class="btn btn-s btn-xs" onclick="comCtrl.load();showToast('🔃 Atualizado')" title="Atualizar">🔃</button>
-          <select class="fsel" style="width:72px" onchange="comCtrl._pageSize=+this.value;comCtrl._page=1;comCtrl.render()">
-            <option value="10" selected>10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option>
-          </select>
-          <button class="btn btn-s btn-xs" onclick="exportTableToExcel('comunicados',[{field:'titulo',label:'Título',width:35},{field:'categoria',label:'Categoria',width:20},{field:'canal',label:'Canal',width:14},{field:'destinatario',label:'Para',width:20},{field:'data',label:'Data',width:12},{field:'situacao',label:'Status',width:12}],'Comunicados')">⬇ Excel</button>
-        </div>
-      </div>
-      <div id="comunicado-cards-crud" style="margin-bottom:8px"></div>
-      <div style="display:flex;align-items:center;justify-content:flex-end;gap:4px" id="comunicado-pagination"></div>
-    </div>
-
     <!-- ══ INDICADORES RH 2026 ══ -->
     <div id="page-ind-rh" class="page">
       <div class="layer-badge lb-st">● Estratégico — Indicadores</div>
@@ -2538,6 +2411,8 @@ function buildAll(){
   try{buildPcmsoSeed();}catch(e){console.warn('buildPcmsoSeed:',e);}
   try{buildFolhaDescSeed();}catch(e){console.warn('buildFolhaDescSeed:',e);}
   try{migracaoCompetenciaBeneficiosEPI();}catch(e){console.warn('migracaoCompetenciaBeneficiosEPI:',e);}
+  try{buildBeneficiosTiposSeed();}catch(e){console.warn('buildBeneficiosTiposSeed:',e);}
+  try{migracaoLimparBeneficiosFake();}catch(e){console.warn('migracaoLimparBeneficiosFake:',e);}
   try{migracaoRealocacoes2026();}catch(e){console.warn('migracaoRealocacoes2026:',e);}
   try{tryRestoreSupabase();}catch(e){console.warn('tryRestoreSupabase:',e); updateDBStatusBadge('error');}
   try{initAllAdvFilters();}catch(e){console.warn('initAllAdvFilters:',e);}
@@ -4997,11 +4872,11 @@ const MOD_BENEFICIO = {
   fields: [
     {field:'colaborador', label:'Colaborador', required:true, full:true},
     {field:'empresa', label:'Empresa', type:'select', options:['AC','BRASS','PJ']},
-    {field:'beneficio', label:'Benefício', type:'select', required:true, options:['Vale-Transporte','Vale-Refeição/Alimentação','Convênio Médico','Seguro de Vida','Dep. Plano Médico','Outro']},
+    {field:'beneficio', label:'Benefício', type:'select', required:true, options:['Vale-Transporte','Convênio Médico','Convênio Farmácia','Seguro de Vida','Dep. Plano Médico','Outro']},
     {field:'tipo', label:'Tipo de Movimentação', type:'select', required:true, options:['Inclusão','Exclusão','Inclusão dep.','Exclusão dep.','Alteração']},
     {field:'data', label:'Data', required:true, placeholder:'dd/mm/aaaa'},
     {field:'motivo', label:'Motivo', placeholder:'Admissão, afastamento, etc.'},
-    {field:'situacao', label:'Situação', type:'select', options:['Pendente docs','Em análise','Concluído']},
+    {field:'situacao', label:'Situação', type:'select', options:['Pendente','Em análise','Concluída','Cancelada']},
     {field:'status', label:'Registro', type:'select', options:['Ativo','Inativo']},
   ],
   beforeSave: obj => { const dm = deriveMesAno(obj.data); obj.mes = dm.mes; obj.ano = dm.ano; },
@@ -5048,27 +4923,85 @@ function initBeneficioTable() {
 }
 
 function buildBeneficiosSeed() {
-  let mov = loadData('beneficios_mov');
-  if (mov.length) return;
-  const seed = [
-    {colaborador:'Marcos H. Torres', beneficio:'Vale-Transporte', tipo:'Inclusão', data:'20/05/2026', motivo:'Admissão', situacao:'Concluído'},
-    {colaborador:'Beatriz Santos', beneficio:'Vale-Refeição/Alimentação', tipo:'Inclusão', data:'26/05/2026', motivo:'Admissão', situacao:'Pendente docs'},
-    {colaborador:'Roberto Alves', beneficio:'Convênio Médico', tipo:'Exclusão', data:'01/06/2026', motivo:'Afastamento INSS', situacao:'Concluído'},
-    {colaborador:'José Santos', beneficio:'Dep. Plano Médico', tipo:'Inclusão dep.', data:'03/06/2026', motivo:'Nascimento filho', situacao:'Em análise'},
-  ];
-  seed.forEach(s => crudCreate('beneficios_mov', s, {modulo:'Benefícios', label: s.colaborador}));
+  // Seed de exemplo desativado — dados reais entram por Inclusão/Exclusão manual.
+}
+
+/* Remove os 4 registros fictícios de exemplo, se ainda estiverem na base (1x) */
+function migracaoLimparBeneficiosFake() {
+  if (localStorage.getItem('ac_benef_limpa_v1')) return;
+  const nomesFake = ['MARCOS H. TORRES','BEATRIZ SANTOS','ROBERTO ALVES','JOSÉ SANTOS'];
+  const mov = loadData('beneficios_mov');
+  const restante = mov.filter(m => !nomesFake.includes((m.colaborador||'').toUpperCase()));
+  if (restante.length !== mov.length) {
+    saveData('beneficios_mov', restante);
+    logAudit('Benefícios', 'Exclusão física', 0, `Remoção de ${mov.length-restante.length} registro(s) de exemplo`);
+  }
+  localStorage.setItem('ac_benef_limpa_v1', '1');
 }
 
 function atualizarKPIsBeneficios() {
   const mov = loadData('beneficios_mov').filter(b=>b.status!=='Inativo');
   const total = mov.length;
-  const pendentes = mov.filter(b=>b.situacao==='Pendente docs'||b.situacao==='Em análise').length;
-  const inclusoesMes = mov.filter(b=>b.tipo.startsWith('Inclusão')).length;
-  const exclusoesMes = mov.filter(b=>b.tipo.startsWith('Exclusão')).length;
+  const pendentes = mov.filter(b=>b.situacao==='Pendente'||b.situacao==='Em análise').length;
+  const inclusoesMes = mov.filter(b=>b.tipo&&b.tipo.startsWith('Inclusão')).length;
+  const exclusoesMes = mov.filter(b=>b.tipo&&b.tipo.startsWith('Exclusão')).length;
   setText('ben-total-crud', total);
   setText('ben-pendencias-crud', pendentes);
   setText('ben-inclusoes-crud', inclusoesMes);
   setText('ben-exclusoes-crud', exclusoesMes);
+  try{ renderBeneficiosTipos(); }catch(e){}
+}
+
+/* ═══════════════ TIPOS DE BENEFÍCIO (catálogo editável) ═══════════════ */
+const MOD_BENEFTIPO = {
+  table: 'beneficios_tipos',
+  label: 'Tipo de Benefício',
+  onSave: () => { renderBeneficiosTipos(); },
+  fields: [
+    {field:'nome', label:'Nome do Benefício', required:true, full:true},
+    {field:'icone', label:'Ícone (emoji)', placeholder:'🏥'},
+    {field:'descricao', label:'Descrição', placeholder:'Ex: Plano empresarial, coparticipação 30%'},
+    {field:'status', label:'Status', type:'select', options:['Ativo','Inativo']},
+  ]
+};
+
+function buildBeneficiosTiposSeed() {
+  if (localStorage.getItem('ac_beneftipos_v1')) return;
+  const now = nowStr();
+  const seed = [
+    {nome:'Vale-Transporte', icone:'🚌', descricao:'Cartão eletrônico'},
+    {nome:'Convênio Médico', icone:'🏥', descricao:'Plano empresarial'},
+    {nome:'Convênio Farmácia', icone:'💊', descricao:'Desconto em farmácia conveniada'},
+    {nome:'Seguro de Vida em Grupo', icone:'🛡', descricao:'Cobertura 24h'},
+  ];
+  const seeded = seed.map((s,i)=>Object.assign({},s,{id:i+1,status:'Ativo',criadoEm:now,atualizadoEm:now}));
+  saveData('beneficios_tipos', seeded);
+  logAudit('Benefícios', 'Inclusão', 0, `Catálogo inicial de tipos de benefício — ${seeded.length} itens`);
+  seeded.forEach(r => syncRecordToCloud('beneficios_tipos', r));
+  localStorage.setItem('ac_beneftipos_v1', '1');
+}
+
+function renderBeneficiosTipos() {
+  const tipos = loadData('beneficios_tipos').filter(t => t.status !== 'Inativo');
+  const box = document.getElementById('ben-tipos-lista');
+  if (!box) return;
+  const mov = loadData('beneficios_mov').filter(b=>b.status!=='Inativo');
+  box.innerHTML = tipos.map(t => {
+    const qtd = mov.filter(m => m.beneficio === t.nome).length;
+    return `<div class="card" style="padding:12px;display:flex;gap:10px;align-items:flex-start">
+      <div style="font-size:22px">${t.icone||'🔹'}</div>
+      <div style="flex:1">
+        <div style="font-weight:700;font-size:13px">${t.nome}</div>
+        <div style="font-size:11px;color:var(--g500);margin:2px 0 6px">${t.descricao||'—'}</div>
+        <span class="badge bgy">${qtd} movimentação(ões)</span>
+      </div>
+      <div style="white-space:nowrap">
+        <button class="btn btn-s btn-xs" onclick="openCrudModal(MOD_BENEFTIPO,${t.id})">✏</button>
+        <button class="btn btn-s btn-xs" onclick="crudDeleteAction(MOD_BENEFTIPO,${t.id},'${escAttr(t.nome)}')">🗑</button>
+      </div>
+    </div>`;
+  }).join('') || '<div class="muted" style="grid-column:1/-1;text-align:center;padding:16px">Nenhum tipo de benefício cadastrado.</div>';
+  setText('ben-tipos-count', tipos.length);
 }
 
 /* ═══════════════ MÓDULO: CESTA BÁSICA & CARTÃO VEGAS ═══════════════ */
@@ -9390,19 +9323,19 @@ function initBenefAdv() {
     pageSize:10, sortField:'data',
     render: rows => rows.map(b => {
       const sb = {'Concluída':'bg','Pendente':'by','Cancelada':'br'}[b.situacao]||'bgy';
-      const tbSb = b.tipoMov==='Inclusão'?'bg':'br';
+      const tbSb = b.tipo && b.tipo.startsWith('Inclusão')?'bg':'br';
       const inativo = b.status==='Inativo';
       return `<tr style="${inativo?'opacity:.5':''}">
         <td style="font-size:11px;font-weight:600">${b.colaborador}</td>
         <td><span class="chip">${b.beneficio||'—'}</span></td>
-        <td><span class="badge ${tbSb}">${b.tipoMov||'—'}</span></td>
+        <td><span class="badge ${tbSb}">${b.tipo||'—'}</span></td>
         <td>${b.data||'—'}</td>
         <td style="font-size:10px">${b.motivo||'—'}</td>
         <td><span class="badge ${sb}">${b.situacao||'—'}</span></td>
         <td style="white-space:nowrap">
-          <button class="btn btn-s btn-xs" onclick="openCrudModal(MOD_BENEF,${b.id})">✏</button>
-          ${inativo?`<button class="btn btn-s btn-xs" onclick="crudRestoreAction(MOD_BENEF,${b.id},'${escAttr(b.colaborador)}')">↩</button>`
-                  :`<button class="btn btn-s btn-xs" onclick="crudDeleteAction(MOD_BENEF,${b.id},'${escAttr(b.colaborador)}')">🗑</button>`}
+          <button class="btn btn-s btn-xs" onclick="openCrudModal(MOD_BENEFICIO,${b.id})">✏</button>
+          ${inativo?`<button class="btn btn-s btn-xs" onclick="crudRestoreAction(MOD_BENEFICIO,${b.id},'${escAttr(b.colaborador)}')">↩</button>`
+                  :`<button class="btn btn-s btn-xs" onclick="crudDeleteAction(MOD_BENEFICIO,${b.id},'${escAttr(b.colaborador)}')">🗑</button>`}
         </td></tr>`;
     }).join(''),
   });
