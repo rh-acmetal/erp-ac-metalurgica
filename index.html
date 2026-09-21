@@ -424,7 +424,7 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
   <div class="l-box">
     <div class="l-logo">
       <div class="l-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
-      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.33 — Inscritos por Benefício + Correção de Atualização</div></div>
+      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.34 — Desconto Editável + Correção de Cálculo + Formato Contábil</div></div>
     </div>
     <div class="f-row"><label>Usuário</label><input type="text" id="l-user" value="jakeline@acmetalurgica.com.br"></div>
     <div class="f-row"><label>Senha</label><input type="password" id="l-pass" value="••••••••"></div>
@@ -3735,10 +3735,10 @@ function renderFolhaDesc() {
   if (tbody) tbody.innerHTML = all.length ? all.map(fdRowRender).join('')
     : '<tr><td colspan="8" class="muted" style="text-align:center;padding:16px">Nenhum colaborador lançado neste mês. Clique em "+ Adicionar Colaborador".</td></tr>';
   setText('fd-count', all.length + ' colaboradores');
-  setText('fd-kpi-farmacia', 'R$ ' + all.reduce((s,r)=>s+(r.farmacia||0),0).toFixed(2));
-  setText('fd-kpi-sindicato', 'R$ ' + all.reduce((s,r)=>s+(r.sindicato||0),0).toFixed(2));
-  setText('fd-kpi-samaritano', 'R$ ' + all.reduce((s,r)=>s+(r.samaritano||0),0).toFixed(2));
-  setText('fd-kpi-termo', 'R$ ' + all.reduce((s,r)=>s+(r.termoAcordo||0),0).toFixed(2));
+  setText('fd-kpi-farmacia', 'R$ ' + fmtBRL(all.reduce((s,r)=>s+(r.farmacia||0),0)));
+  setText('fd-kpi-sindicato', 'R$ ' + fmtBRL(all.reduce((s,r)=>s+(r.sindicato||0),0)));
+  setText('fd-kpi-samaritano', 'R$ ' + fmtBRL(all.reduce((s,r)=>s+(r.samaritano||0),0)));
+  setText('fd-kpi-termo', 'R$ ' + fmtBRL(all.reduce((s,r)=>s+(r.termoAcordo||0),0)));
 
   const tot = loadData('folha_totais').find(t => t.status !== 'Inativo' && t.cnpj === ctx.cnpj && t.ano === ctx.ano && t.mes === ctx.mes);
   document.getElementById('fd-total-nota').value = tot ? tot.totalNota||0 : '';
@@ -3773,7 +3773,7 @@ function fdExportar() {
   const header = ['NOME DO FUNCIONÁRIO','FARMÁCIA','SINDICATO','SAMARITANO','TRANSPORTE','TERMO ACORDO','OBSERVAÇÃO'];
   const rows = all.map(r => [r.colaborador, r.farmacia||0, r.sindicato||0, r.samaritano||0, r.transporte, r.termoAcordo||0, r.observacao||'']);
   rows.push([]);
-  rows.push(['TOTAL', all.reduce((s,r)=>s+(r.farmacia||0),0).toFixed(2), all.reduce((s,r)=>s+(r.sindicato||0),0).toFixed(2), all.reduce((s,r)=>s+(r.samaritano||0),0).toFixed(2), '', all.reduce((s,r)=>s+(r.termoAcordo||0),0).toFixed(2), '']);
+  rows.push(['TOTAL', fmtBRL(all.reduce((s,r)=>s+(r.farmacia||0),0)), fmtBRL(all.reduce((s,r)=>s+(r.sindicato||0),0)), fmtBRL(all.reduce((s,r)=>s+(r.samaritano||0),0)), '', fmtBRL(all.reduce((s,r)=>s+(r.termoAcordo||0),0)), '']);
   const tot = loadData('folha_totais').find(t => t.cnpj === ctx.cnpj && t.ano === ctx.ano && t.mes === ctx.mes);
   if (tot) {
     rows.push([]);
@@ -4846,6 +4846,13 @@ function initLote2Modules() {
 
 /* ═══════════════ MÓDULO: BENEFÍCIOS (Movimentações) ═══════════════ */
 
+
+/* Formato contábil brasileiro: 1234.5 -> "1.234,50" */
+function fmtBRL(n) {
+  n = parseFloat(n) || 0;
+  return n.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
 function deriveMesAno(dataStr) {
   const m = (dataStr||'').match(/(\d{2})\/(\d{2})\/(\d{4})/);
   return m ? { mes: parseInt(m[2],10), ano: parseInt(m[3],10) } : { mes: null, ano: null };
@@ -5043,24 +5050,41 @@ function benefRemoverInscrito(id, nome) {
   crudDeleteAction({table:'beneficios_inscritos', label:'Benefícios', onSave: renderBeneficiosTipos}, id, nome);
 }
 
+function benefAtualizarDesconto(id, valor) {
+  let num = parseFloat(String(valor).replace(',', '.'));
+  if (isNaN(num) || num < 0) num = 0;
+  num = Math.round(num * 100) / 100;
+  const data = loadData('beneficios_inscritos');
+  const rec = data.find(x => x.id === id);
+  if (!rec) return;
+  rec.valorDesconto = num;
+  rec.atualizadoEm = nowStr();
+  saveData('beneficios_inscritos', data);
+  logAudit('Benefícios', 'Atualização', id, `${rec.colaborador} — valor desconto: R$ ${fmtBRL(num)}`);
+  syncRecordToCloud('beneficios_inscritos', rec);
+  renderBeneficiosTipos();
+}
+
 function benefInscritosHtml(tipoNome) {
   const inscritos = loadData('beneficios_inscritos').filter(i => i.status !== 'Inativo' && i.tipoBeneficio === tipoNome);
   const isVT = tipoNome === 'Vale-Transporte';
   const colabs = loadData('colaboradores');
   const linhas = inscritos.map(i => {
-    let valor = i.valorDesconto || 0;
-    let obsSalario = '';
+    let colunaValor;
     if (isVT) {
       const c = colabs.find(x => (x.nome||'').trim().toUpperCase() === (i.colaborador||'').trim().toUpperCase());
-      const sal = c ? parseFloat(String(c.sal||'0').replace(/[^\d,.-]/g,'').replace(',','.')) : 0;
-      valor = sal ? Math.round(sal*0.06*100)/100 : 0;
-      obsSalario = c ? ` <span class="muted" style="font-size:9px">(6% de R$ ${sal.toFixed(2)})</span>` : ' <span class="muted" style="font-size:9px">(salário não encontrado)</span>';
+      const sal = c ? parseFloat(String(c.sal||'0').replace(/[^\d,.-]/g,'').replace(/\./g,'').replace(',','.')) : 0;
+      const valor = sal ? Math.round(sal*0.06*100)/100 : 0;
+      const obsSalario = c ? `<span class="muted" style="font-size:9px">(6% de R$ ${fmtBRL(sal)})</span>` : '<span class="muted" style="font-size:9px">(salário não encontrado no cadastro)</span>';
+      colunaValor = `R$ ${fmtBRL(valor)} ${obsSalario}`;
+    } else {
+      colunaValor = `<input type="number" step="0.01" min="0" style="width:90px" value="${i.valorDesconto||0}" onchange="benefAtualizarDesconto(${i.id},this.value)">`;
     }
     return `<tr>
       <td style="font-size:11px">${i.colaborador}</td>
-      <td style="font-size:11px">R$ ${valor.toFixed(2)}${obsSalario}</td>
+      <td style="font-size:11px">${colunaValor}</td>
       <td><span class="badge bg">Ativo</span></td>
-      <td><button class="btn btn-s btn-xs" onclick="crudUpdate('beneficios_inscritos',${i.id},{status:'Inativo'},{modulo:'Benefícios',label:'${escAttr(i.colaborador)}'});renderBeneficiosTipos();showToast('🔒 Marcado como desligado/inativo')">🔒 Inativar</button>
+      <td style="white-space:nowrap"><button class="btn btn-s btn-xs" onclick="crudUpdate('beneficios_inscritos',${i.id},{status:'Inativo'},{modulo:'Benefícios',label:'${escAttr(i.colaborador)}'});renderBeneficiosTipos();showToast('🔒 Marcado como desligado/inativo')">🔒 Inativar</button>
       <button class="btn btn-s btn-xs" onclick="benefRemoverInscrito(${i.id},'${escAttr(i.colaborador)}')">🗑</button></td>
     </tr>`;
   }).join('');
@@ -5775,9 +5799,9 @@ function renderCestaVegas() {
   setText('cv-kpi-sem', sem);
   setText('cv-kpi-comprar', comprar);
   setText('cv-kpi-vegasqtd', vegasQtd);
-  setText('cv-kpi-vegasval', 'R$ ' + valorVegasTotal.toFixed(2));
-  setText('cv-kpi-cestaval', 'R$ ' + valorCestaTotal.toFixed(2));
-  setText('cv-kpi-custototal', 'R$ ' + (valorVegasTotal + valorCestaTotal).toFixed(2));
+  setText('cv-kpi-vegasval', 'R$ ' + fmtBRL(valorVegasTotal));
+  setText('cv-kpi-cestaval', 'R$ ' + fmtBRL(valorCestaTotal));
+  setText('cv-kpi-custototal', 'R$ ' + fmtBRL((valorVegasTotal + valorCestaTotal)));
 }
 
 function cvExportarFiltrado() {
@@ -5792,9 +5816,9 @@ function cvExportarFiltrado() {
   const totalVegas = all.filter(r=>r.vegas==='SIM').length;
   const valorVegas = all.reduce((s,r)=>s+(r.vegas==='SIM'?(parseFloat(r.valorVegas)||0):0),0);
   rows.push([]);
-  rows.push(['TOTAL CESTAS', totalCestas, '', '', 'VALOR TOTAL CESTAS', valorCestas.toFixed(2)]);
-  rows.push(['TOTAL RECARGAS VEGAS', totalVegas, '', '', 'VALOR TOTAL VEGAS', valorVegas.toFixed(2)]);
-  rows.push(['CUSTO TOTAL', '', '', '', '', (valorCestas+valorVegas).toFixed(2)]);
+  rows.push(['TOTAL CESTAS', totalCestas, '', '', 'VALOR TOTAL CESTAS', fmtBRL(valorCestas)]);
+  rows.push(['TOTAL RECARGAS VEGAS', totalVegas, '', '', 'VALOR TOTAL VEGAS', fmtBRL(valorVegas)]);
+  rows.push(['CUSTO TOTAL', '', '', '', '', fmtBRL((valorCestas+valorVegas))]);
   const ws = XLSX.utils.aoa_to_sheet([header, ...rows]);
   ws['!cols'] = [{wch:32},{wch:10},{wch:10},{wch:8},{wch:12},{wch:8},{wch:14},{wch:8},{wch:30},{wch:16}];
   const wb = XLSX.utils.book_new();
@@ -6249,7 +6273,7 @@ function sfToggle(id) {
 
 function sfCardRender(r) {
   const cnpjColor = r.cnpj === 'AC' ? 'bb' : 'bp';
-  const itens = (r.exames||[]).map(e => `<tr><td style="padding:3px 6px">${e.exame}</td><td style="padding:3px 6px;text-align:center">${e.qtd}</td><td style="padding:3px 6px;text-align:right">R$ ${e.valorUnit.toFixed(2)}</td><td style="padding:3px 6px;text-align:right;font-weight:600">R$ ${e.total.toFixed(2)}</td></tr>`).join('');
+  const itens = (r.exames||[]).map(e => `<tr><td style="padding:3px 6px">${e.exame}</td><td style="padding:3px 6px;text-align:center">${e.qtd}</td><td style="padding:3px 6px;text-align:right">R$ ${fmtBRL(e.valorUnit)}</td><td style="padding:3px 6px;text-align:right;font-weight:600">R$ ${fmtBRL(e.total)}</td></tr>`).join('');
   return `<div class="card" style="padding:12px;margin-bottom:8px">
     <div style="display:flex;justify-content:space-between;align-items:center;cursor:pointer" onclick="sfToggle(${r.id})">
       <div>
@@ -6257,12 +6281,12 @@ function sfCardRender(r) {
         <span style="font-weight:700;font-size:13px;margin-left:8px">${r.periodo}</span>
         <span style="font-size:11px;color:var(--g500);margin-left:8px">${r.qtdVidas} vidas ativas</span>
       </div>
-      <div style="font-weight:700;font-size:14px;color:var(--blue)">R$ ${r.valorTotalGeral.toFixed(2)}</div>
+      <div style="font-weight:700;font-size:14px;color:var(--blue)">R$ ${fmtBRL(r.valorTotalGeral)}</div>
     </div>
     <div id="sf-det-${r.id}" style="display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--g100)">
       <div style="display:flex;gap:16px;font-size:11px;color:var(--g500);margin-bottom:8px">
-        <span>Vidas ativas: ${r.qtdVidas} × R$ ${r.valorVidaUnit.toFixed(2)} = <strong>R$ ${r.totalVidas.toFixed(2)}</strong></span>
-        <span>Exames: <strong>R$ ${r.valorTotalExames.toFixed(2)}</strong></span>
+        <span>Vidas ativas: ${r.qtdVidas} × R$ ${fmtBRL(r.valorVidaUnit)} = <strong>R$ ${fmtBRL(r.totalVidas)}</strong></span>
+        <span>Exames: <strong>R$ ${fmtBRL(r.valorTotalExames)}</strong></span>
       </div>
       ${itens ? `<table style="width:100%;font-size:11px"><thead><tr style="color:var(--g500)"><th style="text-align:left;padding:3px 6px">Exame</th><th style="padding:3px 6px">Qtd</th><th style="text-align:right;padding:3px 6px">Valor Unit.</th><th style="text-align:right;padding:3px 6px">Total</th></tr></thead><tbody>${itens}</tbody></table>` : '<div class="muted">Nenhum exame avulso neste período.</div>'}
     </div>
@@ -7206,10 +7230,10 @@ function renderPcmsoValores() {
     else if (Math.abs(cobrado - contratado) < 0.01) status = 'OK';
     else if (cobrado > contratado) { status = 'VALOR DIVERGENTE'; divergentes++; }
     else status = 'ABAIXO DO TABELADO';
-    const diff = contratado != null ? (cobrado - contratado).toFixed(2) : '—';
+    const diff = contratado != null ? fmtBRL((cobrado - contratado)) : '—';
     const badgeMap = { 'OK':'bg', 'VALOR DIVERGENTE':'br', 'SEM VALOR CADASTRADO':'by', 'ABAIXO DO TABELADO':'bb' };
     return `<tr><td>${r.colaborador}</td><td>${r.exame}</td><td>${r.dataRealizacao||'—'}</td>
-      <td>R$ ${cobrado.toFixed(2)}</td><td>${contratado!=null?'R$ '+contratado.toFixed(2):'—'}</td>
+      <td>R$ ${fmtBRL(cobrado)}</td><td>${contratado!=null?'R$ '+fmtBRL(contratado):'—'}</td>
       <td>${diff!=='—'?'R$ '+diff:'—'}</td><td><span class="badge ${badgeMap[status]}">${status}</span></td>
       <td style="white-space:nowrap">
         <button class="btn btn-s btn-xs" onclick="openCrudModal(MOD_EXAMEREAL,${r.id})">✏</button>
@@ -7260,8 +7284,8 @@ function renderSSTFinanceiro() {
 
   const totalAno = all.reduce((s,r) => s + r.valorTotalGeral, 0);
   const media = all.length ? totalAno / all.length : 0;
-  setText('sf-kpi-total', 'R$ ' + totalAno.toFixed(2));
-  setText('sf-kpi-media', 'R$ ' + media.toFixed(2));
+  setText('sf-kpi-total', 'R$ ' + fmtBRL(totalAno));
+  setText('sf-kpi-media', 'R$ ' + fmtBRL(media));
   setText('sf-kpi-periodos', all.length);
   const ultimo = all[all.length-1];
   setText('sf-kpi-vidas', ultimo ? ultimo.qtdVidas : '—');
@@ -8540,10 +8564,10 @@ const MOD_HOLERITE = {
   beforeSave: (obj) => {
     const prov = (+obj.salarioBase||0) + (+obj.vt||0) + (+obj.vr||0) + (+obj.horasExtra||0) + (+obj.adicionais||0);
     const desc = (+obj.inss||0) + (+obj.irrf||0) + (+obj.vt_desc||0) + (+obj.outros_desc||0);
-    obj.totalProventos = prov.toFixed(2);
-    obj.totalDescontos = desc.toFixed(2);
-    obj.liquido = (prov - desc).toFixed(2);
-    obj.fgts = ((+obj.salarioBase||0) * 0.08).toFixed(2);
+    obj.totalProventos = fmtBRL(prov);
+    obj.totalDescontos = fmtBRL(desc);
+    obj.liquido = fmtBRL((prov - desc));
+    obj.fgts = fmtBRL(((+obj.salarioBase||0) * 0.08));
   },
   onSave: () => { if(tcHolerite) tcHolerite.refresh(); atualizarKPIsHolerite(); }
 };
@@ -8551,7 +8575,7 @@ const MOD_HOLERITE = {
 function calcHolerite(h) {
   const prov = (+h.salarioBase||0)+(+h.vt||0)+(+h.vr||0)+(+h.horasExtra||0)+(+h.adicionais||0);
   const desc = (+h.inss||0)+(+h.irrf||0)+(+h.vt_desc||0)+(+h.outros_desc||0);
-  return { prov: prov.toFixed(2), desc: desc.toFixed(2), liq: (prov-desc).toFixed(2), fgts: ((+h.salarioBase||0)*0.08).toFixed(2) };
+  return { prov: fmtBRL(prov), desc: fmtBRL(desc), liq: fmtBRL((prov-desc)), fgts: fmtBRL(((+h.salarioBase||0)*0.08)) };
 }
 
 function holeritRowRender(rows) {
@@ -8887,7 +8911,7 @@ function colabFiltrar() {
     }
     // Filtro por salário
     if (salMin > 0 || salMax < Infinity) {
-      const sal = parseFloat((c.sal||'').replace(/[^\d.,]/g,'').replace(',','.')) || 0;
+      const sal = parseFloat((c.sal||'').replace(/[^\d.,]/g,'').replace(/\./g,'').replace(',','.')) || 0;
       if (sal < salMin || sal > salMax) return false;
     }
     return true;
@@ -9678,7 +9702,7 @@ function updateSSTBanner() {
 
 /* ═══════ CARGOS — ALERTA NA FICHA DO COLABORADOR ═══════ */
 function salarioVsFaixa(colaborador) {
-  const sal = parseFloat((colaborador.sal||'').replace(/[^\d.,]/g,'').replace(',','.'));
+  const sal = parseFloat((colaborador.sal||'').replace(/[^\d.,]/g,'').replace(/\./g,'').replace(',','.'));
   if (!sal) return null;
   const cargo = loadData('cargos').find(c=>c.cargo===colaborador.cargo&&c.status!=='Inativo');
   if (!cargo) return null;
@@ -9840,9 +9864,9 @@ function buildEngSetorTable(mes) {
   }
   tbody.innerHTML = Object.entries(dadosMes).map(([s, v]) => {
     const m = v.medias;
-    const media = v.mediaGeral.toFixed(2);
+    const media = fmtBRL(v.mediaGeral);
     const mc = +media>=4.2?'var(--green)':+media>=3.8?'var(--blue)':'var(--yellow)';
-    const cell = val => `<td class="mono" style="color:${+val<3.8?'var(--yellow)':+val>=4.2?'var(--green)':'var(--blue)'}">${(+val).toFixed(2)}</td>`;
+    const cell = val => `<td class="mono" style="color:${+val<3.8?'var(--yellow)':+val>=4.2?'var(--green)':'var(--blue)'}">${fmtBRL((+val))}</td>`;
     return `<tr>
       <td style="font-weight:600">${s}</td>
       <td>${v.total}</td>
