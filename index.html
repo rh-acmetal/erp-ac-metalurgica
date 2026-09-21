@@ -391,8 +391,8 @@ input[readonly],input:disabled,select:disabled,textarea[readonly],textarea:disab
 
 /* Tabelas em grade clássica */
 table{border-collapse:collapse!important}
-th{background:#d4d0c8!important;border:1px solid var(--ad-border-dark)!important;font-size:11px!important;font-family:var(--ad-font)!important}
-td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-family:var(--ad-font)!important}
+th{background:#d4d0c8!important;border:1px solid var(--ad-border-dark)!important;font-size:10px!important;font-family:var(--ad-font)!important;white-space:normal!important;word-wrap:break-word!important;padding:6px 5px!important;line-height:1.25!important;vertical-align:bottom!important;text-align:left!important}
+td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-family:var(--ad-font)!important;padding:4px 5px!important;vertical-align:middle!important}
 
 /* Modais */
 .m-hdr{background:linear-gradient(180deg,var(--ad-titlebar1),var(--ad-titlebar2))!important;color:#fff!important;font-family:var(--ad-font)!important}
@@ -424,7 +424,7 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
   <div class="l-box">
     <div class="l-logo">
       <div class="l-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
-      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.25 — Colunas Mais Compactas (Observações Visível)</div></div>
+      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.27 — Controle de Desconto em Folha (2026–2050)</div></div>
     </div>
     <div class="f-row"><label>Usuário</label><input type="text" id="l-user" value="jakeline@acmetalurgica.com.br"></div>
     <div class="f-row"><label>Senha</label><input type="password" id="l-pass" value="••••••••"></div>
@@ -486,6 +486,9 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
     </div>
     <div class="nav-item" onclick="go('pcmso',this,'Conferência PCMSO','Compliance')">
       <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Conferência PCMSO
+    </div>
+    <div class="nav-item" onclick="go('folhadesc',this,'Controle de Desconto em Folha','Envio ao Contador')">
+      <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2H10a2 2 0 0 0-2 2v16"/></svg>Desconto em Folha
     </div>
     <div class="nav-item" onclick="go('ferias',this,'Férias','Gestão')">
       <svg viewBox="0 0 24 24"><path d="M8 3v3m8-3v3M3 8h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/></svg>Férias
@@ -1047,6 +1050,48 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
         </div>
         <div class="card" style="padding:0"><table><thead><tr><th>Cargo</th><th>Empresa</th><th>GHE</th><th>Exame</th><th>Periodicidade</th><th>Admis.</th><th>Ret.Trab</th><th>Mud.Risco</th><th>Demissão</th></tr></thead>
         <tbody id="matriz-tbody"></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- ══ DESCONTO EM FOLHA ══ -->
+    <div id="page-folhadesc" class="page">
+      <div class="layer-badge lb-op">● Operacional</div>
+      <div class="section-hdr">
+        <div class="sec-title"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2H10a2 2 0 0 0-2 2v16"/></svg>Controle de Desconto em Folha</div>
+        <button class="btn btn-p" onclick="fdAdicionarLinha()">+ Adicionar Colaborador</button>
+        <button class="btn btn-s" onclick="fdExportar()">⬇ Exportar p/ Contador</button>
+      </div>
+      <div class="filters" style="margin-bottom:12px">
+        <select class="fsel" id="fd-empresa-sel" onchange="renderFolhaDesc()"><option>AC</option><option>BRASS</option></select>
+        <select class="fsel" id="fd-ano-sel" onchange="renderFolhaDesc()"></select>
+        <select class="fsel" id="fd-mes-sel" onchange="renderFolhaDesc()">
+          <option value="1">Janeiro</option><option value="2">Fevereiro</option><option value="3">Março</option><option value="4">Abril</option>
+          <option value="5">Maio</option><option value="6">Junho</option><option value="7">Julho</option><option value="8">Agosto</option>
+          <option value="9" selected>Setembro</option><option value="10">Outubro</option><option value="11">Novembro</option><option value="12">Dezembro</option>
+        </select>
+        <span class="chip" id="fd-count">— colaboradores</span>
+      </div>
+      <div class="kpi-grid">
+        <div class="kpi-card"><div class="kpi-lbl">Total Farmácia</div><div class="kpi-val" id="fd-kpi-farmacia">—</div></div>
+        <div class="kpi-card"><div class="kpi-lbl">Total Sindicato</div><div class="kpi-val" id="fd-kpi-sindicato">—</div></div>
+        <div class="kpi-card"><div class="kpi-lbl">Total Samaritano</div><div class="kpi-val" id="fd-kpi-samaritano">—</div></div>
+        <div class="kpi-card"><div class="kpi-lbl">Total Termo Acordo</div><div class="kpi-val" id="fd-kpi-termo">—</div></div>
+      </div>
+      <div class="card" style="padding:0;margin-bottom:14px;overflow-x:auto">
+        <div class="card-hdr">Descontos do Mês — enviar ao escritório contábil</div>
+        <table style="min-width:820px;table-layout:fixed"><thead><tr>
+          <th style="width:170px">Colaborador</th><th style="width:80px">Farmácia</th><th style="width:80px">Sindicato</th><th style="width:85px">Samaritano</th><th style="width:65px">Transp.</th><th style="width:90px">Termo Acordo</th><th>Observação</th><th style="width:50px">Ações</th>
+        </tr></thead>
+        <tbody id="fd-tbody"></tbody></table>
+      </div>
+      <div class="card" style="padding:12px">
+        <div class="card-hdr" style="padding:0 0 10px 0">Fechamento com o Contador (SERVCONT)</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 2fr;gap:12px">
+          <div><label style="font-size:11px;font-weight:600;display:block;margin-bottom:3px">Total Nota (R$)</label><input class="finp" type="number" step="0.01" id="fd-total-nota" style="width:100%" onchange="fdSalvarTotais()"></div>
+          <div><label style="font-size:11px;font-weight:600;display:block;margin-bottom:3px">Valor Empresa (R$)</label><input class="finp" type="number" step="0.01" id="fd-valor-empresa" style="width:100%" onchange="fdSalvarTotais()"></div>
+          <div><label style="font-size:11px;font-weight:600;display:block;margin-bottom:3px">Valor Repasse (R$)</label><input class="finp" type="number" step="0.01" id="fd-valor-repasse" style="width:100%" onchange="fdSalvarTotais()"></div>
+          <div><label style="font-size:11px;font-weight:600;display:block;margin-bottom:3px">Observação (ex: Samaritano - AC Metal)</label><input class="finp" type="text" id="fd-obs-geral" style="width:100%" onchange="fdSalvarTotais()"></div>
+        </div>
       </div>
     </div>
 
@@ -2428,6 +2473,7 @@ function go(id,el,title,bread){
   if(id==='desccargos'){setTimeout(()=>{try{renderDescCargos();}catch(e){console.warn('desccargos:',e);}},80);}
   if(id==='sstfin'){setTimeout(()=>{try{renderSSTFinanceiro();}catch(e){console.warn('sstfin:',e);}},80);}
   if(id==='pcmso'){setTimeout(()=>{try{pcmsoRenderAll();}catch(e){console.warn('pcmso:',e);}},80);}
+  if(id==='folhadesc'){setTimeout(()=>{try{renderFolhaDesc();}catch(e){console.warn('folhadesc:',e);}},80);}
   if(id==='configuracoes'){setTimeout(()=>{try{initConfiguracoes();}catch(e){}},80);}
   if(id==='ind-rh'){setTimeout(()=>{try{initIndRH();}catch(e){console.warn('indRH:',e);}},150);}
   if(id==='planejamento'){setTimeout(()=>{try{initPlanejamento();}catch(e){console.warn('plano:',e);}},150);}
@@ -2465,6 +2511,7 @@ function buildAll(){
   try{buildSSTRealSeed();}catch(e){console.warn('buildSSTRealSeed:',e);}
   try{buildSSTFinSeed();}catch(e){console.warn('buildSSTFinSeed:',e);}
   try{buildPcmsoSeed();}catch(e){console.warn('buildPcmsoSeed:',e);}
+  try{buildFolhaDescSeed();}catch(e){console.warn('buildFolhaDescSeed:',e);}
   try{migracaoRealocacoes2026();}catch(e){console.warn('migracaoRealocacoes2026:',e);}
   try{tryRestoreSupabase();}catch(e){console.warn('tryRestoreSupabase:',e); updateDBStatusBadge('error');}
   try{initAllAdvFilters();}catch(e){console.warn('initAllAdvFilters:',e);}
@@ -3676,6 +3723,161 @@ function colabFichaAcao(acao) {
 }
 
 /* ─── Histórico de alterações reutilizável — qualquer módulo pode chamar ─── */
+/* ═══════════════ MÓDULO: DESCONTO EM FOLHA ═══════════════ */
+const FOLHA_DESC_SEED_AC_SET2026 = [
+{colaborador:'ABNER MARINS PRUDENCIO',farmacia:0,sindicato:0,samaritano:0,transporte:'NÃO',termoAcordo:0},
+{colaborador:'ASAFE DE CARVALHO BONOMO',farmacia:0,sindicato:0,samaritano:0,transporte:'SIM',termoAcordo:0},
+{colaborador:'FRANCIELLE CRISTINA ASCARI RODRIGUES',farmacia:0,sindicato:0,samaritano:0,transporte:'NÃO',termoAcordo:0},
+{colaborador:'GILMAR MARQUES DE BRITO',farmacia:0,sindicato:0,samaritano:0,transporte:'NÃO',termoAcordo:0},
+{colaborador:'GUSTAVO NOGUEIRA ROSSANEZI',farmacia:0,sindicato:0,samaritano:0,transporte:'SIM',termoAcordo:0},
+{colaborador:'JHONI OLIVEIRA ALVES',farmacia:0,sindicato:0,samaritano:0,transporte:'NÃO',termoAcordo:0},
+{colaborador:'JOSE ADAUTO DE JESUS',farmacia:100.0,sindicato:0,samaritano:0,transporte:'NÃO',termoAcordo:0},
+{colaborador:'JOSE HENRIQUE DE BRITO NASCIMENTO',farmacia:98.35,sindicato:0,samaritano:0,transporte:'NÃO',termoAcordo:0},
+{colaborador:'LEONARDO SOBRINHO DE BARROS',farmacia:0,sindicato:0,samaritano:0,transporte:'NÃO',termoAcordo:0},
+{colaborador:'LUIS FERNANDO SOUZA DOS SANTOS',farmacia:0,sindicato:0,samaritano:0,transporte:'NÃO',termoAcordo:0},
+{colaborador:'NICOLLY VASSALO IGNACIO',farmacia:53.77,sindicato:0,samaritano:0,transporte:'SIM',termoAcordo:0},
+{colaborador:'RAFAEL MANTOVANI',farmacia:0,sindicato:54.0,samaritano:0,transporte:'NÃO',termoAcordo:0},
+{colaborador:'RENATO PEREIRA',farmacia:0,sindicato:0,samaritano:0,transporte:'NÃO',termoAcordo:0}
+];
+
+
+function fdPopularAnos() {
+  const sel = document.getElementById('fd-ano-sel');
+  if (!sel || sel.options.length) return;
+  for (let a = 2026; a <= 2050; a++) sel.innerHTML += `<option value="${a}" ${a===2026?'selected':''}>${a}</option>`;
+}
+
+function buildFolhaDescSeed() {
+  if (localStorage.getItem('ac_folhadesc_v1')) return;
+  const now = nowStr();
+  const seeded = FOLHA_DESC_SEED_AC_SET2026.map((s, i) => Object.assign({}, s, {
+    id: i + 1, cnpj: 'AC', ano: 2026, mes: 9, observacao: '', status: 'Ativo', criadoEm: now, atualizadoEm: now
+  }));
+  saveData('folha_descontos', seeded);
+  logAudit('Desconto em Folha', 'Inclusão', 0, `Importação inicial — Setembro/2026 AC, ${seeded.length} colaboradores (planilha SERVCONT)`);
+  seeded.forEach(r => syncRecordToCloud('folha_descontos', r));
+  saveData('folha_totais', [{ id:1, cnpj:'AC', ano:2026, mes:9, totalNota:4909.13, valorEmpresa:4909.13, valorRepasse:0, observacao:'SAMARITANO - AC METAL', status:'Ativo', criadoEm:now, atualizadoEm:now }]);
+  localStorage.setItem('ac_folhadesc_v1', '1');
+}
+
+function fdContexto() {
+  return {
+    cnpj: document.getElementById('fd-empresa-sel')?.value || 'AC',
+    ano: parseInt(document.getElementById('fd-ano-sel')?.value || '2026', 10),
+    mes: parseInt(document.getElementById('fd-mes-sel')?.value || '9', 10)
+  };
+}
+
+function fdInlineUpdate(id, field, value) {
+  const data = loadData('folha_descontos');
+  const idx = data.findIndex(d => d.id === id);
+  if (idx === -1) return;
+  if (['farmacia','sindicato','samaritano','termoAcordo'].includes(field)) {
+    let num = parseFloat(String(value).replace(',', '.'));
+    if (isNaN(num) || num < 0) num = 0;
+    value = Math.round(num * 100) / 100;
+  }
+  if (field === 'transporte' && value !== 'SIM') value = 'NÃO';
+  data[idx][field] = value;
+  data[idx].atualizadoEm = nowStr();
+  saveData('folha_descontos', data);
+  logAudit('Desconto em Folha', 'Atualização', id, `${data[idx].colaborador} — ${field}: ${value}`);
+  syncRecordToCloud('folha_descontos', data[idx]);
+  renderFolhaDesc();
+}
+
+function fdAdicionarLinha() {
+  const nome = window.prompt('Nome do colaborador:');
+  if (!nome || !nome.trim()) return;
+  const ctx = fdContexto();
+  const rec = crudCreate('folha_descontos', {
+    colaborador: nome.trim().toUpperCase(), cnpj: ctx.cnpj, ano: ctx.ano, mes: ctx.mes,
+    farmacia: 0, sindicato: 0, samaritano: 0, transporte: 'NÃO', termoAcordo: 0, observacao: ''
+  }, {modulo:'Desconto em Folha', label: nome.trim()});
+  renderFolhaDesc();
+}
+
+function fdRemoverLinha(id, nome) {
+  crudDeleteAction({table:'folha_descontos', label:'Desconto em Folha', onSave: renderFolhaDesc}, id, nome);
+}
+
+function fdRowRender(r) {
+  return `<tr>
+    <td style="font-size:11px">${r.colaborador}</td>
+    <td><input type="number" step="0.01" min="0" style="width:100%" value="${r.farmacia||0}" onchange="fdInlineUpdate(${r.id},'farmacia',this.value)"></td>
+    <td><input type="number" step="0.01" min="0" style="width:100%" value="${r.sindicato||0}" onchange="fdInlineUpdate(${r.id},'sindicato',this.value)"></td>
+    <td><input type="number" step="0.01" min="0" style="width:100%" value="${r.samaritano||0}" onchange="fdInlineUpdate(${r.id},'samaritano',this.value)"></td>
+    <td><select style="width:100%" onchange="fdInlineUpdate(${r.id},'transporte',this.value)"><option value="NÃO" ${r.transporte==='NÃO'?'selected':''}>NÃO</option><option value="SIM" ${r.transporte==='SIM'?'selected':''}>SIM</option></select></td>
+    <td><input type="number" step="0.01" min="0" style="width:100%" value="${r.termoAcordo||0}" onchange="fdInlineUpdate(${r.id},'termoAcordo',this.value)"></td>
+    <td><input type="text" style="width:100%" value="${escAttr(r.observacao||'')}" onchange="fdInlineUpdate(${r.id},'observacao',this.value)"></td>
+    <td><button class="btn btn-s btn-xs" onclick="fdRemoverLinha(${r.id},'${escAttr(r.colaborador)}')">🗑</button></td>
+  </tr>`;
+}
+
+function renderFolhaDesc() {
+  fdPopularAnos();
+  const ctx = fdContexto();
+  const all = loadData('folha_descontos').filter(r => r.status !== 'Inativo' && r.cnpj === ctx.cnpj && r.ano === ctx.ano && r.mes === ctx.mes)
+    .sort((a,b) => a.colaborador.localeCompare(b.colaborador));
+  const tbody = document.getElementById('fd-tbody');
+  if (tbody) tbody.innerHTML = all.length ? all.map(fdRowRender).join('')
+    : '<tr><td colspan="8" class="muted" style="text-align:center;padding:16px">Nenhum colaborador lançado neste mês. Clique em "+ Adicionar Colaborador".</td></tr>';
+  setText('fd-count', all.length + ' colaboradores');
+  setText('fd-kpi-farmacia', 'R$ ' + all.reduce((s,r)=>s+(r.farmacia||0),0).toFixed(2));
+  setText('fd-kpi-sindicato', 'R$ ' + all.reduce((s,r)=>s+(r.sindicato||0),0).toFixed(2));
+  setText('fd-kpi-samaritano', 'R$ ' + all.reduce((s,r)=>s+(r.samaritano||0),0).toFixed(2));
+  setText('fd-kpi-termo', 'R$ ' + all.reduce((s,r)=>s+(r.termoAcordo||0),0).toFixed(2));
+
+  const tot = loadData('folha_totais').find(t => t.status !== 'Inativo' && t.cnpj === ctx.cnpj && t.ano === ctx.ano && t.mes === ctx.mes);
+  document.getElementById('fd-total-nota').value = tot ? tot.totalNota||0 : '';
+  document.getElementById('fd-valor-empresa').value = tot ? tot.valorEmpresa||0 : '';
+  document.getElementById('fd-valor-repasse').value = tot ? tot.valorRepasse||0 : '';
+  document.getElementById('fd-obs-geral').value = tot ? tot.observacao||'' : '';
+}
+
+function fdSalvarTotais() {
+  const ctx = fdContexto();
+  const totalNota = parseFloat(document.getElementById('fd-total-nota').value) || 0;
+  const valorEmpresa = parseFloat(document.getElementById('fd-valor-empresa').value) || 0;
+  const valorRepasse = parseFloat(document.getElementById('fd-valor-repasse').value) || 0;
+  const observacao = document.getElementById('fd-obs-geral').value || '';
+  const all = loadData('folha_totais');
+  let rec = all.find(t => t.cnpj === ctx.cnpj && t.ano === ctx.ano && t.mes === ctx.mes);
+  if (rec) {
+    Object.assign(rec, {totalNota, valorEmpresa, valorRepasse, observacao, atualizadoEm: nowStr()});
+    saveData('folha_totais', all);
+    logAudit('Desconto em Folha', 'Atualização', rec.id, `Fechamento ${ctx.cnpj} ${ctx.mes}/${ctx.ano}`);
+    syncRecordToCloud('folha_totais', rec);
+  } else {
+    rec = crudCreate('folha_totais', {cnpj: ctx.cnpj, ano: ctx.ano, mes: ctx.mes, totalNota, valorEmpresa, valorRepasse, observacao}, {modulo:'Desconto em Folha', label:`Fechamento ${ctx.cnpj} ${ctx.mes}/${ctx.ano}`});
+  }
+}
+
+function fdExportar() {
+  if (typeof XLSX === 'undefined') { showToast('Biblioteca XLSX não carregada', 'error'); return; }
+  const ctx = fdContexto();
+  const all = loadData('folha_descontos').filter(r => r.status !== 'Inativo' && r.cnpj === ctx.cnpj && r.ano === ctx.ano && r.mes === ctx.mes).sort((a,b)=>a.colaborador.localeCompare(b.colaborador));
+  const meses = ['','Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  const header = ['NOME DO FUNCIONÁRIO','FARMÁCIA','SINDICATO','SAMARITANO','TRANSPORTE','TERMO ACORDO','OBSERVAÇÃO'];
+  const rows = all.map(r => [r.colaborador, r.farmacia||0, r.sindicato||0, r.samaritano||0, r.transporte, r.termoAcordo||0, r.observacao||'']);
+  rows.push([]);
+  rows.push(['TOTAL', all.reduce((s,r)=>s+(r.farmacia||0),0).toFixed(2), all.reduce((s,r)=>s+(r.sindicato||0),0).toFixed(2), all.reduce((s,r)=>s+(r.samaritano||0),0).toFixed(2), '', all.reduce((s,r)=>s+(r.termoAcordo||0),0).toFixed(2), '']);
+  const tot = loadData('folha_totais').find(t => t.cnpj === ctx.cnpj && t.ano === ctx.ano && t.mes === ctx.mes);
+  if (tot) {
+    rows.push([]);
+    rows.push(['TOTAL NOTA', tot.totalNota||0]);
+    rows.push(['EMPRESA', tot.valorEmpresa||0]);
+    rows.push(['REPASSE', tot.valorRepasse||0]);
+    if (tot.observacao) rows.push([tot.observacao]);
+  }
+  const ws = XLSX.utils.aoa_to_sheet([header, ...rows]);
+  ws['!cols'] = [{wch:32},{wch:12},{wch:12},{wch:12},{wch:12},{wch:14},{wch:30}];
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'SERVCONT');
+  XLSX.writeFile(wb, `${String(ctx.mes).padStart(2,'0')}-${ctx.ano}_DESCONTO_FOLHA_${ctx.cnpj}.xlsx`);
+  showToast(`📥 Planilha exportada — ${meses[ctx.mes]}/${ctx.ano} (${ctx.cnpj})`);
+}
+
 function abrirHistoricoRegistro(modulo, registroLabel) {
   const log = loadData('auditoria').filter(l => l.modulo === modulo && (l.registroLabel||'').includes(registroLabel));
   ensureReciboModal();
