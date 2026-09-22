@@ -424,7 +424,7 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
   <div class="l-box">
     <div class="l-logo">
       <div class="l-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
-      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.36 — Correção: Inscrito Não Aparecia (Ano/Mês)</div></div>
+      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.37 — Relatório e Exportação por Benefício</div></div>
     </div>
     <div class="f-row"><label>Usuário</label><input type="text" id="l-user" value="jakeline@acmetalurgica.com.br"></div>
     <div class="f-row"><label>Senha</label><input type="password" id="l-pass" value="••••••••"></div>
@@ -5095,6 +5095,73 @@ function benefAtualizarDesconto(id, valor) {
   renderBeneficiosTipos();
 }
 
+function benefExportarInscritos(tipoNome) {
+  if (typeof XLSX === 'undefined') { showToast('Biblioteca XLSX não carregada', 'error'); return; }
+  const comp = benefComp();
+  const inscritos = loadData('beneficios_inscritos').filter(i => i.status !== 'Inativo' && i.tipoBeneficio === tipoNome
+    && i.empresa === comp.empresa && Number(i.ano) === comp.ano && Number(i.mes) === comp.mes)
+    .sort((a,b) => a.colaborador.localeCompare(b.colaborador));
+  const isVT = tipoNome === 'Vale-Transporte';
+  const colabs = loadData('colaboradores');
+  const meses = ['','Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  const header = ['Colaborador','Valor Desconto (R$)','Status'];
+  const rows = inscritos.map(i => {
+    let valor = i.valorDesconto || 0;
+    if (isVT) {
+      const c = colabs.find(x => (x.nome||'').trim().toUpperCase() === (i.colaborador||'').trim().toUpperCase());
+      const sal = c ? parseFloat(String(c.sal||'0').replace(/[^\d,.-]/g,'').replace(/\./g,'').replace(',','.')) : 0;
+      valor = sal ? Math.round(sal*0.06*100)/100 : 0;
+    }
+    return [i.colaborador, valor, 'Ativo'];
+  });
+  const total = rows.reduce((s,r) => s + r[1], 0);
+  rows.push([]);
+  rows.push(['TOTAL', total]);
+  const ws = XLSX.utils.aoa_to_sheet([[`${tipoNome} — ${comp.empresa} — ${meses[comp.mes]}/${comp.ano}`], header, ...rows]);
+  ws['!cols'] = [{wch:35},{wch:16},{wch:10}];
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, tipoNome.slice(0,28));
+  XLSX.writeFile(wb, `${tipoNome.replace(/[^\w]/g,'_')}_${comp.empresa}_${String(comp.mes).padStart(2,'0')}-${comp.ano}.xlsx`);
+  showToast(`📥 ${inscritos.length} inscritos exportados`);
+}
+
+function benefGerarRelatorio(tipoNome) {
+  const comp = benefComp();
+  const meses = ['','Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  const isVT = tipoNome === 'Vale-Transporte';
+  const colabs = loadData('colaboradores');
+  const inscritos = loadData('beneficios_inscritos').filter(i => i.status !== 'Inativo' && i.tipoBeneficio === tipoNome
+    && i.empresa === comp.empresa && Number(i.ano) === comp.ano && Number(i.mes) === comp.mes)
+    .sort((a,b) => a.colaborador.localeCompare(b.colaborador));
+  if (!inscritos.length) { showToast('Nenhum inscrito nesta competência', 'warn'); return; }
+
+  const empInfo = CV_EMPRESA_INFO[comp.empresa] || {nome: comp.empresa, cnpj:''};
+  let total = 0;
+  const linhas = inscritos.map((i,idx) => {
+    let valor = i.valorDesconto || 0;
+    if (isVT) {
+      const c = colabs.find(x => (x.nome||'').trim().toUpperCase() === (i.colaborador||'').trim().toUpperCase());
+      const sal = c ? parseFloat(String(c.sal||'0').replace(/[^\d,.-]/g,'').replace(/\./g,'').replace(',','.')) : 0;
+      valor = sal ? Math.round(sal*0.06*100)/100 : 0;
+    }
+    total += valor;
+    return `<tr style="border-bottom:1px solid #ccc"><td style="padding:5px 4px">${idx+1}</td><td style="padding:5px 4px">${i.colaborador}</td><td style="padding:5px 4px;text-align:right">R$ ${fmtBRL(valor)}</td></tr>`;
+  }).join('');
+
+  ensureReciboModal();
+  document.getElementById('m-recibo').classList.add('open');
+  const dfEl = document.getElementById('recibo-date-fields'); if (dfEl) dfEl.style.display = 'none';
+  document.getElementById('recibo-preview').innerHTML = `<div style="padding:16px 4px">
+    <h3 style="text-align:center;margin-bottom:4px">RELATÓRIO — ${tipoNome.toUpperCase()}</h3>
+    <p style="text-align:center;font-size:11px;color:#666;margin-bottom:14px">${empInfo.nome}${empInfo.cnpj?' — CNPJ '+empInfo.cnpj:''} · Competência: ${meses[comp.mes]}/${comp.ano}</p>
+    <table style="width:100%;border-collapse:collapse;font-size:11px">
+      <thead><tr style="border-bottom:1.5px solid #000"><th style="text-align:left;padding:5px 4px;width:30px">Nº</th><th style="text-align:left;padding:5px 4px">Colaborador</th><th style="text-align:right;padding:5px 4px;width:110px">Valor Desconto</th></tr></thead>
+      <tbody>${linhas}</tbody>
+      <tfoot><tr style="border-top:1.5px solid #000;font-weight:700"><td colspan="2" style="padding:6px 4px;text-align:right">TOTAL</td><td style="padding:6px 4px;text-align:right">R$ ${fmtBRL(total)}</td></tr></tfoot>
+    </table>
+  </div>`;
+}
+
 function benefInscritosHtml(tipoNome) {
   const comp = benefComp();
   const inscritos = loadData('beneficios_inscritos').filter(i => i.status !== 'Inativo' && i.tipoBeneficio === tipoNome
@@ -5123,7 +5190,11 @@ function benefInscritosHtml(tipoNome) {
   return `<div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--g100)">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
       <span style="font-size:11px;font-weight:600">👥 Colaboradores Inscritos${isVT?' — desconto calculado sobre o salário atual':''}</span>
-      <button class="btn btn-s btn-xs" onclick="benefAdicionarInscrito('${tipoNome}')">+ Adicionar</button>
+      <div style="white-space:nowrap">
+        <button class="btn btn-s btn-xs" onclick="benefGerarRelatorio('${tipoNome}')">🖨 Relatório</button>
+        <button class="btn btn-s btn-xs" onclick="benefExportarInscritos('${tipoNome}')">⬇ Exportar</button>
+        <button class="btn btn-s btn-xs" onclick="benefAdicionarInscrito('${tipoNome}')">+ Adicionar</button>
+      </div>
     </div>
     <table style="width:100%;font-size:11px"><thead><tr style="color:var(--g500)"><th style="text-align:left;padding:3px">Colaborador</th><th style="text-align:left;padding:3px">Desconto</th><th style="text-align:left;padding:3px">Status</th><th style="text-align:left;padding:3px">Ações</th></tr></thead>
     <tbody>${linhas || '<tr><td colspan="4" class="muted" style="padding:8px">Nenhum colaborador inscrito ainda.</td></tr>'}</tbody></table>
