@@ -424,7 +424,7 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
   <div class="l-box">
     <div class="l-logo">
       <div class="l-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
-      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.41 — Correção Definitiva: Página em Branco na Impressão</div></div>
+      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.43 — Admissão: Checklist em 3 Etapas + Impressão</div></div>
     </div>
     <div class="f-row"><label>Usuário</label><input type="text" id="l-user" value="jakeline@acmetalurgica.com.br"></div>
     <div class="f-row"><label>Senha</label><input type="password" id="l-pass" value="••••••••"></div>
@@ -1066,7 +1066,9 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
       <div class="section-hdr">
         <div class="sec-title"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>Controle de Admissão</div>
         <button class="btn btn-p" onclick="openCrudModal(MOD_ADMISSAO,null)">+ Nova Admissão</button>
+        <button class="btn btn-s" onclick="admToggleTemplateConfig()">⚙ Configurar Modelo Padrão</button>
       </div>
+      <div id="adm-template-config" style="display:none;margin-bottom:14px"></div>
       <div class="kpi-grid">
         <div class="kpi-card"><div class="kpi-lbl">Total</div><div class="kpi-val" id="adm-total-crud">—</div></div>
         <div class="kpi-card"><div class="kpi-lbl">Em Andamento</div><div class="kpi-val" style="color:var(--blue)" id="adm-andamento-crud">—</div></div>
@@ -1076,14 +1078,14 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
            <div style="background:#fff;border:1px solid var(--g200);border-radius:9px;padding:12px;margin-bottom:10px">
         <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
           <div class="srch-wrap" style="flex:2;min-width:180px"><input class="finp" style="width:100%" id="adm-search" placeholder="🔎 Buscar nome, cargo ou setor..." oninput="admCtrl.filter()"></div>
-          <select class="fsel" data-fid="adm" style="min-width:160px" onchange="admCtrl.setFilter('situacao',this.value)"><option value="">🟢 Todas as situações</option><option>Pendente</option><option>Em andamento</option><option>Concluída</option></select><select class="fsel" data-fid="adm" style="min-width:130px" onchange="admCtrl.setFilter('setor',this.value)"><option value="">📌 Setor</option><option value="Produção">Produção</option><option value="Manutenção">Manutenção</option><option value="Qualidade">Qualidade</option><option value="Administrativo">Administrativo</option><option value="Fundição">Fundição</option><option value="Usinagem">Usinagem</option></select>
+          <select class="fsel" data-fid="adm" style="min-width:160px" onchange="admCtrl.setFilter('situacao',this.value)"><option value="">🟢 Todas as situações</option><option>Em andamento</option><option>Concluída</option><option>Cancelada</option></select><select class="fsel" data-fid="adm" style="min-width:130px" onchange="admCtrl.setFilter('setor',this.value)"><option value="">📌 Setor</option><option value="Produção">Produção</option><option value="Manutenção">Manutenção</option><option value="Qualidade">Qualidade</option><option value="Administrativo">Administrativo</option><option value="Fundição">Fundição</option><option value="Usinagem">Usinagem</option></select>
           <span class="chip" id="adm-count">— registros</span>
           <button class="btn btn-s btn-xs" onclick="admCtrl.clearAll()" title="Limpar">🔄 Limpar</button>
           <button class="btn btn-s btn-xs" onclick="admCtrl.load();showToast('🔃 Atualizado')" title="Atualizar">🔃</button>
           <select class="fsel" style="width:72px" onchange="admCtrl._pageSize=+this.value;admCtrl._page=1;admCtrl.render()">
             <option value="10" selected>10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option>
           </select>
-          <button class="btn btn-s btn-xs" onclick="exportTableToExcel('admissoes',[{field:'nome',label:'Nome',width:35},{field:'cargo',label:'Cargo',width:28},{field:'setor',label:'Setor',width:16},{field:'dataInicio',label:'Início',width:12},{field:'situacao',label:'Situação',width:14}],'Admissoes')">⬇ Excel</button>
+          <button class="btn btn-s btn-xs" onclick="exportTableToExcel('admissoes',[{field:'nome',label:'Nome',width:35},{field:'cargo',label:'Cargo',width:28},{field:'setor',label:'Setor',width:16},{field:'inicio',label:'Início',width:12},{field:'situacao',label:'Situação',width:14}],'Admissoes')">⬇ Excel</button>
         </div>
       </div>
       <div id="admissao-cards-crud"></div>
@@ -2384,6 +2386,8 @@ function buildAll(){
   try{buildBeneficiosTiposSeed();}catch(e){console.warn('buildBeneficiosTiposSeed:',e);}
   try{buildConvenioMedicoSeed();}catch(e){console.warn('buildConvenioMedicoSeed:',e);}
   try{migracaoLimparBeneficiosFake();}catch(e){console.warn('migracaoLimparBeneficiosFake:',e);}
+  try{buildAdmissaoTemplateSeed();}catch(e){console.warn('buildAdmissaoTemplateSeed:',e);}
+  try{migracaoAdmissaoChecklists();}catch(e){console.warn('migracaoAdmissaoChecklists:',e);}
   try{migracaoRealocacoes2026();}catch(e){console.warn('migracaoRealocacoes2026:',e);}
   try{tryRestoreSupabase();}catch(e){console.warn('tryRestoreSupabase:',e); updateDBStatusBadge('error');}
   try{initAllAdvFilters();}catch(e){console.warn('initAllAdvFilters:',e);}
@@ -4590,6 +4594,125 @@ const ADMISSAO_CHECKLIST = [
   'Cadastro interno (sistema)','Integração RH','Entrega EPI/Uniforme','Treinamento de segurança'
 ];
 
+/* ═══════════════ CHECKLISTS DE ADMISSÃO (3 ETAPAS) ═══════════════ */
+const ADM_ETAPAS = [
+  {id:'admissao', label:'Checklist Admissão', campo:'checklistAdmissao'},
+  {id:'integracao', label:'Checklist Integração', campo:'checklistIntegracao'},
+  {id:'posadmissao', label:'Checklist Pós-Admissão', campo:'checklistPosAdmissao'},
+];
+const ADM_STATUS_OPCOES = ['Pendente','Em andamento','Concluído','Não se aplica'];
+const ADM_STATUS_ICON = {'Pendente':'🔴','Em andamento':'🟡','Concluído':'🟢','Não se aplica':'⚪'};
+const ADM_STATUS_BADGE = {'Pendente':'br','Em andamento':'by','Concluído':'bg','Não se aplica':'bgy'};
+
+const MOD_ADM_TEMPLATE = {
+  table: 'admissao_templates',
+  label: 'Item de Checklist',
+  onSave: () => { admRenderTemplateConfig(); },
+  fields: [
+    {field:'etapa', label:'Etapa', type:'select', required:true, options:[{value:'admissao',label:'Checklist Admissão'},{value:'integracao',label:'Checklist Integração'},{value:'posadmissao',label:'Checklist Pós-Admissão'}]},
+    {field:'desc', label:'Descrição da Atividade', required:true, full:true},
+    {field:'ondeEncontro', label:'Onde Encontro?', full:true},
+    {field:'ordem', label:'Ordem', type:'number', placeholder:'1'},
+    {field:'obrigatorio', label:'Obrigatória?', type:'select', options:['Sim','Não']},
+    {field:'status', label:'Status', type:'select', options:['Ativo','Inativo']},
+  ]
+};
+
+function buildAdmissaoTemplateSeed() {
+  if (localStorage.getItem('ac_admtemplate_v1')) return;
+  const now = nowStr();
+  const itens = [
+    {desc:'Verificar horário de trabalho, cargo e salário com o responsável', ondeEncontro:''},
+    {desc:'Agendar exame admissional', ondeEncontro:''},
+    {desc:'Entregar carta proposta', ondeEncontro:''},
+    {desc:'Enviar carta de boas vindas - WhatsApp', ondeEncontro:''},
+    {desc:'Entregar/enviar lista de documentos', ondeEncontro:''},
+    {desc:'Entregar termo de abertura de conta salário', ondeEncontro:''},
+    {desc:'Enviar o agendamento do exame via WhatsApp', ondeEncontro:''},
+    {desc:'Conferência dos documentos entregues', ondeEncontro:''},
+    {desc:'Cadastrar funcionário no sistema RH', ondeEncontro:''},
+    {desc:'Anexar os arquivos de documentos', ondeEncontro:'Módulo Colaboradores - Documentos'},
+    {desc:'Enviar ao contador planilha de admissão', ondeEncontro:'Por e-mail (AC → Servcont / Brass → Contábil Correa)'},
+    {desc:'Conferência dos documentos admissionais', ondeEncontro:''},
+    {desc:'Cadastro sistema do ponto', ondeEncontro:'Passo a passo Procedimentos RH, aba "Sistema Web"'},
+    {desc:'Incluir no sistema Web', ondeEncontro:'Site RHID'},
+  ];
+  const seeded = itens.map((it,i) => ({
+    id: i+1, etapa:'admissao', desc: it.desc, ondeEncontro: it.ondeEncontro, ordem: i+1, obrigatorio:'Sim',
+    status:'Ativo', criadoEm: now, atualizadoEm: now
+  }));
+  saveData('admissao_templates', seeded);
+  logAudit('Admissão', 'Inclusão', 0, `Modelo padrão do Checklist de Admissão — ${seeded.length} atividades`);
+  seeded.forEach(r => syncRecordToCloud('admissao_templates', r));
+  localStorage.setItem('ac_admtemplate_v1', '1');
+}
+
+function admGerarChecklistDeTemplate(etapa) {
+  const now = nowStr();
+  const itens = loadData('admissao_templates').filter(t => t.status !== 'Inativo' && t.etapa === etapa)
+    .sort((a,b) => (a.ordem||0)-(b.ordem||0));
+  return itens.map(t => ({
+    desc: t.desc, ondeEncontro: t.ondeEncontro || '', status: 'Pendente',
+    observacao: '', dataConclusao: '', usuarioConclusao: ''
+  }));
+}
+
+function admToggleTemplateConfig() {
+  const box = document.getElementById('adm-template-config');
+  if (!box) return;
+  const aberto = box.style.display !== 'none';
+  box.style.display = aberto ? 'none' : 'block';
+  if (!aberto) admRenderTemplateConfig();
+}
+
+function admRenderTemplateConfig() {
+  const box = document.getElementById('adm-template-config');
+  if (!box || box.style.display === 'none') return;
+  let html = '<div class="card" style="padding:12px">';
+  html += '<div style="font-size:12px;font-weight:700;margin-bottom:8px">⚙ Modelo Padrão dos Checklists — vale para NOVAS admissões (não altera as já iniciadas)</div>';
+  ADM_ETAPAS.forEach(etapaCfg => {
+    const itens = loadData('admissao_templates').filter(t => t.status !== 'Inativo' && t.etapa === etapaCfg.id).sort((a,b)=>(a.ordem||0)-(b.ordem||0));
+    html += `<div style="margin-bottom:14px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+        <span style="font-size:11px;font-weight:600">${etapaCfg.label} (${itens.length} atividade${itens.length===1?'':'s'})</span>
+        <button class="btn btn-s btn-xs" onclick="admAdicionarItemTemplate('${etapaCfg.id}')">+ Adicionar</button>
+      </div>
+      <table style="width:100%;font-size:11px"><tbody>
+        ${itens.map(t => `<tr style="border-bottom:1px solid var(--g100)">
+          <td style="padding:4px;width:40px">${t.ordem||'—'}</td>
+          <td style="padding:4px">${t.desc}</td>
+          <td style="padding:4px;font-size:10px;color:var(--g500)">${t.ondeEncontro||'—'}</td>
+          <td style="padding:4px;white-space:nowrap">
+            <button class="btn btn-s btn-xs" onclick="openCrudModal(MOD_ADM_TEMPLATE,${t.id})">✏</button>
+            <button class="btn btn-s btn-xs" onclick="crudDeleteAction(MOD_ADM_TEMPLATE,${t.id},'${escAttr(t.desc)}')">🗑</button>
+          </td>
+        </tr>`).join('') || '<tr><td class="muted" style="padding:6px">Nenhuma atividade neste modelo ainda.</td></tr>'}
+      </tbody></table>
+    </div>`;
+  });
+  html += '</div>';
+  box.innerHTML = html;
+}
+
+function admAdicionarItemTemplate(etapa) {
+  openCrudModal(MOD_ADM_TEMPLATE, null);
+  setTimeout(() => { const el = document.querySelector('[data-field="etapa"]'); if (el) el.value = etapa; }, 30);
+}
+
+/* Garante que admissões já existentes (antes desta versão) tenham os 3 checklists novos, sem apagar nada */
+function migracaoAdmissaoChecklists() {
+  if (localStorage.getItem('ac_admchecklist_migr_v1')) return;
+  const data = loadData('admissoes');
+  let alterou = false;
+  data.forEach(a => {
+    if (!a.checklistAdmissao) { a.checklistAdmissao = admGerarChecklistDeTemplate('admissao'); alterou = true; }
+    if (!a.checklistIntegracao) { a.checklistIntegracao = admGerarChecklistDeTemplate('integracao'); alterou = true; }
+    if (!a.checklistPosAdmissao) { a.checklistPosAdmissao = admGerarChecklistDeTemplate('posadmissao'); alterou = true; }
+  });
+  if (alterou) saveData('admissoes', data);
+  localStorage.setItem('ac_admchecklist_migr_v1', '1');
+}
+
 const MOD_ADMISSAO = {
   table: 'admissoes',
   label: 'Admissão',
@@ -4597,40 +4720,180 @@ const MOD_ADMISSAO = {
     {field:'nome', label:'Nome do Admitido', required:true, full:true},
     {field:'cargo', label:'Cargo', required:true},
     {field:'setor', label:'Setor', type:'select', options:SETORES},
+    {field:'empresa', label:'Empresa', type:'select', options:['AC','BRASS']},
     {field:'inicio', label:'Data de Início', required:true, placeholder:'dd/mm/aaaa'},
+    {field:'responsavelProcesso', label:'Responsável pelo Processo'},
     {field:'situacao', label:'Situação Geral', type:'select', options:['Em andamento','Concluída','Cancelada']},
     {field:'observacao', label:'Observação', type:'textarea', full:true},
     {field:'status', label:'Registro', type:'select', options:['Ativo','Inativo']},
   ],
   beforeSave: (obj, record, isEdit) => {
     if (!isEdit) {
-      // Inicializa checklist zerado para novo registro
-      obj.checks = ADMISSAO_CHECKLIST.map(l => ({l, ok:false}));
+      obj.checks = ADMISSAO_CHECKLIST.map(l => ({l, ok:false})); // mantido por compatibilidade
       obj.situacao = obj.situacao || 'Em andamento';
+      obj.checklistAdmissao = admGerarChecklistDeTemplate('admissao');
+      obj.checklistIntegracao = admGerarChecklistDeTemplate('integracao');
+      obj.checklistPosAdmissao = admGerarChecklistDeTemplate('posadmissao');
     } else {
-      obj.checks = record.checks; // preserva checklist existente
+      obj.checks = record.checks;
+      obj.checklistAdmissao = record.checklistAdmissao || admGerarChecklistDeTemplate('admissao');
+      obj.checklistIntegracao = record.checklistIntegracao || admGerarChecklistDeTemplate('integracao');
+      obj.checklistPosAdmissao = record.checklistPosAdmissao || admGerarChecklistDeTemplate('posadmissao');
     }
   },
-  onSave: () => { if(tcAdmissao) tcAdmissao.refresh(); }
+  onSave: () => { if(tcAdmissao) tcAdmissao.refresh(); if(typeof admCtrl!=='undefined'&&admCtrl) admCtrl.load(); }
 };
+
+function admCalcProgresso(lista) {
+  lista = lista || [];
+  const total = lista.length;
+  const concluidas = lista.filter(i=>i.status==='Concluído').length;
+  const pendentes = lista.filter(i=>i.status==='Pendente').length;
+  const andamento = lista.filter(i=>i.status==='Em andamento').length;
+  const naoAplica = lista.filter(i=>i.status==='Não se aplica').length;
+  const base = total - naoAplica; // % não penaliza itens N/A
+  const pct = base>0 ? Math.round(concluidas/base*100) : (total===0?0:100);
+  return {total, concluidas, pendentes, andamento, naoAplica, pct};
+}
+
+function admBarraProgresso(label, prog) {
+  const cor = prog.pct>=100?'var(--green)':prog.pct>=50?'var(--blue)':prog.pct>0?'var(--yellow)':'var(--red)';
+  return `<div style="margin-bottom:6px">
+    <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:2px">
+      <span style="font-weight:600">${label}</span><span class="muted">${prog.concluidas} de ${prog.total} — ${prog.pct}%</span>
+    </div>
+    <div class="pbar" style="height:6px"><div class="pbar-fill" style="width:${prog.pct}%;background:${cor}"></div></div>
+  </div>`;
+}
+
+let admDetalheAberto = null; // id da admissão com checklist expandido
+let admTabAtiva = 'admissao';
+
+function admToggleDetalhe(id) {
+  admDetalheAberto = admDetalheAberto === id ? null : id;
+  admTabAtiva = 'admissao';
+  if (typeof admCtrl!=='undefined' && admCtrl) admCtrl.render(); else if (tcAdmissao) tcAdmissao.render();
+}
+
+function admSwitchTab(id, etapa) {
+  admTabAtiva = etapa;
+  if (typeof admCtrl!=='undefined' && admCtrl) admCtrl.render(); else if (tcAdmissao) tcAdmissao.render();
+}
+
+function admItemUpdate(admId, etapa, idx, campo, valor) {
+  const data = loadData('admissoes');
+  const rec = data.find(d=>d.id===admId);
+  if (!rec) return;
+  const etapaCfg = ADM_ETAPAS.find(e=>e.id===etapa);
+  const lista = rec[etapaCfg.campo] || [];
+  const item = lista[idx];
+  if (!item) return;
+  item[campo] = valor;
+  if (campo === 'status') {
+    if (valor === 'Concluído') { item.dataConclusao = todayStr(); item.usuarioConclusao = (window.CURRENT_USER&&window.CURRENT_USER.name)||'Sistema'; }
+    else { item.dataConclusao = ''; item.usuarioConclusao = ''; }
+  }
+  rec.atualizadoEm = nowStr();
+  saveData('admissoes', data);
+  logAudit('Admissão', 'Atualização', admId, `${rec.nome} — ${etapaCfg.label}: ${item.desc} → ${item.status}`);
+  syncRecordToCloud('admissoes', rec);
+  if (typeof admCtrl!=='undefined' && admCtrl) admCtrl.load(); else if (tcAdmissao) tcAdmissao.refresh();
+  atualizarKPIsAdmissao();
+}
+
+function admItemAdicionar(admId, etapa) {
+  const desc = window.prompt('Descrição da nova atividade:');
+  if (!desc || !desc.trim()) return;
+  const data = loadData('admissoes');
+  const rec = data.find(d=>d.id===admId);
+  if (!rec) return;
+  const etapaCfg = ADM_ETAPAS.find(e=>e.id===etapa);
+  if (!rec[etapaCfg.campo]) rec[etapaCfg.campo] = [];
+  rec[etapaCfg.campo].push({desc: desc.trim(), ondeEncontro:'', status:'Pendente', observacao:'', dataConclusao:'', usuarioConclusao:''});
+  rec.atualizadoEm = nowStr();
+  saveData('admissoes', data);
+  logAudit('Admissão', 'Atualização', admId, `${rec.nome} — ${etapaCfg.label}: atividade adicionada — ${desc}`);
+  syncRecordToCloud('admissoes', rec);
+  if (typeof admCtrl!=='undefined' && admCtrl) admCtrl.load(); else if (tcAdmissao) tcAdmissao.refresh();
+}
+
+function admItemRemover(admId, etapa, idx) {
+  const data = loadData('admissoes');
+  const rec = data.find(d=>d.id===admId);
+  if (!rec) return;
+  const etapaCfg = ADM_ETAPAS.find(e=>e.id===etapa);
+  const item = (rec[etapaCfg.campo]||[])[idx];
+  if (!item) return;
+  confirmAction(`Remover a atividade "${item.desc}"?`, () => {
+    rec[etapaCfg.campo].splice(idx,1);
+    rec.atualizadoEm = nowStr();
+    saveData('admissoes', data);
+    logAudit('Admissão', 'Atualização', admId, `${rec.nome} — ${etapaCfg.label}: atividade removida — ${item.desc}`);
+    syncRecordToCloud('admissoes', rec);
+    if (typeof admCtrl!=='undefined' && admCtrl) admCtrl.load(); else if (tcAdmissao) tcAdmissao.refresh();
+  });
+}
+
+function admChecklistTabelaHtml(admId, etapa, lista) {
+  const etapaCfg = ADM_ETAPAS.find(e=>e.id===etapa);
+  const linhas = (lista||[]).map((it,idx) => `<tr>
+    <td style="white-space:nowrap"><select style="width:100%;background:transparent" onchange="admItemUpdate(${admId},'${etapa}',${idx},'status',this.value)">
+      ${ADM_STATUS_OPCOES.map(s=>`<option value="${s}" ${it.status===s?'selected':''}>${ADM_STATUS_ICON[s]} ${s}</option>`).join('')}
+    </select></td>
+    <td style="font-size:11px">${it.desc}</td>
+    <td><input type="text" style="width:100%" value="${escAttr(it.observacao||'')}" onchange="admItemUpdate(${admId},'${etapa}',${idx},'observacao',this.value)"></td>
+    <td><input type="text" style="width:100%" value="${escAttr(it.ondeEncontro||'')}" onchange="admItemUpdate(${admId},'${etapa}',${idx},'ondeEncontro',this.value)"></td>
+    <td style="font-size:9px;color:var(--g400);white-space:nowrap">${it.status==='Concluído' ? `${it.dataConclusao||''}<br>${it.usuarioConclusao||''}` : ''}</td>
+    <td><button class="btn btn-s btn-xs" onclick="admItemRemover(${admId},'${etapa}',${idx})">🗑</button></td>
+  </tr>`).join('');
+  return `<div>
+    <div style="display:flex;justify-content:flex-end;margin-bottom:6px">
+      <button class="btn btn-s btn-xs" onclick="admItemAdicionar(${admId},'${etapa}')">+ Adicionar Atividade</button>
+    </div>
+    <table style="width:100%;font-size:11px"><thead><tr style="color:var(--g500)">
+      <th style="text-align:left;padding:3px;width:130px">Status</th><th style="text-align:left;padding:3px">Descrição</th>
+      <th style="text-align:left;padding:3px;width:160px">Observação</th><th style="text-align:left;padding:3px;width:160px">Onde Encontro?</th>
+      <th style="text-align:left;padding:3px;width:90px">Conclusão</th><th style="width:30px"></th>
+    </tr></thead><tbody>${linhas || '<tr><td colspan="6" class="muted" style="padding:10px">Nenhuma atividade cadastrada nesta etapa.</td></tr>'}</tbody></table>
+  </div>`;
+}
+
+function admDetalheHtml(a) {
+  const progAdm = admCalcProgresso(a.checklistAdmissao);
+  const progInt = admCalcProgresso(a.checklistIntegracao);
+  const progPos = admCalcProgresso(a.checklistPosAdmissao);
+  return `<div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--g100)">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:10px">
+      ${admBarraProgresso('Admissão', progAdm)}${admBarraProgresso('Integração', progInt)}${admBarraProgresso('Pós-Admissão', progPos)}
+    </div>
+    <div class="tabs" style="margin-bottom:8px">
+      ${ADM_ETAPAS.map(e=>`<div class="tab ${admTabAtiva===e.id?'active':''}" onclick="admSwitchTab(${a.id},'${e.id}')">${e.label}</div>`).join('')}
+    </div>
+    ${admChecklistTabelaHtml(a.id, admTabAtiva, a[ADM_ETAPAS.find(e=>e.id===admTabAtiva).campo])}
+    <div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;border-top:1px solid var(--g100);padding-top:8px">
+      <button class="btn btn-s btn-xs" onclick="admGerarChecklistImpresso(${a.id},'admissao')">🖨 Admissão</button>
+      <button class="btn btn-s btn-xs" onclick="admGerarChecklistImpresso(${a.id},'integracao')">🖨 Integração</button>
+      <button class="btn btn-s btn-xs" onclick="admGerarChecklistImpresso(${a.id},'posadmissao')">🖨 Pós-Admissão</button>
+      <button class="btn btn-p btn-xs" onclick="admGerarChecklistImpresso(${a.id},'todos')">🖨 Gerar Todos</button>
+    </div>
+  </div>`;
+}
 
 function admissaoCardRender(rows) {
   if (!rows.length) return '<div class="muted" style="text-align:center;padding:24px">Nenhuma admissão em andamento</div>';
   return rows.map(a => {
-    const checks = a.checks || ADMISSAO_CHECKLIST.map(l=>({l,ok:false}));
-    const done = checks.filter(c=>c.ok).length;
-    const pct = Math.round(done/checks.length*100);
-    const col = pct>=100?'var(--green)':pct>50?'var(--yellow)':'var(--red)';
+    const progAdm = admCalcProgresso(a.checklistAdmissao);
     const inativo = a.status === 'Inativo';
     const sitBadge = {'Em andamento':'bb','Concluída':'bg','Cancelada':'br'}[a.situacao] || 'bgy';
+    const aberto = admDetalheAberto === a.id;
     return `<div class="card" style="margin-bottom:12px;${inativo?'opacity:.5':''}">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
         <div>
           <div style="font-size:13px;font-weight:700">${a.nome} <span class="badge ${sitBadge}" style="margin-left:6px">${a.situacao||'Em andamento'}</span></div>
-          <div class="muted">${a.cargo} — ${a.setor||'—'} · Início: ${a.inicio}</div>
+          <div class="muted">${a.cargo} — ${a.setor||'—'} · ${a.empresa||'—'} · Início: ${a.inicio}${a.responsavelProcesso?' · Resp.: '+a.responsavelProcesso:''}</div>
         </div>
         <div style="text-align:right;display:flex;align-items:center;gap:10px">
-          <div><div style="font-size:26px;font-weight:700;font-family:'IBM Plex Mono',monospace;color:${col}">${pct}%</div><div class="muted">Completo</div></div>
+          <div><div style="font-size:26px;font-weight:700;font-family:'IBM Plex Mono',monospace;color:${progAdm.pct>=100?'var(--green)':progAdm.pct>50?'var(--yellow)':'var(--red)'}">${progAdm.pct}%</div><div class="muted">Admissão</div></div>
           <div style="display:flex;flex-direction:column;gap:4px">
             <button class="btn btn-s btn-xs" onclick="openCrudModal(MOD_ADMISSAO,${a.id})">✏ Editar</button>
             ${inativo
@@ -4639,13 +4902,9 @@ function admissaoCardRender(rows) {
           </div>
         </div>
       </div>
-      <div class="pbar" style="height:7px;margin-bottom:12px"><div class="pbar-fill" style="width:${pct}%;background:${col}"></div></div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px">
-        ${checks.map((c,ci)=>`<div class="chk-item" onclick="toggleAdmissaoCheck(${a.id},${ci})">
-          <div class="chk-box ${c.ok?'on':''}"></div>
-          <div class="chk-lbl ${c.ok?'done':''}">${c.l}</div>
-        </div>`).join('')}
-      </div>
+      <div class="pbar" style="height:7px;margin-bottom:8px"><div class="pbar-fill" style="width:${progAdm.pct}%;background:${progAdm.pct>=100?'var(--green)':progAdm.pct>50?'var(--yellow)':'var(--red)'}"></div></div>
+      <span class="badge bb" style="cursor:pointer" onclick="admToggleDetalhe(${a.id})">${aberto?'▲ Fechar checklist':'▼ Ver checklist (3 etapas)'}</span>
+      ${aberto ? admDetalheHtml(a) : ''}
     </div>`;
   }).join('');
 }
@@ -4661,6 +4920,63 @@ function toggleAdmissaoCheck(id, checkIdx) {
   crudUpdate('admissoes', id, {checks: rec.checks, situacao: rec.situacao}, {modulo:'Admissão', label: rec.nome});
   if (tcAdmissao) tcAdmissao.refresh();
   atualizarKPIsAdmissao();
+}
+
+function admChecklistImpressoBloco(a, etapa) {
+  const etapaCfg = ADM_ETAPAS.find(e=>e.id===etapa);
+  const lista = a[etapaCfg.campo] || [];
+  const prog = admCalcProgresso(lista);
+  const linhas = lista.map(it => {
+    const marca = it.status==='Concluído' ? '☑' : '☐';
+    return `<tr style="border-bottom:1px solid #ccc">
+      <td style="padding:5px 4px;white-space:nowrap">${marca} ${it.status.toUpperCase()}</td>
+      <td style="padding:5px 4px">${it.desc}</td>
+      <td style="padding:5px 4px;font-size:10px">${it.observacao||''}</td>
+      <td style="padding:5px 4px;font-size:10px">${it.ondeEncontro||''}</td>
+    </tr>`;
+  }).join('');
+  return `<div style="padding:16px 4px;${etapa!=='__last__'?'page-break-after:always':''}">
+    <h2 style="text-align:center;margin-bottom:2px">AC METALÚRGICA</h2>
+    <h3 style="text-align:center;margin-bottom:14px">${etapaCfg.label.toUpperCase()}</h3>
+    <table style="width:100%;font-size:12px;margin-bottom:14px">
+      <tr><td style="padding:3px;font-weight:700;width:170px">Nome do colaborador:</td><td style="padding:3px">${a.nome}</td></tr>
+      <tr><td style="padding:3px;font-weight:700">Cargo:</td><td style="padding:3px">${a.cargo||'—'}</td></tr>
+      <tr><td style="padding:3px;font-weight:700">Setor:</td><td style="padding:3px">${a.setor||'—'}</td></tr>
+      <tr><td style="padding:3px;font-weight:700">Data de admissão:</td><td style="padding:3px">${a.inicio||'—'}</td></tr>
+      <tr><td style="padding:3px;font-weight:700">Responsável pelo processo:</td><td style="padding:3px">${a.responsavelProcesso||'—'}</td></tr>
+      <tr><td style="padding:3px;font-weight:700">Status geral:</td><td style="padding:3px">${a.situacao||'—'}</td></tr>
+      <tr><td style="padding:3px;font-weight:700">Percentual de conclusão:</td><td style="padding:3px">${prog.concluidas} de ${prog.total} — ${prog.pct}%</td></tr>
+    </table>
+    <table style="width:100%;border-collapse:collapse;font-size:11px">
+      <thead><tr style="border-bottom:1.5px solid #000"><th style="text-align:left;padding:5px 4px;width:130px">Status</th><th style="text-align:left;padding:5px 4px">Descrição</th><th style="text-align:left;padding:5px 4px;width:140px">Observação</th><th style="text-align:left;padding:5px 4px;width:140px">Onde Encontro?</th></tr></thead>
+      <tbody>${linhas || '<tr><td colspan="4" style="padding:10px">Nenhuma atividade cadastrada.</td></tr>'}</tbody>
+    </table>
+    <div style="margin-top:30px;font-size:11px">
+      <p style="margin-bottom:28px">Responsável pelo preenchimento: ____________________________________________</p>
+      <p style="margin-bottom:28px">Data: ____/____/________ &nbsp;&nbsp;&nbsp;&nbsp; Assinatura: ____________________________________________</p>
+      <p style="margin-bottom:4px">Observações gerais:</p>
+      <div style="border-bottom:1px solid #000;height:22px;margin-bottom:8px"></div>
+      <div style="border-bottom:1px solid #000;height:22px;margin-bottom:8px"></div>
+      <div style="border-bottom:1px solid #000;height:22px"></div>
+    </div>
+  </div>`;
+}
+
+function admGerarChecklistImpresso(admId, alvo) {
+  const a = loadData('admissoes').find(x => x.id === admId);
+  if (!a) return;
+  let html = '';
+  if (alvo === 'todos') {
+    html += admChecklistImpressoBloco(a, 'admissao');
+    html += admChecklistImpressoBloco(a, 'integracao');
+    html += admChecklistImpressoBloco(a, 'posadmissao').replace('page-break-after:always','');
+  } else {
+    html = admChecklistImpressoBloco(a, alvo).replace('page-break-after:always','');
+  }
+  ensureReciboModal();
+  document.getElementById('m-recibo').classList.add('open');
+  const dfEl = document.getElementById('recibo-date-fields'); if (dfEl) dfEl.style.display = 'none';
+  document.getElementById('recibo-preview').innerHTML = html;
 }
 
 let tcAdmissao;
@@ -9438,32 +9754,8 @@ function initAdmissaoAdv() {
   admCtrl = makeAdvCtrl({
     id:'adm', table:'admissoes', tbodyId:'admissao-cards-crud', countId:'adm-count',
     paginationId:'adm-pag', searchFields:['nome','cargo','setor'],
-    pageSize:10, sortField:'dataInicio',
-    render: rows => rows.map(a => {
-      const total=7, conc=+(a.docs||0)+(a.aso||0)+(a.contrato||0)+(a.cadastro||0)+(a.integracaoRH||0)+(a.epi||0)+(a.treinamento||0);
-      const pct=Math.round(conc/total*100);
-      const sb = a.situacao==='Concluída'?'bg':a.situacao==='Em andamento'?'bb':'by';
-      const inativo = a.status==='Inativo';
-      return `<tr style="${inativo?'opacity:.5':''}">
-        <td style="font-size:11px;font-weight:600">${a.nome}</td>
-        <td style="font-size:10px">${a.cargo||'—'}</td>
-        <td>${a.setor||'—'}</td>
-        <td>${a.dataInicio||'—'}</td>
-        <td>
-          <div style="display:flex;align-items:center;gap:6px">
-            <div style="flex:1;height:6px;background:var(--g100);border-radius:3px">
-              <div style="width:${pct}%;height:100%;background:${pct>=100?'var(--green)':pct>=50?'var(--blue)':'var(--yellow)'};border-radius:3px"></div>
-            </div>
-            <span style="font-size:10px;font-weight:600">${pct}%</span>
-          </div>
-        </td>
-        <td><span class="badge ${sb}">${a.situacao||'—'}</span></td>
-        <td style="white-space:nowrap">
-          <button class="btn btn-s btn-xs" onclick="openCrudModal(MOD_ADMISSAO,${a.id})">✏</button>
-          ${inativo?`<button class="btn btn-s btn-xs" onclick="crudRestoreAction(MOD_ADMISSAO,${a.id},'${escAttr(a.nome)}')">↩</button>`
-                  :`<button class="btn btn-s btn-xs" onclick="crudDeleteAction(MOD_ADMISSAO,${a.id},'${escAttr(a.nome)}')">🗑</button>`}
-        </td></tr>`;
-    }).join(''),
+    pageSize:10, sortField:'inicio',
+    render: rows => admissaoCardRender(rows),
   });
   window.admCtrl = admCtrl;
   admCtrl.load();
