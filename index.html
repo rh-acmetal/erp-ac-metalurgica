@@ -424,7 +424,7 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
   <div class="l-box">
     <div class="l-logo">
       <div class="l-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
-      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.35 — Benefícios: Competência Empresa/Ano/Mês</div></div>
+      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.36 — Correção: Inscrito Não Aparecia (Ano/Mês)</div></div>
     </div>
     <div class="f-row"><label>Usuário</label><input type="text" id="l-user" value="jakeline@acmetalurgica.com.br"></div>
     <div class="f-row"><label>Senha</label><input type="password" id="l-pass" value="••••••••"></div>
@@ -5019,8 +5019,8 @@ const MOD_BENEF_INSCRITO = {
     {field:'colaborador', label:'Colaborador', required:true, full:true},
     {field:'tipoBeneficio', label:'Benefício', required:true},
     {field:'empresa', label:'Empresa', type:'select', options:['AC','BRASS']},
-    {field:'ano', label:'Ano', placeholder:'2026'},
-    {field:'mes', label:'Mês (número)', placeholder:'9'},
+    {field:'ano', label:'Ano', type:'number', placeholder:'2026'},
+    {field:'mes', label:'Mês (número)', type:'number', placeholder:'9'},
     {field:'valorDesconto', label:'Valor do Desconto (R$)', type:'number', step:'0.01'},
     {field:'status', label:'Status', type:'select', options:['Ativo','Inativo']},
   ]
@@ -5098,7 +5098,7 @@ function benefAtualizarDesconto(id, valor) {
 function benefInscritosHtml(tipoNome) {
   const comp = benefComp();
   const inscritos = loadData('beneficios_inscritos').filter(i => i.status !== 'Inativo' && i.tipoBeneficio === tipoNome
-    && i.empresa === comp.empresa && i.ano === comp.ano && i.mes === comp.mes);
+    && i.empresa === comp.empresa && Number(i.ano) === comp.ano && Number(i.mes) === comp.mes);
   const isVT = tipoNome === 'Vale-Transporte';
   const colabs = loadData('colaboradores');
   const linhas = inscritos.map(i => {
