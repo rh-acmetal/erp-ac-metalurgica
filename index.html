@@ -330,10 +330,11 @@ tr:last-child td{border-bottom:none}
 @media print{.sidebar,.topbar,.btn-logout,.filters,.modal-overlay{display:none!important}body{overflow:visible;height:auto}.main-area{height:auto}.content{overflow:visible}.page{display:block!important;page-break-after:always}}
 @media print {
   body *{visibility:hidden}
-  #m-recibo{display:flex!important;position:static!important;background:none!important;padding:0!important;inset:auto!important}
-  #m-recibo .modal{max-height:none!important;overflow:visible!important;box-shadow:none!important;border-radius:0!important;width:100%!important;background:none!important}
+  #m-recibo{display:block!important;position:static!important;background:none!important;padding:0!important;inset:auto!important;align-items:flex-start!important;justify-content:flex-start!important;min-height:0!important;height:auto!important;margin:0!important}
+  #m-recibo .modal{max-height:none!important;overflow:visible!important;box-shadow:none!important;border-radius:0!important;width:100%!important;background:none!important;margin:0!important}
+  #m-recibo .m-body{padding:0!important;margin:0!important}
   #recibo-preview,#recibo-preview *{visibility:visible}
-  #recibo-preview{position:static!important;width:100%}
+  #recibo-preview{position:static!important;width:100%;margin:0!important;padding:0!important}
   .no-print{display:none !important}
 }
 
@@ -424,7 +425,7 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
   <div class="l-box">
     <div class="l-logo">
       <div class="l-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
-      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.37 — Relatório e Exportação por Benefício</div></div>
+      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.38 — Correção Impressão + Tela Simplificada</div></div>
     </div>
     <div class="f-row"><label>Usuário</label><input type="text" id="l-user" value="jakeline@acmetalurgica.com.br"></div>
     <div class="f-row"><label>Senha</label><input type="password" id="l-pass" value="••••••••"></div>
@@ -821,13 +822,10 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
       <div class="section-hdr">
         <div class="sec-title"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>Controle de Benefícios</div>
         <button class="btn btn-s" onclick="openCrudModal(MOD_BENEFTIPO,null)">+ Novo Tipo de Benefício</button>
-        <button class="btn btn-p" onclick="openCrudModal(MOD_BENEFICIO,null)">+ Inclusão / Exclusão</button>
       </div>
       <div class="kpi-grid">
         <div class="kpi-card"><div class="kpi-lbl">Tipos de Benefício Ativos</div><div class="kpi-val" id="ben-tipos-count">—</div></div>
-        <div class="kpi-card"><div class="kpi-lbl">Movimentações</div><div class="kpi-val" id="ben-total-crud">—</div></div>
-        <div class="kpi-card"><div class="kpi-lbl">Pendências</div><div class="kpi-val" style="color:var(--yellow)" id="ben-pendencias-crud">—</div></div>
-        <div class="kpi-card"><div class="kpi-lbl">Inclusões / Exclusões</div><div class="kpi-val" style="font-size:18px" id="ben-inclusoes-crud">—</div><div class="kpi-delta dr"><span id="ben-exclusoes-crud">—</span> exclusões</div></div>
+        <div class="kpi-card"><div class="kpi-lbl">Total de Inscritos (competência)</div><div class="kpi-val" id="ben-total-crud">—</div></div>
       </div>
       <div class="filters" style="margin-bottom:12px">
         <select class="fsel" id="ben-comp-empresa-sel" onchange="renderBeneficiosTipos()"><option>AC</option><option>BRASS</option></select>
@@ -840,43 +838,6 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
         <span class="chip" style="font-size:10px;color:var(--g500)">Competência dos inscritos nos benefícios</span>
       </div>
       <div id="ben-tipos-lista" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;margin-bottom:16px"></div>
-      <div style="background:#fff;border:1px solid var(--g200);border-radius:9px;padding:12px;margin-bottom:10px">
-        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-          <div class="srch-wrap" style="flex:2;min-width:180px"><input class="finp" style="width:100%" id="benef-search" placeholder="🔎 Buscar colaborador ou benefício..." oninput="benefCtrl.filter()"></div>
-          <select class="fsel" data-fid="benef" style="min-width:145px" onchange="benefCtrl.setFilter('beneficio',this.value)">
-            <option value="">💳 Todos os benefícios</option>
-            <option>Vale-Transporte</option><option>Convênio Médico</option><option>Convênio Farmácia</option><option>Seguro de Vida</option><option>Dep. Plano Médico</option>
-          </select>
-          <select class="fsel" data-fid="benef" style="min-width:130px" onchange="benefCtrl.setFilter('tipo',this.value)">
-            <option value="">📋 Todos os tipos</option><option>Inclusão</option><option>Exclusão</option><option>Inclusão dep.</option><option>Exclusão dep.</option><option>Alteração</option>
-          </select>
-          <select class="fsel" data-fid="benef" style="min-width:130px" onchange="benefCtrl.setFilter('situacao',this.value)">
-            <option value="">🟢 Todas as situações</option><option>Concluída</option><option>Pendente</option><option>Cancelada</option>
-          </select>
-          <select class="fsel" data-fid="benef" style="min-width:110px" onchange="benefCtrl.setFilter('mes',this.value?parseInt(this.value,10):'')">
-            <option value="">Todos os meses</option><option value="1">Janeiro</option><option value="2">Fevereiro</option><option value="3">Março</option><option value="4">Abril</option><option value="5">Maio</option><option value="6">Junho</option><option value="7">Julho</option><option value="8">Agosto</option><option value="9">Setembro</option><option value="10">Outubro</option><option value="11">Novembro</option><option value="12">Dezembro</option>
-          </select>
-          <select class="fsel" data-fid="benef" style="min-width:90px" onchange="benefCtrl.setFilter('ano',this.value?parseInt(this.value,10):'')">
-            <option value="">Todos os anos</option><option>2026</option><option>2027</option><option>2028</option><option>2029</option><option>2030</option><option>2031</option><option>2032</option><option>2033</option><option>2034</option><option>2035</option><option>2036</option><option>2037</option><option>2038</option><option>2039</option><option>2040</option><option>2041</option><option>2042</option><option>2043</option><option>2044</option><option>2045</option><option>2046</option><option>2047</option><option>2048</option><option>2049</option><option>2050</option>
-          </select>
-          <select class="fsel" data-fid="benef" style="min-width:110px" onchange="benefCtrl.setFilter('empresa',this.value)">
-            <option value="">Todas as empresas</option><option>AC</option><option>BRASS</option><option>PJ</option>
-          </select>
-          <span class="chip" id="benef-count">— registros</span>
-          <button class="btn btn-s btn-xs" onclick="benefCtrl.clearAll()" title="Limpar">🔄 Limpar</button>
-          <button class="btn btn-s btn-xs" onclick="benefCtrl.load();showToast('🔃 Atualizado')" title="Atualizar">🔃</button>
-          <button class="btn btn-s btn-xs" onclick="exportTableToExcel('beneficios_mov',[{field:'colaborador',label:'Colaborador',width:35},{field:'empresa',label:'Empresa',width:10},{field:'beneficio',label:'Benefício',width:25},{field:'tipo',label:'Tipo',width:16},{field:'data',label:'Data',width:12},{field:'motivo',label:'Motivo',width:25},{field:'situacao',label:'Situação',width:14}],'Beneficios')">⬇ Exportar</button>
-          <select class="fsel" style="width:72px" onchange="benefCtrl._pageSize=+this.value;benefCtrl._page=1;benefCtrl.render()">
-            <option value="10" selected>10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option>
-          </select>
-        </div>
-      </div>
-            <div class="card" style="padding:0">
-        <div class="card-hdr">Movimentações — Inclusão / Exclusão</div>
-        <table><thead><tr><th>Colaborador</th><th>Benefício</th><th>Tipo</th><th>Data</th><th>Motivo</th><th>Status</th><th>Ações</th></tr></thead>
-        <tbody id="benef-tbody"></tbody></table>
-        <div style="padding:10px 14px;display:flex;align-items:center;justify-content:flex-end;gap:4px;border-top:1px solid var(--g100)" id="benef-pag"></div>
-      </div>
     </div>
 
     <!-- ══ CESTA BÁSICA & VEGAS ══ -->
@@ -4968,15 +4929,11 @@ function migracaoLimparBeneficiosFake() {
 }
 
 function atualizarKPIsBeneficios() {
-  const mov = loadData('beneficios_mov').filter(b=>b.status!=='Inativo');
-  const total = mov.length;
-  const pendentes = mov.filter(b=>b.situacao==='Pendente'||b.situacao==='Em análise').length;
-  const inclusoesMes = mov.filter(b=>b.tipo&&b.tipo.startsWith('Inclusão')).length;
-  const exclusoesMes = mov.filter(b=>b.tipo&&b.tipo.startsWith('Exclusão')).length;
-  setText('ben-total-crud', total);
-  setText('ben-pendencias-crud', pendentes);
-  setText('ben-inclusoes-crud', inclusoesMes);
-  setText('ben-exclusoes-crud', exclusoesMes);
+  benefPopularAnos();
+  const comp = benefComp();
+  const inscritos = loadData('beneficios_inscritos').filter(i => i.status !== 'Inativo'
+    && i.empresa === comp.empresa && Number(i.ano) === comp.ano && Number(i.mes) === comp.mes);
+  setText('ben-total-crud', inscritos.length);
   try{ renderBeneficiosTipos(); }catch(e){}
 }
 
@@ -5206,9 +5163,11 @@ function renderBeneficiosTipos() {
   const tipos = loadData('beneficios_tipos').filter(t => t.status !== 'Inativo');
   const box = document.getElementById('ben-tipos-lista');
   if (!box) return;
-  const mov = loadData('beneficios_mov').filter(b=>b.status!=='Inativo');
+  const comp = benefComp();
+  const inscritosTodos = loadData('beneficios_inscritos').filter(i => i.status !== 'Inativo'
+    && i.empresa === comp.empresa && Number(i.ano) === comp.ano && Number(i.mes) === comp.mes);
   box.innerHTML = tipos.map(t => {
-    const qtd = mov.filter(m => m.beneficio === t.nome).length;
+    const qtd = inscritosTodos.filter(m => m.tipoBeneficio === t.nome).length;
     const podeExpandir = t.nome !== 'Seguro de Vida em Grupo';
     const aberto = benefTipoAberto === t.nome;
     return `<div class="card" style="padding:12px;grid-column:${aberto?'1/-1':'auto'}">
@@ -5217,7 +5176,7 @@ function renderBeneficiosTipos() {
         <div style="flex:1">
           <div style="font-weight:700;font-size:13px">${t.nome}</div>
           <div style="font-size:11px;color:var(--g500);margin:2px 0 6px">${t.descricao||'—'}</div>
-          <span class="badge bgy">${qtd} movimentação(ões)</span>
+          <span class="badge bgy">${qtd} inscrito(s)</span>
           ${podeExpandir?` <span class="badge bb" style="cursor:pointer" onclick="benefToggleInscritos('${escAttr(t.nome)}')">${aberto?'▲ Fechar inscritos':'▼ Ver inscritos'}</span>`:''}
         </div>
         <div style="white-space:nowrap">
