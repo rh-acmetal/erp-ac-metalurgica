@@ -424,7 +424,7 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
   <div class="l-box">
     <div class="l-logo">
       <div class="l-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
-      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.34 — Desconto Editável + Correção de Cálculo + Formato Contábil</div></div>
+      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.35 — Benefícios: Competência Empresa/Ano/Mês</div></div>
     </div>
     <div class="f-row"><label>Usuário</label><input type="text" id="l-user" value="jakeline@acmetalurgica.com.br"></div>
     <div class="f-row"><label>Senha</label><input type="password" id="l-pass" value="••••••••"></div>
@@ -828,6 +828,16 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
         <div class="kpi-card"><div class="kpi-lbl">Movimentações</div><div class="kpi-val" id="ben-total-crud">—</div></div>
         <div class="kpi-card"><div class="kpi-lbl">Pendências</div><div class="kpi-val" style="color:var(--yellow)" id="ben-pendencias-crud">—</div></div>
         <div class="kpi-card"><div class="kpi-lbl">Inclusões / Exclusões</div><div class="kpi-val" style="font-size:18px" id="ben-inclusoes-crud">—</div><div class="kpi-delta dr"><span id="ben-exclusoes-crud">—</span> exclusões</div></div>
+      </div>
+      <div class="filters" style="margin-bottom:12px">
+        <select class="fsel" id="ben-comp-empresa-sel" onchange="renderBeneficiosTipos()"><option>AC</option><option>BRASS</option></select>
+        <select class="fsel" id="ben-comp-ano-sel" onchange="renderBeneficiosTipos()"></select>
+        <select class="fsel" id="ben-comp-mes-sel" onchange="renderBeneficiosTipos()">
+          <option value="1">Janeiro</option><option value="2">Fevereiro</option><option value="3">Março</option><option value="4">Abril</option>
+          <option value="5">Maio</option><option value="6">Junho</option><option value="7">Julho</option><option value="8">Agosto</option>
+          <option value="9" selected>Setembro</option><option value="10">Outubro</option><option value="11">Novembro</option><option value="12">Dezembro</option>
+        </select>
+        <span class="chip" style="font-size:10px;color:var(--g500)">Competência dos inscritos nos benefícios</span>
       </div>
       <div id="ben-tipos-lista" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;margin-bottom:16px"></div>
       <div style="background:#fff;border:1px solid var(--g200);border-radius:9px;padding:12px;margin-bottom:10px">
@@ -5008,6 +5018,9 @@ const MOD_BENEF_INSCRITO = {
   fields: [
     {field:'colaborador', label:'Colaborador', required:true, full:true},
     {field:'tipoBeneficio', label:'Benefício', required:true},
+    {field:'empresa', label:'Empresa', type:'select', options:['AC','BRASS']},
+    {field:'ano', label:'Ano', placeholder:'2026'},
+    {field:'mes', label:'Mês (número)', placeholder:'9'},
     {field:'valorDesconto', label:'Valor do Desconto (R$)', type:'number', step:'0.01'},
     {field:'status', label:'Status', type:'select', options:['Ativo','Inativo']},
   ]
@@ -5026,12 +5039,26 @@ function buildConvenioMedicoSeed() {
   const now = nowStr();
   const seeded = CONVENIO_MEDICO_SEED.map((s,i) => ({
     id: i+1, colaborador: s.colaborador, tipoBeneficio: 'Convênio Médico', valorDesconto: s.valorDesconto,
+    empresa: 'AC', ano: 2026, mes: 9,
     status: 'Ativo', criadoEm: now, atualizadoEm: now
   }));
   saveData('beneficios_inscritos', seeded);
-  logAudit('Benefícios', 'Inclusão', 0, `Importação inicial — Convênio Médico, ${seeded.length} inscritos (planilha SERVCONT)`);
+  logAudit('Benefícios', 'Inclusão', 0, `Importação inicial — Convênio Médico, ${seeded.length} inscritos (planilha SERVCONT, Set/2026 AC)`);
   seeded.forEach(r => syncRecordToCloud('beneficios_inscritos', r));
   localStorage.setItem('ac_convmedico_v1', '1');
+}
+
+function benefComp() {
+  return {
+    empresa: document.getElementById('ben-comp-empresa-sel')?.value || 'AC',
+    ano: parseInt(document.getElementById('ben-comp-ano-sel')?.value || '2026', 10),
+    mes: parseInt(document.getElementById('ben-comp-mes-sel')?.value || '9', 10)
+  };
+}
+function benefPopularAnos() {
+  const sel = document.getElementById('ben-comp-ano-sel');
+  if (!sel || sel.options.length) return;
+  for (let a = 2026; a <= 2050; a++) sel.innerHTML += `<option value="${a}" ${a===2026?'selected':''}>${a}</option>`;
 }
 
 let benefTipoAberto = null;
@@ -5041,9 +5068,12 @@ function benefToggleInscritos(tipoNome) {
 }
 
 function benefAdicionarInscrito(tipoNome) {
-  window._benefTipoNovo = tipoNome;
+  const comp = benefComp();
   openCrudModal(MOD_BENEF_INSCRITO, null);
-  setTimeout(() => { const el = document.querySelector('[data-field="tipoBeneficio"]'); if (el) el.value = tipoNome; }, 30);
+  setTimeout(() => {
+    const setVal = (f,v) => { const el = document.querySelector(`[data-field="${f}"]`); if (el) el.value = v; };
+    setVal('tipoBeneficio', tipoNome); setVal('empresa', comp.empresa); setVal('ano', comp.ano); setVal('mes', comp.mes);
+  }, 30);
 }
 
 function benefRemoverInscrito(id, nome) {
@@ -5066,7 +5096,9 @@ function benefAtualizarDesconto(id, valor) {
 }
 
 function benefInscritosHtml(tipoNome) {
-  const inscritos = loadData('beneficios_inscritos').filter(i => i.status !== 'Inativo' && i.tipoBeneficio === tipoNome);
+  const comp = benefComp();
+  const inscritos = loadData('beneficios_inscritos').filter(i => i.status !== 'Inativo' && i.tipoBeneficio === tipoNome
+    && i.empresa === comp.empresa && i.ano === comp.ano && i.mes === comp.mes);
   const isVT = tipoNome === 'Vale-Transporte';
   const colabs = loadData('colaboradores');
   const linhas = inscritos.map(i => {
@@ -5099,6 +5131,7 @@ function benefInscritosHtml(tipoNome) {
 }
 
 function renderBeneficiosTipos() {
+  benefPopularAnos();
   const tipos = loadData('beneficios_tipos').filter(t => t.status !== 'Inativo');
   const box = document.getElementById('ben-tipos-lista');
   if (!box) return;
