@@ -424,7 +424,7 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
   <div class="l-box">
     <div class="l-logo">
       <div class="l-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
-      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.44 — Admissão: KPI Real + Resumo Sempre Visível</div></div>
+      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.46 — Checklist de Integração com Itens Reais</div></div>
     </div>
     <div class="f-row"><label>Usuário</label><input type="text" id="l-user" value="jakeline@acmetalurgica.com.br"></div>
     <div class="f-row"><label>Senha</label><input type="password" id="l-pass" value="••••••••"></div>
@@ -1080,7 +1080,8 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
           <div class="srch-wrap" style="flex:2;min-width:180px"><input class="finp" style="width:100%" id="adm-search" placeholder="🔎 Buscar nome, cargo ou setor..." oninput="admCtrl.filter()"></div>
           <select class="fsel" data-fid="adm" style="min-width:160px" onchange="admCtrl.setFilter('situacao',this.value)"><option value="">🟢 Todas as situações</option><option>Em andamento</option><option>Concluída</option><option>Cancelada</option></select><select class="fsel" data-fid="adm" style="min-width:130px" onchange="admCtrl.setFilter('setor',this.value)"><option value="">📌 Setor</option><option value="Produção">Produção</option><option value="Manutenção">Manutenção</option><option value="Qualidade">Qualidade</option><option value="Administrativo">Administrativo</option><option value="Fundição">Fundição</option><option value="Usinagem">Usinagem</option></select>
           <span class="chip" id="adm-count">— registros</span>
-          <button class="btn btn-s btn-xs" onclick="admCtrl.clearAll()" title="Limpar">🔄 Limpar</button>
+          <button class="btn btn-s btn-xs" id="adm-toggle-inativos-btn" onclick="admToggleVerInativos()">👁 Ver Inativos</button>
+          <button class="btn btn-s btn-xs" onclick="admCtrl.clearAll();admCtrl.setFilter('status','Ativo');document.getElementById('adm-toggle-inativos-btn').textContent='👁 Ver Inativos'" title="Limpar">🔄 Limpar</button>
           <button class="btn btn-s btn-xs" onclick="admCtrl.load();showToast('🔃 Atualizado')" title="Atualizar">🔃</button>
           <select class="fsel" style="width:72px" onchange="admCtrl._pageSize=+this.value;admCtrl._page=1;admCtrl.render()">
             <option value="10" selected>10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option>
@@ -2387,6 +2388,7 @@ function buildAll(){
   try{buildConvenioMedicoSeed();}catch(e){console.warn('buildConvenioMedicoSeed:',e);}
   try{migracaoLimparBeneficiosFake();}catch(e){console.warn('migracaoLimparBeneficiosFake:',e);}
   try{buildAdmissaoTemplateSeed();}catch(e){console.warn('buildAdmissaoTemplateSeed:',e);}
+  try{buildAdmissaoTemplateIntegracaoSeed();}catch(e){console.warn('buildAdmissaoTemplateIntegracaoSeed:',e);}
   try{migracaoAdmissaoChecklists();}catch(e){console.warn('migracaoAdmissaoChecklists:',e);}
   try{migracaoRealocacoes2026();}catch(e){console.warn('migracaoRealocacoes2026:',e);}
   try{tryRestoreSupabase();}catch(e){console.warn('tryRestoreSupabase:',e); updateDBStatusBadge('error');}
@@ -4612,6 +4614,7 @@ const MOD_ADM_TEMPLATE = {
     {field:'etapa', label:'Etapa', type:'select', required:true, options:[{value:'admissao',label:'Checklist Admissão'},{value:'integracao',label:'Checklist Integração'},{value:'posadmissao',label:'Checklist Pós-Admissão'}]},
     {field:'desc', label:'Descrição da Atividade', required:true, full:true},
     {field:'ondeEncontro', label:'Onde Encontro?', full:true},
+    {field:'observacaoPadrao', label:'Observação Padrão', full:true},
     {field:'ordem', label:'Ordem', type:'number', placeholder:'1'},
     {field:'obrigatorio', label:'Obrigatória?', type:'select', options:['Sim','Não']},
     {field:'status', label:'Status', type:'select', options:['Ativo','Inativo']},
@@ -4638,7 +4641,7 @@ function buildAdmissaoTemplateSeed() {
     {desc:'Incluir no sistema Web', ondeEncontro:'Site RHID'},
   ];
   const seeded = itens.map((it,i) => ({
-    id: i+1, etapa:'admissao', desc: it.desc, ondeEncontro: it.ondeEncontro, ordem: i+1, obrigatorio:'Sim',
+    id: i+1, etapa:'admissao', desc: it.desc, ondeEncontro: it.ondeEncontro, observacaoPadrao:'', ordem: i+1, obrigatorio:'Sim',
     status:'Ativo', criadoEm: now, atualizadoEm: now
   }));
   saveData('admissao_templates', seeded);
@@ -4647,13 +4650,42 @@ function buildAdmissaoTemplateSeed() {
   localStorage.setItem('ac_admtemplate_v1', '1');
 }
 
-function admGerarChecklistDeTemplate(etapa) {
+function buildAdmissaoTemplateIntegracaoSeed() {
+  if (localStorage.getItem('ac_admtemplate_integ_v1')) return;
   const now = nowStr();
+  const itens = [
+    {desc:'Agendar integração', obs:'Alinhar com Jakeline', onde:''},
+    {desc:'Enviar data e horário da integração via WhatsApp', obs:'Assim que definido', onde:''},
+    {desc:'Designação do armário nº', obs:'1 dia antes', onde:'Controle de Armários'},
+    {desc:'Separar / entregar EPI e uniforme', obs:'1 dia antes', onde:''},
+    {desc:'Imprimir manual do colaborador', obs:'1 dia antes', onde:'Pasta da Empresa → Admissão → Regulamento Interno → Integração'},
+    {desc:'Imprimir código de conduta', obs:'1 dia antes', onde:''},
+    {desc:'Imprimir termo de confidencialidade', obs:'1 dia antes', onde:''},
+    {desc:'Imprimir termo de entrega de aparelho de celular da empresa', obs:'1 dia antes', onde:'Não se aplica a todos'},
+    {desc:'Imprimir termo de responsabilidade por utilização de veículo da empresa', obs:'1 dia antes', onde:'Não se aplica a todos'},
+    {desc:'Imprimir termo de consentimento para tratamento de dados biométricos', obs:'1 dia antes', onde:''},
+    {desc:'Imprimir termo de responsabilidade de EPI', obs:'1 dia antes', onde:''},
+    {desc:'Imprimir ficha de EPI', obs:'1 dia antes', onde:''},
+    {desc:'Imprimir descrição de cargo', obs:'1 dia antes', onde:'Descrição de Cargo'},
+    {desc:'Imprimir ordem de serviço', obs:'1 dia antes', onde:''},
+  ];
+  const seeded = itens.map((it,i) => ({
+    id: 100+i+1, etapa:'integracao', desc: it.desc, ondeEncontro: it.onde, observacaoPadrao: it.obs, ordem: i+1, obrigatorio:'Sim',
+    status:'Ativo', criadoEm: now, atualizadoEm: now
+  }));
+  const existentes = loadData('admissao_templates');
+  saveData('admissao_templates', existentes.concat(seeded));
+  logAudit('Admissão', 'Inclusão', 0, `Modelo padrão do Checklist de Integração — ${seeded.length} atividades`);
+  seeded.forEach(r => syncRecordToCloud('admissao_templates', r));
+  localStorage.setItem('ac_admtemplate_integ_v1', '1');
+}
+
+function admGerarChecklistDeTemplate(etapa) {
   const itens = loadData('admissao_templates').filter(t => t.status !== 'Inativo' && t.etapa === etapa)
     .sort((a,b) => (a.ordem||0)-(b.ordem||0));
   return itens.map(t => ({
     desc: t.desc, ondeEncontro: t.ondeEncontro || '', status: 'Pendente',
-    observacao: '', dataConclusao: '', usuarioConclusao: ''
+    observacao: t.observacaoPadrao || '', dataConclusao: '', usuarioConclusao: ''
   }));
 }
 
@@ -4681,6 +4713,7 @@ function admRenderTemplateConfig() {
         ${itens.map(t => `<tr style="border-bottom:1px solid var(--g100)">
           <td style="padding:4px;width:40px">${t.ordem||'—'}</td>
           <td style="padding:4px">${t.desc}</td>
+          <td style="padding:4px;font-size:10px;color:var(--g500)">${t.observacaoPadrao||'—'}</td>
           <td style="padding:4px;font-size:10px;color:var(--g500)">${t.ondeEncontro||'—'}</td>
           <td style="padding:4px;white-space:nowrap">
             <button class="btn btn-s btn-xs" onclick="openCrudModal(MOD_ADM_TEMPLATE,${t.id})">✏</button>
@@ -9754,7 +9787,20 @@ function initAdmissaoAdv() {
     render: rows => admissaoCardRender(rows),
   });
   window.admCtrl = admCtrl;
+  admCtrl.setFilter('status', 'Ativo');
   admCtrl.load();
+}
+
+function admToggleVerInativos() {
+  const atual = admCtrl._filters.status;
+  const btn = document.getElementById('adm-toggle-inativos-btn');
+  if (atual === 'Inativo') {
+    admCtrl.setFilter('status', 'Ativo');
+    if (btn) btn.textContent = '👁 Ver Inativos';
+  } else {
+    admCtrl.setFilter('status', 'Inativo');
+    if (btn) btn.textContent = '👁 Ver Ativos';
+  }
 }
 
 /* ═══════════ RECRUTAMENTO ═══════════ */
