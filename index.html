@@ -424,7 +424,7 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
   <div class="l-box">
     <div class="l-logo">
       <div class="l-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
-      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.43 — Admissão: Checklist em 3 Etapas + Impressão</div></div>
+      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.44 — Admissão: KPI Real + Resumo Sempre Visível</div></div>
     </div>
     <div class="f-row"><label>Usuário</label><input type="text" id="l-user" value="jakeline@acmetalurgica.com.br"></div>
     <div class="f-row"><label>Senha</label><input type="password" id="l-pass" value="••••••••"></div>
@@ -4859,13 +4859,7 @@ function admChecklistTabelaHtml(admId, etapa, lista) {
 }
 
 function admDetalheHtml(a) {
-  const progAdm = admCalcProgresso(a.checklistAdmissao);
-  const progInt = admCalcProgresso(a.checklistIntegracao);
-  const progPos = admCalcProgresso(a.checklistPosAdmissao);
   return `<div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--g100)">
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:10px">
-      ${admBarraProgresso('Admissão', progAdm)}${admBarraProgresso('Integração', progInt)}${admBarraProgresso('Pós-Admissão', progPos)}
-    </div>
     <div class="tabs" style="margin-bottom:8px">
       ${ADM_ETAPAS.map(e=>`<div class="tab ${admTabAtiva===e.id?'active':''}" onclick="admSwitchTab(${a.id},'${e.id}')">${e.label}</div>`).join('')}
     </div>
@@ -4883,6 +4877,8 @@ function admissaoCardRender(rows) {
   if (!rows.length) return '<div class="muted" style="text-align:center;padding:24px">Nenhuma admissão em andamento</div>';
   return rows.map(a => {
     const progAdm = admCalcProgresso(a.checklistAdmissao);
+    const progInt = admCalcProgresso(a.checklistIntegracao);
+    const progPos = admCalcProgresso(a.checklistPosAdmissao);
     const inativo = a.status === 'Inativo';
     const sitBadge = {'Em andamento':'bb','Concluída':'bg','Cancelada':'br'}[a.situacao] || 'bgy';
     const aberto = admDetalheAberto === a.id;
@@ -4892,17 +4888,16 @@ function admissaoCardRender(rows) {
           <div style="font-size:13px;font-weight:700">${a.nome} <span class="badge ${sitBadge}" style="margin-left:6px">${a.situacao||'Em andamento'}</span></div>
           <div class="muted">${a.cargo} — ${a.setor||'—'} · ${a.empresa||'—'} · Início: ${a.inicio}${a.responsavelProcesso?' · Resp.: '+a.responsavelProcesso:''}</div>
         </div>
-        <div style="text-align:right;display:flex;align-items:center;gap:10px">
-          <div><div style="font-size:26px;font-weight:700;font-family:'IBM Plex Mono',monospace;color:${progAdm.pct>=100?'var(--green)':progAdm.pct>50?'var(--yellow)':'var(--red)'}">${progAdm.pct}%</div><div class="muted">Admissão</div></div>
-          <div style="display:flex;flex-direction:column;gap:4px">
-            <button class="btn btn-s btn-xs" onclick="openCrudModal(MOD_ADMISSAO,${a.id})">✏ Editar</button>
-            ${inativo
-              ? `<button class="btn btn-s btn-xs" onclick="crudRestoreAction(MOD_ADMISSAO,${a.id},'${escAttr(a.nome)}')">↩ Restaurar</button>`
-              : `<button class="btn btn-s btn-xs" onclick="crudDeleteAction(MOD_ADMISSAO,${a.id},'${escAttr(a.nome)}')">🗑 Excluir</button>`}
-          </div>
+        <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end">
+          <button class="btn btn-s btn-xs" onclick="openCrudModal(MOD_ADMISSAO,${a.id})">✏ Editar</button>
+          ${inativo
+            ? `<button class="btn btn-s btn-xs" onclick="crudRestoreAction(MOD_ADMISSAO,${a.id},'${escAttr(a.nome)}')">↩ Restaurar</button>`
+            : `<button class="btn btn-s btn-xs" onclick="crudDeleteAction(MOD_ADMISSAO,${a.id},'${escAttr(a.nome)}')">🗑 Excluir</button>`}
         </div>
       </div>
-      <div class="pbar" style="height:7px;margin-bottom:8px"><div class="pbar-fill" style="width:${progAdm.pct}%;background:${progAdm.pct>=100?'var(--green)':progAdm.pct>50?'var(--yellow)':'var(--red)'}"></div></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:8px">
+        ${admBarraProgresso('Admissão', progAdm)}${admBarraProgresso('Integração', progInt)}${admBarraProgresso('Pós-Admissão', progPos)}
+      </div>
       <span class="badge bb" style="cursor:pointer" onclick="admToggleDetalhe(${a.id})">${aberto?'▲ Fechar checklist':'▼ Ver checklist (3 etapas)'}</span>
       ${aberto ? admDetalheHtml(a) : ''}
     </div>`;
@@ -5016,9 +5011,10 @@ function atualizarKPIsAdmissao() {
   const concluidas = admissoes.filter(a=>a.situacao==='Concluída').length;
   let totalPct = 0;
   admissoes.forEach(a=>{
-    const checks=a.checks||[];
-    const done=checks.filter(c=>c.ok).length;
-    totalPct += checks.length ? (done/checks.length*100) : 0;
+    const p1 = admCalcProgresso(a.checklistAdmissao).pct;
+    const p2 = admCalcProgresso(a.checklistIntegracao).pct;
+    const p3 = admCalcProgresso(a.checklistPosAdmissao).pct;
+    totalPct += (p1+p2+p3)/3;
   });
   const mediaPct = total ? Math.round(totalPct/total) : 0;
   setText('adm-total-crud', total);
