@@ -424,7 +424,7 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
   <div class="l-box">
     <div class="l-logo">
       <div class="l-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
-      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.48 — Documentos de Integração Auto-Preenchidos</div></div>
+      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.49 — Sincronização com a Nuvem no Carregamento</div></div>
     </div>
     <div class="f-row"><label>Usuário</label><input type="text" id="l-user" value="jakeline@acmetalurgica.com.br"></div>
     <div class="f-row"><label>Senha</label><input type="password" id="l-pass" value="••••••••"></div>
@@ -2287,12 +2287,12 @@ const COMPS=['Qualidade do trabalho','Produtividade','Comprometimento','Trabalho
 let starVals={};
 let chartsBuilt={};
 
-function doLogin(){
+async function doLogin(){
   const p=document.getElementById('l-perfil').value;
   applyUser(p);
   document.getElementById('login-screen').style.display='none';
   document.getElementById('app').style.display='block';
-  buildAll();
+  await buildAll();
   // Ensure COLABS are in localStorage before rendering
   try {
     const key='ac_erp_v4_colaboradores';
@@ -2358,7 +2358,7 @@ function go(id,el,title,bread){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById('page-'+id).classList.add('active');
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-  el.classList.add('active');
+  if (el) el.classList.add('active');
   document.getElementById('pg-title').textContent=title;
   document.getElementById('pg-bread').textContent=bread;
   if(id==='avaliacoes'&&!chartsBuilt.aval){setTimeout(()=>{buildAvalCharts();chartsBuilt.aval=true},60);}
@@ -2366,7 +2366,13 @@ function go(id,el,title,bread){
   if(id==='clima'&&!chartsBuilt.clima){setTimeout(()=>{buildClimaCharts();chartsBuilt.clima=true},60);}
 }
 
-function buildAll(){
+async function buildAll(){
+  // Busca o que já existe na nuvem ANTES de qualquer rotina local rodar.
+  // Sem isso, um navegador "zerado" (cache limpo, outro computador, depois
+  // de uma nova publicação) reconstrói os dados a partir da lista fixa
+  // gravada no arquivo e perde foto, documentos e qualquer edição feita
+  // em outro lugar — que é exatamente o problema relatado.
+  try{ await pullNuvemAntesDoBoot(); }catch(e){ console.warn('pullNuvemAntesDoBoot:', e); }
   try{buildCal();}catch(e){console.warn('buildCal:',e);}
   try{buildCompForm();}catch(e){console.warn('buildCompForm:',e);}
   try{initCrudModules();}catch(e){console.warn('initCrudModules:',e);}
@@ -3504,9 +3510,9 @@ function docHoje() {
 function colabGerarTermoConfidencialidade(colabId) {
   const c = loadData('colaboradores').find(x => x.id === colabId);
   if (!c) return;
-  const emp = CV_EMPRESA_INFO[c.cnpj] || CV_EMPRESA_INFO['AC'];
+  const emp = empresaInfoDoColaborador(c);
   const nomeEmp = emp.nome.toUpperCase();
-  const nomeCurto = c.cnpj === 'BRASS' ? 'BRASSMETAL' : 'AC METAL';
+  const nomeCurto = emp === CV_EMPRESA_INFO['BRASS'] ? 'BRASSMETAL' : 'AC METAL';
   const hoje = docHoje();
   const html = `<div style="padding:16px 20px;font-size:11.5px;line-height:1.5">
     <h3 style="text-align:center;margin-bottom:16px">TERMO DE CONFIDENCIALIDADE E SIGILO</h3>
@@ -3552,16 +3558,13 @@ function colabGerarTermoConfidencialidade(colabId) {
     <p style="margin-bottom:4px">TESTEMUNHAS: 1. _____________________________ 2. _____________________________</p>
     <p>CPF _________________________ &nbsp;&nbsp;&nbsp;&nbsp; CPF _________________________</p>
   </div>`;
-  ensureReciboModal();
-  document.getElementById('m-recibo').classList.add('open');
-  const dfEl = document.getElementById('recibo-date-fields'); if (dfEl) dfEl.style.display = 'none';
-  document.getElementById('recibo-preview').innerHTML = html;
+  abrirReciboModal('🖨 Termo de Confidencialidade — ' + c.nome, html, false);
 }
 
 function colabGerarTermoEPI(colabId) {
   const c = loadData('colaboradores').find(x => x.id === colabId);
   if (!c) return;
-  const emp = CV_EMPRESA_INFO[c.cnpj] || CV_EMPRESA_INFO['AC'];
+  const emp = empresaInfoDoColaborador(c);
   const hoje = docHoje();
   const linhasVazias = Array.from({length:9}).map(()=>`<tr><td style="padding:5px;border:1px solid #999">&nbsp;</td><td style="padding:5px;border:1px solid #999">&nbsp;</td><td style="padding:5px;border:1px solid #999">&nbsp;</td><td style="padding:5px;border:1px solid #999">&nbsp;</td><td style="padding:5px;border:1px solid #999">&nbsp;</td><td style="padding:5px;border:1px solid #999">&nbsp;</td><td style="padding:5px;border:1px solid #999">&nbsp;</td></tr>`).join('');
   const html = `<div style="padding:16px 20px;font-size:12px;line-height:1.5">
@@ -3593,10 +3596,7 @@ function colabGerarTermoEPI(colabId) {
     <p style="margin-bottom:24px">Santa Barbara do Oeste: ${hoje.dia} / ${hoje.mes} / ${hoje.ano}.</p>
     <p style="text-align:right;margin-right:40px">____________________________<br>Assinatura</p>
   </div>`;
-  ensureReciboModal();
-  document.getElementById('m-recibo').classList.add('open');
-  const dfEl = document.getElementById('recibo-date-fields'); if (dfEl) dfEl.style.display = 'none';
-  document.getElementById('recibo-preview').innerHTML = html;
+  abrirReciboModal('🖨 Termo de Responsabilidade de EPI — ' + c.nome, html, false);
 }
 
 const COLAB_DOC_CATEGORIAS = ['Acordos - Termos','Advertências','Atestados','Avaliação de Desempenho','Documentos Admissionais','Feedbacks','Férias','Ficha de EPI','Processo Seletivo','Registro E-Social / Integração / Efetivação / ASO','Treinamentos','Histórico de Salário'];
@@ -3707,10 +3707,7 @@ function colabFichaAcao(acao) {
   }
   else if (acao === 'excluir') crudDeleteAction(MOD_COLAB, c.id, c.nome);
   else if (acao === 'ficha') {
-    ensureReciboModal();
-    document.getElementById('m-recibo').classList.add('open');
-    const dfEl = document.getElementById('recibo-date-fields'); if (dfEl) dfEl.style.display = 'none';
-    document.getElementById('recibo-preview').innerHTML = `
+    abrirReciboModal('🖨 Ficha Cadastral — ' + c.nome, `
       <div style="padding:16px">
         <h2 style="text-align:center;margin-bottom:14px">FICHA CADASTRAL DO COLABORADOR</h2>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 24px;font-size:12px">
@@ -3719,7 +3716,7 @@ function colabFichaAcao(acao) {
           ${cfField('Endereço', [c.enderecoTipo,c.endereco,c.numero].filter(Boolean).join(' '))}${cfField('Bairro/Cidade', [c.bairro,c.cidade,c.uf].filter(Boolean).join(' - '))}
           ${cfField('Telefone', c.telefone)}${cfField('Celular', c.celular)}
         </div>
-      </div>`;
+      </div>`, false);
   }
   else if (acao === 'historico') abrirHistoricoRegistro('Colaboradores', c.nome);
 }
@@ -3882,9 +3879,7 @@ function fdExportar() {
 
 function abrirHistoricoRegistro(modulo, registroLabel) {
   const log = loadData('auditoria').filter(l => l.modulo === modulo && (l.registroLabel||'').includes(registroLabel));
-  ensureReciboModal();
-  document.getElementById('m-recibo').classList.add('open');
-  const dfEl = document.getElementById('recibo-date-fields'); if (dfEl) dfEl.style.display = 'none';
+  abrirReciboModal('🖨 Histórico de Alterações — ' + registroLabel, undefined, false);
   const acaoBadge = { 'Inclusão':'bg', 'Atualização':'bb', 'Exclusão lógica':'by', 'Exclusão física':'br', 'Restauração':'bp', 'Importação':'bo' };
   const linhas = log.map(l => `<tr>
     <td style="padding:5px;font-size:11px;white-space:nowrap">${l.dataHora}</td>
@@ -5115,10 +5110,8 @@ function admGerarChecklistImpresso(admId, alvo) {
   } else {
     html = admChecklistImpressoBloco(a, alvo).replace('page-break-after:always','');
   }
-  ensureReciboModal();
-  document.getElementById('m-recibo').classList.add('open');
-  const dfEl = document.getElementById('recibo-date-fields'); if (dfEl) dfEl.style.display = 'none';
-  document.getElementById('recibo-preview').innerHTML = html;
+  const tituloEtapa = alvo === 'todos' ? 'Checklist Completo' : (ADM_ETAPAS.find(e=>e.id===alvo)||{}).label || 'Checklist';
+  abrirReciboModal('🖨 ' + tituloEtapa + ' — ' + a.nome, html, false);
 }
 
 let tcAdmissao;
@@ -5564,10 +5557,7 @@ function benefGerarRelatorio(tipoNome) {
     return `<tr style="border-bottom:1px solid #ccc"><td style="padding:5px 4px">${idx+1}</td><td style="padding:5px 4px">${i.colaborador}</td><td style="padding:5px 4px;text-align:right">R$ ${fmtBRL(valor)}</td></tr>`;
   }).join('');
 
-  ensureReciboModal();
-  document.getElementById('m-recibo').classList.add('open');
-  const dfEl = document.getElementById('recibo-date-fields'); if (dfEl) dfEl.style.display = 'none';
-  document.getElementById('recibo-preview').innerHTML = `<div style="padding:16px 4px">
+  abrirReciboModal('🖨 Relatório — ' + tipoNome, `<div style="padding:16px 4px">
     <h3 style="text-align:center;margin-bottom:4px">RELATÓRIO — ${tipoNome.toUpperCase()}</h3>
     <p style="text-align:center;font-size:11px;color:#666;margin-bottom:14px">${empInfo.nome}${empInfo.cnpj?' — CNPJ '+empInfo.cnpj:''} · Competência: ${meses[comp.mes]}/${comp.ano}</p>
     <table style="width:100%;border-collapse:collapse;font-size:11px">
@@ -5575,7 +5565,7 @@ function benefGerarRelatorio(tipoNome) {
       <tbody>${linhas}</tbody>
       <tfoot><tr style="border-top:1.5px solid #000;font-weight:700"><td colspan="2" style="padding:6px 4px;text-align:right">TOTAL</td><td style="padding:6px 4px;text-align:right">R$ ${fmtBRL(total)}</td></tr></tfoot>
     </table>
-  </div>`;
+  </div>`, false);
 }
 
 function benefInscritosHtml(tipoNome) {
@@ -6354,6 +6344,14 @@ const CV_EMPRESA_INFO = {
   'AC': {nome:'AC Metal Fundição Eireli', cnpj:'00.292.535/0001-83', endereco:"Rua Tupis, 3149, Parque Industrial de Cillo, Santa Bárbara d'Oeste - SP, CEP. 13.453-050"},
   'BRASS': {nome:'BRASSMETAL LTDA', cnpj:'27.409.417/0001-69', endereco:"Rua Tupis, 3149 (fundos), Parque Industrial de Cillo, Santa Bárbara d'Oeste - SP, CEP. 13.453-050"}
 };
+// O cadastro de Colaboradores usa '01'/'02'/'PJ' no campo cnpj; os textos dos
+// termos usam as chaves 'AC'/'BRASS'. Esta função traduz um valor para o outro
+// para que o termo sempre saia com a empresa certa, inclusive para Brass Metal.
+function empresaInfoDoColaborador(c) {
+  const mapa = {'01':'AC','02':'BRASS','PJ':'AC','AC':'AC','BRASS':'BRASS'};
+  const chave = mapa[c && c.cnpj] || 'AC';
+  return CV_EMPRESA_INFO[chave];
+}
 
 function cvGerarRecibos(cnpjEmpresa) {
   const mesSel = document.getElementById('cv-mes-sel');
@@ -6366,9 +6364,7 @@ function cvGerarRecibos(cnpjEmpresa) {
     .sort((a,b) => a.colaborador.localeCompare(b.colaborador));
   if (!lista.length) { showToast(`Nenhum colaborador da ${cnpjEmpresa} com direito à cesta neste mês`, 'warn'); return; }
 
-  ensureReciboModal();
-  document.getElementById('m-recibo').classList.add('open');
-  const dfEl = document.getElementById('recibo-date-fields'); if (dfEl) dfEl.style.display = 'flex';
+  abrirReciboModal('🖨 Recibo de Entrega — Cesta Básica — ' + emp.nome, undefined, true);
 
   const montar = () => {
     const iniEl = document.getElementById('recibo-data-ini');
@@ -6435,7 +6431,7 @@ function ensureReciboModal() {
   div.innerHTML = `
     <div class="modal" style="width:800px">
       <div class="m-hdr no-print">
-        <div class="m-title">🖨 Recibo de Entrega — Cesta Básica</div>
+        <div class="m-title" id="m-recibo-titulo">🖨 Recibo de Entrega — Cesta Básica</div>
         <button class="m-close" onclick="closeReciboModal()">×</button>
       </div>
       <div class="m-body">
@@ -6451,6 +6447,18 @@ function ensureReciboModal() {
       </div>
     </div>`;
   document.body.appendChild(div);
+}
+
+// Abre o modal de impressão já com o título certo — evita a barra azul ficar
+// travada em "Recibo de Entrega — Cesta Básica" para outros documentos.
+function abrirReciboModal(titulo, html, mostrarDatas) {
+  ensureReciboModal();
+  const t = document.getElementById('m-recibo-titulo');
+  if (t) t.textContent = titulo;
+  document.getElementById('m-recibo').classList.add('open');
+  const dfEl = document.getElementById('recibo-date-fields');
+  if (dfEl) dfEl.style.display = mostrarDatas ? 'flex' : 'none';
+  if (html !== undefined) document.getElementById('recibo-preview').innerHTML = html;
 }
 
 function renderReciboPreview() {
@@ -6490,9 +6498,7 @@ function renderReciboPreview() {
 }
 
 function openReciboModal() {
-  ensureReciboModal();
-  document.getElementById('m-recibo').classList.add('open');
-  const dfEl = document.getElementById('recibo-date-fields'); if (dfEl) dfEl.style.display = 'flex';
+  abrirReciboModal('🖨 Recibo de Entrega — Cesta Básica', undefined, true);
   renderReciboPreview();
   document.getElementById('recibo-data-ini').onchange = renderReciboPreview;
   document.getElementById('recibo-data-fim').onchange = renderReciboPreview;
@@ -7856,10 +7862,7 @@ function fb90PrintForm(id) {
   });
   html += `</div>`;
 
-  ensureReciboModal();
-  document.getElementById('m-recibo').classList.add('open');
-  const dfEl = document.getElementById('recibo-date-fields'); if (dfEl) dfEl.style.display = 'none';
-  document.getElementById('recibo-preview').innerHTML = html;
+  abrirReciboModal('🖨 Acompanhamento 90 Dias — ' + r.colaborador, html, false);
 }
 
 
@@ -8814,6 +8817,53 @@ function initSupabase(url, key) {
     updateDBStatusBadge('local');
     return false;
   }
+}
+
+// ─── Pull inicial da nuvem, chamado no início de buildAll() ───
+// Colaboradores nunca ficam "vazios" localmente (a lista fixa é gravada antes
+// de qualquer clique), então aqui mesclamos por id: a nuvem tem prioridade
+// sobre o campo, mas a lista base (quem são os 41 colaboradores) nunca se perde.
+async function pullColaboradoresMerge() {
+  if (DB_MODE !== 'supabase' || !supabaseClient) return;
+  const remoto = await dbLoadData('colaboradores');
+  if (!remoto || !remoto.length) return;
+  const baseline = (typeof COLABS !== 'undefined' ? COLABS : []).map((c,i) => Object.assign({id:i+1}, c, {
+    status: c.status||'Ativo', nascimento: c.nascimento||'—', rg: c.rg||'—', cpf: c.cpf||'—'
+  }));
+  const porId = {};
+  baseline.forEach(r => { porId[r.id] = r; });
+  remoto.forEach(r => { porId[r.id] = Object.assign({}, porId[r.id]||{}, r); });
+  const mesclado = Object.values(porId).sort((a,b) => a.id - b.id);
+  saveData('colaboradores', mesclado);
+}
+
+// Demais tabelas: se a nuvem já tem dado e este navegador está "zerado"
+// (primeiro acesso, cache limpo, outro computador, nova publicação), traz
+// tudo da nuvem antes de qualquer rotina de seed rodar. Se o navegador já
+// tem dado local, não mexe — evita sobrescrever algo em uso.
+async function pullOutrasTabelasAntesDoBoot() {
+  if (DB_MODE !== 'supabase' || !supabaseClient) return;
+  const TABELAS = ['colab_documentos','ferias','treinamentos','avaliacoes','sst','admissoes',
+    'vagas','beneficios_mov','beneficios_inscritos','beneficios_tipos','cargos','ponto',
+    'clima_pesquisas','clima_acoes','sucessao','terceiros','documentos','usuarios','holerites',
+    'comunicados','cesta_vegas','folha_descontos','feedback90','desccargos','sstfin','pcmso',
+    'epi','auditoria'];
+  for (const t of TABELAS) {
+    try {
+      if (loadData(t).length) continue;
+      const remoto = await dbLoadData(t);
+      if (remoto && remoto.length) saveData(t, remoto);
+    } catch(e) { console.warn('Pull inicial falhou:', t, e.message); }
+  }
+}
+
+async function pullNuvemAntesDoBoot() {
+  if (!window.supabase) return; // biblioteca não carregou (ex.: sem internet)
+  const url = localStorage.getItem('ac_supabase_url') || 'https://nnwnfiwikgsaifsukhmv.supabase.co';
+  const key = localStorage.getItem('ac_supabase_key') || 'sb_publishable_OmK6EdIs3yMpjcxXDUM89g_LQAv9sSw';
+  if (!initSupabase(url, key)) return;
+  await pullColaboradoresMerge();
+  await pullOutrasTabelasAntesDoBoot();
 }
 
 function tryRestoreSupabase() {
