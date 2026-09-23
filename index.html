@@ -424,7 +424,7 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
   <div class="l-box">
     <div class="l-logo">
       <div class="l-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
-      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.52 — Ajuste de Layout do Histórico</div></div>
+      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.55 — Termo de Dados Biométricos Auto-Preenchido</div></div>
     </div>
     <div class="f-row"><label>Usuário</label><input type="text" id="l-user" value="jakeline@acmetalurgica.com.br"></div>
     <div class="f-row"><label>Senha</label><input type="password" id="l-pass" value="••••••••"></div>
@@ -3648,6 +3648,432 @@ function colabGerarTermoEPI(colabId) {
   abrirReciboModal('🖨 Termo de Responsabilidade de EPI — ' + c.nome, html, false);
 }
 
+function colabGerarManualColaborador(colabId) {
+  const c = loadData('colaboradores').find(x => x.id === colabId);
+  if (!c) return;
+  const emp = empresaInfoDoColaborador(c);
+  const ehBrass = emp === CV_EMPRESA_INFO['BRASS'];
+  const nomeEmp = emp.nome;
+  const revisaoData = ehBrass ? '17/02/2026' : '13/02/2026';
+  const hoje = docHoje();
+  const pb = '<div style="page-break-before:always"></div>';
+  const html = `<div style="padding:16px 20px;font-size:11.5px;line-height:1.5">
+    <table style="width:100%;border-collapse:collapse;margin-bottom:16px"><tr>
+      <td style="border:1px solid #000;padding:10px;font-weight:700;font-size:14px;text-align:center">MANUAL DO COLABORADOR</td>
+      <td style="border:1px solid #000;padding:10px;width:80px;text-align:center">Revisão<br><strong>02</strong></td>
+      <td style="border:1px solid #000;padding:10px;width:100px;text-align:center">Data<br><strong>${revisaoData}</strong></td>
+    </tr></table>
+
+    <p style="text-align:center;font-weight:700;margin-bottom:10px">INTRODUÇÃO</p>
+    <p style="margin-bottom:14px">O presente instrumento, denominado REGULAMENTO INTERNO, contém um conjunto de normas específicas, inspiradas na legislação vigente no Brasil, as quais visam disciplinar a relação entre a ${nomeEmp} e seus colaboradores.</p>
+
+    <p style="text-align:center;font-weight:700;margin-bottom:10px">CONTRATO DE EXPERIÊNCIA</p>
+    <p style="margin-bottom:8px">(&nbsp;&nbsp;&nbsp;) O período de experiência será 45 (quarenta e cinco) dias, podendo ser prorrogado automaticamente por mais 45 (quarenta e cinco) dias, sendo um total de 90 (noventa) dias desde que não haja denúncia por escrito por uma das partes.</p>
+    <p style="margin-bottom:14px">(&nbsp;&nbsp;&nbsp;) O período de experiência será 60 (sessenta) dias, podendo ser prorrogado automaticamente por mais 30 (trinta) dias, sendo um total de 90 (noventa) dias desde que não haja denúncia por escrito por uma das partes.</p>
+
+    <p style="text-align:center;font-weight:700;margin-bottom:10px">AVISO PRÉVIO</p>
+    <p style="margin:0 0 8px 14px">a) Não havendo prazo estipulado para o término do contrato de Trabalho, qualquer das partes poderá rescindi-lo mediante o aviso prévio de 30 (trinta) dias.</p>
+    <p style="margin:0 0 8px 14px">b) Querendo demitir-se da empresa, formular por escrito seu pedido de demissão, entregando-o ao seu superior imediato, com a antecedência prevista em lei;</p>
+    <p style="margin:0 0 14px 14px">c) A falta do aviso prévio por qualquer das partes contratantes, sujeita as mesmas as penalidades previstas no art. 487, parágrafos 1º. e 2° da CLT.</p>
+
+    <p style="text-align:center;font-weight:700;margin-bottom:10px">JORNADA DE TRABALHO</p>
+    <p style="margin:0 0 6px 14px">a) O horário de trabalho de todos os colaboradores será de acordo com a legislação vigente trabalhista da Constituição Federal, ou seja, totalizando 44 (quarenta e quatro) horas semanais, que deverá ser cumprido por todos, de acordo com suas respectivas jornadas:</p>
+    <p style="margin:0 0 4px 30px">(&nbsp;&nbsp;) 07h às 17h de 2ª. feira a 5ªs feiras, e as 6ªs das 07h às 16h, ambos com 01 (uma) hora de intervalo;</p>
+    <p style="margin:0 0 4px 30px">(&nbsp;&nbsp;) 06h às 14:36h de 2ª. feira a 6ªs feiras com 01 (uma) hora de intervalo e aos sábados das 06h às 12h;</p>
+    <p style="margin:0 0 10px 30px">(&nbsp;&nbsp;) 14h às 23:47h de 2ª. feira a 6ªs feiras, com 01 (uma) hora de intervalo;</p>
+    <p style="margin:0 0 6px 14px">b) O horário de trabalho poderá ser prorrogado independente de qualquer acordo, sempre que houver imperiosa necessidade de serviço ou motivo de força maior, ficando o colaborador à disposição para a prestação de serviços pelo excesso de tempo necessário, obedecida às normas vigentes;</p>
+    <p style="margin:0 0 6px 14px">c) Todo colaborador se obriga a respeitar rigorosamente os horários de entrada, saída e de intervalos que lhe forem determinados, sendo que as infrações repetidas poderão implicar em sanções disciplinares, além do desconto do DSR – Descanso Semanal Remunerado, correspondente quando necessário;</p>
+    <p style="margin:0 0 6px 14px">d) Na entrada do início da jornada de trabalho, antes de registrar o ponto, o colaborador já deve estar uniformizado, utilizando seu E.P.I. – Equipamento de Proteção Individual, com seus pertences pessoais devidamente guardados. O registro do ponto só deverá ser realizado ao iniciar suas atividades laborais;</p>
+    <p style="margin:0 0 6px 14px">e) No final do expediente, o colaborador deverá imediatamente registrar o ponto, assim que encerrar suas atividades. Somente após o registro do ponto está autorizado a preparar-se para deixar as dependências da empresa, deixando o uso do E.P.I – Equipamento de Proteção Individual, bem como, do uniforme, recolhendo seus pertences pessoais;</p>
+    <p style="margin:0 0 6px 14px">f) O limite da jornada normal diária poderá ser ultrapassado, quando houver supressão da jornada em outro dia, conforme previsto no acordo de compensação de horário firmado a parte e/ou para fins de integração de feriados com descansos semanais, quando houver conveniência para ambas as partes;</p>
+    <p style="margin:0 0 14px 14px">g) Nas seções onde o trabalho deva ser contínuo, serão estabelecidas turmas de trabalho, pelo sistema de rodízio, podendo a empresa transferir o colaborador de uma turma para outra, conforme previamente acordado entre as partes.</p>
+    ${pb}
+
+    <p style="text-align:center;font-weight:700;margin-bottom:10px">AUSÊNCIAS</p>
+    <p style="margin-bottom:8px">Toda e qualquer ausência ao trabalho deverá ser justificado por escrito junto a empresa, sob pena de desconto do período ausente e seu respectivo DSR – Descanso Semanal Remunerado (domingos e feriados), ressalvando-se as seguintes hipóteses:</p>
+    <p style="margin-bottom:6px">1- Consideram-se ausências justificadas e abonadas, os períodos de afastamento por:</p>
+    <p style="margin:0 0 4px 14px">a) Doença ou acidente do trabalho, mediante Atestado Médico;</p>
+    <p style="margin:0 0 4px 14px">b) Até 2 (dois) dias consecutivos em caso de falecimento do cônjuge e descendentes;</p>
+    <p style="margin:0 0 4px 14px">c) Até 2 (dois) dias em caso de falecimento de ascendentes (avó, avô, pai, mãe);</p>
+    <p style="margin:0 0 4px 14px">d) Até 03 (três) dias úteis em virtude de casamento;</p>
+    <p style="margin:0 0 4px 14px">e) Até 05 (cinco) dias consecutivos, em caso de nascimento de filho, no decorrer da primeira semana, referente a licença paternidade;</p>
+    <p style="margin:0 0 4px 14px">f) 120 (cento e vinte) dias (licença maternidade), em caso de funcionária gestante, mediante atestado médico, comunicando o empregador da data do início do afastamento da emprega, que poderá ocorrer entre o 28º dia antes do parto e a ocorrência deste;</p>
+    <p style="margin:0 0 4px 14px">g) 120 (cento e vinte) dias (licença maternidade), em caso de adoção ou obtenção de guarda judicial para fins de adoção de criança ou adolescentes por funcionária, mediante comunicação prévia por parte desta ao empregador;</p>
+    <p style="margin:0 0 4px 14px">h) Por 01 dia, a cada doze meses de trabalho, para doação voluntária de sangue, devidamente comprovada;</p>
+    <p style="margin:0 0 4px 14px">i) Até 02 (dois) dias consecutivos ou não para alistamento eleitoral;</p>
+    <p style="margin:0 0 4px 14px">j) Pelo período que estiver à disposição do júri para atuar como testemunha ou membro;</p>
+    <p style="margin:0 0 4px 14px">k) Pelo período de tempo que estiver cumprindo as exigências do serviço militar;</p>
+    <p style="margin:0 0 10px 14px">l) No dia do sepultamento, para comparecer a enterro de sogro, sogra, genro, nora.</p>
+    <p style="margin-bottom:6px">2- Quando o colaborador tiver de faltar ao serviço por motivo previsível, deverá, com antecedência de 48 (quarenta e oito) horas, comunicar e pedir autorização a seu superior imediato sobre a necessidade de ausentar-se;</p>
+    <p style="margin-bottom:6px">3- Em caso de falta por motivo imperioso e inesperado, a comunicação deverá ser feita imediatamente, aos canais de comunicação da empresa (telefone e/ou WhatsApp), ao líder e/ou departamento de Recursos Humanos.</p>
+    <p style="margin-bottom:14px">4- A empresa reserva-se no direito de não aceitar, explicação sobre faltas injustificadas, exceto nos termos acima.</p>
+
+    <p style="text-align:center;font-weight:700;margin-bottom:10px">DEVERES DO COLABORADOR</p>
+    <p style="margin-bottom:6px">São deveres de pessoal:</p>
+    <p style="margin-bottom:4px">1. Acatar e receber ordens de seus superiores;</p>
+    <p style="margin-bottom:4px">2. Observar e zelar pelo cumprimento deste regulamento, bem como regimentos especiais, código de conduta, termos, circulares e avisos que forem distribuídos ou afixados;</p>
+    <p style="margin-bottom:4px">3. É proibido utilização de celular, meios e sistemas eletrônicos para uso pessoal durante o expediente de trabalho, exceto para efetivo desempenho das atividades profissionais e desde que a empresa não tenha disponibilizado aparelho celular corporativo para tanto;</p>
+    <p style="margin-bottom:4px">4. É proibido ouvir rádio, bem como, fazer uso de fones de ouvido, em local de trabalho;</p>
+    <p style="margin-bottom:4px">5. É proibido fazer uso dentro da empresa de máquinas de fotografar, câmera digital, filmadora, celulares, bem filmar ou tirar fotos exceto quando:</p>
+    <p style="margin:0 0 8px 14px">A) Em razão das funções desempenhadas pelo colaborador e no estrito cumprimento da função e ou providência vinculada diretamente a atividade realizada em favor da empresa, obrigando-se: adotar todas as precauções para assegurar a confidencialidade, integridade e não disponibilidade de qualquer informação sigilosa, seja interna ou externa, que tenha sido a ele confiada;</p>
+    <p style="margin-bottom:8px">Parágrafo único. A empresa disponibilizará um arquivo, via e-mail, apresentando de maneira detalhada o Termo de Confidencialidade, a fim de colher a assinatura do colaborador que tem acesso a informações sigilosas.</p>
+    <p style="margin-bottom:4px">6. É proibido escrever, rabiscar, perfurar, colocar cartazes, em paredes, piso, armários, roupeiros, máquinas, equipamentos e ferramentas da empresa;</p>
+    <p style="margin-bottom:4px">7. Comunicar fatos, cuja ocorrência venha a alterar as informações sobre estado pessoal e familiar;</p>
+    <p style="margin-bottom:4px">8. Informar ao departamento de Recursos Humanos, qualquer alteração do seu estado civil, militar, aumento ou redução de pessoas da família e eventual mudança de endereço e demais contatos, como telefone, WhatsApp e e-mail;</p>
+    <p style="margin-bottom:4px">9. Armas de nenhuma espécie são permitidas nas dependências da empresa exceto por profissionais legalmente autorizados;</p>
+    <p style="margin-bottom:4px">10. É proibida a entrada e permanência nas dependências da empresa fora da sua jornada de trabalho sem prévia autorização, bem como adentrar com pessoas estranhas sem prévia identificação e autorização da administração, dentro ou fora do horário de trabalho;</p>
+    <p style="margin-bottom:4px">11. É proibido fazer serviços próprios ou para terceiros, usando máquinas e equipamentos bem como material pertencente a empresa;</p>
+    <p style="margin-bottom:4px">12. É proibido fazer uso de substâncias toxicas e bebidas alcoólicas durante o horário de trabalho bem como entrar nas dependências da empresa alcoolizado ou em estado de drogadista;</p>
+    <p style="margin:0 0 8px 14px">12.1 A EMPREGADORA poderá, mediante comunicação verbal e/ou escrita: Exigir do EMPREGADO a realização de exames médicos para avaliação ou teste, de identificação de álcool e drogas, por qualquer método, para os quais fica autorizada pelo EMPREGADO a coleta de material para tanto, sejam periódicos ou aleatórios, não precisando ser anunciados, e inclusive para as condições e ou circunstâncias abaixo dispostas:</p>
+    <p style="margin:0 0 4px 24px">• Exame Pré-Funcional: caso venha o EMPREGADO a ocupar novo cargo operacional e ou qualquer outro, pode o mesmo submeter-se aos testes antes de assumir o novo cargo.</p>
+    <p style="margin:0 0 4px 24px">• Por Amostragem: O EMPREGADO pode se submeter, periódica e aleatoriamente, a testes para identificação de álcool e drogas.</p>
+    <p style="margin:0 0 4px 24px">• Pós-Acidentes: O EMPREGADO, condutor de veículo próprio, da empresa, deve se submeter a testes para identificação de álcool e drogas após acidentes.</p>
+    <p style="margin:0 0 10px 24px">• Testes Motivados: Caso o EMPREGADO apresente sinais, sintomas ou atitudes que possam levar ao diagnóstico de álcool e drogas, o mesmo deverá ser submetido aos testes, a critério do supervisor ou superior.</p>
+    <p style="margin-bottom:14px">25.2 O EMPREGADO concorda que a infração ao disposto na cláusula 25 será considerada pela EMPREGADORA como ato de indisciplina, passível de rescisão do contrato de trabalho.</p>
+    ${pb}
+
+    <p style="text-align:center;font-weight:700;margin-bottom:10px">SEGURANÇA E SAÚDE NO TRABALHO</p>
+    <p style="margin-bottom:4px">1- É dever observar e zelar pelo cumprimento do Termo de Utilização de EPI anexo;</p>
+    <p style="margin-bottom:4px">2- É proibido iniciar e dar continuidade aos serviços sem uso de devidos E.P.I. - Equipamentos Proteção Individual apropriado para cada tipo de atividade e função;</p>
+    <p style="margin-bottom:4px">3- É dever tomar precauções cabíveis a fim de evitar acidentes;</p>
+    <p style="margin-bottom:4px">4- Ter cautela e buscar abster-se de conversar durante o horário de trabalho, sobre assuntos estranhos ao serviço, ou discutir sobre assunto de qualquer natureza;</p>
+    <p style="margin-bottom:4px">5- É proibido promover ou participar de correrias, algazarras e brincadeiras nas dependências da empresa, bem como é dever ter atenção e cautela a movimentos bruscos e repentinos, colaborando para o cuidado e atenção às suas atividades e de colegas ao redor a fim de evitar quaisquer tipos de acidentes;</p>
+    <p style="margin-bottom:4px">6- Portanto, é imprescindível efetuar as suas atividades com o máximo de cuidado e atenção ao serviço, prevenindo acidentes com pessoas e com material, máquinas e equipamentos;</p>
+    <p style="margin-bottom:4px">7- É proibido o uso de ar comprimido para autolimpeza e limpeza de roupas ou objetos particulares do empregado;</p>
+    <p style="margin-bottom:4px">8- É proibido usar relógios, anéis, alianças, pulseiras, e demais adereços, que atrapalhem, comprometa e prejudiquem a segurança no trabalho;</p>
+    <p style="margin-bottom:14px">9- A eventual ocorrência de qualquer acidente de trabalho, independente da gravidade, deve ser comunicado o superior imediato, o qual deverá comunicar ao departamento de RH que, em conjunto, tomarão as providências necessárias;</p>
+
+    <p style="text-align:center;font-weight:700;margin-bottom:10px">DANOS</p>
+    <p style="margin-bottom:4px">• Fica desde já autorizado pelo colaborador que qualquer prejuízo causado a empresa pelo mesmo por culpa ou dolo, o desconto em folha de pagamento;</p>
+    <p style="margin-bottom:14px">• A empresa se reserva no direito de descontar em folha de pagamento os EPI's – Equipamentos de Proteção Individual, quer eventualmente o empregado venha a perder, usar indevidamente, causando inutilização do mesmo.</p>
+
+    <p style="text-align:center;font-weight:700;margin-bottom:10px">BENEFÍCIOS</p>
+    <p style="margin-bottom:4px">1- A empresa proporciona um prêmio mensal, qual seja a concessão de uma CESTA BÁSICA a todos os funcionários, a partir dos seguintes critérios:</p>
+    <p style="margin:0 0 4px 14px">a) A cesta básica é disponibilizada todo dia 20 (vinte), desde que os critérios tenham sido cumpridos no mês anterior;</p>
+    <p style="margin:0 0 4px 14px">b) O prazo máximo para retirada da cesta básica é de 03 (três) dias úteis, após o comunicado do departamento de RH, devendo ser retirada mediante assinatura no protocolo de entrega;</p>
+    <p style="margin:0 0 4px 14px">c) No período de experiência, terá direito a essa premiação, com no mínimo 15 dias trabalhados no mês anterior;</p>
+    <p style="margin:0 0 4px 14px">d) Não ter faltas justificadas ou injustificadas;</p>
+    <p style="margin:0 0 10px 14px">e) Não exceder 10 minutos de tolerância em atraso, considerando 05 minutos na entrada do período da manhã e 05 minutos no retorno do almoço/jantar.</p>
+    <p style="margin-bottom:4px">2- A empresa proporciona um prêmio mensal concedendo um CARTÃO VR – Vale Refeição no valor de R$ 200,00 (duzentos reais) a todos os empregados, a partir dos seguintes critérios conjuntamente:</p>
+    <p style="margin:0 0 4px 14px">a) Somente terá direito ao cartão VR após a efetivação do colaborador, ou seja, após o decurso do período de experiência;</p>
+    <p style="margin:0 0 4px 14px">b) Para o recebimento do primeiro VR, após a efetivação, é necessário ter completado ao menos 15 dias trabalhados, ou seja, dentro do período já efetivado;</p>
+    <p style="margin:0 0 4px 14px">c) O VR é disponibilizado todo dia 20 (vinte), desde que os critérios tenham sido cumpridos no mês anterior;</p>
+    <p style="margin:0 0 4px 14px">d) Não ter faltas justificadas ou injustificadas;</p>
+    <p style="margin:0 0 10px 14px">e) Não exceder 10 minutos de tolerância em atraso, considerando 05 minutos na entrada do período da manhã e 05 minutos no retorno do almoço/jantar.</p>
+    <p style="margin-bottom:4px">3- A empresa possibilita ao colaborador, adquirir o PLANO DE SAÚDE CONVÊNIO SAMARITANO, em condições especiais, a partir dos seguintes critérios:</p>
+    <p style="margin:0 0 4px 14px">a) Somente terá direito a adesão ao convênio médico hospitalar após a efetivação do colaborador, ou seja, após o período de experiência;</p>
+    <p style="margin:0 0 4px 14px">b) A empresa pagará 50% (cinquenta por cento) do valor das mensalidades do colaborador que fizer a opção por obter o convênio, sendo descontado do colaborador a outra proporção correspondente a outra metade (50%) da mensalidade, bem como também será descontado do colaborador a totalidade dos valores correspondentes às coparticipações, quando da utilização do plano, o que será descontado em folha de pagamento no mês seguinte, de acordo com relatório de fechamento recebido da operadora do convênio;</p>
+    <p style="margin:0 0 4px 14px">c) Caso o funcionário opte pela inclusão de dependentes, será descontado em folha de pagamento todo mês a totalidade da mensalidade do respectivo dependente. Caso o dependente utilize o convênio médico hospitalar, será descontado também as coparticipações do funcionário titular;</p>
+    <p style="margin:0 0 10px 14px">d) Se não desejar ter o convênio médico hospitalar, é necessário a formalização por escrito.</p>
+    <p style="margin-bottom:4px">4- A empresa possibilita ao colaborador adquirir o CONVÊNIO FARMÁCIA, em condições especiais, a partir dos seguintes critérios:</p>
+    <p style="margin:0 0 4px 14px">a) Somente terá direito ao convênio Farmácia após o colaborador efetivar-se, ou seja, após o período de experiência de 60 (sessenta) dias;</p>
+    <p style="margin:0 0 10px 14px">b) A empresa disponibiliza um saldo de R$ 100,00 (cem reais) no cartão do convênio farmácia para que o colaborador possa utilizar da forma como lhe convier, sendo descontado em folha de pagamento de acordo com o fechamento recebido pela operadora do convênio farmácia vigente.</p>
+    <p style="margin-bottom:4px">5- A empresa possibilita e disponibiliza ao colaborador o SEGURO DE VIDA, em condições especiais, a partir dos seguintes critérios:</p>
+    <p style="margin:0 0 14px 14px">a) Ao ser admitido, imediatamente o colaborador passa a ter direito às coberturas de acordo com os critérios estabelecidos na apólice vigente do seu contrato de trabalho.</p>
+    ${pb}
+
+    <p style="text-align:center;font-weight:700;margin-bottom:10px">PAGAMENTO</p>
+    <p style="margin-bottom:4px">1- Será efetuado adiantamento de pagamento de salário todo dia 20 (vinte) de cada mês, sendo este, 40% do salário base. A diferença de salários, horas extras, benefícios, descontos, será efetuada até o quinto dia útil do mês subsequente;</p>
+    <p style="margin-bottom:4px">2- Para a realização de pagamento em conta salário, a empresa encaminha o colaborador para a abertura única e exclusivamente de conta salário em banco correntista da empresa, ficando para este a decisão de abrir ou não conta corrente a qual, conta esta que a empresa não tem nenhum poder, controle e autonomia;</p>
+    <p style="margin-bottom:4px">3- Em caso de desligamento da empresa, fica ao encargo do colaborador o encerramento ou não da conta salário aberta para este fim, não se responsabilizando a empresa por qualquer uso que o colaborador venha a fazer com a conta.</p>
+    <p style="margin-bottom:14px">4- O funcionário que começar a trabalhar até o dia 10 (dez) do mês, receberá o adiantamento (40%) normalmente no mesmo mês de início. Para os funcionários que começarem a trabalhar após o dia 10 (dez), os mesmos não receberão adiantamento naquele mês, sendo o pagamento integral do salário efetuado no quinto dia útil do mês subsequente. Os demais meses serão como de costume, ou seja, adiantamento todo dia 20 (vinte) e o pagamento todo quinto dia útil do mês subsequente.</p>
+
+    <p style="text-align:center;font-weight:700;margin-bottom:10px">PONTO ELETRÔNICO</p>
+    <p style="margin-bottom:8px">Para o devido funcionamento do sistema de registro do ponto, algumas instruções serão reforçadas, bem como deverão ser observadas e cumpridas:</p>
+    <p style="margin-bottom:4px">1-O registro diário de entrada, saída e intervalos é uma obrigação legal devendo ser realizado pelo colaborador nos horários estabelecidos, não se admitindo alterações sem prévio consentimento do departamento de RH;</p>
+    <p style="margin-bottom:4px">2-Qualquer que seja a necessidade de correção de um registro do ponto, deverá ser feito por meio de uma requisição física com a devida solicitação do colaborador e horário apontamento a ser corrigido e anuência do seu líder;</p>
+    <p style="margin-bottom:4px">3-Os registros dos períodos de trabalho e intervalos no ponto eletrônico serão realizados pelo colaborador(a) por meio do sistema de coleta de imagem facial que, após realizar o cadastramento facial e instalação do aplicativo junto ao RH deverá seguir as seguintes orientações:</p>
+    <p style="margin:0 0 4px 14px">a) Posicione-se em frente ao equipamento;</p>
+    <p style="margin:0 0 4px 14px">b) Aguarde o reconhecimento facial;</p>
+    <p style="margin:0 0 4px 14px">c) Verifique a confirmação na tela;</p>
+    <p style="margin:0 0 4px 14px">d) Em caso de erro comunique imediatamente o Gestor;</p>
+    <p style="margin:0 0 10px 14px">e) Confira seu registro em seu aplicativo conforme orientação do RH.</p>
+    <p style="margin-bottom:4px">4-Para colaboradores do setor administrativo o registro do ponto poderá ser via digital e/ou diretamente em uma das estações de trabalho do administrativo cujo login (usuário e senha) é individual e intransferível;</p>
+    <p style="margin-bottom:4px">5-O registro do ponto poderá ser realizado via internet por acesso através de aparelhos móveis e fora do estabelecimento da empresa, somente no caso em que o funcionário esteja de viagem a trabalho a serviço da ${ehBrass?'Brass Metal':'AC Metal'}, no qual a localização será identificada por geolocalização;</p>
+    <p style="margin-bottom:4px">6-Não serão aceitos registros do ponto fora da localização por GPS da empresa com exceção do citado item 5 e em caso de problemas de acesso ao sistema através da estação de trabalho;</p>
+    <p style="margin-bottom:4px">7-A parada para registrar saída no cartão ponto não deve ser feita antes do horário estipulado para término da jornada diária. Por exemplo, se o término da jornada é as 17:00h, a saída do setor deve ser exatamente as 17:00h (caso não for realizar hora extra), e registrado o ponto imediatamente, e somente após registrar o ponto é que o funcionário se prepara para saída das dependências da empresa;</p>
+    <p style="margin-bottom:4px">8-Caso seja constatado que o(a) colaborador(a) não registra seu ponto imediatamente na parada de suas atividades e sim somente depois de se preparar para deixar as dependências da empresa, este(a) ficará sujeito as sanções disciplinares;</p>
+    <p style="margin-bottom:4px">9-Caso seja identificado que o registro de entrada (primeiro e segundo período) esteja sendo feito antes do efetivo início das atividades laborais, poderá ser solicitado ao(a) colaborador(a) a correção do registro podendo ocasionar que fique com atraso/falta;</p>
+    <p style="margin-bottom:4px">10- Atrasos e faltas devem ser justificados sob pena de desconto das horas, DSR/feriado proporcional e dos prêmios por assiduidade;</p>
+    <p style="margin-bottom:4px">11- Ratifica-se que, a tolerância para registro do ponto é de 05 minutos quer seja na entrada do primeiro período como do segundo período, desde que, não seja contínuo, ou seja, este limite é para exceções quando houver atrasos no registro do ponto;</p>
+    <p style="margin-bottom:14px">12- Caso seja frequente os registros considerando esta tolerância, pode ser solicitado ao(a) colaborador(a) que corrija devidamente seu ponto podendo ocasionar que fique com atraso e, neste caso a empresa pode aplicar ações conforme item 10 acima.</p>
+    ${pb}
+
+    <p style="text-align:center;font-weight:700;margin-bottom:10px">ATESTADO MÉDICO</p>
+    <p style="margin-bottom:8px">PROCEDIMENTO REGULAR PARA JUSTIFICAR AS FALTAS MÉDICAS:</p>
+    <p style="margin-bottom:4px">1. O atestado deve estar devidamente assinado pelo médico ou responsável pelo posto de atendimento/hospital, no qual deve constar o carimbo e assinatura com identificação do profissional;</p>
+    <p style="margin-bottom:4px;margin-left:14px">Observação: Atestado somente com o carimbo da instituição, sem assinatura e identificação do médico/responsável, não terá validade para justificativa e abono de faltas; o carimbo com os dados do médico emissor, como nome completo e número do CRM, tem por finalidade identificar o profissional que está emitindo o atestado médico; só será desnecessário o carimbo do médico emissor se no receituário estiverem todos esses dados impressos; na hipótese em que o receituário for geral, deverá, obrigatoriamente, conter o carimbo identificador do médico que atesta. Portanto, seja por meio de carimbos, seja através de dados impressos, o médico deve ser identificado;</p>
+    <p style="margin-bottom:4px">2. O atestado médico deve ser fornecido com a data do efetivo atendimento prestado, sob pena de induzir a erro a pessoa, cujo documento original deverá ser apresentado quando do retorno imediato ao trabalho. Portanto, é proibido atestado retroativo;</p>
+    <p style="margin-bottom:4px">2.1. Da mesma forma, o colaborador deverá avisar de imediato a empresa quando do recebimento do atestado, enviando a esta última via WhatsApp cópia do mesmo (atestado) no prazo de 24 (vinte e quatro) horas, sem prejuízo da apresentação da via original quando do retorno ao trabalho, conforme cláusula acima.</p>
+    <p style="margin-bottom:4px">3. No caso do atestado médico para acompanhante, para fins de abono de faltas, somente será permitido nas seguintes hipóteses: até 2 (dois) dias para acompanhar consultas médicas e exames complementares durante o período de gravidez da esposa ou companheira;</p>
+    <p style="margin-bottom:4px">4. Por 1 (um) dia por ano para acompanhar filho de até 6 (seis) anos em consulta médica.</p>
+    <p style="margin-bottom:4px">5. A falsificação ou adulteração de dado dos atestados médicos por parte do empregado permite ao empregador demiti-lo por justa causa (Art. 482, "b" da CLT), e ainda responder pelo crime capitulado no Art. 304 do Código Penal;</p>
+    <p style="margin-bottom:14px">6. E quanto ao médico que fornece atestado falso, ou estiver de acordo com o empregado, poderá responder pelo crime capitulado no Art. 302 do Código Penal, e ainda reparar os prejuízos ao empregador, caso ocorra.</p>
+
+    <p style="text-align:center;font-weight:700;margin-bottom:10px">ARMÁRIOS / ROUPEIROS</p>
+    <p style="margin-bottom:4px">1- É de responsabilidade pessoal de cada colaborador, conservar o armário em boas condições de limpeza (qualquer irregularidade constatada, levar ao conhecimento da administração), e ajudar a manter a boa ordem no local onde os armários estão estabelecidos;</p>
+    <p style="margin-bottom:4px">2- A empresa não se responsabiliza pelos objetos deixados nos armários;</p>
+    <p style="margin-bottom:4px">3- Quando em gozo de férias ou em caso de afastamento do colaborador por motivo de licença, INSS etc., o EMPREGADO deve deixar seu armário completamente vazio;</p>
+    <p style="margin-bottom:4px">4- A providência do cadeado cabe exclusivamente ao colaborador que se responsabiliza pelo mesmo, ainda não deixando de ser obrigatório a manutenção e higiene do armário enquanto o mesmo estiver trancado;</p>
+    <p style="margin-bottom:4px">5- Fica desde já autorizado a abertura do armário pelo líder/RH sempre que a empresa julgar necessário;</p>
+    <p style="margin-bottom:4px">6- Os armários podem ser inspecionados periodicamente, sempre que a administração assim julgar necessário;</p>
+    <p style="margin-bottom:4px">7- Recomenda-se deixar sempre dentro do armário, apenas o indispensável para o uso diário;</p>
+    <p style="margin-bottom:8px">8- Ao desligar-se da empresa, o colaborador é obrigado a esvaziar o armário que lhe foi destinado e deixá-lo aberto (sem cadeado). Se não o fizer, o superior imediato do setor o fará; assim não estando presente, fica designado o representante administrativo da empresa.</p>
+    <p style="margin-bottom:14px">Número do Armário: __________</p>
+    ${pb}
+
+    <p style="text-align:center;font-weight:700;margin-bottom:10px">MEDIDAS DISCIPLINARES</p>
+    <p style="margin-bottom:8px">O funcionário que infringir o presente Regulamento Interno, ou que deixar de cumprir ou acatar determinações constantes de regimentos internos, ordens de serviço/produção, instruções ou determinações de seus superiores ficam sujeitos as seguintes penalidades:</p>
+    <p style="margin:0 0 4px 14px">a) Advertência escrita;</p>
+    <p style="margin:0 0 4px 14px">b) Suspensão de 01 (um) dia e perda do DSR referente;</p>
+    <p style="margin:0 0 4px 14px">c) Suspensão de 02 (dois) dias e perda do DSR referente;</p>
+    <p style="margin:0 0 4px 14px">d) Suspensão de 03 (três) dias e perda do DSR referente;</p>
+    <p style="margin:0 0 4px 14px">e) Demissão por justa causa;</p>
+    <p style="margin:0 0 10px 14px">f) Como a Suspensão Disciplinar é tida como ausência injustificada ao serviço, acarreta então a redução do período de gozo de férias, conforme determina o artigo 130 da CLT.</p>
+    <p style="margin-bottom:16px">É de competência do superior imediato e a Administração da empresa a aplicação das penas disciplinares acima citadas.</p>
+    <p style="margin-bottom:16px">Declaro ter lido e compreendido o Regulamento Interno da ${ehBrass?'Brass Metal':'AC Metal Fundição'} e assumo o compromisso de cumpri-lo e respeitá-lo em todas minhas atividades relacionadas à empresa, zelando por sua plena aplicação. Estou ciente que irei receber esse mesmo arquivo em PDF dentro de 01 (uma) hora no e-mail informado e caso necessite do documento impresso farei a solicitação do mesmo via WhatsApp ou e-mail.</p>
+    <p style="margin-bottom:20px">Santa Bárbara d'Oeste – SP, ${hoje.dia} de ___________________ de 20___.</p>
+    <p style="margin-bottom:6px">Funcionário: <strong>${c.nome}</strong></p>
+    <p style="margin-bottom:30px">Assinatura: _______________________________________________</p>
+    ${pb}
+
+    <p style="text-align:center;font-weight:700;margin-bottom:10px">HORÁRIOS PARA LANCHE / CAFÉ E FUMANTES</p>
+    <p style="margin-bottom:4px">1- É concedido aos colaboradores dois horários, sendo um em cada período, para refeição intermediária ou para fumantes, sendo estes intervalos antes do horário de almoço/janta e a tarde/noite antes do encerramento do período.</p>
+    <p style="margin-bottom:4px">2- O colaborador deve dar início as suas atividades imediatamente após registro do cartão ponto e já deve estar satisfeito e bem alimentado de sua residência;</p>
+    <p style="margin-bottom:4px">3- São concedidos 05 minutos nos períodos manhã (às 9:00h) / primeiro período e à tarde (às 15:00h) / segundo período para tomada de lanche/cafés ou para fumantes;</p>
+    <p style="margin-bottom:4px">4- O lanche/café não deve ser tomado no ambiente de trabalho, deve ser realizado em local próprio, ou seja, no refeitório, longe de máquinas e equipamentos. Quanto aos fumantes, os mesmos deverão observar o local próprio para tanto, devidamente identificado na empresa, sempre ressalvando a não possibilidade de fumar em locais fechados, conforme Lei Federal 9.294/96;</p>
+    <p style="margin-bottom:4px">5- Caso ocorra algum dano a alguma máquina/equipamento devido a sujeira de refeições ou líquidos de bebidas, o colaborador será responsabilizado;</p>
+    <p style="margin-bottom:16px">6- Por final, estão proibidos lanches/cafés/cigarros sem ser nos dois horários discriminados acima e em local de trabalho ou locais impróprios.</p>
+    <p style="margin-bottom:16px">Declaro ter ciência desta circular sobre Horários para Lanches/Café ou Fumantes, e seus critérios, comprometendo-me a cumpri-la sob pena de receber sanções disciplinares.</p>
+    <p style="margin-bottom:20px">Santa Bárbara d'Oeste – SP, ${hoje.dia} de ___________________ de 20___.</p>
+    <p style="margin-bottom:6px">Funcionário: <strong>${c.nome}</strong></p>
+    <p style="margin-bottom:30px">Assinatura: _______________________________________________</p>
+    ${pb}
+
+    <p style="text-align:center;font-weight:700;margin-bottom:10px">TERMO DE AUTORIZAÇÃO DE USO DE IMAGEM</p>
+    <p style="margin-bottom:14px">Eu, <strong>${c.nome}</strong>, Função: <strong>${c.cargo||'________________'}</strong>, portador(a) da Cédula de Identidade inscrito no CPF: <strong>${c.cpf||'________________'}</strong>, AUTORIZO o uso de minha imagem e voz, em todo e qualquer material entre vídeos, fotos, documentos e outros meios de comunicação, para campanhas promocionais e institucionais desta empresa empregadora ${nomeEmp}, com sede na ${emp.endereco}, inscrita no CNPJ/MF sob o nº ${emp.cnpj}, sejam essas destinadas à divulgação ao público em geral e/ou apenas para uso desta empresa, e desde que não haja desvirtuamento da sua finalidade.</p>
+    <p style="margin-bottom:14px">A presente autorização é concedida a título gratuito, abrangendo o uso da imagem acima mencionada em todo território nacional e no exterior, sob qualquer forma e meios, bem como, em destaque: (I) out-door; (II) bus-door; folhetos em geral (encartes, mala direta, catálogo, etc.); (III) folder de apresentação; (IV) anúncios em revistas e jornais em geral; (V) home page; (VI) cartazes; (VII) back-light; (VIII) mídia eletrônica (painéis, vídeos de qualquer modalidade, televisão, cinema, programa para rádio, redes sociais, entre outros).</p>
+    <p style="margin-bottom:16px">Por esta ser a expressão da minha vontade declaro que autorizo o uso acima descrito sem que nada haja a ser reclamado a título de direitos conexos à minha imagem ou a qualquer outro, e assino a presente autorização em 02 (duas) vias de igual teor e forma.</p>
+    <p style="margin-bottom:20px">Santa Bárbara d'Oeste – SP, ${hoje.dia} de ___________________ de 20___.</p>
+    <p style="margin-bottom:6px">Funcionário: <strong>${c.nome}</strong></p>
+    <p style="margin-bottom:30px">Assinatura: _______________________________________________</p>
+    ${pb}
+
+    <table style="width:100%;border-collapse:collapse;margin-bottom:14px"><tr>
+      <td style="border:1px solid #000;padding:8px;font-weight:700" colspan="2">${nomeEmp}<br><span style="font-weight:400">CNPJ: ${emp.cnpj}</span></td>
+    </tr></table>
+    <p style="text-align:center;font-weight:700;margin-bottom:10px">TERMO DE RECEBIMENTO E RESPONSABILIDADE DE UNIFORME</p>
+    <p style="margin-bottom:14px">Pelo presente termo, eu, <strong>${c.nome}</strong>, declaro ter recebido da empresa acima qualificada, gratuitamente e em perfeitas condições de uso, as peças de uniforme abaixo relacionadas para o estrito exercício de minhas funções:</p>
+    <p style="margin-bottom:6px">• Quantidade: _____ (&nbsp;&nbsp;) Camiseta (&nbsp;&nbsp;) Camisete (&nbsp;&nbsp;) Camisa social (&nbsp;&nbsp;) Camisa polo, com logo.</p>
+    <p style="margin-bottom:14px">• Quantidade: _____ (&nbsp;&nbsp;) Calça operacional (&nbsp;&nbsp;) Outro: _______________</p>
+    <p style="margin-bottom:8px">Declaro estar ciente e concordar com as seguintes condições:</p>
+    <p style="margin-bottom:4px">1. Propriedade: O uniforme fornecido é de propriedade exclusiva da Empresa, sendo cedido apenas para uso profissional durante a jornada de trabalho.</p>
+    <p style="margin-bottom:4px">2. Conservação: Comprometo-me a zelar pela guarda, limpeza e conservação das peças, utilizando-as de forma adequada.</p>
+    <p style="margin-bottom:4px">3. Deve-se apresentar ao serviço em razoáveis condições de higiene pessoal;</p>
+    <p style="margin-bottom:4px">4. Não é permitido a entrada e permanência nas dependências da empresa utilizando-se de roupas rasgadas, mostrando partes desnecessárias do corpo, vindo a comprometer o equilíbrio e moral profissional e comportamento discreto e respeitoso;</p>
+    <p style="margin-bottom:4px">5. Não deve rasgar, rabiscar, fazer customização e fazer uso inadequado do uniforme, pois, o mesmo é um bem em prol do próprio colaborador.</p>
+    <p style="margin-bottom:4px">6. Devolução Obrigatória: Em caso de desligamento (seja por pedido de demissão ou dispensa, inclusive no período de experiência), obrigo-me a devolver todas as peças do uniforme à Empresa no prazo máximo de 24 horas após o último dia trabalhado.</p>
+    <p style="margin-bottom:16px">7. Autorização de Desconto: Caso as peças não sejam devolvidas no prazo estabelecido, ou apresentem danos decorrentes de mau uso (salvo o desgaste natural pelo tempo), autorizo expressamente o desconto do valor de reposição das peças em minhas verbas rescisórias ou folha de pagamento, conforme facultado pelo Artigo 462, § 1º da CLT.</p>
+    <p style="margin-bottom:30px">Assinatura: __________________________________________</p>
+    <table style="width:100%;border-collapse:collapse;font-size:11px">
+      <tr><td style="border:1px solid #999;padding:5px;font-weight:700">NOME E CPF</td><td style="border:1px solid #999;padding:5px;font-weight:700">ADMISSÃO</td><td style="border:1px solid #999;padding:5px;font-weight:700">SETOR</td><td style="border:1px solid #999;padding:5px;font-weight:700">FUNÇÃO</td></tr>
+      <tr><td style="border:1px solid #999;padding:5px">${c.nome} — ${c.cpf||'—'}</td><td style="border:1px solid #999;padding:5px">${c.adm||'—'}</td><td style="border:1px solid #999;padding:5px">${c.setor||'—'}</td><td style="border:1px solid #999;padding:5px">${c.cargo||'—'}</td></tr>
+    </table>
+    ${pb}
+
+    <p style="text-align:center;font-weight:700;margin-bottom:10px">CADASTRAMENTO/ATUALIZAÇÃO DE E-MAIL</p>
+    <p style="margin-bottom:14px">Eu, <strong>${c.nome}</strong>, portador do CPF: <strong>${c.cpf||'________________'}</strong>, informo à empresa ${nomeEmp}, CNPJ: ${emp.cnpj}, o meu endereço de e-mail para que sejam enviadas informações pertinentes ao meu contrato de trabalho com a empresa através do holerite, código de conduta, manual do colaborador, circulares, normas e regulamento interno e demais informações via meu endereço eletrônico.</p>
+    <p style="margin-bottom:8px">Estou ciente de que a empresa não é responsável pelo acesso indevido de terceiros à minha conta de e-mail e utilização inadequada das informações recebidas através do mesmo da empresa.</p>
+    <p style="margin-bottom:8px">Em caso de alteração do endereço eletrônico, devo comunicar a empresa para atualização no meu cadastro. No caso de não recebimento devo informar e solicitar o reenvio.</p>
+    <p style="margin-bottom:16px">E-mail: ${c.email||'______________________________________'}</p>
+    <p style="margin-bottom:8px">Ciente e de acordo,</p>
+    <p style="margin-bottom:20px">Santa Bárbara d'Oeste – SP, ${hoje.dia} de ___________________ de 20___.</p>
+    <p style="margin-bottom:6px">Funcionário: <strong>${c.nome}</strong></p>
+    <p>Assinatura: _____________________________________________</p>
+  </div>`;
+  abrirReciboModal('🖨 Manual do Colaborador — ' + c.nome, html, false);
+}
+
+function colabGerarCodigoConduta(colabId) {
+  const c = loadData('colaboradores').find(x => x.id === colabId);
+  if (!c) return;
+  const emp = empresaInfoDoColaborador(c);
+  const ehBrass = emp === CV_EMPRESA_INFO['BRASS'];
+  const nomeEmp = ehBrass ? 'Brass Metal' : 'AC Metalúrgica';
+  const nomeEmpLongo = ehBrass ? 'Brass Metal LTDA' : 'AC Metal Fundição EIRELI';
+  const revisaoData = ehBrass ? '16/02/2026' : '12/02/2026';
+  const hoje = docHoje();
+  const pb = '<div style="page-break-before:always"></div>';
+  const html = `<div style="padding:16px 20px;font-size:11.5px;line-height:1.5">
+    <table style="width:100%;border-collapse:collapse;margin-bottom:16px"><tr>
+      <td style="border:1px solid #000;padding:10px;font-weight:700;font-size:14px;text-align:center">CÓDIGO DE CONDUTA</td>
+      <td style="border:1px solid #000;padding:10px;width:80px;text-align:center">Revisão<br><strong>01</strong></td>
+      <td style="border:1px solid #000;padding:10px;width:100px;text-align:center">Data<br><strong>${revisaoData}</strong></td>
+    </tr></table>
+
+    <p style="text-align:center;font-weight:700;margin-bottom:10px">A QUEM SE DESTINA</p>
+    <p style="margin-bottom:14px">A todos os profissionais efetivos e recém contratados, bem como terceiros e prestadores de serviços.</p>
+
+    <p style="text-align:center;font-weight:700;margin-bottom:10px">OBJETIVO</p>
+    <p style="margin-bottom:10px">O objetivo deste Código de Conduta é embasar os comportamentos para uma postura padrão entre seus colaboradores e parceiros com base nos valores inegociáveis da organização. É uma ferramenta de gestão de pessoas com o propósito de orientar as lideranças no relacionamento entre seus liderados e equipes, também no relacionamento com clientes e fornecedores independente de qualquer posição hierárquica, cargo ou função. Este código visa estabelecer regras para preservar a boa imagem e reputação da empresa e seus colaboradores e envolvidos com boas práticas, posturas e medidas transparentes, coerentes e alinhadas.</p>
+    <p style="margin-bottom:10px">A ${nomeEmp} é reconhecida no mercado por seu padrão de qualidade, comprometimento, competência, transparência e responsabilidade perante seus colaboradores, parceiros, clientes e fornecedores.</p>
+    <p style="margin-bottom:10px">Diante disso, estabelece e alinha por meio deste Código de Conduta padrões de comportamentos e relacionamentos entre os integrantes da organização quais sejam embasados nos valores que norteiam suas estratégias de decisões.</p>
+    <p style="margin-bottom:14px">Valores estes quais acredita profundamente serem fundamentais nas ações diárias e que, fizeram com que ao longo de toda sua jornada, construísse uma história de reputação, de credibilidade e de honra.</p>
+    ${pb}
+
+    <p style="text-align:center;font-weight:700;margin-bottom:10px">MISSÃO</p>
+    <p style="margin-bottom:14px">O principal foco dos negócios da ${nomeEmp} é oferecer para seus clientes produtos e soluções integradas que atenda aos propósitos de funcionalidade e qualidade, de forma que traga benefícios e incorpore valor ao cliente, para empresa, seus sócios, diretores e colaboradores.</p>
+
+    <p style="text-align:center;font-weight:700;margin-bottom:10px">VISÃO</p>
+    <p style="margin-bottom:14px">Ser referência no segmento de fundição e usinagem de metais não ferrosos por meio da excelência, inovação de seus produtos e soluções oferecidas e a melhoria contínua em seus processos, gerando satisfação aos envolvidos, lucro aos associados, viabilidade, sustentação e perpetuação do negócio.</p>
+
+    <p style="text-align:center;font-weight:700;margin-bottom:10px">VALORES</p>
+    <p style="margin-bottom:6px">Nós como empresa temos o compromisso de atender as necessidades de todos os nossos clientes, mas devemos prezar e manter a valorização da:</p>
+    <p style="margin:0 0 4px 14px">❖ Integridade;</p>
+    <p style="margin:0 0 4px 14px">❖ Cultura de segurança;</p>
+    <p style="margin:0 0 4px 14px">❖ Compromisso com o cliente;</p>
+    <p style="margin:0 0 4px 14px">❖ Trabalho em equipe;</p>
+    <p style="margin-bottom:14px;margin-left:14px">❖ Cultura da qualidade.</p>
+    ${pb}
+
+    <p style="text-align:center;font-weight:700;margin-bottom:10px">SISTEMA DE GESTÃO DA QUALIDADE</p>
+    <p style="margin-bottom:8px">Nossa busca pela excelência não é apenas um desejo, mas um compromisso diário com as expectativas das partes interessadas. As nossas Políticas são nossos direcionamentos estratégicos, garantindo que cada peça fundida e usinada carregue o selo de confiança que nossos clientes depositam em nós.</p>
+    <p style="margin-bottom:8px">Sendo assim, para assegurar a satisfação de nossos clientes e a conformidade de nossos processos, produtos em metais não ferrosos e usinagem, o colaborador receberá treinamento para entender e aplicar essas políticas obtendo o conhecimento das mesmas para atingir os objetivos estabelecidos de acordo com as revisões atualizadas.</p>
+    <p style="margin-bottom:6px">Em resumo, nossas diretrizes da política da qualidade são:</p>
+    <p style="margin:0 0 4px 14px">❖ Foco no Cliente: Entregar exatamente o que foi solicitado, atendendo aos requisitos legais e normativos.</p>
+    <p style="margin:0 0 4px 14px">❖ Capacitação: Garantir a competência e o comprometimento ao participar ativamente dos treinamentos oferecidos.</p>
+    <p style="margin-bottom:14px;margin-left:14px">❖ Melhoria Contínua: Atualizar processos e sugerir mudanças que garantam a sustentabilidade e evitem desperdícios ou falhas.</p>
+
+    <p style="text-align:center;font-weight:700;margin-bottom:10px">CONDUTA PESSOAL E PROFISSIONAL</p>
+    <p style="margin-bottom:8px">Acreditamos firmemente que a conduta pessoal é intrinsecamente relacionada a conduta profissional, portanto, a forma como agimos diante das situações e circunstâncias, pessoas, obstáculos e dificuldades refletirão sem sombra de dúvidas em nossos resultados e performance profissional.</p>
+    <p style="margin-bottom:6px">Por isso definimos como padrões de conduta inegociáveis e essenciais, para o reconhecimento como empresa perante a sociedade e seus parceiros e time de profissionais a:</p>
+    <p style="margin:0 0 2px 14px">❖ Honestidade</p>
+    <p style="margin:0 0 6px 30px">Eu serei honesto em todas as minhas ações e preservarei atitudes ilibada como qualidade de pessoa íntegra, sem mancha e incorrupta;</p>
+    <p style="margin:0 0 2px 14px">❖ Disciplina</p>
+    <p style="margin:0 0 6px 30px">Eu terei disciplina nas minhas obrigações e comprometimento em fazer o que e quando precisar ser feito;</p>
+    <p style="margin:0 0 2px 14px">❖ Ética</p>
+    <p style="margin:0 0 6px 30px">Eu terei padrões éticos na minha profissão, priorizando sempre em fazer o que é certo sem que ninguém precise estar vendo;</p>
+    <p style="margin:0 0 2px 14px">❖ Atitude positiva</p>
+    <p style="margin:0 0 6px 30px">Eu terei atitude positiva diante das circunstâncias adversas e para soluções de problemas;</p>
+    <p style="margin:0 0 2px 14px">❖ Responsabilidade</p>
+    <p style="margin:0 0 6px 30px">Eu terei responsabilidade pelas minhas ações e obrigações perante pessoas e empresas sejam estes clientes, fornecedores e/ou parceiros;</p>
+    <p style="margin:0 0 2px 14px">❖ Competência</p>
+    <p style="margin-bottom:14px;margin-left:30px">Eu buscarei ter a competência necessária para o desempenho de minhas atividades seja através do meu desenvolvimento tanto profissional quanto pessoal.</p>
+    ${pb}
+
+    <p style="text-align:center;font-weight:700;margin-bottom:10px">ORIENTAÇÕES DE CONDUTA PESSOAL</p>
+    <p style="margin:0 0 4px 14px">❖ Ser cordial e respeitoso(a) no trato e relacionamento com as pessoas, buscando pautar suas ações pelo bom senso;</p>
+    <p style="margin:0 0 4px 14px">❖ Esteja disposto a cooperar sempre que necessário e trabalhar em equipe contribuindo de forma positiva com o time para busca de atingimento dos objetivos;</p>
+    <p style="margin:0 0 4px 14px">❖ Não adote conduta ofensiva, seja através de gestos, por meio verbal ou físico;</p>
+    <p style="margin:0 0 4px 14px">❖ Não participe de, e/ou reproduza, boatos e calúnias, bem como não uso de gestos ou palavras impróprias à moralidade nas dependências da empresa;</p>
+    <p style="margin:0 0 4px 14px">❖ Caso erre, opte sempre pela transparência e verdade, e esforce-se para minimizar suas consequências;</p>
+    <p style="margin:0 0 4px 14px">❖ O aprendizado é com acertos e não com erros. É acertando que se aprende! Sendo assim, busque caminhos, recursos, conhecimento para fazer certo da primeira vez evitando desperdícios de recursos, sejam eles: energia, materiais e tempo;</p>
+    <p style="margin:0 0 4px 14px">❖ Tenha hábitos de consumo consciente não desperdiçando água, energia, materiais, papel, materiais de escritório, matéria-prima etc., e pratique coleta seletiva;</p>
+    <p style="margin:0 0 4px 14px">❖ Apresente-se no trabalho em condições básicas de higiene, vestimentas adequadas e discretas, sem expor partes desnecessárias do corpo e em estado de normalidade (sem embriaguez, uso de drogas, etc.);</p>
+    <p style="margin:0 0 4px 14px">❖ Não discrimine quem quer que seja por sua cor de pele, religião, raça, qualquer tipo de deficiência e opção sexual;</p>
+    <p style="margin-bottom:14px;margin-left:14px">❖ Zele pelo cumprimento das normas e regulamentos da empresa, deste código de conduta, regras e normas de segurança e, quando tiver dúvidas busque orientação com seu superior imediato e na ausência deste, com o RH.</p>
+
+    <p style="text-align:center;font-weight:700;margin-bottom:10px">ORIENTAÇÕES DE CONDUTA PROFISSIONAL</p>
+    <p style="margin:0 0 4px 14px">❖ Execute suas atividades com zelo e foco nos interesses da ${nomeEmp} e em conformidade com a empresa, requisitos dos clientes e deste Código de Conduta, objetivando os melhores resultados e solicitando se necessário, instruções e esclarecimentos para atingi-los;</p>
+    <p style="margin:0 0 4px 14px">❖ Mantenha-se atualizado sobre os avanços de sua área profissional, e quando for o caso, obtenha as certificações necessárias ao exercício do seu cargo;</p>
+    <p style="margin:0 0 4px 14px">❖ Caso presencie qualquer atitude suspeita ou atentatória a boa ordem e disciplina por parte de colaboradores ou terceiros, imediatamente comunique seu superior imediato ou o RH;</p>
+    <p style="margin:0 0 4px 14px">❖ Cumprir as normas de segurança em toda a empresa, e sempre onde for obrigatório utilizar equipamento de proteção individual;</p>
+    <p style="margin:0 0 4px 14px">❖ Colabore para garantir a segurança nos locais de carregamento e descarregamento de materiais e equipamentos visando a manutenção e a integridade das pessoas e processos;</p>
+    <p style="margin-bottom:14px;margin-left:14px">❖ Colabore para o sistema de controle de entrada, saída, permanência de pessoas na empresa como um todo e em seus setores fabris;</p>
+    ${pb}
+
+    <p style="text-align:center;font-weight:700;margin-bottom:10px">CLIENTE</p>
+    <p style="margin:0 0 4px 14px">❖ A razão de existir a ${nomeEmp} são seus clientes;</p>
+    <p style="margin:0 0 4px 14px">❖ Temos o propósito de oferecer produtos que atendam e satisfaçam as necessidades de nossos clientes, quanto a prazo, preço e qualidade;</p>
+    <p style="margin:0 0 4px 14px">❖ Assegurar o cumprimento dos requisitos de seus clientes e satisfazer suas expectativas deve ser prioridade de todos os colaboradores da ${nomeEmp};</p>
+    <p style="margin:0 0 4px 14px">❖ A ${nomeEmp} nem mesmo seus colaboradores discrimina clientes, seja por origem, porte econômico ou localização;</p>
+    <p style="margin:0 0 4px 14px">❖ O atendimento ao cliente deve ser de forma cortês em todo tempo e forma de comunicação;</p>
+    <p style="margin:0 0 4px 14px">❖ O cliente deve sempre obter respostas, ainda que negativas, às suas solicitações, de forma adequada e no prazo esperado;</p>
+    <p style="margin-bottom:14px;margin-left:14px">❖ Todas as informações do cliente deverão ser tratadas pelo colaborador que tiver acesso às mesmas, de forma sigilosa, única e exclusivamente para o exercício de suas atividades, podendo somente divulgar a terceiros e internamente dentro da empresa para atingimento dos objetivos contratados pelo cliente;</p>
+
+    <p style="text-align:center;font-weight:700;margin-bottom:10px">FORNECEDORES</p>
+    <p style="margin:0 0 4px 14px">❖ Para que a ${nomeEmp} possa cumprir sua missão de atender e satisfazer as expectativas de seus clientes, é fundamental o relacionamento saudável e de respeito com seus fornecedores e parceiros;</p>
+    <p style="margin:0 0 4px 14px">❖ Deve-se prezar por uma relação duradoura e sem prejuízo dos princípios de ambos ${nomeEmp} x Fornecedores;</p>
+    <p style="margin:0 0 4px 14px">❖ A definição pela contratação de seus fornecedores deve ser embasada em critérios técnicos, profissionais, econômicos e éticos observando os objetivos da ${nomeEmp}, não sendo permitido favorecimento de qualquer natureza;</p>
+    <p style="margin:0 0 4px 14px">❖ Os parceiros e fornecedores devem ser avaliados por meio de critérios claros excludentes de discriminação;</p>
+    <p style="margin:0 0 4px 14px">❖ Os fornecedores e parceiros devem ter princípios condizentes com da empresa e com este Código de Conduta;</p>
+    <p style="margin-bottom:14px;margin-left:14px">❖ A ${nomeEmp} poderá, caso houver prejuízos de seus interesses e valores, encerrar negócios com o fornecedor ou parceiro;</p>
+    ${pb}
+
+    <p style="text-align:center;font-weight:700;margin-bottom:10px">COLABORADORES</p>
+    <p style="margin:0 0 4px 14px">❖ A ${nomeEmp} é digna no tratamento com seus colaboradores e proporcionando oportunidades iguais de crescimento;</p>
+    <p style="margin:0 0 4px 14px">❖ O conflito de interesse pode ocorrer quando o funcionário cometer atos que se contraponham aos interesses da empresa no sentido de se beneficiar podendo causar danos ou prejuízos a mesma e/ou a outros colaboradores;</p>
+    <p style="margin:0 0 4px 14px">❖ Situações que possam acarretar em conflito de interesses devem ser comunicadas ao superior imediato e/ou ao RH;</p>
+    <p style="margin:0 0 4px 14px">❖ Trabalho Infantil: A ${nomeEmp} tem o compromisso em inibir, proibir, e não apoiar em sua cadeia de valor, o trabalho por menores de 16 anos, exceto em situações de contrato de Menor Aprendiz devidamente dentro das diretrizes legais que regem tal atividade;</p>
+    <p style="margin:0 0 4px 14px">❖ Trabalho escravo e tráfico humano: A ${nomeEmp} tem o compromisso em erradicar inibindo, proibindo e não apoiando em sua cadeia de valor, o trabalho escravo e forçado e o tráfico de seres humanos;</p>
+    <p style="margin:0 0 4px 14px">❖ Preconceito: A ${nomeEmp} não admite entre seus colaboradores e relacionamentos entre os mesmos, de discriminação e preconceito de qualquer natureza, seja de gênero, religião, faixa etária, cor, raça, sexo, convicção política, nacionalidade, estado civil, orientação sexual, estado físico, emocional, psicológico ou qualquer outra característica pessoal;</p>
+    <p style="margin:0 0 4px 14px">❖ O processo de recrutamento, seleção e promoção deve zelar sempre e unicamente pelo cumprimento e atendimento de requisitos de ensino, competências e condições de atender e se adequar às expectativas do cargo a se ocupar;</p>
+    <p style="margin:0 0 4px 14px">❖ A participação em um processo de recrutamento e seleção interno deve ser aceita e apoiada pela liderança e entendida pela mesma como uma condição normal de evolução de carreira do candidato, não podendo fazer nenhum tipo de retaliação ao subordinado;</p>
+    <p style="margin:0 0 4px 14px">❖ O colaborador deve receber orientação e feedbacks construtivos inclusive quando da ocorrência de erros, porém, repetição de erros por descuido, desatenção e desídia de função, negligência ou falta de interesse, deve merecer rigorosa e devida correção e sanções disciplinares previstas na CLT;</p>
+    <p style="margin:0 0 4px 14px">❖ A ${nomeEmp} não admite assédio ou abuso de poder tais como econômico, moral, sexual ou situações que configurem ameaças e desrespeito seja por qualquer nível hierárquico;</p>
+    <p style="margin:0 0 4px 14px">❖ O colaborador que se sentir discriminado ou alvo de preconceito, deve procurar o departamento de recursos humanos;</p>
+    <p style="margin:0 0 4px 14px">❖ A ${nomeEmp} respeita o direito individual de participação do colaborador em processos e meio político, porém, deixa claro que sua opinião e manifestações são suas e não da empresa e, que para tal participação deve ocorrer em seu tempo livre e a sua própria custa, e que recursos, espaços e imagem da empresa não podem ser utilizados para seus interesses políticos;</p>
+    <p style="margin:0 0 4px 14px">❖ Deve ser respeitado o direito individual de associação a entidades sindicais pelos colaboradores e prezar pelo diálogo na busca de conflitos de natureza trabalhista e sindical;</p>
+    <p style="margin:0 0 4px 14px">❖ É dever do colaborador prezar e zelar pelo bom uso das instalações, máquinas, equipamentos e materiais da empresa incluídos os de proteção coletiva e individuais, fazendo uso destes quando necessário de forma correta e eficiente;</p>
+    <p style="margin:0 0 4px 14px">❖ A utilização, divulgação e veiculação de informações deve ser obrigatoriamente relacionada às atividades profissionais, não sendo permitido uso de gestos e palavras obscenas;</p>
+    <p style="margin:0 0 4px 14px">❖ O colaborador não deve, em nenhuma hipótese, possibilitar o acesso de sistemas da empresa a pessoas não autorizadas, por meio de utilização de seu login e senha pessoal de acesso a estes recursos;</p>
+    <p style="margin:0 0 4px 14px">❖ Programas, materiais e softwares protegidos por direitos autorais, ou produzidos internamente ou através de contratos de licenciamento, não podem ser copiados e divulgados, a menos que o detentor dê explícita e formal autorização para tanto, e da mesma forma, é proibida a instalação de softwares e aplicativos nos computadores e demais equipamentos eletrônicos da empresa sem que tenha sido autorizado pela administração;</p>
+    <p style="margin:0 0 4px 14px">❖ O colaborador não deve adotar qualquer tipo de atitude que denigra a imagem de parceiros comerciais ou concorrentes da empresa;</p>
+    <p style="margin:0 0 4px 14px">❖ Toda informação de mercado e de concorrência deve ser obtida através de práticas idôneas;</p>
+    <p style="margin:0 0 4px 14px">❖ O resultado do trabalho de natureza e de informações estratégicas, desenvolvidos por meio de atividades profissionais e a serviço da empresa pelo colaborador da ${nomeEmp}, é de propriedade exclusiva da mesma, não podendo ser divulgadas sem autorização expressa da administração;</p>
+    <p style="margin:0 0 4px 14px">❖ Não deve ser aceito ou oferecer cortesia, brindes de qualquer natureza: presente, favores, descontos, gratificações, de caráter pessoal. Em caráter profissional, se as práticas de mercado assim exigirem, os brindes oferecidos devem conter identificação do fornecedor ou cliente, e eventualmente, refeições não frequentes e brindes de maior valor podem estar isentos desta norma desde que comunicados à administração;</p>
+    <p style="margin:0 0 4px 14px">❖ A ${nomeEmp} preza pela comunicação e propaganda justa e idônea;</p>
+    <p style="margin-bottom:14px;margin-left:14px">❖ Deve ser cumprido por seus integrantes rigorosamente políticas e normas de segurança.</p>
+    ${pb}
+
+    <p style="text-align:center;font-weight:700;margin-bottom:10px">DISPOSIÇÕES GERAIS</p>
+    <p style="margin-bottom:8px">Possíveis conflitos por desvio de condutas devem ser encaminhados ao superior imediato e ao departamento de RH da ${nomeEmp}.</p>
+    <p style="margin-bottom:8px">Em caso haja dúvidas de interpretação deste código ou outra qualquer, deverá esclarecê-la juntamente ao superior imediato e na ausência deste ou do devido esclarecimento, o RH da empresa deve ser procurado e que, em caso ainda haja necessidade, levará ao conhecimento da direção;</p>
+    <p style="margin-bottom:8px">É direito do colaborador o sigilo e confidencialidade de ocorrências a seu respeito por parte do líder e do RH da empresa, mas também cabe ao colaborador a responsabilidade de informar, discutir o assunto e por manter-se em comunicação ou não, sobre qualquer fato com quem lhe interessar quando o assunto for sobre a si mesmo;</p>
+    <p style="margin-bottom:8px">Há a disponibilidade dos canais de comunicação com a liderança e também o RH da empresa para quando o colaborador assim sentir necessidade. Cabe a este também, utilizá-lo de forma coerente, com bom senso e responsabilidade;</p>
+    <p style="margin-bottom:8px">Cabe a liderança em conjunto com o RH da ${nomeEmp}, garantir a seus liderados o conhecimento e a aplicação dos preceitos deste código, bem como estes devem ser exemplos de conduta a serem espelhados por todo o time;</p>
+    <p style="margin-bottom:8px">Sugestões de melhorias devem ser endereçadas ao departamento de RH.</p>
+    <p style="font-weight:700;margin-bottom:16px">O DESCUMPRIMENTO DESTE CÓDIGO DE CONDUTA, BEM COMO DEMAIS REGULAMENTOS E NORMAS INTERNAS, SERÁ PASSÍVEL DE SANÇÕES DISCIPLINARES PREVISTAS EM NORMAS INTERNAS.</p>
+
+    <p style="font-weight:700;margin-bottom:8px">Termo de compromisso:</p>
+    <p style="margin-bottom:8px">Declaro ter lido e compreendido este código de conduta comprometendo-me a cumpri-lo e respeitá-lo em todas as minhas atividades profissionais ora contratadas através do meu contrato de trabalho com a ${nomeEmpLongo}, zelando por sua plena aplicação.</p>
+    <p style="margin-bottom:8px">Estou ciente que este documento será disponibilizado em arquivo de forma digital através do meu endereço eletrônico (e-mail) por mim fornecido à empresa e que, caso eu deseje receber o mesmo impresso devo solicitar ao RH por meio de WhatsApp ou e-mail.</p>
+    <p style="margin-bottom:20px">Declaro ainda ter ciência da aplicação de penalidades cabíveis em caso de descumprimento deste.</p>
+    <p style="margin-bottom:24px">Santa Bárbara d'Oeste – SP, ${hoje.dia} de ___________________ de 20___.</p>
+    <p style="margin-bottom:6px">Funcionário: <strong>${c.nome}</strong></p>
+    <p>Assinatura: _______________________________________________</p>
+  </div>`;
+  abrirReciboModal('🖨 Código de Conduta — ' + c.nome, html, false);
+}
+
+function colabGerarTermoDadosBiometricos(colabId) {
+  const c = loadData('colaboradores').find(x => x.id === colabId);
+  if (!c) return;
+  const emp = empresaInfoDoColaborador(c);
+  const ehBrass = emp === CV_EMPRESA_INFO['BRASS'];
+  const revisaoData = ehBrass ? '20/11/2025' : '01/11/2025';
+  const html = `<div style="padding:16px 20px;font-size:12px;line-height:1.6">
+    <table style="width:100%;border-collapse:collapse;margin-bottom:16px"><tr>
+      <td style="border:1px solid #000;padding:10px;font-weight:700;text-align:center">${emp.nome.toUpperCase()}</td>
+      <td style="border:1px solid #000;padding:10px;width:80px;text-align:center">Revisão<br><strong>00</strong></td>
+      <td style="border:1px solid #000;padding:10px;width:100px;text-align:center">Data<br><strong>${revisaoData}</strong></td>
+    </tr></table>
+    <h3 style="text-align:center;margin-bottom:16px">TERMO DE CONSENTIMENTO PARA TRATAMENTO DE DADOS BIOMÉTRICOS</h3>
+    <p style="margin-bottom:14px">Pelo presente instrumento, eu, <strong>${c.nome}</strong>, portador do CPF nº <strong>${c.cpf||'____________________'}</strong>, autorizo a empresa <strong>${emp.nome.toUpperCase()}</strong> CNPJ nº ${emp.cnpj}, a realizar a coleta e o tratamento do meu dado pessoal sensível (biometria facial), conforme as cláusulas abaixo:</p>
+    <p style="font-weight:700;margin-bottom:6px">1. Finalidade do Tratamento</p>
+    <p style="margin-bottom:12px">A coleta da imagem facial tem como finalidade exclusiva o controle de jornada de trabalho (registro de ponto eletrônico), visando a identificação inequívoca do colaborador e a prevenção de fraudes, atendendo às exigências da Portaria 671 do Ministério do Trabalho.</p>
+    <p style="font-weight:700;margin-bottom:6px">2. Segurança e Armazenamento</p>
+    <p style="margin-bottom:12px">A empresa declara que os dados biométricos serão armazenados em ambiente seguro, com acesso restrito e criptografado, seguindo as diretrizes da LGPD. Os dados não serão compartilhados com terceiros, salvo para empresas que prestam o serviço técnico de software de ponto (operadores), sob rigoroso contrato de confidencialidade.</p>
+    <p style="font-weight:700;margin-bottom:6px">3. Prazo de Retenção</p>
+    <p style="margin-bottom:12px">Os dados biométricos serão mantidos pela empresa apenas durante a vigência do contrato de trabalho ou pelo período necessário para o cumprimento de obrigações legais e defesa em processos judiciais.</p>
+    <p style="font-weight:700;margin-bottom:6px">4. Direitos do Titular</p>
+    <p style="margin-bottom:24px">O colaborador poderá, a qualquer momento, solicitar informações sobre o tratamento de seus dados ou revogar este consentimento mediante justificativa, ciente de que o registro de ponto continua sendo uma obrigação legal que deverá ser cumprida por outro método disponível na empresa.</p>
+    <p style="margin-bottom:24px">Santa Bárbara D'Oeste, ${docHoje().dia} de ___________________ de 20___.</p>
+    <p>Assinatura: _______________________________________</p>
+  </div>`;
+  abrirReciboModal('🖨 Termo de Dados Biométricos — ' + c.nome, html, false);
+}
+
 const COLAB_DOC_CATEGORIAS = ['Acordos - Termos','Advertências','Atestados','Avaliação de Desempenho','Documentos Admissionais','Feedbacks','Férias','Ficha de EPI','Processo Seletivo','Registro E-Social / Integração / Efetivação / ASO','Treinamentos'];
 
 function colabDocumentosHtml(c) {
@@ -3665,10 +4091,13 @@ function colabDocumentosHtml(c) {
   html += `<div class="card" style="padding:12px;margin-bottom:14px">
     <div style="font-size:12px;font-weight:700;margin-bottom:8px">📄 Documentos de Integração — gerar já preenchido</div>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-s btn-sm" onclick="colabGerarManualColaborador(${c.id})">🖨 Manual do Colaborador</button>
+      <button class="btn btn-s btn-sm" onclick="colabGerarCodigoConduta(${c.id})">🖨 Código de Conduta</button>
       <button class="btn btn-s btn-sm" onclick="colabGerarTermoConfidencialidade(${c.id})">🖨 Termo de Confidencialidade</button>
       <button class="btn btn-s btn-sm" onclick="colabGerarTermoEPI(${c.id})">🖨 Termo de Responsabilidade de EPI</button>
+      <button class="btn btn-s btn-sm" onclick="colabGerarTermoDadosBiometricos(${c.id})">🖨 Termo de Dados Biométricos</button>
     </div>
-    <div class="muted" style="margin-top:6px">Nome, CPF, cargo, setor e empresa (${c.cnpj||'—'}) preenchidos automaticamente — só a assinatura fica em branco.</div>
+    <div class="muted" style="margin-top:6px">Nome, CPF, cargo, setor e empresa (${c.cnpj||'—'}) preenchidos automaticamente — só a assinatura fica em branco. O Manual do Colaborador já inclui os termos de imagem, uniforme e cadastro de e-mail.</div>
   </div>`;
 
   COLAB_DOC_CATEGORIAS.forEach((cat, i) => {
@@ -5020,12 +5449,12 @@ function buildAdmissaoTemplateIntegracaoSeed() {
     {desc:'Enviar data e horário da integração via WhatsApp', obs:'Assim que definido', onde:''},
     {desc:'Designação do armário nº', obs:'1 dia antes', onde:'Controle de Armários'},
     {desc:'Separar / entregar EPI e uniforme', obs:'1 dia antes', onde:''},
-    {desc:'Imprimir manual do colaborador', obs:'1 dia antes', onde:'Pasta da Empresa → Admissão → Regulamento Interno → Integração'},
-    {desc:'Imprimir código de conduta', obs:'1 dia antes', onde:''},
+    {desc:'Imprimir manual do colaborador', obs:'1 dia antes', onde:'Colaboradores → Ficha → Documentos → 🖨 Manual do Colaborador (já sai preenchido)'},
+    {desc:'Imprimir código de conduta', obs:'1 dia antes', onde:'Colaboradores → Ficha → Documentos → 🖨 Código de Conduta (já sai preenchido)'},
     {desc:'Imprimir termo de confidencialidade', obs:'1 dia antes', onde:''},
     {desc:'Imprimir termo de entrega de aparelho de celular da empresa', obs:'1 dia antes', onde:'Não se aplica a todos'},
     {desc:'Imprimir termo de responsabilidade por utilização de veículo da empresa', obs:'1 dia antes', onde:'Não se aplica a todos'},
-    {desc:'Imprimir termo de consentimento para tratamento de dados biométricos', obs:'1 dia antes', onde:''},
+    {desc:'Imprimir termo de consentimento para tratamento de dados biométricos', obs:'1 dia antes', onde:'Colaboradores → Ficha → Documentos → 🖨 Termo de Dados Biométricos (já sai preenchido)'},
     {desc:'Imprimir termo de responsabilidade de EPI', obs:'1 dia antes', onde:''},
     {desc:'Imprimir ficha de EPI', obs:'1 dia antes', onde:''},
     {desc:'Imprimir descrição de cargo', obs:'1 dia antes', onde:'Descrição de Cargo'},
@@ -6594,8 +7023,8 @@ function cvExportarFiltrado() {
 }
 
 const CV_EMPRESA_INFO = {
-  'AC': {nome:'AC Metal Fundição Eireli', cnpj:'00.292.535/0001-83', endereco:"Rua Tupis, 3149, Parque Industrial de Cillo, Santa Bárbara d'Oeste - SP, CEP. 13.453-050"},
-  'BRASS': {nome:'BRASSMETAL LTDA', cnpj:'27.409.417/0001-69', endereco:"Rua Tupis, 3149 (fundos), Parque Industrial de Cillo, Santa Bárbara d'Oeste - SP, CEP. 13.453-050"}
+  'AC': {nome:'AC Metal Fundição Eireli', cnpj:'00.292.535/0001-83', endereco:"Rua Tupis, 3149, Parque Industrial de Cillo, Santa Bárbara d'Oeste - SP, CEP. 13.453-050", email:'rh.acmetalurgica@gmail.com'},
+  'BRASS': {nome:'BRASSMETAL LTDA', cnpj:'27.409.417/0001-69', endereco:"Rua Tupis, 3149 (fundos), Parque Industrial de Cillo, Santa Bárbara d'Oeste - SP, CEP. 13.453-050", email:'brassmetal.corporativo@gmail.com'}
 };
 // O cadastro de Colaboradores usa '01'/'02'/'PJ' no campo cnpj; os textos dos
 // termos usam as chaves 'AC'/'BRASS'. Esta função traduz um valor para o outro
