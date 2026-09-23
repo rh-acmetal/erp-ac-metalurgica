@@ -424,7 +424,7 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
   <div class="l-box">
     <div class="l-logo">
       <div class="l-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
-      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.51 — Histórico de Cargo &amp; Salário Automático</div></div>
+      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.52 — Ajuste de Layout do Histórico</div></div>
     </div>
     <div class="f-row"><label>Usuário</label><input type="text" id="l-user" value="jakeline@acmetalurgica.com.br"></div>
     <div class="f-row"><label>Senha</label><input type="password" id="l-pass" value="••••••••"></div>
@@ -3995,16 +3995,16 @@ function ensureHistSalModal() {
             <tbody id="histsal-tbody"></tbody>
           </table>
         </div>
-        <div style="display:grid;grid-template-columns:110px 110px 1fr 1fr 70px auto;gap:6px;align-items:end;margin-top:14px;padding-top:14px;border-top:1px solid var(--g100)">
-          <div><label style="font-size:10px;color:var(--g500)">Data</label><input class="finp" type="date" id="hs-data"></div>
-          <div><label style="font-size:10px;color:var(--g500)">Salário (R$)</label><input class="finp" type="text" id="hs-salario" placeholder="0,00"></div>
-          <div><label style="font-size:10px;color:var(--g500)">Motivo</label><input class="finp" type="text" id="hs-motivo" list="hs-motivo-lista" placeholder="Ex: Dissídio"></div>
-          <div><label style="font-size:10px;color:var(--g500)">Cargo (só se mudou)</label><input class="finp" type="text" id="hs-cargo" placeholder="Deixe em branco se não mudou"></div>
-          <div><label style="font-size:10px;color:var(--g500)">%</label><input class="finp" type="text" id="hs-percentual" placeholder="Auto"></div>
-          <button class="btn btn-p btn-sm" onclick="histSalAdicionar()">+ Adicionar</button>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px 10px;align-items:end;margin-top:14px;padding-top:14px;border-top:1px solid var(--g100)">
+          <div><label style="font-size:10px;color:var(--g500)">Data</label><input class="finp" type="date" id="hs-data" style="width:100%"></div>
+          <div><label style="font-size:10px;color:var(--g500)">Salário (R$)</label><input class="finp" type="text" id="hs-salario" placeholder="0,00" style="width:100%"></div>
+          <div><label style="font-size:10px;color:var(--g500)">Motivo</label><input class="finp" type="text" id="hs-motivo" list="hs-motivo-lista" placeholder="Ex: Dissídio" style="width:100%"></div>
+          <div><label style="font-size:10px;color:var(--g500)">Cargo (só se mudou)</label><input class="finp" type="text" id="hs-cargo" placeholder="Deixe em branco se não mudou" style="width:100%"></div>
+          <div><label style="font-size:10px;color:var(--g500)">%</label><input class="finp" type="text" id="hs-percentual" placeholder="Auto" style="width:100%"></div>
         </div>
         <datalist id="hs-motivo-lista">${HIST_SAL_MOTIVOS.map(m=>`<option value="${m}">`).join('')}</datalist>
-        <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:16px">
+        <div style="display:flex;justify-content:flex-end;flex-wrap:wrap;gap:8px;margin-top:16px">
+          <button class="btn btn-p" onclick="histSalAdicionar()">+ Adicionar</button>
           <button class="btn btn-s" onclick="histSalImprimir()">🖨 Imprimir</button>
           <button class="btn btn-s" onclick="closeHistSalModal()">Fechar</button>
         </div>
@@ -4092,6 +4092,7 @@ function histSalExcluir(id) {
 function histSalImprimir() {
   const c = loadData('colaboradores').find(x => x.id === histSalColabAtual);
   if (!c) return;
+  closeHistSalModal(); // evita as duas telas ficarem abertas e se sobrepondo
   const linhas = histSalLinhas();
   const corpo = linhas.map(h => `<tr>
     <td style="padding:5px;border:1px solid #ccc">${h.data||'—'}</td>
