@@ -424,7 +424,7 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
   <div class="l-box">
     <div class="l-logo">
       <div class="l-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
-      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.49 — Sincronização com a Nuvem no Carregamento</div></div>
+      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.51 — Histórico de Cargo &amp; Salário Automático</div></div>
     </div>
     <div class="f-row"><label>Usuário</label><input type="text" id="l-user" value="jakeline@acmetalurgica.com.br"></div>
     <div class="f-row"><label>Senha</label><input type="password" id="l-pass" value="••••••••"></div>
@@ -665,11 +665,16 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
             <div style="display:flex;gap:4px;padding:8px 10px;border-bottom:1px solid var(--g100);flex-wrap:wrap;background:var(--g50,#fafbfc)">
               <button class="btn btn-s btn-xs" onclick="colabFichaAcao('novo')">➕ Novo</button>
               <button class="btn btn-s btn-xs" onclick="colabFichaAcao('editar')">✏ Editar</button>
-              <button class="btn btn-s btn-xs" onclick="colabFichaAcao('duplicar')">📋 Duplicar</button>
-              <button class="btn btn-s btn-xs" onclick="colabFichaAcao('bloquear')">🔒 Bloquear/Ativar</button>
+              <button class="btn btn-s btn-xs" onclick="colabFichaAcao('bloquear')">🔒 Inativar/Ativar</button>
               <button class="btn btn-s btn-xs" onclick="colabFichaAcao('excluir')">🗑 Excluir</button>
               <button class="btn btn-s btn-xs" onclick="colabFichaAcao('ficha')">🖨 Imprimir Ficha</button>
               <button class="btn btn-s btn-xs" onclick="colabFichaAcao('historico')">📜 Histórico</button>
+            </div>
+            <div style="display:flex;gap:4px;padding:0 10px 8px;border-bottom:1px solid var(--g100);background:var(--g50,#fafbfc)">
+              <span style="font-size:10px;color:var(--g500);align-self:center;margin-right:2px">Mostrar:</span>
+              <button class="btn btn-s btn-xs colab-ficha-status-btn" data-status="" onclick="colabFichaFiltrarStatus('')">Ativos</button>
+              <button class="btn btn-s btn-xs colab-ficha-status-btn" data-status="Inativo" onclick="colabFichaFiltrarStatus('Inativo')">Inativos</button>
+              <button class="btn btn-s btn-xs colab-ficha-status-btn" data-status="todos" onclick="colabFichaFiltrarStatus('todos')">Todos</button>
             </div>
             <div id="colab-ficha-vazio" style="flex:1;display:flex;align-items:center;justify-content:center;color:var(--g400);font-size:12px">Selecione um colaborador na lista ao lado.</div>
             <div id="colab-ficha-detalhe" style="display:none;flex:1;flex-direction:column">
@@ -2880,6 +2885,7 @@ function crudCreate(table, record, opts) {
   saveData(table, data);
   logAudit(opts.modulo || table, 'Inclusão', record.id, opts.label || record.nome || ('#'+record.id));
   syncRecordToCloud(table, record);
+  if (table === 'colaboradores') registrarHistoricoCargoSalario(null, record, 'ADMISSÃO');
   return record;
 }
 
@@ -2892,11 +2898,43 @@ function crudUpdate(table, id, changes, opts) {
   const data = loadData(table);
   const idx = data.findIndex(d => d.id === id);
   if (idx === -1) return null;
+  const anterior = data[idx];
   data[idx] = Object.assign({}, data[idx], changes, {atualizadoEm: nowStr()});
   saveData(table, data);
   logAudit(opts.modulo || table, 'Atualização', id, opts.label || data[idx].nome || ('#'+id));
   syncRecordToCloud(table, data[idx]);
+  if (table === 'colaboradores') registrarHistoricoCargoSalario(anterior, data[idx]);
   return data[idx];
+}
+
+// ─── Histórico de Cargo & Salário — alimentado automaticamente ───
+// Sempre que um colaborador é criado (admissão) ou tem cargo/salário alterado
+// pelo cadastro, uma linha é adicionada em 'historico_cargo_salario', no
+// mesmo formato da planilha de controle usada pelo RH.
+function parseSalNumHist(v) {
+  return parseFloat(String(v||'0').replace(/[^\d,.-]/g,'').replace(/\./g,'').replace(',','.')) || 0;
+}
+function registrarHistoricoCargoSalario(antes, depois, motivoForcado) {
+  const salAntes = antes ? parseSalNumHist(antes.sal) : null;
+  const salDepois = parseSalNumHist(depois.sal);
+  const cargoMudou = !!depois.cargo && (!antes || (antes.cargo||'') !== depois.cargo);
+  const salMudou = !!depois.sal && (!antes || salAntes !== salDepois);
+  if (!motivoForcado && !cargoMudou && !salMudou) return; // nada relevante mudou
+  let motivo = motivoForcado || (cargoMudou && salMudou ? 'ALTERAÇÃO DE CARGO E SALÁRIO' : cargoMudou ? 'ALTERAÇÃO DE CARGO' : 'ALTERAÇÃO SALARIAL');
+  const pct = (antes && salAntes > 0 && salMudou) ? Math.round(((salDepois - salAntes) / salAntes) * 10000) / 100 : null;
+  crudCreate('historico_cargo_salario', {
+    colaboradorId: depois.id,
+    colaborador: depois.nome,
+    data: dataHojeDDMMAAAA(),
+    salario: salDepois,
+    motivo: motivo,
+    cargo: (motivoForcado === 'ADMISSÃO' || cargoMudou) ? depois.cargo : '',
+    percentual: pct
+  }, {modulo:'Histórico Cargo/Salário', label: depois.nome});
+}
+function dataHojeDDMMAAAA() {
+  const d = new Date();
+  return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear();
 }
 
 function crudDelete(table, id, opts) {
@@ -3397,6 +3435,12 @@ function normSemAcento(s) {
 let colabDetailAtual = null;
 let colabFichaAtivo = false;
 let colabFichaInicializado = false;
+let colabFichaStatusFiltro = ''; // '' = Ativos, 'Inativo' = Inativos, 'todos' = Todos
+
+function colabFichaFiltrarStatus(status) {
+  colabFichaStatusFiltro = status;
+  colabFichaRenderList();
+}
 
 function colabToggleView() {
   colabFichaAtivo = !colabFichaAtivo;
@@ -3415,13 +3459,18 @@ function colabToggleView() {
 
 function colabFichaRenderList() {
   const q = (document.getElementById('colab-ficha-search')?.value || '').toUpperCase();
-  let all = loadData('colaboradores').filter(c => c.status !== 'Inativo' || q);
+  let all = loadData('colaboradores');
+  if (colabFichaStatusFiltro === 'Inativo') all = all.filter(c => c.status === 'Inativo');
+  else if (colabFichaStatusFiltro !== 'todos') all = all.filter(c => c.status !== 'Inativo');
   if (q) all = all.filter(c => (c.nome||'').toUpperCase().includes(q) || (c.mat||'').toString().includes(q));
   all.sort((a,b) => (a.nome||'').localeCompare(b.nome||''));
+  document.querySelectorAll('.colab-ficha-status-btn').forEach(b => {
+    b.classList.toggle('btn-primary', b.dataset.status === colabFichaStatusFiltro);
+  });
   const box = document.getElementById('colab-ficha-lista');
   box.innerHTML = all.map(c => `
     <div onclick="colabFichaSelect(${c.id})" style="padding:9px 12px;border-bottom:1px solid var(--g100);cursor:pointer;${colabDetailAtual===c.id?'background:var(--blue-bg,#eaf1fb)':''}" onmouseover="this.style.background='var(--g100)'" onmouseout="this.style.background='${colabDetailAtual===c.id?'var(--blue-bg,#eaf1fb)':'transparent'}'">
-      <div style="font-size:12px;font-weight:600">${c.nome||'—'}</div>
+      <div style="font-size:12px;font-weight:600">${c.nome||'—'}${c.status==='Inativo'?' <span class="badge br" style="font-size:9px">Inativo</span>':''}</div>
       <div style="font-size:10px;color:var(--g500)">Mat. ${c.mat||'—'} · ${c.cargo||'—'}</div>
     </div>`).join('') || '<div class="muted" style="padding:16px;text-align:center">Nenhum colaborador encontrado.</div>';
 }
@@ -3599,7 +3648,7 @@ function colabGerarTermoEPI(colabId) {
   abrirReciboModal('🖨 Termo de Responsabilidade de EPI — ' + c.nome, html, false);
 }
 
-const COLAB_DOC_CATEGORIAS = ['Acordos - Termos','Advertências','Atestados','Avaliação de Desempenho','Documentos Admissionais','Feedbacks','Férias','Ficha de EPI','Processo Seletivo','Registro E-Social / Integração / Efetivação / ASO','Treinamentos','Histórico de Salário'];
+const COLAB_DOC_CATEGORIAS = ['Acordos - Termos','Advertências','Atestados','Avaliação de Desempenho','Documentos Admissionais','Feedbacks','Férias','Ficha de EPI','Processo Seletivo','Registro E-Social / Integração / Efetivação / ASO','Treinamentos'];
 
 function colabDocumentosHtml(c) {
   const docs = loadData('colab_documentos').filter(d => d.status !== 'Inativo' && d.colaboradorId === c.id);
@@ -3692,33 +3741,56 @@ function colabFichaAcao(acao) {
   if (acao === 'novo') { openCrudModal(MOD_COLAB, null); return; }
   if (!c) { showToast('Selecione um colaborador na lista primeiro', 'warn'); return; }
   if (acao === 'editar') openCrudModal(MOD_COLAB, c.id);
-  else if (acao === 'duplicar') {
-    const copia = Object.assign({}, c); delete copia.id; delete copia.mat;
-    copia.nome = copia.nome + ' (cópia)';
-    const novo = crudCreate('colaboradores', copia, {modulo:'Colaboradores', label: copia.nome});
-    showToast('📋 Colaborador duplicado — edite os dados antes de salvar de vez');
-    colabFichaSelect(novo.id);
-  }
   else if (acao === 'bloquear') {
     const novoStatus = c.status === 'Inativo' ? 'Ativo' : 'Inativo';
     crudUpdate('colaboradores', c.id, {status: novoStatus}, {modulo:'Colaboradores', label: c.nome});
-    showToast(novoStatus === 'Inativo' ? '🔒 Colaborador bloqueado (inativado)' : '🔓 Colaborador reativado');
+    showToast(novoStatus === 'Inativo' ? '🔒 Colaborador inativado' : '🔓 Colaborador reativado');
+    colabFichaRenderList();
     colabDetailRender(c.id);
   }
   else if (acao === 'excluir') crudDeleteAction(MOD_COLAB, c.id, c.nome);
   else if (acao === 'ficha') {
+    const cfSecao = (titulo) => `<h3 style="font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--blue);border-bottom:1.5px solid var(--blue);padding-bottom:4px;margin:18px 0 10px">${titulo}</h3>`;
     abrirReciboModal('🖨 Ficha Cadastral — ' + c.nome, `
       <div style="padding:16px">
-        <h2 style="text-align:center;margin-bottom:14px">FICHA CADASTRAL DO COLABORADOR</h2>
+        <h2 style="text-align:center;margin-bottom:4px">FICHA CADASTRAL DO COLABORADOR</h2>
+        <p style="text-align:center;font-size:11px;color:#666;margin-bottom:6px">${c.nome} — Matrícula ${c.mat||'—'}</p>
+
+        ${cfSecao('Dados Cadastrais')}
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 24px;font-size:12px">
-          ${cfField('Nome', c.nome)}${cfField('Matrícula', c.mat)}${cfField('Cargo', c.cargo)}${cfField('Setor', c.setor)}
-          ${cfField('Admissão', c.adm)}${cfField('CNPJ', c.cnpj)}${cfField('CPF', c.cpf)}${cfField('RG', c.rg)}
-          ${cfField('Endereço', [c.enderecoTipo,c.endereco,c.numero].filter(Boolean).join(' '))}${cfField('Bairro/Cidade', [c.bairro,c.cidade,c.uf].filter(Boolean).join(' - '))}
+          ${cfField('Nome Completo', c.nome)}${cfField('Nome Curto / Apelido', c.nomeCurto)}
+          ${cfField('CPF', c.cpf)}${cfField('RG', c.rg)}
+          ${cfField('PIS/PASEP', c.pis)}${cfField('Data de Nascimento', c.nascimento)}
+          ${cfField('Sexo', c.sexo)}${cfField('Estado Civil', c.estadoCivil)}
+          ${cfField('Grau de Instrução', c.grauInstrucao)}${cfField('Cor/Raça', c.corRaca)}
+          ${cfField('Deficiência (PCD)', c.deficiencia)}${cfField('Nome do Pai', c.pai)}
+          ${cfField('Nome da Mãe', c.mae)}${cfField('E-mail', c.email)}
           ${cfField('Telefone', c.telefone)}${cfField('Celular', c.celular)}
+        </div>
+
+        ${cfSecao('Endereço')}
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 24px;font-size:12px">
+          ${cfField('Endereço', [c.enderecoTipo,c.endereco,c.numero].filter(Boolean).join(' '))}${cfField('Complemento', c.complemento)}
+          ${cfField('Bairro', c.bairro)}${cfField('Município/UF', [c.cidade,c.uf].filter(Boolean).join(' - '))}
+          ${cfField('CEP', c.cep)}
+        </div>
+
+        ${cfSecao('Dados Contratuais')}
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 24px;font-size:12px">
+          ${cfField('Empresa (CNPJ)', empresaInfoDoColaborador(c).nome + ' — ' + empresaInfoDoColaborador(c).cnpj)}${cfField('Cargo', c.cargo)}
+          ${cfField('Setor', c.setor)}${cfField('Data de Admissão', c.adm)}
+          ${cfField('CBO', c.cbo)}${cfField('Sindicato', c.sindicato)}
+          ${cfField('Matrícula eSocial', c.matriculaEsocial)}${cfField('Status', c.status)}
+        </div>
+
+        ${cfSecao('Informações da Folha e Gestão')}
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 24px;font-size:12px">
+          ${cfField('Salário', c.sal ? 'R$ '+c.sal : '')}${cfField('Horário de Trabalho', c.horarioTrabalho)}
+          ${cfField('Observações', c.observacoes)}
         </div>
       </div>`, false);
   }
-  else if (acao === 'historico') abrirHistoricoRegistro('Colaboradores', c.nome);
+  else if (acao === 'historico') abrirHistoricoCargoSalario(c.id);
 }
 
 /* ─── Histórico de alterações reutilizável — qualquer módulo pode chamar ─── */
@@ -3895,6 +3967,148 @@ function abrirHistoricoRegistro(modulo, registroLabel) {
         <th style="padding:5px">Data/Hora</th><th style="padding:5px">Usuário</th><th style="padding:5px">Ação</th><th style="padding:5px">Registro</th>
       </tr></thead><tbody>${linhas || '<tr><td colspan="4" class="muted" style="padding:16px;text-align:center">Nenhuma alteração registrada ainda.</td></tr>'}</tbody></table>
     </div>`;
+}
+
+/* ═══════════════ HISTÓRICO DE CARGO & SALÁRIO (por colaborador) ═══════════════ */
+const HIST_SAL_MOTIVOS = ['ADMISSÃO','EFETIVAÇÃO','DISSÍDIO','PROMOÇÃO','MÉRITO','EQUIPARAÇÃO SALARIAL','ALTERAÇÃO DE CARGO','ALTERAÇÃO DE CARGO E SALÁRIO','TRANSFERÊNCIA','OUTRO'];
+let histSalColabAtual = null;
+
+function ensureHistSalModal() {
+  if (document.getElementById('m-histsal')) return;
+  const div = document.createElement('div');
+  div.id = 'm-histsal';
+  div.className = 'modal-overlay';
+  div.onclick = (e) => { if (e.target === div) closeHistSalModal(); };
+  div.innerHTML = `
+    <div class="modal" style="width:760px">
+      <div class="m-hdr">
+        <div class="m-title" id="histsal-titulo">📜 Histórico de Cargo &amp; Salário</div>
+        <button class="m-close" onclick="closeHistSalModal()">×</button>
+      </div>
+      <div class="m-body">
+        <div id="histsal-subtitulo" class="muted" style="font-size:12px;margin-top:-8px;margin-bottom:12px"></div>
+        <div style="overflow-x:auto">
+          <table style="width:100%;border-collapse:collapse;font-size:12px">
+            <thead><tr style="border-bottom:1.5px solid #ccc;text-align:left;color:var(--g500)">
+              <th style="padding:5px">Data</th><th style="padding:5px">Salário</th><th style="padding:5px">Motivo</th><th style="padding:5px">Cargo</th><th style="padding:5px">%</th><th style="padding:5px"></th>
+            </tr></thead>
+            <tbody id="histsal-tbody"></tbody>
+          </table>
+        </div>
+        <div style="display:grid;grid-template-columns:110px 110px 1fr 1fr 70px auto;gap:6px;align-items:end;margin-top:14px;padding-top:14px;border-top:1px solid var(--g100)">
+          <div><label style="font-size:10px;color:var(--g500)">Data</label><input class="finp" type="date" id="hs-data"></div>
+          <div><label style="font-size:10px;color:var(--g500)">Salário (R$)</label><input class="finp" type="text" id="hs-salario" placeholder="0,00"></div>
+          <div><label style="font-size:10px;color:var(--g500)">Motivo</label><input class="finp" type="text" id="hs-motivo" list="hs-motivo-lista" placeholder="Ex: Dissídio"></div>
+          <div><label style="font-size:10px;color:var(--g500)">Cargo (só se mudou)</label><input class="finp" type="text" id="hs-cargo" placeholder="Deixe em branco se não mudou"></div>
+          <div><label style="font-size:10px;color:var(--g500)">%</label><input class="finp" type="text" id="hs-percentual" placeholder="Auto"></div>
+          <button class="btn btn-p btn-sm" onclick="histSalAdicionar()">+ Adicionar</button>
+        </div>
+        <datalist id="hs-motivo-lista">${HIST_SAL_MOTIVOS.map(m=>`<option value="${m}">`).join('')}</datalist>
+        <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:16px">
+          <button class="btn btn-s" onclick="histSalImprimir()">🖨 Imprimir</button>
+          <button class="btn btn-s" onclick="closeHistSalModal()">Fechar</button>
+        </div>
+      </div>
+    </div>`;
+  document.body.appendChild(div);
+}
+
+function closeHistSalModal() {
+  const m = document.getElementById('m-histsal');
+  if (m) m.classList.remove('open');
+}
+
+function abrirHistoricoCargoSalario(colabId) {
+  ensureHistSalModal();
+  histSalColabAtual = colabId;
+  const c = loadData('colaboradores').find(x => x.id === colabId);
+  if (!c) return;
+  document.getElementById('histsal-titulo').textContent = '📜 Histórico de Cargo & Salário — ' + c.nome;
+  document.getElementById('histsal-subtitulo').textContent = 'Cargo atual: ' + (c.cargo||'—') + '  ·  Salário atual: ' + (c.sal ? 'R$ '+c.sal : '—');
+  document.getElementById('hs-data').value = new Date().toISOString().slice(0,10);
+  document.getElementById('hs-salario').value = '';
+  document.getElementById('hs-motivo').value = '';
+  document.getElementById('hs-cargo').value = '';
+  document.getElementById('hs-percentual').value = '';
+  histSalRenderTabela();
+  document.getElementById('m-histsal').classList.add('open');
+}
+
+function histSalLinhas() {
+  return loadData('historico_cargo_salario')
+    .filter(h => h.colaboradorId === histSalColabAtual)
+    .sort((a,b) => (parseDate(a.data)||0) - (parseDate(b.data)||0));
+}
+
+function histSalRenderTabela() {
+  const linhas = histSalLinhas();
+  const tb = document.getElementById('histsal-tbody');
+  tb.innerHTML = linhas.map(h => `
+    <tr style="border-bottom:1px solid var(--g100)">
+      <td style="padding:5px;white-space:nowrap">${h.data||'—'}</td>
+      <td style="padding:5px;white-space:nowrap">${h.salario ? 'R$ '+fmtBRL(h.salario) : '—'}</td>
+      <td style="padding:5px">${h.motivo||'—'}</td>
+      <td style="padding:5px">${h.cargo||''}</td>
+      <td style="padding:5px">${h.percentual != null ? String(h.percentual).replace('.',',')+'%' : ''}</td>
+      <td style="padding:5px;text-align:right"><button class="btn btn-s btn-xs" title="Excluir esta linha" onclick="histSalExcluir(${h.id})">🗑</button></td>
+    </tr>`).join('') || '<tr><td colspan="6" class="muted" style="padding:14px;text-align:center">Nenhum registro ainda.</td></tr>';
+}
+
+function histSalAdicionar() {
+  const dataInput = document.getElementById('hs-data').value;
+  const salarioInput = document.getElementById('hs-salario').value;
+  const motivo = document.getElementById('hs-motivo').value.trim();
+  const cargo = document.getElementById('hs-cargo').value.trim();
+  let percentual = document.getElementById('hs-percentual').value.trim();
+  if (!dataInput || !salarioInput) { showToast('Preencha ao menos Data e Salário', 'warn'); return; }
+  const [ano,mes,dia] = dataInput.split('-');
+  const dataFmt = dia+'/'+mes+'/'+ano;
+  const salNum = parseSalNumHist(salarioInput);
+  if (!percentual) {
+    const anteriores = histSalLinhas();
+    const ultimo = anteriores[anteriores.length-1];
+    if (ultimo && ultimo.salario > 0) percentual = String(Math.round(((salNum - ultimo.salario) / ultimo.salario) * 10000) / 100);
+  }
+  crudCreate('historico_cargo_salario', {
+    colaboradorId: histSalColabAtual,
+    colaborador: (loadData('colaboradores').find(x=>x.id===histSalColabAtual)||{}).nome,
+    data: dataFmt, salario: salNum, motivo: motivo, cargo: cargo,
+    percentual: percentual !== '' ? parseFloat(String(percentual).replace(',','.')) : null
+  }, {modulo:'Histórico Cargo/Salário', label: motivo || 'Novo registro'});
+  document.getElementById('hs-salario').value = '';
+  document.getElementById('hs-motivo').value = '';
+  document.getElementById('hs-cargo').value = '';
+  document.getElementById('hs-percentual').value = '';
+  histSalRenderTabela();
+  showToast('✓ Linha adicionada ao histórico');
+}
+
+function histSalExcluir(id) {
+  if (!confirm('Excluir esta linha do histórico?')) return;
+  crudDelete('historico_cargo_salario', id, {modulo:'Histórico Cargo/Salário', fisica:true, label:'Linha #'+id});
+  histSalRenderTabela();
+}
+
+function histSalImprimir() {
+  const c = loadData('colaboradores').find(x => x.id === histSalColabAtual);
+  if (!c) return;
+  const linhas = histSalLinhas();
+  const corpo = linhas.map(h => `<tr>
+    <td style="padding:5px;border:1px solid #ccc">${h.data||'—'}</td>
+    <td style="padding:5px;border:1px solid #ccc">${h.salario ? 'R$ '+fmtBRL(h.salario) : '—'}</td>
+    <td style="padding:5px;border:1px solid #ccc">${h.motivo||''}</td>
+    <td style="padding:5px;border:1px solid #ccc">${h.cargo||''}</td>
+    <td style="padding:5px;border:1px solid #ccc">${h.percentual != null ? String(h.percentual).replace('.',',')+'%' : ''}</td>
+  </tr>`).join('');
+  abrirReciboModal('🖨 Histórico de Cargo & Salário — ' + c.nome, `
+    <div style="padding:16px 4px">
+      <h3 style="margin-bottom:2px">NOME: ${c.nome}</h3>
+      <div class="muted" style="margin-bottom:14px">CARGO: ${c.cargo||'—'}</div>
+      <table style="width:100%;border-collapse:collapse;font-size:11px">
+        <thead><tr style="background:#f2f4f7"><th style="padding:5px;border:1px solid #ccc;text-align:left">DATA</th><th style="padding:5px;border:1px solid #ccc;text-align:left">SALÁRIO</th><th style="padding:5px;border:1px solid #ccc;text-align:left">MOTIVO</th><th style="padding:5px;border:1px solid #ccc;text-align:left">CARGO</th><th style="padding:5px;border:1px solid #ccc;text-align:left">%</th></tr></thead>
+        <tbody>${corpo || '<tr><td colspan="5" style="padding:14px;text-align:center;border:1px solid #ccc" class="muted">Nenhum registro ainda.</td></tr>'}</tbody>
+      </table>
+    </div>`, false);
 }
 
 function migracaoRealocacoes2026() {
@@ -4657,6 +4871,43 @@ function atualizarKPIsSST() {
 }
 
 /* ═══════════════ INICIALIZAÇÃO GERAL ═══════════════ */
+// Histórico real informado pelo RH (planilha de controle) — entra tal como
+// está no controle da empresa. Demais colaboradores recebem uma linha "base"
+// com a situação atual; toda mudança futura de cargo/salário já entra sozinha.
+const HISTORICO_REAL_SEED = {
+  'ADEMIR XAVIER PIRES': [
+    {data:'15/08/2019', salario:1567.08, motivo:'ADMISSÃO', cargo:'AUX PRODUÇÃO', percentual:null},
+    {data:'01/11/2019', salario:1614.09, motivo:'EFETIVAÇÃO', cargo:'', percentual:null},
+    {data:'01/11/2020', salario:1868.51, motivo:'DISSÍDIO', cargo:'', percentual:5},
+    {data:'01/04/2021', salario:2060.04, motivo:'', cargo:'', percentual:null},
+    {data:'01/11/2021', salario:2288.28, motivo:'DISSÍDIO', cargo:'', percentual:11.08},
+    {data:'01/01/2022', salario:3000, motivo:'', cargo:'', percentual:null},
+    {data:'28/11/2022', salario:3193.80, motivo:'DISSÍDIO', cargo:'', percentual:6.46},
+    {data:'01/01/2024', salario:3369.45, motivo:'DISSÍDIO', cargo:'', percentual:5.50},
+    {data:'01/11/2024', salario:3500, motivo:'DISSÍDIO', cargo:'MECÂNICO DE MANUTENÇÃO', percentual:3.87},
+    {data:'01/11/2025', salario:3700.90, motivo:'DISSÍDIO', cargo:'', percentual:5.74}
+  ]
+};
+function buildHistoricoCargoSalarioBaseline() {
+  const colabs = loadData('colaboradores');
+  const hist = loadData('historico_cargo_salario');
+  const temHistorico = new Set(hist.map(h => h.colaboradorId));
+  colabs.forEach(c => {
+    if (temHistorico.has(c.id)) return;
+    const real = HISTORICO_REAL_SEED[normSemAcento(c.nome)];
+    if (real) {
+      real.forEach(linha => crudCreate('historico_cargo_salario', Object.assign({
+        colaboradorId: c.id, colaborador: c.nome
+      }, linha), {modulo:'Histórico Cargo/Salário', label: c.nome}));
+    } else {
+      crudCreate('historico_cargo_salario', {
+        colaboradorId: c.id, colaborador: c.nome, data: c.adm || dataHojeDDMMAAAA(),
+        salario: parseSalNumHist(c.sal), motivo: 'ADMISSÃO', cargo: c.cargo || '', percentual: null
+      }, {modulo:'Histórico Cargo/Salário', label: c.nome});
+    }
+  });
+}
+
 function initCrudModules() {
   // Sempre verifica se COLABS seed é mais recente e atualiza localStorage
   let colabs = loadData('colaboradores');
@@ -4676,6 +4927,7 @@ function initCrudModules() {
   }
 
   initColabTable();
+  buildHistoricoCargoSalarioBaseline();
   buildFeriasFromColabs();
   initFeriasTable();
   buildTreinosFromColabs();
@@ -8847,7 +9099,7 @@ async function pullOutrasTabelasAntesDoBoot() {
     'vagas','beneficios_mov','beneficios_inscritos','beneficios_tipos','cargos','ponto',
     'clima_pesquisas','clima_acoes','sucessao','terceiros','documentos','usuarios','holerites',
     'comunicados','cesta_vegas','folha_descontos','feedback90','desccargos','sstfin','pcmso',
-    'epi','auditoria'];
+    'epi','auditoria','historico_cargo_salario'];
   for (const t of TABELAS) {
     try {
       if (loadData(t).length) continue;
