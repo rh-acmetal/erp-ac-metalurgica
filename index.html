@@ -424,7 +424,7 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
   <div class="l-box">
     <div class="l-logo">
       <div class="l-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
-      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.46 — Checklist de Integração com Itens Reais</div></div>
+      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.47 — Catálogo de Benefícios Fixo na Tela</div></div>
     </div>
     <div class="f-row"><label>Usuário</label><input type="text" id="l-user" value="jakeline@acmetalurgica.com.br"></div>
     <div class="f-row"><label>Senha</label><input type="password" id="l-pass" value="••••••••"></div>
@@ -5505,6 +5505,7 @@ function benefInscritosHtml(tipoNome) {
 
 function renderBeneficiosTipos() {
   benefPopularAnos();
+  try{ buildBeneficiosTiposSeed(); }catch(e){ console.warn('buildBeneficiosTiposSeed:',e); }
   const tipos = loadData('beneficios_tipos').filter(t => t.status !== 'Inativo');
   const box = document.getElementById('ben-tipos-lista');
   if (!box) return;
