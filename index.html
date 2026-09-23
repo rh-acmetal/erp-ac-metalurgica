@@ -424,7 +424,7 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
   <div class="l-box">
     <div class="l-logo">
       <div class="l-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
-      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.47 — Catálogo de Benefícios Fixo na Tela</div></div>
+      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.48 — Documentos de Integração Auto-Preenchidos</div></div>
     </div>
     <div class="f-row"><label>Usuário</label><input type="text" id="l-user" value="jakeline@acmetalurgica.com.br"></div>
     <div class="f-row"><label>Senha</label><input type="password" id="l-pass" value="••••••••"></div>
@@ -3494,6 +3494,111 @@ function sanitizeStorageKey(s) {
     .replace(/_+/g, '_');
 }
 
+/* ═══════════════ DOCUMENTOS DE INTEGRAÇÃO — AUTO-PREENCHIDOS ═══════════════ */
+
+function docHoje() {
+  const d = new Date();
+  return {dia:String(d.getDate()).padStart(2,'0'), mes:String(d.getMonth()+1).padStart(2,'0'), ano:d.getFullYear()};
+}
+
+function colabGerarTermoConfidencialidade(colabId) {
+  const c = loadData('colaboradores').find(x => x.id === colabId);
+  if (!c) return;
+  const emp = CV_EMPRESA_INFO[c.cnpj] || CV_EMPRESA_INFO['AC'];
+  const nomeEmp = emp.nome.toUpperCase();
+  const nomeCurto = c.cnpj === 'BRASS' ? 'BRASSMETAL' : 'AC METAL';
+  const hoje = docHoje();
+  const html = `<div style="padding:16px 20px;font-size:11.5px;line-height:1.5">
+    <h3 style="text-align:center;margin-bottom:16px">TERMO DE CONFIDENCIALIDADE E SIGILO</h3>
+    <p style="margin-bottom:12px">Pelo presente instrumento particular, de um lado, <strong>${nomeEmp}</strong>, empresa de direito privado, inscrita no CNPJ sob nº ${emp.cnpj}, com sede na ${emp.endereco} e, de outro <strong>${c.nome}</strong>, portador (a) do CPF <strong>${c.cpf||'____________________'}</strong>, integrante do quadro de funcionários da empresa acima qualificada e de ora em diante designado COLABORADOR, celebram entre si o presente ACORDO DE CONFIDENCIALIDADE E SIGILO, que se regerá pelas cláusulas e condições abaixo:</p>
+    <p style="font-weight:700;margin-bottom:8px">DEFINIÇÕES</p>
+    <p style="margin-bottom:10px">1. Em razão das funções desempenhadas pelo colaborador, de ${nomeCurto}, as quais têm acesso a informações sigilosas e ou confidenciais da ${nomeCurto}, o que deu origem ao presente ACORDO DE CONFIDENCIALIDADE E SIGILO.</p>
+    <p style="margin-bottom:10px">2. Então, por meio deste, o COLABORADOR se compromete a tomar todas as precauções para assegurar a confidencialidade, integridade e não disponibilidade de qualquer informação sigilosa, seja interna ou externa, que tenha sido a ele confiada e ou que tomou conhecimento no próprio exercício de suas funções e ou em face de terceiros colaboradores. Desse modo, assume, pessoalmente, obrigação irrevogável e irretratável de não revelar, reproduzir, repassar, expor ou divulgar, sob qualquer meio, pretexto, fundamento ou justificativa, as informações a que tiver acesso, mantendo a confidencialidade de referidas informações.</p>
+    <p style="margin-bottom:10px">3. Informação confidencial é toda informação disponibilizada ao COLABORADOR em razão do desempenho de suas funções e atividades, independente da forma e ou por quem foi a mesma disponibilizada.</p>
+    <p style="margin-bottom:10px">4. Assim, informação confidencial deve significar, sem se limitar, a lista de clientes da ${nomeCurto}, cadastrados em bancos de dados internos, o histórico de compra de cada cliente, com as informações sobre valores, quantidade e volume de compras, dados cadastrais e contatos de clientes/fornecedores, toda e qualquer informação, de natureza técnica, operacional, financeira, salarial, comercial, jurídica, know-how, projetos, desenhos técnicos, planos de negócios, métodos, técnicas e experiências acumuladas, documentos, contratos, papéis, estudos, pareceres, pesquisas e planilhas.</p>
+    <p style="margin-bottom:10px">5. O COLABORADOR reconhece, neste ato, ter ciência de que possui amplo e irrestrito acesso a informações pessoais de terceiros, clientes fidelizados, bem como de rotinas, projetos, planilhas financeiras, técnicas e/ou similares, desenhos, fórmulas de produtos, ou seja, tudo que diz respeito à tais assuntos, são consideradas informações sigilosas e que não podem ser compartilhadas em nenhuma hipótese, tanto impressa quanto verbalmente.</p>
+    <div style="page-break-before:always"></div>
+    <p style="margin-bottom:10px">6. DO USO - o COLABORADOR concorda em usar as informações confidenciais recebidas da ${nomeCurto} com o propósito restrito de se fazer cumprir o estabelecido e acordado no contrato de trabalho, somente podendo utilizá-las para referido propósito, zelando para que tais informações confidenciais não sejam de qualquer forma divulgadas ou reveladas a terceiros, utilizando-se, no mínimo, do mesmo zelo e cuidado que dispensa às suas próprias informações confidenciais, razão pela qual declara, na qualidade de funcionário, que tem plena ciência de que deverá zelar pelo sigilo absoluto de todos os assuntos, bancos de dados, senhas, acessos a quaisquer computadores e sistemas, bem como transações comerciais e bancárias, produtos, materiais, e técnicas empregados na fabricação de produtos e/ou de prestação de serviços por sua empregadora, obrigando-se a tratar como confidenciais e a manter em segredo todos os dados que lhe forem confiados ou de que, porventura, venha a ter conhecimento, não revelando a ninguém ou permitindo que alguém o faça.</p>
+    <p style="margin-bottom:10px">7. DAS CÓPIAS – o COLABORADOR que receber informação confidencial fica desde já proibido de produzir cópias, ou back-up, seja por pen-drive ou através de qualquer outro meio ou forma, de qualquer dos documentos a ele fornecidos ou documentos que tenham chegado a seu conhecimento em virtude do contrato, ou mesmo que estejam em banco de dados da empresa ${nomeCurto}, além daquelas imprescindíveis ao desenvolvimento de seu trabalho, considerando que todas sejam informações confidenciais.</p>
+    <p style="margin-bottom:10px">8. DA PROPRIEDADE – todas as informações confidenciais permanecerão sendo de propriedade da ${nomeCurto}, somente podendo ser usadas pelo COLABORADOR, ora receptor, para os fins de execução do contrato de trabalho. Tais informações confidenciais, incluídas as cópias realizadas, serão retomadas à ${nomeCurto}, na pessoa de seu representante/revelador, ou destruídas, tão logo tenha terminado a necessidade de seu uso pelo COLABORADOR, e, em qualquer caso, na hipótese de término da vigência do contrato.</p>
+    <p style="margin-bottom:10px">9. Além disso, todas as informações e/ou materiais que digam respeito, direta ou indiretamente, ao objeto do contrato de trabalho, deverão ser tratados pelo COLABORADOR com o mais absoluto sigilo e a mais rigorosa confidencialidade, de modo a evitar, por qualquer meio ou forma, o seu conhecimento e/ou utilização por parte de terceiros, seja durante a sua vigência ou mesmo após ela, sob pena do pagamento das perdas e danos resultantes do descumprimento desta obrigação.</p>
+    <p style="margin-bottom:10px">10. As informações confidenciais somente poderão ser divulgadas a terceiros após prévia e expressa autorização da ${nomeCurto}. Por terceiros, compreendem não só empresas e funcionários de empresas concorrentes, mas também os próprios colaboradores e parceiros da ${nomeCurto} e inclusive pessoas sem nenhum vínculo com a empresa, independente de grau de parentesco ou amizade com o COLABORADOR.</p>
+    <p style="margin-bottom:10px">11. Nenhum direito ou licença é concedido ao COLABORADOR com respeito a quaisquer informações, documentos, arquivos ou anexos que contenham especificações técnicas que sejam a ele ou aos seus prepostos e subcontratados, revelados ou fornecidos.</p>
+    <div style="page-break-before:always"></div>
+    <p style="margin-bottom:10px">12. O COLABORADOR se obriga a devolver para a ${nomeCurto}, tão logo deixe de usá-las na execução do contrato de trabalho, todas as informações recebidas, bem como todos e quaisquer documentos fornecidos ou disponibilizados pela ${nomeCurto} ou por terceiros, bem como todos e quaisquer documentos por ela produzidos, relacionados direta ou indiretamente com o objeto do Contrato.</p>
+    <p style="margin-bottom:10px">13. O COLABORADOR compromete-se a respeitar a confidencialidade dos dados pessoais ou comerciais eventualmente coletados através da internet, independentemente do sistema de coleta utilizado, sejam das Partes ou de quaisquer terceiros (doravante em conjunto, os "Dados Eletrônicos"), observando, para tanto, a Lei nº 12.965/2014 (Marco Civil da Internet) e Decreto nº 8.771/2016 (Regulamento do Marco Civil da Internet), bem como a Lei nº 13.709/2018 (Lei Geral de Proteção de Dados) e quaisquer outras leis relativas à proteção de dados pessoais que vierem a ser promulgadas ou entrarem em vigor no curso da vigência deste acordo.</p>
+    <p style="margin-bottom:10px">14. O COLABORADOR declara expressamente que é (e será, durante toda a vigência do Contrato) o legítimo possuidor e monitor de todas as informações contidas e ao seu abrigo e guarda e que, por isso, exime a ${nomeCurto} de toda e qualquer responsabilidade sobre o uso indevido destas informações, mantendo a ${nomeCurto} livre de todos os pleitos, demandas, reclamações ou inquéritos decorrentes do descumprimento desta cláusula, inclusive substituindo processualmente a ${nomeCurto} em eventual polo passivo de demanda judicial, podendo o COLABORADOR ser denunciado em qualquer ação que for proposta contra a ${nomeCurto} para indenizar qualquer terceiro que tenha seus direitos lesados.</p>
+    <p style="margin-bottom:10px">15. Referido ACORDO DE CONFIDENCIALIDADE poderá ser alterado a qualquer tempo, mediante aditivo a este e com concordância expressa das partes envolvidas.</p>
+    <p style="margin-bottom:10px">16. O COLABORADOR declara, ainda, se responsabilizar pelo cuidado e manutenção das informações sigilosas perante seus eventuais subordinados, caso existam, sendo que, nesta hipótese, deverá comunicar a ${nomeCurto}, para que se providencie um acordo de confidencialidade de semelhante teor, contudo, a elaboração do acordo não isenta o COLABORADOR da responsabilidade de gerir uma equipe de subordinados que eventualmente se formar, bem como de zelar pela confidencialidade e sigilo das informações dentro da equipe.</p>
+    <p style="margin-bottom:10px">17. Este ACORDO DE CONFIDENCIALIDADE torna-se parte integrante e indissociável do contrato de trabalho celebrado entre as partes.</p>
+    <p style="margin-bottom:10px">18. DA RESPONSABILIDADE - o COLABORADOR, ao receber informação confidencial, se obriga a:</p>
+    <p style="margin-bottom:8px;margin-left:14px">a. Não discutir perante terceiros, usar, divulgar, revelar, ceder a qualquer título ou dispor das Informações Confidenciais, para nenhuma pessoa, física ou jurídica, e para nenhuma outra finalidade que não seja exclusivamente relacionada ao objeto referido, cumprindo-lhe adotar cautelas e precauções adequadas no sentido de impedir o seu uso indevido por qualquer pessoa que, por qualquer razão, tenha tido acesso a elas.</p>
+    <div style="page-break-before:always"></div>
+    <p style="margin-bottom:8px;margin-left:14px">b. Impedir, por qualquer meio em direito admitido, a divulgação ou a utilização das Informações Confidenciais.</p>
+    <p style="margin-bottom:10px;margin-left:14px">c. Restituir imediatamente o documento (ou outro suporte) que contiver as Informações Confidenciais à Parte reveladora, sempre que esta as solicitar ou sempre que as Informações Confidenciais deixarem de ser necessárias, e não guardar para si, em nenhuma hipótese, cópia, reprodução ou segunda via destas.</p>
+    <p style="margin-bottom:10px">19. DA VIOLAÇÃO - o COLABORADOR que recebe e tem conhecimento de Informação Confidencial, reconhece e aceita que, na hipótese de violação de quaisquer das cláusulas deste Termo, estará sujeito as sanções e penalidades legais, conforme abaixo discriminado:</p>
+    <p style="margin-bottom:8px;margin-left:14px">a. a Lei de Proteção ao Segredo Industrial (Lei nº 9.279/96), no artigo 195, XI, determina que comete crime de concorrência desleal quem "divulga, explora ou utiliza-se, sem autorização, de conhecimentos, informações ou dados confidenciais, utilizáveis na indústria, comércio ou prestação de serviços, excluídos aqueles que sejam de conhecimento público ou que sejam evidentes para um técnico no assunto, a que teve acesso mediante relação contratual ou empregatícia, mesmo após o término do contrato".</p>
+    <p style="margin-bottom:8px;margin-left:14px">b. o crime se tipifica pela revelação de segredo, conforme disposto no artigo 154, do Código Penal: "Revelar a alguém, sem justa causa, segredo, de que tem ciência em razão de função, ministério, ofício ou profissão, e cuja revelação possa produzir dano a outrem", tendo como pena de detenção, de três meses a um ano, ou multa.</p>
+    <p style="margin-bottom:8px;margin-left:14px">c. o art. 482, alíneas "c" e "g" da CLT, prevê a dispensa por justa causa do empregado que praticar concorrência desleal e/ou divulgar os segredos empresariais.</p>
+    <p style="margin-bottom:10px;margin-left:14px">d. o dano, por sua vez, pode vir acompanhado da prática de ato ilícito, conforme dispõe o artigo 186 e 187 do Código Civil, sendo a obrigação de reparação do dano obrigatória (artigo 927, do mesmo diploma).</p>
+    <p style="margin-bottom:10px">20. DO PRAZO - fica ciente o COLABORADOR que receber Informação Confidencial que as obrigações de confidencialidade decorrentes do presente ACORDO, tanto quanto as responsabilidades e obrigações outras derivadas do contrato de trabalho, vigorarão durante todo o contrato de trabalho e permanecerão em vigor por 10 (dez) anos após o seu desligamento da empresa.</p>
+    <p style="margin-bottom:10px">21. DAS DISPOSIÇÕES GERAIS - este ACORDO será regido pelas leis brasileiras e obriga as Partes, seus representantes legais, sucessores e cessionários.</p>
+    <p style="margin-bottom:16px">22. DO FORO - Fica eleito, com renúncia de qualquer outro, por mais privilegiado que seja, o foro desta cidade e comarca de Santa Bárbara d'Oeste, deste Estado, para, nele, serem resolvidas quaisquer questões judiciais que eventualmente se originem do presente instrumento particular, ficando estipulado, nesse passo, que a parte vencida na demanda será obrigada, também, ao pagamento dos honorários advocatícios do advogado que a parte inocente contratar para a defesa de seus direitos e interesses.</p>
+    <p style="margin-bottom:24px">E por estarem assim, justos e contratados, e de perfeito acordo com as cláusulas e condições acima estabelecidas, assinam o presente compromisso em duas vias de igual teor, depois de lidas e achadas conforme, tudo na presença das duas testemunhas que a tudo assistiram e que ouviram a leitura deste, na forma da lei.</p>
+    <p style="text-align:center;margin-bottom:30px">Santa Bárbara d'Oeste-SP, ${hoje.dia}/${hoje.mes}/${hoje.ano}.</p>
+    <p style="text-align:center;margin-bottom:4px">__________________________</p>
+    <p style="text-align:center;margin-bottom:30px">${nomeEmp}</p>
+    <p style="margin-bottom:30px">Nome funcionário: <strong>${c.nome}</strong></p>
+    <p style="margin-bottom:4px">TESTEMUNHAS: 1. _____________________________ 2. _____________________________</p>
+    <p>CPF _________________________ &nbsp;&nbsp;&nbsp;&nbsp; CPF _________________________</p>
+  </div>`;
+  ensureReciboModal();
+  document.getElementById('m-recibo').classList.add('open');
+  const dfEl = document.getElementById('recibo-date-fields'); if (dfEl) dfEl.style.display = 'none';
+  document.getElementById('recibo-preview').innerHTML = html;
+}
+
+function colabGerarTermoEPI(colabId) {
+  const c = loadData('colaboradores').find(x => x.id === colabId);
+  if (!c) return;
+  const emp = CV_EMPRESA_INFO[c.cnpj] || CV_EMPRESA_INFO['AC'];
+  const hoje = docHoje();
+  const linhasVazias = Array.from({length:9}).map(()=>`<tr><td style="padding:5px;border:1px solid #999">&nbsp;</td><td style="padding:5px;border:1px solid #999">&nbsp;</td><td style="padding:5px;border:1px solid #999">&nbsp;</td><td style="padding:5px;border:1px solid #999">&nbsp;</td><td style="padding:5px;border:1px solid #999">&nbsp;</td><td style="padding:5px;border:1px solid #999">&nbsp;</td><td style="padding:5px;border:1px solid #999">&nbsp;</td></tr>`).join('');
+  const html = `<div style="padding:16px 20px;font-size:12px;line-height:1.5">
+    <table style="width:100%;border-collapse:collapse;margin-bottom:12px"><tr>
+      <td style="border:1px solid #000;padding:8px;font-weight:700">${emp.nome.toUpperCase()}</td>
+      <td style="border:1px solid #000;padding:8px;font-weight:700;text-align:center">FICHA DE ENTREGA E CONTROLE DOS EPI'S</td>
+    </tr></table>
+    <table style="width:100%;border-collapse:collapse;margin-bottom:14px">
+      <tr><td style="border:1px solid #000;padding:6px;font-weight:700">NOME</td><td style="border:1px solid #000;padding:6px;font-weight:700">ADMISSÃO</td><td style="border:1px solid #000;padding:6px;font-weight:700">SETOR</td><td style="border:1px solid #000;padding:6px;font-weight:700">FUNÇÃO</td></tr>
+      <tr><td style="border:1px solid #000;padding:6px">${c.nome}</td><td style="border:1px solid #000;padding:6px">${c.adm||'—'}</td><td style="border:1px solid #000;padding:6px">${c.setor||'—'}</td><td style="border:1px solid #000;padding:6px">${c.cargo||'—'}</td></tr>
+    </table>
+    <p style="font-weight:700;margin-bottom:8px">- TERMO DE RESPONSABILIDADE</p>
+    <p style="margin-bottom:10px">Declaro para fins de direito, que estou recebendo nesta data, os equipamentos de proteção individual relacionado na ficha de controle de entrega de EPI's, fornecidos gratuitamente pela empresa e destinados a minha proteção contra acidentes e/ou doenças, nos termos do artigo 166 c.c artigo 191 II da CLT e com a NR 6 da Portaria 3.14 de 08 de junho de 1.978.</p>
+    <p style="margin-bottom:8px">Declaro também estar ciente, comprometendo-me a cumprir as determinações abaixo, estabelecidas pela empresa:</p>
+    <p style="margin:0 0 6px 14px">- Usar os EPI's que me forem entregues de forma adequada, sempre que estiver em locais onde a utilização dos mesmos for obrigatória;</p>
+    <p style="margin:0 0 6px 14px">- Zelar pela guarda e conservação dos EPI's que me forem entregues, não os entregando a outras pessoas;</p>
+    <p style="margin:0 0 6px 14px">- Comunicar imediatamente a empresa no caso de quebra, desgaste, perda ou extravio do EPI, para que o mesmo seja reposto;</p>
+    <p style="margin:0 0 6px 14px">- Devolver os EPI's que estiverem em meu poder, no caso de desligamento da empresa;</p>
+    <p style="margin:0 0 6px 14px">- Declaro ter recebido treinamento sobre o uso correto dos EPI's.</p>
+    <p style="margin:0 0 10px 14px">- Estou ciente de que o creme de proteção de Grupo 3, de uso coletivo, é parte integrante do conjunto de equipamentos de proteção disponibilizados pela empresa, devendo ser utilizado sempre que a atividade assim exigir, conforme orientação de segurança e higiene do trabalho. Comprometo-me a fazer uso adequado do referido produto, observando as normas e procedimentos estabelecidos pela empresa.</p>
+    <p style="margin-bottom:10px">Estou ciente ainda que a perda ou dano ao EPI que estiver em meu poder, decorrente do mau uso ou negligência de minha parte, autorizo a empresa a descontar o valor equivalente ao EPI novo em pagamento, conforme autoriza o art. 462, parágrafo primeiro da CLT.</p>
+    <p style="margin-bottom:16px">Declaro finalmente estar ciente que o descumprimento de quaisquer das cláusulas deste documento, constitui JUSTA CAUSA para rescisão do contrato de trabalho, nos termos do artigo 482 "h" da CLT.</p>
+    <table style="width:100%;border-collapse:collapse;font-size:11px;margin-bottom:10px">
+      <thead><tr>
+        <th style="border:1px solid #999;padding:5px">QT</th><th style="border:1px solid #999;padding:5px">Tipo de EPI's</th><th style="border:1px solid #999;padding:5px">Tamanho</th><th style="border:1px solid #999;padding:5px">C.A</th><th style="border:1px solid #999;padding:5px">Data Entrega</th><th style="border:1px solid #999;padding:5px">Código</th><th style="border:1px solid #999;padding:5px">Assinatura</th>
+      </tr></thead><tbody>${linhasVazias}</tbody>
+    </table>
+    <p style="font-size:10px;margin-bottom:20px">Código de controle: 1–Demissão · 2–Extravio · 3–Danificado · 4–Mau uso · 5–EPI uso parcial · 6–EPI uso integral · 7–Periodicidade · 8–Admissão</p>
+    <p style="margin-bottom:24px">Santa Barbara do Oeste: ${hoje.dia} / ${hoje.mes} / ${hoje.ano}.</p>
+    <p style="text-align:right;margin-right:40px">____________________________<br>Assinatura</p>
+  </div>`;
+  ensureReciboModal();
+  document.getElementById('m-recibo').classList.add('open');
+  const dfEl = document.getElementById('recibo-date-fields'); if (dfEl) dfEl.style.display = 'none';
+  document.getElementById('recibo-preview').innerHTML = html;
+}
+
 const COLAB_DOC_CATEGORIAS = ['Acordos - Termos','Advertências','Atestados','Avaliação de Desempenho','Documentos Admissionais','Feedbacks','Férias','Ficha de EPI','Processo Seletivo','Registro E-Social / Integração / Efetivação / ASO','Treinamentos','Histórico de Salário'];
 
 function colabDocumentosHtml(c) {
@@ -3506,6 +3611,15 @@ function colabDocumentosHtml(c) {
       <input type="file" id="colab-foto-input" accept="image/*" style="display:none" onchange="colabUploadFoto(this.files[0])">
       <button class="btn btn-s btn-xs" onclick="document.getElementById('colab-foto-input').click()">📷 Alterar Foto</button>
     </div>
+  </div>`;
+
+  html += `<div class="card" style="padding:12px;margin-bottom:14px">
+    <div style="font-size:12px;font-weight:700;margin-bottom:8px">📄 Documentos de Integração — gerar já preenchido</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-s btn-sm" onclick="colabGerarTermoConfidencialidade(${c.id})">🖨 Termo de Confidencialidade</button>
+      <button class="btn btn-s btn-sm" onclick="colabGerarTermoEPI(${c.id})">🖨 Termo de Responsabilidade de EPI</button>
+    </div>
+    <div class="muted" style="margin-top:6px">Nome, CPF, cargo, setor e empresa (${c.cnpj||'—'}) preenchidos automaticamente — só a assinatura fica em branco.</div>
   </div>`;
 
   COLAB_DOC_CATEGORIAS.forEach((cat, i) => {
@@ -6237,8 +6351,8 @@ function cvExportarFiltrado() {
 }
 
 const CV_EMPRESA_INFO = {
-  'AC': {nome:'AC Metal Fundição Eireli', cnpj:'00.292.535/0001-83'},
-  'BRASS': {nome:'BRASS METAL LTDA', cnpj:'27.409.417/0001-69'}
+  'AC': {nome:'AC Metal Fundição Eireli', cnpj:'00.292.535/0001-83', endereco:"Rua Tupis, 3149, Parque Industrial de Cillo, Santa Bárbara d'Oeste - SP, CEP. 13.453-050"},
+  'BRASS': {nome:'BRASSMETAL LTDA', cnpj:'27.409.417/0001-69', endereco:"Rua Tupis, 3149 (fundos), Parque Industrial de Cillo, Santa Bárbara d'Oeste - SP, CEP. 13.453-050"}
 };
 
 function cvGerarRecibos(cnpjEmpresa) {
