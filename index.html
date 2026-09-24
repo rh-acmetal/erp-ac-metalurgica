@@ -425,7 +425,7 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
   <div class="l-box">
     <div class="l-logo">
       <div class="l-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
-      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.58 — Ajuste Fino das Colunas do Termo de EPI</div></div>
+      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.59 — Correção de Formatação de Salário/Valores</div></div>
     </div>
     <div class="f-row"><label>Usuário</label><input type="text" id="l-user" value="jakeline@acmetalurgica.com.br"></div>
     <div class="f-row"><label>Senha</label><input type="password" id="l-pass" value="••••••••"></div>
@@ -2572,7 +2572,7 @@ function confirmarExcel(){
       cargo:colMap.cargo!==undefined?String(row[colMap.cargo]||'').trim():'—',
       setor:colMap.setor!==undefined?String(row[colMap.setor]||'').trim():'Geral',
       adm:colMap.adm!==undefined?xlDate(row[colMap.adm]):'—',
-      sal:colMap.sal!==undefined?String(row[colMap.sal]||'').trim():'—',
+      sal:colMap.sal!==undefined?(row[colMap.sal]!==undefined && row[colMap.sal]!=='' ? moedaFmt(row[colMap.sal]) : '—'):'—',
       cnpj:colMap.cnpj!==undefined?String(row[colMap.cnpj]||'').trim():'01',
       status:'Ativo',
       nascimento:colMap.nascimento!==undefined?xlDate(row[colMap.nascimento]):'—',
@@ -2912,8 +2912,47 @@ function crudUpdate(table, id, changes, opts) {
 // Sempre que um colaborador é criado (admissão) ou tem cargo/salário alterado
 // pelo cadastro, uma linha é adicionada em 'historico_cargo_salario', no
 // mesmo formato da planilha de controle usada pelo RH.
+//
+// ─── Conversão robusta de valores monetários ───
+// O campo Salário sempre foi um texto livre sem máscara. Se alguém digita ou
+// cola um valor no formato "2571.70" (ponto como decimal, padrão americano)
+// em vez de "2.571,70" (padrão brasileiro), o parser antigo lia o ponto como
+// separador de milhar e multiplicava o valor por mil — foi exatamente o que
+// gerou "R$ 2.571.700.000,00" no lugar de "R$ 2.571,70".
+// moedaNum() decide sozinho qual é o separador decimal antes de converter,
+// então corrige a leitura de valores já salvos errados sem precisar mexer
+// no banco de dados.
+function moedaNum(v) {
+  if (v == null || v === '') return 0;
+  if (typeof v === 'number') return v;
+  let s = String(v).replace(/R\$\s*/gi, '').trim();
+  if (!s) return 0;
+  const temVirgula = s.includes(',');
+  const temPonto = s.includes('.');
+  if (temVirgula && temPonto) {
+    // "2.571,70" — ponto é milhar, vírgula é decimal
+    s = s.replace(/\./g, '').replace(',', '.');
+  } else if (temVirgula) {
+    // "2571,70" — vírgula é decimal
+    s = s.replace(',', '.');
+  } else if (temPonto) {
+    // Ambíguo: "2.571" (milhar, sem centavos) vs "2571.70" (decimal americano).
+    // Só tratamos o ponto como milhar quando o padrão é EXATAMENTE grupos de
+    // 3 dígitos (ex.: "2.571" ou "1.234.567"), sem nenhum resto — que é como
+    // um valor em reais sem centavos apareceria digitado à mão.
+    s = /^\d{1,3}(\.\d{3})+$/.test(s) ? s.replace(/\./g, '') : s;
+  }
+  return parseFloat(s) || 0;
+}
+// Formata qualquer valor monetário (número ou texto em qualquer formato) como
+// "1.234,56" — sempre com duas casas decimais, sem prefixo "R$" (quem chama
+// decide se prefixa). Use esta função em vez de exibir c.sal ou outro valor
+// monetário diretamente.
+function moedaFmt(v) {
+  return moedaNum(v).toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2});
+}
 function parseSalNumHist(v) {
-  return parseFloat(String(v||'0').replace(/[^\d,.-]/g,'').replace(/\./g,'').replace(',','.')) || 0;
+  return moedaNum(v);
 }
 function registrarHistoricoCargoSalario(antes, depois, motivoForcado) {
   const salAntes = antes ? parseSalNumHist(antes.sal) : null;
@@ -3150,6 +3189,7 @@ function formToObject(formEl) {
     let val = el.value;
     if (el.type === 'number') val = val === '' ? null : parseFloat(val);
     if (el.type === 'checkbox') val = el.checked;
+    if (el.dataset.moeda) val = val === '' ? '' : moedaFmt(val);
     obj[field] = val;
   });
   return obj;
@@ -3160,8 +3200,23 @@ function fillForm(formEl, record) {
     const field = el.dataset.field;
     if (record[field] === undefined) return;
     if (el.type === 'checkbox') el.checked = !!record[field];
+    else if (el.dataset.moeda) el.value = record[field] ? moedaFmt(record[field]) : '';
     else el.value = record[field] ?? '';
   });
+}
+
+// Máscara de moeda ao digitar: considera os dois últimos dígitos como
+// centavos e agrupa milhar com ponto — evita exatamente o tipo de erro que
+// gerou "R$ 2.571.700.000,00" no lugar de "R$ 2.571,70" (digitação em
+// formato americano interpretada como se fosse formato brasileiro).
+function maskMoedaInput(el) {
+  let digits = el.value.replace(/\D/g, '');
+  if (!digits) { el.value = ''; return; }
+  digits = digits.replace(/^0+(?=\d)/, '');
+  while (digits.length < 3) digits = '0' + digits;
+  const cents = digits.slice(-2);
+  let intPart = digits.slice(0, -2).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  el.value = intPart + ',' + cents;
 }
 
 function validateForm(formEl) {
@@ -3312,6 +3367,8 @@ function renderFormFields(fields, record) {
       input = `<textarea data-field="${f.field}" ${req}></textarea>`;
     } else if (f.field === 'colaborador') {
       input = `<input type="text" data-field="${f.field}" ${req} list="global-colab-list" placeholder="${f.placeholder||'Digite para buscar...'}" autocomplete="off">`;
+    } else if (f.moeda) {
+      input = `<input type="text" data-field="${f.field}" data-moeda="1" ${req} inputmode="decimal" oninput="maskMoedaInput(this)" placeholder="${f.placeholder||'0,00'}">`;
     } else {
       input = `<input type="${f.type||'text'}" data-field="${f.field}" ${req} ${f.step?`step="${f.step}"`:''} placeholder="${f.placeholder||''}">`;
     }
@@ -3386,7 +3443,7 @@ const MOD_COLAB = {
     {field:'setor', label:'Setor', type:'select', options:SETORES, required:true},
     {field:'adm', label:'Data de Admissão (dd/mm/aaaa)', required:true, placeholder:'dd/mm/aaaa'},
     {field:'nascimento', label:'Data de Nascimento (dd/mm/aaaa)', placeholder:'dd/mm/aaaa'},
-    {field:'sal', label:'Salário (R$)', placeholder:'R$ 0,00'},
+    {field:'sal', label:'Salário (R$)', placeholder:'0,00', moeda:true},
     {field:'cnpj', label:'CNPJ', type:'select', options:['01','02','PJ']},
     {field:'rg', label:'RG'},
     {field:'cpf', label:'CPF'},
@@ -3534,7 +3591,7 @@ function colabFichaSwitchTab(tab) {
     );
   } else if (tab === 'folha') {
     box.innerHTML = grid(
-      cfField('Salário', c.sal ? 'R$ '+c.sal : '') + cfField('Horário de Trabalho', c.horarioTrabalho) + ''
+      cfField('Salário', c.sal ? 'R$ '+moedaFmt(c.sal) : '') + cfField('Horário de Trabalho', c.horarioTrabalho) + ''
     );
   } else if (tab === 'gestao') {
     box.innerHTML = grid(cfField('Status', c.status) + '') + `<div style="margin-top:10px">${cfField('Observações', c.observacoes)}</div>`;
@@ -4237,7 +4294,7 @@ function colabFichaAcao(acao) {
 
         ${cfSecao('Informações da Folha e Gestão')}
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px 20px;font-size:12px">
-          ${cfField('Salário', c.sal ? 'R$ '+c.sal : '')}${cfField('Horário de Trabalho', c.horarioTrabalho)}
+          ${cfField('Salário', c.sal ? 'R$ '+moedaFmt(c.sal) : '')}${cfField('Horário de Trabalho', c.horarioTrabalho)}
           ${cfField('Observações', c.observacoes)}
         </div>
       </div>`, false);
@@ -4476,7 +4533,7 @@ function abrirHistoricoCargoSalario(colabId) {
   const c = loadData('colaboradores').find(x => x.id === colabId);
   if (!c) return;
   document.getElementById('histsal-titulo').textContent = '📜 Histórico de Cargo & Salário — ' + c.nome;
-  document.getElementById('histsal-subtitulo').textContent = 'Cargo atual: ' + (c.cargo||'—') + '  ·  Salário atual: ' + (c.sal ? 'R$ '+c.sal : '—');
+  document.getElementById('histsal-subtitulo').textContent = 'Cargo atual: ' + (c.cargo||'—') + '  ·  Salário atual: ' + (c.sal ? 'R$ '+moedaFmt(c.sal) : '—');
   document.getElementById('hs-data').value = new Date().toISOString().slice(0,10);
   document.getElementById('hs-salario').value = '';
   document.getElementById('hs-motivo').value = '';
@@ -4590,7 +4647,7 @@ function colabRowRender(rows) {
       <td style="font-size:11px">${c.cargo}</td>
       <td>${c.setor}</td>
       <td>${c.adm}</td>
-      <td class="mono">${c.sal||'—'}</td>
+      <td class="mono">${c.sal?'R$ '+moedaFmt(c.sal):'—'}</td>
       <td><span class="badge bgy">CNPJ ${c.cnpj||'01'}</span></td>
       <td><span class="badge ${sb}">${c.status}</span></td>
       <td><span class="chip">${tc}</span></td>
@@ -4664,7 +4721,7 @@ function abrirDetalheColabId(id) {
       </div>
       <div style="background:var(--g50);border-radius:6px;padding:8px 10px">
         <div style="font-size:9px;color:var(--g400);font-weight:700;text-transform:uppercase">Salário</div>
-        <div style="font-size:12px;font-weight:600">${c.sal||'—'}</div>
+        <div style="font-size:12px;font-weight:600">${c.sal?'R$ '+moedaFmt(c.sal):'—'}</div>
       </div>
       <div style="background:var(--g50);border-radius:6px;padding:8px 10px">
         <div style="font-size:9px;color:var(--g400);font-weight:700;text-transform:uppercase">Nascimento</div>
@@ -6223,7 +6280,7 @@ function benefExportarInscritos(tipoNome) {
     let valor = i.valorDesconto || 0;
     if (isVT) {
       const c = colabs.find(x => (x.nome||'').trim().toUpperCase() === (i.colaborador||'').trim().toUpperCase());
-      const sal = c ? parseFloat(String(c.sal||'0').replace(/[^\d,.-]/g,'').replace(/\./g,'').replace(',','.')) : 0;
+      const sal = c ? moedaNum(c.sal) : 0;
       valor = sal ? Math.round(sal*0.06*100)/100 : 0;
     }
     return [i.colaborador, valor, 'Ativo'];
@@ -6255,7 +6312,7 @@ function benefGerarRelatorio(tipoNome) {
     let valor = i.valorDesconto || 0;
     if (isVT) {
       const c = colabs.find(x => (x.nome||'').trim().toUpperCase() === (i.colaborador||'').trim().toUpperCase());
-      const sal = c ? parseFloat(String(c.sal||'0').replace(/[^\d,.-]/g,'').replace(/\./g,'').replace(',','.')) : 0;
+      const sal = c ? moedaNum(c.sal) : 0;
       valor = sal ? Math.round(sal*0.06*100)/100 : 0;
     }
     total += valor;
@@ -6283,7 +6340,7 @@ function benefInscritosHtml(tipoNome) {
     let colunaValor;
     if (isVT) {
       const c = colabs.find(x => (x.nome||'').trim().toUpperCase() === (i.colaborador||'').trim().toUpperCase());
-      const sal = c ? parseFloat(String(c.sal||'0').replace(/[^\d,.-]/g,'').replace(/\./g,'').replace(',','.')) : 0;
+      const sal = c ? moedaNum(c.sal) : 0;
       const valor = sal ? Math.round(sal*0.06*100)/100 : 0;
       const obsSalario = c ? `<span class="muted" style="font-size:9px">(6% de R$ ${fmtBRL(sal)})</span>` : '<span class="muted" style="font-size:9px">(salário não encontrado no cadastro)</span>';
       colunaValor = `R$ ${fmtBRL(valor)} ${obsSalario}`;
@@ -8598,7 +8655,7 @@ const MOD_CARGO = {
 
 function fmtMoney(v) {
   if (v == null || v === '') return '—';
-  return 'R$'+(+v).toLocaleString('pt-BR',{minimumFractionDigits:0,maximumFractionDigits:0});
+  return 'R$'+(+v).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
 }
 
 function cargoRowRender(rows) {
@@ -9934,7 +9991,7 @@ function hRow(label, val, desc) {
   const color = desc ? 'color:var(--red)' : '';
   return `<div style="display:flex;justify-content:space-between;margin-bottom:4px">
     <span style="color:var(--g600)">${label}</span>
-    <span style="${color}">${desc?'-':''}R$ ${v}</span>
+    <span style="${color}">${desc?'-':''}R$ ${moedaFmt(v)}</span>
   </div>`;
 }
 
@@ -9967,9 +10024,9 @@ function atualizarKPIsHolerite() {
   const totalLiq   = hols.reduce((s, h) => { const c=calcHolerite(h); return s+(+c.liq); }, 0);
   const totalFgts  = hols.reduce((s, h) => s + (+h.salarioBase||0)*0.08, 0);
   setText('hol-total-crud',  hols.length);
-  setText('hol-folha-crud',  'R$'+totalFolha.toLocaleString('pt-BR',{minimumFractionDigits:0}));
-  setText('hol-liq-crud',    'R$'+totalLiq.toLocaleString('pt-BR',{minimumFractionDigits:0}));
-  setText('hol-fgts-crud',   'R$'+totalFgts.toLocaleString('pt-BR',{minimumFractionDigits:0}));
+  setText('hol-folha-crud',  'R$'+totalFolha.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}));
+  setText('hol-liq-crud',    'R$'+totalLiq.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}));
+  setText('hol-fgts-crud',   'R$'+totalFgts.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}));
 }
 
 /* ═══════════════ MÓDULO: COMUNICADOS & ENDOMARKETING ═══════════════ */
@@ -10189,7 +10246,7 @@ function colabFiltrar() {
     }
     // Filtro por salário
     if (salMin > 0 || salMax < Infinity) {
-      const sal = parseFloat((c.sal||'').replace(/[^\d.,]/g,'').replace(/\./g,'').replace(',','.')) || 0;
+      const sal = moedaNum(c.sal);
       if (sal < salMin || sal > salMax) return false;
     }
     return true;
@@ -10278,7 +10335,7 @@ function colabRenderizar() {
       if (cols.cargo)  cells.push(`<td style="font-size:11px">${c.cargo}</td>`);
       if (cols.setor)  cells.push(`<td>${c.setor}</td>`);
       if (cols.adm)    cells.push(`<td>${c.adm}</td>`);
-      if (cols.sal)    cells.push(`<td class="mono">${c.sal||'—'}</td>`);
+      if (cols.sal)    cells.push(`<td class="mono">${c.sal?'R$ '+moedaFmt(c.sal):'—'}</td>`);
       if (cols.cnpj)   cells.push(`<td><span class="badge bgy">CNPJ ${c.cnpj||'01'}</span></td>`);
       if (cols.status) cells.push(`<td><span class="badge ${sb}">${c.status}</span></td>`);
       if (cols.tempo)  cells.push(`<td><span class="chip">${tc}</span></td>`);
@@ -11271,7 +11328,7 @@ function planoRowRender(rows) {
       <td><span class="chip">${p.responsavel||'—'}</span></td>
       <td style="font-size:10px">${p.quando||'—'}</td>
       <td style="font-size:10px;max-width:130px">${(p.como||'—').slice(0,60)}${p.como&&p.como.length>60?'…':''}</td>
-      <td class="mono" style="font-size:10px">${p.quanto?'R$'+(+p.quanto).toLocaleString('pt-BR',{minimumFractionDigits:0}):'—'}</td>
+      <td class="mono" style="font-size:10px">${p.quanto?'R$'+(+p.quanto).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}):'—'}</td>
       <td><span class="badge ${sb}">${p.status||'—'}</span></td>
       <td style="font-size:10px;max-width:120px">${(p.observacao||'—').slice(0,50)}${p.observacao&&p.observacao.length>50?'…':''}</td>
       <td style="white-space:nowrap">
