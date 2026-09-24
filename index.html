@@ -425,7 +425,7 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
   <div class="l-box">
     <div class="l-logo">
       <div class="l-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
-      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.56 — Formatação de Impressão Padronizada</div></div>
+      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.57 — Paginação Real e Layout Corrigido</div></div>
     </div>
     <div class="f-row"><label>Usuário</label><input type="text" id="l-user" value="jakeline@acmetalurgica.com.br"></div>
     <div class="f-row"><label>Senha</label><input type="password" id="l-pass" value="••••••••"></div>
@@ -3563,11 +3563,8 @@ function colabGerarTermoConfidencialidade(colabId) {
   const emp = empresaInfoDoColaborador(c);
   const nomeEmp = emp.nome.toUpperCase();
   const nomeCurto = emp === CV_EMPRESA_INFO['BRASS'] ? 'BRASSMETAL' : 'AC METAL';
-  const hoje = docHoje();
-  const totalPaginas = 4;
-  let paginaAtual = 1;
-  const pb = () => docFooterHTML(paginaAtual++, totalPaginas, emp) + '<div style="page-break-before:always"></div>';
-  const html = `<div style="padding:16px 20px;font-size:11.5px;line-height:1.5;text-align:justify">
+  const dataAdm = dataAdmissaoExtenso(c);
+  const html = `${docPageCSS(emp)}<div class="doc-print" style="padding:16px 20px;font-size:13px;line-height:1.8;text-align:justify">
     <h3 style="text-align:center;margin-bottom:16px">TERMO DE CONFIDENCIALIDADE E SIGILO</h3>
     <p style="margin-bottom:12px">Pelo presente instrumento particular, de um lado, <strong>${nomeEmp}</strong>, empresa de direito privado, inscrita no CNPJ sob nº ${emp.cnpj}, com sede na ${emp.endereco} e, de outro <strong>${c.nome}</strong>, portador (a) do CPF <strong>${c.cpf||'____________________'}</strong>, integrante do quadro de funcionários da empresa acima qualificada e de ora em diante designado COLABORADOR, celebram entre si o presente ACORDO DE CONFIDENCIALIDADE E SIGILO, que se regerá pelas cláusulas e condições abaixo:</p>
     <p style="font-weight:700;margin-bottom:8px">DEFINIÇÕES</p>
@@ -3576,14 +3573,12 @@ function colabGerarTermoConfidencialidade(colabId) {
     <p style="margin-bottom:10px">3. Informação confidencial é toda informação disponibilizada ao COLABORADOR em razão do desempenho de suas funções e atividades, independente da forma e ou por quem foi a mesma disponibilizada.</p>
     <p style="margin-bottom:10px">4. Assim, informação confidencial deve significar, sem se limitar, a lista de clientes da ${nomeCurto}, cadastrados em bancos de dados internos, o histórico de compra de cada cliente, com as informações sobre valores, quantidade e volume de compras, dados cadastrais e contatos de clientes/fornecedores, toda e qualquer informação, de natureza técnica, operacional, financeira, salarial, comercial, jurídica, know-how, projetos, desenhos técnicos, planos de negócios, métodos, técnicas e experiências acumuladas, documentos, contratos, papéis, estudos, pareceres, pesquisas e planilhas.</p>
     <p style="margin-bottom:10px">5. O COLABORADOR reconhece, neste ato, ter ciência de que possui amplo e irrestrito acesso a informações pessoais de terceiros, clientes fidelizados, bem como de rotinas, projetos, planilhas financeiras, técnicas e/ou similares, desenhos, fórmulas de produtos, ou seja, tudo que diz respeito à tais assuntos, são consideradas informações sigilosas e que não podem ser compartilhadas em nenhuma hipótese, tanto impressa quanto verbalmente.</p>
-    ${pb()}
     <p style="margin-bottom:10px">6. DO USO - o COLABORADOR concorda em usar as informações confidenciais recebidas da ${nomeCurto} com o propósito restrito de se fazer cumprir o estabelecido e acordado no contrato de trabalho, somente podendo utilizá-las para referido propósito, zelando para que tais informações confidenciais não sejam de qualquer forma divulgadas ou reveladas a terceiros, utilizando-se, no mínimo, do mesmo zelo e cuidado que dispensa às suas próprias informações confidenciais, razão pela qual declara, na qualidade de funcionário, que tem plena ciência de que deverá zelar pelo sigilo absoluto de todos os assuntos, bancos de dados, senhas, acessos a quaisquer computadores e sistemas, bem como transações comerciais e bancárias, produtos, materiais, e técnicas empregados na fabricação de produtos e/ou de prestação de serviços por sua empregadora, obrigando-se a tratar como confidenciais e a manter em segredo todos os dados que lhe forem confiados ou de que, porventura, venha a ter conhecimento, não revelando a ninguém ou permitindo que alguém o faça.</p>
     <p style="margin-bottom:10px">7. DAS CÓPIAS – o COLABORADOR que receber informação confidencial fica desde já proibido de produzir cópias, ou back-up, seja por pen-drive ou através de qualquer outro meio ou forma, de qualquer dos documentos a ele fornecidos ou documentos que tenham chegado a seu conhecimento em virtude do contrato, ou mesmo que estejam em banco de dados da empresa ${nomeCurto}, além daquelas imprescindíveis ao desenvolvimento de seu trabalho, considerando que todas sejam informações confidenciais.</p>
     <p style="margin-bottom:10px">8. DA PROPRIEDADE – todas as informações confidenciais permanecerão sendo de propriedade da ${nomeCurto}, somente podendo ser usadas pelo COLABORADOR, ora receptor, para os fins de execução do contrato de trabalho. Tais informações confidenciais, incluídas as cópias realizadas, serão retomadas à ${nomeCurto}, na pessoa de seu representante/revelador, ou destruídas, tão logo tenha terminado a necessidade de seu uso pelo COLABORADOR, e, em qualquer caso, na hipótese de término da vigência do contrato.</p>
     <p style="margin-bottom:10px">9. Além disso, todas as informações e/ou materiais que digam respeito, direta ou indiretamente, ao objeto do contrato de trabalho, deverão ser tratados pelo COLABORADOR com o mais absoluto sigilo e a mais rigorosa confidencialidade, de modo a evitar, por qualquer meio ou forma, o seu conhecimento e/ou utilização por parte de terceiros, seja durante a sua vigência ou mesmo após ela, sob pena do pagamento das perdas e danos resultantes do descumprimento desta obrigação.</p>
     <p style="margin-bottom:10px">10. As informações confidenciais somente poderão ser divulgadas a terceiros após prévia e expressa autorização da ${nomeCurto}. Por terceiros, compreendem não só empresas e funcionários de empresas concorrentes, mas também os próprios colaboradores e parceiros da ${nomeCurto} e inclusive pessoas sem nenhum vínculo com a empresa, independente de grau de parentesco ou amizade com o COLABORADOR.</p>
     <p style="margin-bottom:10px">11. Nenhum direito ou licença é concedido ao COLABORADOR com respeito a quaisquer informações, documentos, arquivos ou anexos que contenham especificações técnicas que sejam a ele ou aos seus prepostos e subcontratados, revelados ou fornecidos.</p>
-    ${pb()}
     <p style="margin-bottom:10px">12. O COLABORADOR se obriga a devolver para a ${nomeCurto}, tão logo deixe de usá-las na execução do contrato de trabalho, todas as informações recebidas, bem como todos e quaisquer documentos fornecidos ou disponibilizados pela ${nomeCurto} ou por terceiros, bem como todos e quaisquer documentos por ela produzidos, relacionados direta ou indiretamente com o objeto do Contrato.</p>
     <p style="margin-bottom:10px">13. O COLABORADOR compromete-se a respeitar a confidencialidade dos dados pessoais ou comerciais eventualmente coletados através da internet, independentemente do sistema de coleta utilizado, sejam das Partes ou de quaisquer terceiros (doravante em conjunto, os "Dados Eletrônicos"), observando, para tanto, a Lei nº 12.965/2014 (Marco Civil da Internet) e Decreto nº 8.771/2016 (Regulamento do Marco Civil da Internet), bem como a Lei nº 13.709/2018 (Lei Geral de Proteção de Dados) e quaisquer outras leis relativas à proteção de dados pessoais que vierem a ser promulgadas ou entrarem em vigor no curso da vigência deste acordo.</p>
     <p style="margin-bottom:10px">14. O COLABORADOR declara expressamente que é (e será, durante toda a vigência do Contrato) o legítimo possuidor e monitor de todas as informações contidas e ao seu abrigo e guarda e que, por isso, exime a ${nomeCurto} de toda e qualquer responsabilidade sobre o uso indevido destas informações, mantendo a ${nomeCurto} livre de todos os pleitos, demandas, reclamações ou inquéritos decorrentes do descumprimento desta cláusula, inclusive substituindo processualmente a ${nomeCurto} em eventual polo passivo de demanda judicial, podendo o COLABORADOR ser denunciado em qualquer ação que for proposta contra a ${nomeCurto} para indenizar qualquer terceiro que tenha seus direitos lesados.</p>
@@ -3592,7 +3587,6 @@ function colabGerarTermoConfidencialidade(colabId) {
     <p style="margin-bottom:10px">17. Este ACORDO DE CONFIDENCIALIDADE torna-se parte integrante e indissociável do contrato de trabalho celebrado entre as partes.</p>
     <p style="margin-bottom:10px">18. DA RESPONSABILIDADE - o COLABORADOR, ao receber informação confidencial, se obriga a:</p>
     <p style="margin-bottom:8px;margin-left:14px">a. Não discutir perante terceiros, usar, divulgar, revelar, ceder a qualquer título ou dispor das Informações Confidenciais, para nenhuma pessoa, física ou jurídica, e para nenhuma outra finalidade que não seja exclusivamente relacionada ao objeto referido, cumprindo-lhe adotar cautelas e precauções adequadas no sentido de impedir o seu uso indevido por qualquer pessoa que, por qualquer razão, tenha tido acesso a elas.</p>
-    ${pb()}
     <p style="margin-bottom:8px;margin-left:14px">b. Impedir, por qualquer meio em direito admitido, a divulgação ou a utilização das Informações Confidenciais.</p>
     <p style="margin-bottom:10px;margin-left:14px">c. Restituir imediatamente o documento (ou outro suporte) que contiver as Informações Confidenciais à Parte reveladora, sempre que esta as solicitar ou sempre que as Informações Confidenciais deixarem de ser necessárias, e não guardar para si, em nenhuma hipótese, cópia, reprodução ou segunda via destas.</p>
     <p style="margin-bottom:10px">19. DA VIOLAÇÃO - o COLABORADOR que recebe e tem conhecimento de Informação Confidencial, reconhece e aceita que, na hipótese de violação de quaisquer das cláusulas deste Termo, estará sujeito as sanções e penalidades legais, conforme abaixo discriminado:</p>
@@ -3604,13 +3598,12 @@ function colabGerarTermoConfidencialidade(colabId) {
     <p style="margin-bottom:10px">21. DAS DISPOSIÇÕES GERAIS - este ACORDO será regido pelas leis brasileiras e obriga as Partes, seus representantes legais, sucessores e cessionários.</p>
     <p style="margin-bottom:16px">22. DO FORO - Fica eleito, com renúncia de qualquer outro, por mais privilegiado que seja, o foro desta cidade e comarca de Santa Bárbara d'Oeste, deste Estado, para, nele, serem resolvidas quaisquer questões judiciais que eventualmente se originem do presente instrumento particular, ficando estipulado, nesse passo, que a parte vencida na demanda será obrigada, também, ao pagamento dos honorários advocatícios do advogado que a parte inocente contratar para a defesa de seus direitos e interesses.</p>
     <p style="margin-bottom:24px">E por estarem assim, justos e contratados, e de perfeito acordo com as cláusulas e condições acima estabelecidas, assinam o presente compromisso em duas vias de igual teor, depois de lidas e achadas conforme, tudo na presença das duas testemunhas que a tudo assistiram e que ouviram a leitura deste, na forma da lei.</p>
-    <p style="text-align:center;margin-bottom:30px">Santa Bárbara d'Oeste-SP, ${hoje.dia}/${hoje.mes}/${hoje.ano}.</p>
+    <p style="text-align:center;margin-bottom:30px">Santa Bárbara d'Oeste-SP, ${dataAdm.dia} de ${dataAdm.mes} de ${dataAdm.ano}.</p>
     <p style="text-align:center;margin-bottom:4px">__________________________</p>
     <p style="text-align:center;margin-bottom:30px">${nomeEmp}</p>
     <p style="margin-bottom:30px">Nome funcionário: <strong>${c.nome}</strong></p>
     <p style="margin-bottom:4px">TESTEMUNHAS: 1. _____________________________ 2. _____________________________</p>
     <p>CPF _________________________ &nbsp;&nbsp;&nbsp;&nbsp; CPF _________________________</p>
-    ${docFooterHTML(paginaAtual, totalPaginas, emp)}
   </div>`;
   abrirReciboModal('🖨 Termo de Confidencialidade — ' + c.nome, html, false);
 }
@@ -3619,48 +3612,72 @@ function colabGerarTermoEPI(colabId) {
   const c = loadData('colaboradores').find(x => x.id === colabId);
   if (!c) return;
   const emp = empresaInfoDoColaborador(c);
-  const hoje = docHoje();
-  const linhasVazias = Array.from({length:9}).map(()=>`<tr><td style="padding:5px;border:1px solid #999">&nbsp;</td><td style="padding:5px;border:1px solid #999">&nbsp;</td><td style="padding:5px;border:1px solid #999">&nbsp;</td><td style="padding:5px;border:1px solid #999">&nbsp;</td><td style="padding:5px;border:1px solid #999">&nbsp;</td><td style="padding:5px;border:1px solid #999">&nbsp;</td><td style="padding:5px;border:1px solid #999">&nbsp;</td></tr>`).join('');
-  const html = `<div style="padding:16px 20px;font-size:12px;line-height:1.5;text-align:justify">
-    <table style="width:100%;border-collapse:collapse;margin-bottom:12px"><tr>
-      <td style="border:1px solid #000;padding:8px;font-weight:700">${emp.nome.toUpperCase()}</td>
-      <td style="border:1px solid #000;padding:8px;font-weight:700;text-align:center">FICHA DE ENTREGA E CONTROLE DOS EPI'S</td>
+  const dataAdm = dataAdmissaoExtenso(c);
+  const linhasVazias = Array.from({length:7}).map(()=>`<tr><td style="padding:5px;border:1px solid #999">&nbsp;</td><td style="padding:5px;border:1px solid #999">&nbsp;</td><td style="padding:5px;border:1px solid #999">&nbsp;</td><td style="padding:5px;border:1px solid #999">&nbsp;</td><td style="padding:5px;border:1px solid #999">&nbsp;</td><td style="padding:5px;border:1px solid #999">&nbsp;</td><td style="padding:5px;border:1px solid #999">&nbsp;</td></tr>`).join('');
+  const html = `${docPageCSS(emp)}<div class="doc-print" style="padding:16px 20px;font-size:11.5px;line-height:1.4;text-align:justify">
+    <table style="width:100%;border-collapse:collapse;margin-bottom:10px"><tr>
+      <td style="border:1px solid #000;padding:7px;font-weight:700">${emp.nome.toUpperCase()}</td>
+      <td style="border:1px solid #000;padding:7px;font-weight:700;text-align:center">FICHA DE ENTREGA E CONTROLE DOS EPI'S</td>
     </tr></table>
-    <table style="width:100%;border-collapse:collapse;margin-bottom:14px">
-      <tr><td style="border:1px solid #000;padding:6px;font-weight:700">NOME</td><td style="border:1px solid #000;padding:6px;font-weight:700">ADMISSÃO</td><td style="border:1px solid #000;padding:6px;font-weight:700">SETOR</td><td style="border:1px solid #000;padding:6px;font-weight:700">FUNÇÃO</td></tr>
-      <tr><td style="border:1px solid #000;padding:6px">${c.nome}</td><td style="border:1px solid #000;padding:6px">${c.adm||'—'}</td><td style="border:1px solid #000;padding:6px">${c.setor||'—'}</td><td style="border:1px solid #000;padding:6px">${c.cargo||'—'}</td></tr>
+    <table style="width:100%;border-collapse:collapse;margin-bottom:10px">
+      <tr><td style="border:1px solid #000;padding:5px;font-weight:700">NOME</td><td style="border:1px solid #000;padding:5px;font-weight:700">ADMISSÃO</td><td style="border:1px solid #000;padding:5px;font-weight:700">SETOR</td><td style="border:1px solid #000;padding:5px;font-weight:700">FUNÇÃO</td></tr>
+      <tr><td style="border:1px solid #000;padding:5px">${c.nome}</td><td style="border:1px solid #000;padding:5px">${c.adm||'—'}</td><td style="border:1px solid #000;padding:5px">${c.setor||'—'}</td><td style="border:1px solid #000;padding:5px">${c.cargo||'—'}</td></tr>
     </table>
-    <p style="font-weight:700;margin-bottom:8px">- TERMO DE RESPONSABILIDADE</p>
-    <p style="margin-bottom:10px">Declaro para fins de direito, que estou recebendo nesta data, os equipamentos de proteção individual relacionado na ficha de controle de entrega de EPI's, fornecidos gratuitamente pela empresa e destinados a minha proteção contra acidentes e/ou doenças, nos termos do artigo 166 c.c artigo 191 II da CLT e com a NR 6 da Portaria 3.14 de 08 de junho de 1.978.</p>
-    <p style="margin-bottom:8px">Declaro também estar ciente, comprometendo-me a cumprir as determinações abaixo, estabelecidas pela empresa:</p>
-    <p style="margin:0 0 6px 14px">- Usar os EPI's que me forem entregues de forma adequada, sempre que estiver em locais onde a utilização dos mesmos for obrigatória;</p>
-    <p style="margin:0 0 6px 14px">- Zelar pela guarda e conservação dos EPI's que me forem entregues, não os entregando a outras pessoas;</p>
-    <p style="margin:0 0 6px 14px">- Comunicar imediatamente a empresa no caso de quebra, desgaste, perda ou extravio do EPI, para que o mesmo seja reposto;</p>
-    <p style="margin:0 0 6px 14px">- Devolver os EPI's que estiverem em meu poder, no caso de desligamento da empresa;</p>
-    <p style="margin:0 0 6px 14px">- Declaro ter recebido treinamento sobre o uso correto dos EPI's.</p>
-    <p style="margin:0 0 10px 14px">- Estou ciente de que o creme de proteção de Grupo 3, de uso coletivo, é parte integrante do conjunto de equipamentos de proteção disponibilizados pela empresa, devendo ser utilizado sempre que a atividade assim exigir, conforme orientação de segurança e higiene do trabalho. Comprometo-me a fazer uso adequado do referido produto, observando as normas e procedimentos estabelecidos pela empresa.</p>
-    <p style="margin-bottom:10px">Estou ciente ainda que a perda ou dano ao EPI que estiver em meu poder, decorrente do mau uso ou negligência de minha parte, autorizo a empresa a descontar o valor equivalente ao EPI novo em pagamento, conforme autoriza o art. 462, parágrafo primeiro da CLT.</p>
-    <p style="margin-bottom:16px">Declaro finalmente estar ciente que o descumprimento de quaisquer das cláusulas deste documento, constitui JUSTA CAUSA para rescisão do contrato de trabalho, nos termos do artigo 482 "h" da CLT.</p>
-    <table style="width:100%;border-collapse:collapse;font-size:11px;margin-bottom:10px">
+    <p style="font-weight:700;margin-bottom:6px">- TERMO DE RESPONSABILIDADE</p>
+    <p style="margin-bottom:8px">Declaro para fins de direito, que estou recebendo nesta data, os equipamentos de proteção individual relacionado na ficha de controle de entrega de EPI's, fornecidos gratuitamente pela empresa e destinados a minha proteção contra acidentes e/ou doenças, nos termos do artigo 166 c.c artigo 191 II da CLT e com a NR 6 da Portaria 3.14 de 08 de junho de 1.978.</p>
+    <p style="margin-bottom:6px">Declaro também estar ciente, comprometendo-me a cumprir as determinações abaixo, estabelecidas pela empresa:</p>
+    <p style="margin:0 0 4px 14px">- Usar os EPI's que me forem entregues de forma adequada, sempre que estiver em locais onde a utilização dos mesmos for obrigatória;</p>
+    <p style="margin:0 0 4px 14px">- Zelar pela guarda e conservação dos EPI's que me forem entregues, não os entregando a outras pessoas;</p>
+    <p style="margin:0 0 4px 14px">- Comunicar imediatamente a empresa no caso de quebra, desgaste, perda ou extravio do EPI, para que o mesmo seja reposto;</p>
+    <p style="margin:0 0 4px 14px">- Devolver os EPI's que estiverem em meu poder, no caso de desligamento da empresa;</p>
+    <p style="margin:0 0 4px 14px">- Declaro ter recebido treinamento sobre o uso correto dos EPI's.</p>
+    <p style="margin:0 0 8px 14px">- Estou ciente de que o creme de proteção de Grupo 3, de uso coletivo, é parte integrante do conjunto de equipamentos de proteção disponibilizados pela empresa, devendo ser utilizado sempre que a atividade assim exigir, conforme orientação de segurança e higiene do trabalho. Comprometo-me a fazer uso adequado do referido produto, observando as normas e procedimentos estabelecidos pela empresa.</p>
+    <p style="margin-bottom:8px">Estou ciente ainda que a perda ou dano ao EPI que estiver em meu poder, decorrente do mau uso ou negligência de minha parte, autorizo a empresa a descontar o valor equivalente ao EPI novo em pagamento, conforme autoriza o art. 462, parágrafo primeiro da CLT.</p>
+    <p style="margin-bottom:10px">Declaro finalmente estar ciente que o descumprimento de quaisquer das cláusulas deste documento, constitui JUSTA CAUSA para rescisão do contrato de trabalho, nos termos do artigo 482 "h" da CLT.</p>
+    <table style="width:100%;border-collapse:collapse;font-size:10.5px;margin-bottom:8px;table-layout:fixed">
+      <colgroup>
+        <col style="width:5%"><col style="width:27%"><col style="width:8%"><col style="width:7%"><col style="width:9%"><col style="width:7%"><col style="width:37%">
+      </colgroup>
       <thead><tr>
-        <th style="border:1px solid #999;padding:5px">QT</th><th style="border:1px solid #999;padding:5px">Tipo de EPI's</th><th style="border:1px solid #999;padding:5px">Tamanho</th><th style="border:1px solid #999;padding:5px">C.A</th><th style="border:1px solid #999;padding:5px">Data Entrega</th><th style="border:1px solid #999;padding:5px">Código</th><th style="border:1px solid #999;padding:5px">Assinatura</th>
+        <th style="border:1px solid #999;padding:4px">QT</th><th style="border:1px solid #999;padding:4px">Tipo de EPI's</th><th style="border:1px solid #999;padding:4px">Tamanho</th><th style="border:1px solid #999;padding:4px">C.A</th><th style="border:1px solid #999;padding:4px">Data Entrega</th><th style="border:1px solid #999;padding:4px">Código</th><th style="border:1px solid #999;padding:4px">Assinatura</th>
       </tr></thead><tbody>${linhasVazias}</tbody>
     </table>
-    <p style="font-size:10px;margin-bottom:20px">Código de controle: 1–Demissão · 2–Extravio · 3–Danificado · 4–Mau uso · 5–EPI uso parcial · 6–EPI uso integral · 7–Periodicidade · 8–Admissão</p>
-    <p style="margin-bottom:24px">Santa Barbara do Oeste: ${hoje.dia} / ${hoje.mes} / ${hoje.ano}.</p>
-    <p style="text-align:right;margin-right:40px">____________________________<br>Assinatura</p>
-    ${docFooterHTML(1, 1, emp)}
+    <p style="font-size:9.5px;margin-bottom:12px">Código de controle: 1–Demissão · 2–Extravio · 3–Danificado · 4–Mau uso · 5–EPI uso parcial · 6–EPI uso integral · 7–Periodicidade · 8–Admissão</p>
+    <p style="margin-bottom:14px">Santa Barbara do Oeste: ${dataAdm.dia} de ${dataAdm.mes} de ${dataAdm.ano}.</p>
+    <p style="text-align:center">____________________________<br>Assinatura</p>
   </div>`;
   abrirReciboModal('🖨 Termo de Responsabilidade de EPI — ' + c.nome, html, false);
 }
 
-// Rodapé padrão dos documentos impressos longos (Manual, Código de Conduta):
-// nome da empresa + e-mail à esquerda, "Página X de Y" à direita — mesmo
-// padrão de rodapé dos PDFs de origem.
-function docFooterHTML(numero, total, emp) {
-  return `<div style="display:flex;justify-content:space-between;border-top:1px solid #ccc;margin-top:18px;padding-top:6px;font-size:9px;color:#666">
-    <span>${emp.nome} — ${emp.email||''}</span><span>Página ${numero} de ${total}</span>
-  </div>`;
+// Rodapé + numeração de página REAL em todo documento impresso: o Chrome
+// aplica isto automaticamente em cada página física (não é um contador
+// manual nosso — é o motor de impressão contando de verdade), então nunca
+// fica errado ou deixa página em branco por causa de quebra forçada.
+// Também evita parágrafo cortado ao meio entre uma página e outra.
+function docPageCSS(emp) {
+  return `<style>
+    @page { size: A4; margin: 2cm 1.8cm 2.3cm 1.8cm;
+      @bottom-left { content: "${emp.nome} — ${emp.email||''}"; font-size:9px; color:#666; }
+      @bottom-right { content: "Página " counter(page) " de " counter(pages); font-size:9px; color:#666; }
+    }
+    .doc-print p, .doc-print table { page-break-inside: avoid; }
+    .doc-print h2, .doc-print h3 { page-break-after: avoid; }
+  </style>`;
+}
+
+// Data de admissão por extenso (dia, mês por extenso, ano) — usada nos campos
+// de data dos documentos de integração em vez da data de hoje.
+const MESES_EXTENSO = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+function dataAdmissaoExtenso(c) {
+  if (c.adm) {
+    const p = String(c.adm).split('/');
+    if (p.length === 3) {
+      const d = parseInt(p[0],10), m = parseInt(p[1],10), y = p[2];
+      if (d>=1 && d<=31 && m>=1 && m<=12) return {dia:String(d).padStart(2,'0'), mes:MESES_EXTENSO[m-1], ano:y};
+    }
+  }
+  const h = docHoje();
+  return {dia:h.dia, mes:MESES_EXTENSO[parseInt(h.mes,10)-1], ano:h.ano};
 }
 
 function colabGerarManualColaborador(colabId) {
@@ -3670,11 +3687,9 @@ function colabGerarManualColaborador(colabId) {
   const ehBrass = emp === CV_EMPRESA_INFO['BRASS'];
   const nomeEmp = emp.nome;
   const revisaoData = ehBrass ? '17/02/2026' : '13/02/2026';
-  const hoje = docHoje();
-  const totalPaginas = 10;
-  let paginaAtual = 1;
-  const pb = () => docFooterHTML(paginaAtual++, totalPaginas, emp) + '<div style="page-break-before:always"></div>';
-  const html = `<div style="padding:16px 20px;font-size:11.5px;line-height:1.5;text-align:justify">
+  const dataAdm = dataAdmissaoExtenso(c);
+  const pb = '<div style="page-break-before:always"></div>';
+  const html = `${docPageCSS(emp)}<div class="doc-print" style="padding:16px 20px;font-size:11.5px;line-height:1.5;text-align:justify">
     <table style="width:100%;border-collapse:collapse;margin-bottom:16px"><tr>
       <td style="border:1px solid #000;padding:10px;font-weight:700;font-size:14px;text-align:center">MANUAL DO COLABORADOR</td>
       <td style="border:1px solid #000;padding:10px;width:80px;text-align:center">Revisão<br><strong>02</strong></td>
@@ -3704,7 +3719,6 @@ function colabGerarManualColaborador(colabId) {
     <p style="margin:0 0 6px 14px">e) No final do expediente, o colaborador deverá imediatamente registrar o ponto, assim que encerrar suas atividades. Somente após o registro do ponto está autorizado a preparar-se para deixar as dependências da empresa, deixando o uso do E.P.I – Equipamento de Proteção Individual, bem como, do uniforme, recolhendo seus pertences pessoais;</p>
     <p style="margin:0 0 6px 14px">f) O limite da jornada normal diária poderá ser ultrapassado, quando houver supressão da jornada em outro dia, conforme previsto no acordo de compensação de horário firmado a parte e/ou para fins de integração de feriados com descansos semanais, quando houver conveniência para ambas as partes;</p>
     <p style="margin:0 0 14px 14px">g) Nas seções onde o trabalho deva ser contínuo, serão estabelecidas turmas de trabalho, pelo sistema de rodízio, podendo a empresa transferir o colaborador de uma turma para outra, conforme previamente acordado entre as partes.</p>
-    ${pb()}
 
     <p style="text-align:center;font-weight:700;margin-bottom:10px">AUSÊNCIAS</p>
     <p style="margin-bottom:8px">Toda e qualquer ausência ao trabalho deverá ser justificado por escrito junto a empresa, sob pena de desconto do período ausente e seu respectivo DSR – Descanso Semanal Remunerado (domingos e feriados), ressalvando-se as seguintes hipóteses:</p>
@@ -3747,7 +3761,6 @@ function colabGerarManualColaborador(colabId) {
     <p style="margin:0 0 4px 24px">• Pós-Acidentes: O EMPREGADO, condutor de veículo próprio, da empresa, deve se submeter a testes para identificação de álcool e drogas após acidentes.</p>
     <p style="margin:0 0 10px 24px">• Testes Motivados: Caso o EMPREGADO apresente sinais, sintomas ou atitudes que possam levar ao diagnóstico de álcool e drogas, o mesmo deverá ser submetido aos testes, a critério do supervisor ou superior.</p>
     <p style="margin-bottom:14px">25.2 O EMPREGADO concorda que a infração ao disposto na cláusula 25 será considerada pela EMPREGADORA como ato de indisciplina, passível de rescisão do contrato de trabalho.</p>
-    ${pb()}
 
     <p style="text-align:center;font-weight:700;margin-bottom:10px">SEGURANÇA E SAÚDE NO TRABALHO</p>
     <p style="margin-bottom:4px">1- É dever observar e zelar pelo cumprimento do Termo de Utilização de EPI anexo;</p>
@@ -3787,7 +3800,6 @@ function colabGerarManualColaborador(colabId) {
     <p style="margin:0 0 10px 14px">b) A empresa disponibiliza um saldo de R$ 100,00 (cem reais) no cartão do convênio farmácia para que o colaborador possa utilizar da forma como lhe convier, sendo descontado em folha de pagamento de acordo com o fechamento recebido pela operadora do convênio farmácia vigente.</p>
     <p style="margin-bottom:4px">5- A empresa possibilita e disponibiliza ao colaborador o SEGURO DE VIDA, em condições especiais, a partir dos seguintes critérios:</p>
     <p style="margin:0 0 14px 14px">a) Ao ser admitido, imediatamente o colaborador passa a ter direito às coberturas de acordo com os critérios estabelecidos na apólice vigente do seu contrato de trabalho.</p>
-    ${pb()}
 
     <p style="text-align:center;font-weight:700;margin-bottom:10px">PAGAMENTO</p>
     <p style="margin-bottom:4px">1- Será efetuado adiantamento de pagamento de salário todo dia 20 (vinte) de cada mês, sendo este, 40% do salário base. A diferença de salários, horas extras, benefícios, descontos, será efetuada até o quinto dia útil do mês subsequente;</p>
@@ -3814,7 +3826,6 @@ function colabGerarManualColaborador(colabId) {
     <p style="margin-bottom:4px">10- Atrasos e faltas devem ser justificados sob pena de desconto das horas, DSR/feriado proporcional e dos prêmios por assiduidade;</p>
     <p style="margin-bottom:4px">11- Ratifica-se que, a tolerância para registro do ponto é de 05 minutos quer seja na entrada do primeiro período como do segundo período, desde que, não seja contínuo, ou seja, este limite é para exceções quando houver atrasos no registro do ponto;</p>
     <p style="margin-bottom:14px">12- Caso seja frequente os registros considerando esta tolerância, pode ser solicitado ao(a) colaborador(a) que corrija devidamente seu ponto podendo ocasionar que fique com atraso e, neste caso a empresa pode aplicar ações conforme item 10 acima.</p>
-    ${pb()}
 
     <p style="text-align:center;font-weight:700;margin-bottom:10px">ATESTADO MÉDICO</p>
     <p style="margin-bottom:8px">PROCEDIMENTO REGULAR PARA JUSTIFICAR AS FALTAS MÉDICAS:</p>
@@ -3837,7 +3848,7 @@ function colabGerarManualColaborador(colabId) {
     <p style="margin-bottom:4px">7- Recomenda-se deixar sempre dentro do armário, apenas o indispensável para o uso diário;</p>
     <p style="margin-bottom:8px">8- Ao desligar-se da empresa, o colaborador é obrigado a esvaziar o armário que lhe foi destinado e deixá-lo aberto (sem cadeado). Se não o fizer, o superior imediato do setor o fará; assim não estando presente, fica designado o representante administrativo da empresa.</p>
     <p style="margin-bottom:14px">Número do Armário: __________</p>
-    ${pb()}
+    ${pb}
 
     <p style="text-align:center;font-weight:700;margin-bottom:10px">MEDIDAS DISCIPLINARES</p>
     <p style="margin-bottom:8px">O funcionário que infringir o presente Regulamento Interno, ou que deixar de cumprir ou acatar determinações constantes de regimentos internos, ordens de serviço/produção, instruções ou determinações de seus superiores ficam sujeitos as seguintes penalidades:</p>
@@ -3849,10 +3860,10 @@ function colabGerarManualColaborador(colabId) {
     <p style="margin:0 0 10px 14px">f) Como a Suspensão Disciplinar é tida como ausência injustificada ao serviço, acarreta então a redução do período de gozo de férias, conforme determina o artigo 130 da CLT.</p>
     <p style="margin-bottom:16px">É de competência do superior imediato e a Administração da empresa a aplicação das penas disciplinares acima citadas.</p>
     <p style="margin-bottom:16px">Declaro ter lido e compreendido o Regulamento Interno da ${ehBrass?'Brass Metal':'AC Metal Fundição'} e assumo o compromisso de cumpri-lo e respeitá-lo em todas minhas atividades relacionadas à empresa, zelando por sua plena aplicação. Estou ciente que irei receber esse mesmo arquivo em PDF dentro de 01 (uma) hora no e-mail informado e caso necessite do documento impresso farei a solicitação do mesmo via WhatsApp ou e-mail.</p>
-    <p style="margin-bottom:20px">Santa Bárbara d'Oeste – SP, ${hoje.dia} de ___________________ de 20___.</p>
+    <p style="margin-bottom:20px">Santa Bárbara d'Oeste – SP, ${dataAdm.dia} de ${dataAdm.mes} de ${dataAdm.ano}.</p>
     <p style="margin-bottom:6px">Funcionário: <strong>${c.nome}</strong></p>
     <p style="margin-bottom:30px">Assinatura: _______________________________________________</p>
-    ${pb()}
+    ${pb}
 
     <p style="text-align:center;font-weight:700;margin-bottom:10px">HORÁRIOS PARA LANCHE / CAFÉ E FUMANTES</p>
     <p style="margin-bottom:4px">1- É concedido aos colaboradores dois horários, sendo um em cada período, para refeição intermediária ou para fumantes, sendo estes intervalos antes do horário de almoço/janta e a tarde/noite antes do encerramento do período.</p>
@@ -3862,19 +3873,19 @@ function colabGerarManualColaborador(colabId) {
     <p style="margin-bottom:4px">5- Caso ocorra algum dano a alguma máquina/equipamento devido a sujeira de refeições ou líquidos de bebidas, o colaborador será responsabilizado;</p>
     <p style="margin-bottom:16px">6- Por final, estão proibidos lanches/cafés/cigarros sem ser nos dois horários discriminados acima e em local de trabalho ou locais impróprios.</p>
     <p style="margin-bottom:16px">Declaro ter ciência desta circular sobre Horários para Lanches/Café ou Fumantes, e seus critérios, comprometendo-me a cumpri-la sob pena de receber sanções disciplinares.</p>
-    <p style="margin-bottom:20px">Santa Bárbara d'Oeste – SP, ${hoje.dia} de ___________________ de 20___.</p>
+    <p style="margin-bottom:20px">Santa Bárbara d'Oeste – SP, ${dataAdm.dia} de ${dataAdm.mes} de ${dataAdm.ano}.</p>
     <p style="margin-bottom:6px">Funcionário: <strong>${c.nome}</strong></p>
     <p style="margin-bottom:30px">Assinatura: _______________________________________________</p>
-    ${pb()}
+    ${pb}
 
     <p style="text-align:center;font-weight:700;margin-bottom:10px">TERMO DE AUTORIZAÇÃO DE USO DE IMAGEM</p>
     <p style="margin-bottom:14px">Eu, <strong>${c.nome}</strong>, Função: <strong>${c.cargo||'________________'}</strong>, portador(a) da Cédula de Identidade inscrito no CPF: <strong>${c.cpf||'________________'}</strong>, AUTORIZO o uso de minha imagem e voz, em todo e qualquer material entre vídeos, fotos, documentos e outros meios de comunicação, para campanhas promocionais e institucionais desta empresa empregadora ${nomeEmp}, com sede na ${emp.endereco}, inscrita no CNPJ/MF sob o nº ${emp.cnpj}, sejam essas destinadas à divulgação ao público em geral e/ou apenas para uso desta empresa, e desde que não haja desvirtuamento da sua finalidade.</p>
     <p style="margin-bottom:14px">A presente autorização é concedida a título gratuito, abrangendo o uso da imagem acima mencionada em todo território nacional e no exterior, sob qualquer forma e meios, bem como, em destaque: (I) out-door; (II) bus-door; folhetos em geral (encartes, mala direta, catálogo, etc.); (III) folder de apresentação; (IV) anúncios em revistas e jornais em geral; (V) home page; (VI) cartazes; (VII) back-light; (VIII) mídia eletrônica (painéis, vídeos de qualquer modalidade, televisão, cinema, programa para rádio, redes sociais, entre outros).</p>
     <p style="margin-bottom:16px">Por esta ser a expressão da minha vontade declaro que autorizo o uso acima descrito sem que nada haja a ser reclamado a título de direitos conexos à minha imagem ou a qualquer outro, e assino a presente autorização em 02 (duas) vias de igual teor e forma.</p>
-    <p style="margin-bottom:20px">Santa Bárbara d'Oeste – SP, ${hoje.dia} de ___________________ de 20___.</p>
+    <p style="margin-bottom:20px">Santa Bárbara d'Oeste – SP, ${dataAdm.dia} de ${dataAdm.mes} de ${dataAdm.ano}.</p>
     <p style="margin-bottom:6px">Funcionário: <strong>${c.nome}</strong></p>
     <p style="margin-bottom:30px">Assinatura: _______________________________________________</p>
-    ${pb()}
+    ${pb}
 
     <table style="width:100%;border-collapse:collapse;margin-bottom:14px"><tr>
       <td style="border:1px solid #000;padding:8px;font-weight:700" colspan="2">${nomeEmp}<br><span style="font-weight:400">CNPJ: ${emp.cnpj}</span></td>
@@ -3896,7 +3907,7 @@ function colabGerarManualColaborador(colabId) {
       <tr><td style="border:1px solid #999;padding:5px;font-weight:700">NOME E CPF</td><td style="border:1px solid #999;padding:5px;font-weight:700">ADMISSÃO</td><td style="border:1px solid #999;padding:5px;font-weight:700">SETOR</td><td style="border:1px solid #999;padding:5px;font-weight:700">FUNÇÃO</td></tr>
       <tr><td style="border:1px solid #999;padding:5px">${c.nome} — ${c.cpf||'—'}</td><td style="border:1px solid #999;padding:5px">${c.adm||'—'}</td><td style="border:1px solid #999;padding:5px">${c.setor||'—'}</td><td style="border:1px solid #999;padding:5px">${c.cargo||'—'}</td></tr>
     </table>
-    ${pb()}
+    ${pb}
 
     <p style="text-align:center;font-weight:700;margin-bottom:10px">CADASTRAMENTO/ATUALIZAÇÃO DE E-MAIL</p>
     <p style="margin-bottom:14px">Eu, <strong>${c.nome}</strong>, portador do CPF: <strong>${c.cpf||'________________'}</strong>, informo à empresa ${nomeEmp}, CNPJ: ${emp.cnpj}, o meu endereço de e-mail para que sejam enviadas informações pertinentes ao meu contrato de trabalho com a empresa através do holerite, código de conduta, manual do colaborador, circulares, normas e regulamento interno e demais informações via meu endereço eletrônico.</p>
@@ -3904,10 +3915,9 @@ function colabGerarManualColaborador(colabId) {
     <p style="margin-bottom:8px">Em caso de alteração do endereço eletrônico, devo comunicar a empresa para atualização no meu cadastro. No caso de não recebimento devo informar e solicitar o reenvio.</p>
     <p style="margin-bottom:16px">E-mail: ${c.email||'______________________________________'}</p>
     <p style="margin-bottom:8px">Ciente e de acordo,</p>
-    <p style="margin-bottom:20px">Santa Bárbara d'Oeste – SP, ${hoje.dia} de ___________________ de 20___.</p>
+    <p style="margin-bottom:20px">Santa Bárbara d'Oeste – SP, ${dataAdm.dia} de ${dataAdm.mes} de ${dataAdm.ano}.</p>
     <p style="margin-bottom:6px">Funcionário: <strong>${c.nome}</strong></p>
     <p>Assinatura: _____________________________________________</p>
-    ${docFooterHTML(paginaAtual, totalPaginas, emp)}
   </div>`;
   abrirReciboModal('🖨 Manual do Colaborador — ' + c.nome, html, false);
 }
@@ -3920,11 +3930,8 @@ function colabGerarCodigoConduta(colabId) {
   const nomeEmp = ehBrass ? 'Brass Metal' : 'AC Metalúrgica';
   const nomeEmpLongo = ehBrass ? 'Brass Metal LTDA' : 'AC Metal Fundição EIRELI';
   const revisaoData = ehBrass ? '16/02/2026' : '12/02/2026';
-  const hoje = docHoje();
-  const totalPaginas = 7;
-  let paginaAtual = 1;
-  const pb = () => docFooterHTML(paginaAtual++, totalPaginas, emp) + '<div style="page-break-before:always"></div>';
-  const html = `<div style="padding:16px 20px;font-size:11.5px;line-height:1.5;text-align:justify">
+  const dataAdm = dataAdmissaoExtenso(c);
+  const html = `${docPageCSS(emp)}<div class="doc-print" style="padding:16px 20px;font-size:11.5px;line-height:1.5;text-align:justify">
     <table style="width:100%;border-collapse:collapse;margin-bottom:16px"><tr>
       <td style="border:1px solid #000;padding:10px;font-weight:700;font-size:14px;text-align:center">CÓDIGO DE CONDUTA</td>
       <td style="border:1px solid #000;padding:10px;width:80px;text-align:center">Revisão<br><strong>01</strong></td>
@@ -3939,7 +3946,6 @@ function colabGerarCodigoConduta(colabId) {
     <p style="margin-bottom:10px">A ${nomeEmp} é reconhecida no mercado por seu padrão de qualidade, comprometimento, competência, transparência e responsabilidade perante seus colaboradores, parceiros, clientes e fornecedores.</p>
     <p style="margin-bottom:10px">Diante disso, estabelece e alinha por meio deste Código de Conduta padrões de comportamentos e relacionamentos entre os integrantes da organização quais sejam embasados nos valores que norteiam suas estratégias de decisões.</p>
     <p style="margin-bottom:14px">Valores estes quais acredita profundamente serem fundamentais nas ações diárias e que, fizeram com que ao longo de toda sua jornada, construísse uma história de reputação, de credibilidade e de honra.</p>
-    ${pb()}
 
     <p style="text-align:center;font-weight:700;margin-bottom:10px">MISSÃO</p>
     <p style="margin-bottom:14px">O principal foco dos negócios da ${nomeEmp} é oferecer para seus clientes produtos e soluções integradas que atenda aos propósitos de funcionalidade e qualidade, de forma que traga benefícios e incorpore valor ao cliente, para empresa, seus sócios, diretores e colaboradores.</p>
@@ -3954,7 +3960,6 @@ function colabGerarCodigoConduta(colabId) {
     <p style="margin:0 0 4px 14px">❖ Compromisso com o cliente;</p>
     <p style="margin:0 0 4px 14px">❖ Trabalho em equipe;</p>
     <p style="margin-bottom:14px;margin-left:14px">❖ Cultura da qualidade.</p>
-    ${pb()}
 
     <p style="text-align:center;font-weight:700;margin-bottom:10px">SISTEMA DE GESTÃO DA QUALIDADE</p>
     <p style="margin-bottom:8px">Nossa busca pela excelência não é apenas um desejo, mas um compromisso diário com as expectativas das partes interessadas. As nossas Políticas são nossos direcionamentos estratégicos, garantindo que cada peça fundida e usinada carregue o selo de confiança que nossos clientes depositam em nós.</p>
@@ -3979,7 +3984,6 @@ function colabGerarCodigoConduta(colabId) {
     <p style="margin:0 0 6px 30px">Eu terei responsabilidade pelas minhas ações e obrigações perante pessoas e empresas sejam estes clientes, fornecedores e/ou parceiros;</p>
     <p style="margin:0 0 2px 14px">❖ Competência</p>
     <p style="margin-bottom:14px;margin-left:30px">Eu buscarei ter a competência necessária para o desempenho de minhas atividades seja através do meu desenvolvimento tanto profissional quanto pessoal.</p>
-    ${pb()}
 
     <p style="text-align:center;font-weight:700;margin-bottom:10px">ORIENTAÇÕES DE CONDUTA PESSOAL</p>
     <p style="margin:0 0 4px 14px">❖ Ser cordial e respeitoso(a) no trato e relacionamento com as pessoas, buscando pautar suas ações pelo bom senso;</p>
@@ -4000,7 +4004,6 @@ function colabGerarCodigoConduta(colabId) {
     <p style="margin:0 0 4px 14px">❖ Cumprir as normas de segurança em toda a empresa, e sempre onde for obrigatório utilizar equipamento de proteção individual;</p>
     <p style="margin:0 0 4px 14px">❖ Colabore para garantir a segurança nos locais de carregamento e descarregamento de materiais e equipamentos visando a manutenção e a integridade das pessoas e processos;</p>
     <p style="margin-bottom:14px;margin-left:14px">❖ Colabore para o sistema de controle de entrada, saída, permanência de pessoas na empresa como um todo e em seus setores fabris;</p>
-    ${pb()}
 
     <p style="text-align:center;font-weight:700;margin-bottom:10px">CLIENTE</p>
     <p style="margin:0 0 4px 14px">❖ A razão de existir a ${nomeEmp} são seus clientes;</p>
@@ -4018,7 +4021,6 @@ function colabGerarCodigoConduta(colabId) {
     <p style="margin:0 0 4px 14px">❖ Os parceiros e fornecedores devem ser avaliados por meio de critérios claros excludentes de discriminação;</p>
     <p style="margin:0 0 4px 14px">❖ Os fornecedores e parceiros devem ter princípios condizentes com da empresa e com este Código de Conduta;</p>
     <p style="margin-bottom:14px;margin-left:14px">❖ A ${nomeEmp} poderá, caso houver prejuízos de seus interesses e valores, encerrar negócios com o fornecedor ou parceiro;</p>
-    ${pb()}
 
     <p style="text-align:center;font-weight:700;margin-bottom:10px">COLABORADORES</p>
     <p style="margin:0 0 4px 14px">❖ A ${nomeEmp} é digna no tratamento com seus colaboradores e proporcionando oportunidades iguais de crescimento;</p>
@@ -4044,7 +4046,6 @@ function colabGerarCodigoConduta(colabId) {
     <p style="margin:0 0 4px 14px">❖ Não deve ser aceito ou oferecer cortesia, brindes de qualquer natureza: presente, favores, descontos, gratificações, de caráter pessoal. Em caráter profissional, se as práticas de mercado assim exigirem, os brindes oferecidos devem conter identificação do fornecedor ou cliente, e eventualmente, refeições não frequentes e brindes de maior valor podem estar isentos desta norma desde que comunicados à administração;</p>
     <p style="margin:0 0 4px 14px">❖ A ${nomeEmp} preza pela comunicação e propaganda justa e idônea;</p>
     <p style="margin-bottom:14px;margin-left:14px">❖ Deve ser cumprido por seus integrantes rigorosamente políticas e normas de segurança.</p>
-    ${pb()}
 
     <p style="text-align:center;font-weight:700;margin-bottom:10px">DISPOSIÇÕES GERAIS</p>
     <p style="margin-bottom:8px">Possíveis conflitos por desvio de condutas devem ser encaminhados ao superior imediato e ao departamento de RH da ${nomeEmp}.</p>
@@ -4059,10 +4060,9 @@ function colabGerarCodigoConduta(colabId) {
     <p style="margin-bottom:8px">Declaro ter lido e compreendido este código de conduta comprometendo-me a cumpri-lo e respeitá-lo em todas as minhas atividades profissionais ora contratadas através do meu contrato de trabalho com a ${nomeEmpLongo}, zelando por sua plena aplicação.</p>
     <p style="margin-bottom:8px">Estou ciente que este documento será disponibilizado em arquivo de forma digital através do meu endereço eletrônico (e-mail) por mim fornecido à empresa e que, caso eu deseje receber o mesmo impresso devo solicitar ao RH por meio de WhatsApp ou e-mail.</p>
     <p style="margin-bottom:20px">Declaro ainda ter ciência da aplicação de penalidades cabíveis em caso de descumprimento deste.</p>
-    <p style="margin-bottom:24px">Santa Bárbara d'Oeste – SP, ${hoje.dia} de ___________________ de 20___.</p>
+    <p style="margin-bottom:24px">Santa Bárbara d'Oeste – SP, ${dataAdm.dia} de ${dataAdm.mes} de ${dataAdm.ano}.</p>
     <p style="margin-bottom:6px">Funcionário: <strong>${c.nome}</strong></p>
     <p>Assinatura: _______________________________________________</p>
-    ${docFooterHTML(paginaAtual, totalPaginas, emp)}
   </div>`;
   abrirReciboModal('🖨 Código de Conduta — ' + c.nome, html, false);
 }
@@ -4073,7 +4073,8 @@ function colabGerarTermoDadosBiometricos(colabId) {
   const emp = empresaInfoDoColaborador(c);
   const ehBrass = emp === CV_EMPRESA_INFO['BRASS'];
   const revisaoData = ehBrass ? '20/11/2025' : '01/11/2025';
-  const html = `<div style="padding:16px 20px;font-size:12px;line-height:1.6;text-align:justify">
+  const dataAdm = dataAdmissaoExtenso(c);
+  const html = `${docPageCSS(emp)}<div class="doc-print" style="padding:16px 20px;font-size:12px;line-height:1.6;text-align:justify">
     <table style="width:100%;border-collapse:collapse;margin-bottom:16px"><tr>
       <td style="border:1px solid #000;padding:10px;font-weight:700;text-align:center">${emp.nome.toUpperCase()}</td>
       <td style="border:1px solid #000;padding:10px;width:80px;text-align:center">Revisão<br><strong>00</strong></td>
@@ -4089,9 +4090,8 @@ function colabGerarTermoDadosBiometricos(colabId) {
     <p style="margin-bottom:12px">Os dados biométricos serão mantidos pela empresa apenas durante a vigência do contrato de trabalho ou pelo período necessário para o cumprimento de obrigações legais e defesa em processos judiciais.</p>
     <p style="font-weight:700;margin-bottom:6px">4. Direitos do Titular</p>
     <p style="margin-bottom:24px">O colaborador poderá, a qualquer momento, solicitar informações sobre o tratamento de seus dados ou revogar este consentimento mediante justificativa, ciente de que o registro de ponto continua sendo uma obrigação legal que deverá ser cumprida por outro método disponível na empresa.</p>
-    <p style="margin-bottom:24px">Santa Bárbara D'Oeste, ${docHoje().dia} de ___________________ de 20___.</p>
+    <p style="margin-bottom:24px">Santa Bárbara D'Oeste, ${dataAdm.dia} de ${dataAdm.mes} de ${dataAdm.ano}.</p>
     <p>Assinatura: _______________________________________</p>
-    ${docFooterHTML(1, 1, emp)}
   </div>`;
   abrirReciboModal('🖨 Termo de Dados Biométricos — ' + c.nome, html, false);
 }
@@ -4201,14 +4201,15 @@ function colabFichaAcao(acao) {
   }
   else if (acao === 'excluir') crudDeleteAction(MOD_COLAB, c.id, c.nome);
   else if (acao === 'ficha') {
-    const cfSecao = (titulo) => `<h3 style="font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--blue);border-bottom:1.5px solid var(--blue);padding-bottom:4px;margin:18px 0 10px">${titulo}</h3>`;
-    abrirReciboModal('🖨 Ficha Cadastral — ' + c.nome, `
-      <div style="padding:16px">
+    const empFicha = empresaInfoDoColaborador(c);
+    const cfSecao = (titulo) => `<h3 style="font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--blue);border-bottom:1.5px solid var(--blue);padding-bottom:4px;margin:12px 0 6px">${titulo}</h3>`;
+    abrirReciboModal('🖨 Ficha Cadastral — ' + c.nome, `${docPageCSS(empFicha)}
+      <div class="doc-print" style="padding:16px">
         <h2 style="text-align:center;margin-bottom:4px">FICHA CADASTRAL DO COLABORADOR</h2>
         <p style="text-align:center;font-size:11px;color:#666;margin-bottom:6px">${c.nome} — Matrícula ${c.mat||'—'}</p>
 
         ${cfSecao('Dados Cadastrais')}
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 24px;font-size:12px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px 20px;font-size:12px">
           ${cfField('Nome Completo', c.nome)}${cfField('Nome Curto / Apelido', c.nomeCurto)}
           ${cfField('CPF', c.cpf)}${cfField('RG', c.rg)}
           ${cfField('PIS/PASEP', c.pis)}${cfField('Data de Nascimento', c.nascimento)}
@@ -4220,26 +4221,25 @@ function colabFichaAcao(acao) {
         </div>
 
         ${cfSecao('Endereço')}
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 24px;font-size:12px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px 20px;font-size:12px">
           ${cfField('Endereço', [c.enderecoTipo,c.endereco,c.numero].filter(Boolean).join(' '))}${cfField('Complemento', c.complemento)}
           ${cfField('Bairro', c.bairro)}${cfField('Município/UF', [c.cidade,c.uf].filter(Boolean).join(' - '))}
           ${cfField('CEP', c.cep)}
         </div>
 
         ${cfSecao('Dados Contratuais')}
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 24px;font-size:12px">
-          ${cfField('Empresa (CNPJ)', empresaInfoDoColaborador(c).nome + ' — ' + empresaInfoDoColaborador(c).cnpj)}${cfField('Cargo', c.cargo)}
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px 20px;font-size:12px">
+          ${cfField('Empresa (CNPJ)', empFicha.nome + ' — ' + empFicha.cnpj)}${cfField('Cargo', c.cargo)}
           ${cfField('Setor', c.setor)}${cfField('Data de Admissão', c.adm)}
           ${cfField('CBO', c.cbo)}${cfField('Sindicato', c.sindicato)}
           ${cfField('Matrícula eSocial', c.matriculaEsocial)}${cfField('Status', c.status)}
         </div>
 
         ${cfSecao('Informações da Folha e Gestão')}
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 24px;font-size:12px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px 20px;font-size:12px">
           ${cfField('Salário', c.sal ? 'R$ '+c.sal : '')}${cfField('Horário de Trabalho', c.horarioTrabalho)}
           ${cfField('Observações', c.observacoes)}
         </div>
-        ${docFooterHTML(1, 1, empresaInfoDoColaborador(c))}
       </div>`, false);
   }
   else if (acao === 'historico') abrirHistoricoCargoSalario(c.id);
