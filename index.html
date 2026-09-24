@@ -425,7 +425,7 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
   <div class="l-box">
     <div class="l-logo">
       <div class="l-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
-      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.57 — Paginação Real e Layout Corrigido</div></div>
+      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.58 — Ajuste Fino das Colunas do Termo de EPI</div></div>
     </div>
     <div class="f-row"><label>Usuário</label><input type="text" id="l-user" value="jakeline@acmetalurgica.com.br"></div>
     <div class="f-row"><label>Senha</label><input type="password" id="l-pass" value="••••••••"></div>
@@ -3613,7 +3613,7 @@ function colabGerarTermoEPI(colabId) {
   if (!c) return;
   const emp = empresaInfoDoColaborador(c);
   const dataAdm = dataAdmissaoExtenso(c);
-  const linhasVazias = Array.from({length:7}).map(()=>`<tr><td style="padding:5px;border:1px solid #999">&nbsp;</td><td style="padding:5px;border:1px solid #999">&nbsp;</td><td style="padding:5px;border:1px solid #999">&nbsp;</td><td style="padding:5px;border:1px solid #999">&nbsp;</td><td style="padding:5px;border:1px solid #999">&nbsp;</td><td style="padding:5px;border:1px solid #999">&nbsp;</td><td style="padding:5px;border:1px solid #999">&nbsp;</td></tr>`).join('');
+  const linhasVazias = Array.from({length:5}).map(()=>`<tr><td style="padding:15px 5px;border:1px solid #999">&nbsp;</td><td style="padding:15px 5px;border:1px solid #999">&nbsp;</td><td style="padding:15px 5px;border:1px solid #999">&nbsp;</td><td style="padding:15px 5px;border:1px solid #999">&nbsp;</td><td style="padding:15px 5px;border:1px solid #999">&nbsp;</td><td style="padding:15px 5px;border:1px solid #999">&nbsp;</td><td style="padding:15px 5px;border:1px solid #999">&nbsp;</td></tr>`).join('');
   const html = `${docPageCSS(emp)}<div class="doc-print" style="padding:16px 20px;font-size:11.5px;line-height:1.4;text-align:justify">
     <table style="width:100%;border-collapse:collapse;margin-bottom:10px"><tr>
       <td style="border:1px solid #000;padding:7px;font-weight:700">${emp.nome.toUpperCase()}</td>
@@ -3636,7 +3636,7 @@ function colabGerarTermoEPI(colabId) {
     <p style="margin-bottom:10px">Declaro finalmente estar ciente que o descumprimento de quaisquer das cláusulas deste documento, constitui JUSTA CAUSA para rescisão do contrato de trabalho, nos termos do artigo 482 "h" da CLT.</p>
     <table style="width:100%;border-collapse:collapse;font-size:10.5px;margin-bottom:8px;table-layout:fixed">
       <colgroup>
-        <col style="width:5%"><col style="width:27%"><col style="width:8%"><col style="width:7%"><col style="width:9%"><col style="width:7%"><col style="width:37%">
+        <col style="width:6%"><col style="width:28%"><col style="width:10%"><col style="width:9%"><col style="width:9%"><col style="width:10%"><col style="width:28%">
       </colgroup>
       <thead><tr>
         <th style="border:1px solid #999;padding:4px">QT</th><th style="border:1px solid #999;padding:4px">Tipo de EPI's</th><th style="border:1px solid #999;padding:4px">Tamanho</th><th style="border:1px solid #999;padding:4px">C.A</th><th style="border:1px solid #999;padding:4px">Data Entrega</th><th style="border:1px solid #999;padding:4px">Código</th><th style="border:1px solid #999;padding:4px">Assinatura</th>
@@ -3644,7 +3644,7 @@ function colabGerarTermoEPI(colabId) {
     </table>
     <p style="font-size:9.5px;margin-bottom:12px">Código de controle: 1–Demissão · 2–Extravio · 3–Danificado · 4–Mau uso · 5–EPI uso parcial · 6–EPI uso integral · 7–Periodicidade · 8–Admissão</p>
     <p style="margin-bottom:14px">Santa Barbara do Oeste: ${dataAdm.dia} de ${dataAdm.mes} de ${dataAdm.ano}.</p>
-    <p style="text-align:center">____________________________<br>Assinatura</p>
+    <p style="text-align:center">____________________________<br>Assinatura do Colaborador</p>
   </div>`;
   abrirReciboModal('🖨 Termo de Responsabilidade de EPI — ' + c.nome, html, false);
 }
