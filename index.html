@@ -425,7 +425,7 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
   <div class="l-box">
     <div class="l-logo">
       <div class="l-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
-      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.59 — Correção de Formatação de Salário/Valores</div></div>
+      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.61 — Moeda em Benefícios/Cesta &amp; Vegas + Relatório na Folha</div></div>
     </div>
     <div class="f-row"><label>Usuário</label><input type="text" id="l-user" value="jakeline@acmetalurgica.com.br"></div>
     <div class="f-row"><label>Senha</label><input type="password" id="l-pass" value="••••••••"></div>
@@ -1030,6 +1030,7 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
       <div class="section-hdr">
         <div class="sec-title"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2H10a2 2 0 0 0-2 2v16"/></svg>Controle de Desconto em Folha</div>
         <button class="btn btn-p" onclick="fdAdicionarLinha()">+ Adicionar Colaborador</button>
+        <button class="btn btn-s" onclick="fdGerarRelatorio()">🖨 Relatório</button>
         <button class="btn btn-s" onclick="fdExportar()">⬇ Exportar p/ Contador</button>
       </div>
       <div class="filters" style="margin-bottom:12px">
@@ -4433,6 +4434,57 @@ function fdSalvarTotais() {
   }
 }
 
+function fdGerarRelatorio() {
+  const ctx = fdContexto();
+  const meses = ['','Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  const all = loadData('folha_descontos').filter(r => r.status !== 'Inativo' && r.cnpj === ctx.cnpj && r.ano === ctx.ano && r.mes === ctx.mes)
+    .sort((a,b) => a.colaborador.localeCompare(b.colaborador));
+  if (!all.length) { showToast('Nenhum colaborador lançado nesta competência', 'warn'); return; }
+
+  const empInfo = CV_EMPRESA_INFO[ctx.cnpj] || {nome: ctx.cnpj, cnpj:''};
+  let totFarmacia = 0, totSindicato = 0, totSamaritano = 0, totTermo = 0;
+  const linhas = all.map((r,idx) => {
+    const farmacia = r.farmacia||0, sindicato = r.sindicato||0, samaritano = r.samaritano||0, termo = r.termoAcordo||0;
+    totFarmacia += farmacia; totSindicato += sindicato; totSamaritano += samaritano; totTermo += termo;
+    return `<tr style="border-bottom:1px solid #ccc">
+      <td style="padding:5px 4px">${idx+1}</td>
+      <td style="padding:5px 4px">${r.colaborador}</td>
+      <td style="padding:5px 4px;text-align:right">R$ ${fmtBRL(farmacia)}</td>
+      <td style="padding:5px 4px;text-align:right">R$ ${fmtBRL(sindicato)}</td>
+      <td style="padding:5px 4px;text-align:right">R$ ${fmtBRL(samaritano)}</td>
+      <td style="padding:5px 4px;text-align:center">${r.transporte||'—'}</td>
+      <td style="padding:5px 4px;text-align:right">R$ ${fmtBRL(termo)}</td>
+    </tr>`;
+  }).join('');
+  const totalGeral = totFarmacia + totSindicato + totSamaritano + totTermo;
+
+  abrirReciboModal('🖨 Relatório — Desconto em Folha', `<div style="padding:16px 4px">
+    <h3 style="text-align:center;margin-bottom:4px">RELATÓRIO — DESCONTO EM FOLHA</h3>
+    <p style="text-align:center;font-size:11px;color:#666;margin-bottom:14px">${empInfo.nome}${empInfo.cnpj?' — CNPJ '+empInfo.cnpj:''} · Competência: ${meses[ctx.mes]}/${ctx.ano}</p>
+    <table style="width:100%;border-collapse:collapse;font-size:10.5px">
+      <thead><tr style="border-bottom:1.5px solid #000">
+        <th style="text-align:left;padding:5px 4px;width:26px">Nº</th>
+        <th style="text-align:left;padding:5px 4px">Colaborador</th>
+        <th style="text-align:right;padding:5px 4px">Farmácia</th>
+        <th style="text-align:right;padding:5px 4px">Sindicato</th>
+        <th style="text-align:right;padding:5px 4px">Samaritano</th>
+        <th style="text-align:center;padding:5px 4px">Transporte</th>
+        <th style="text-align:right;padding:5px 4px">Termo Acordo</th>
+      </tr></thead>
+      <tbody>${linhas}</tbody>
+      <tfoot><tr style="border-top:1.5px solid #000;font-weight:700">
+        <td colspan="2" style="padding:6px 4px;text-align:right">TOTAL</td>
+        <td style="padding:6px 4px;text-align:right">R$ ${fmtBRL(totFarmacia)}</td>
+        <td style="padding:6px 4px;text-align:right">R$ ${fmtBRL(totSindicato)}</td>
+        <td style="padding:6px 4px;text-align:right">R$ ${fmtBRL(totSamaritano)}</td>
+        <td></td>
+        <td style="padding:6px 4px;text-align:right">R$ ${fmtBRL(totTermo)}</td>
+      </tr>
+      <tr style="font-weight:700"><td colspan="6" style="padding:6px 4px;text-align:right">TOTAL GERAL</td><td style="padding:6px 4px;text-align:right">R$ ${fmtBRL(totalGeral)}</td></tr></tfoot>
+    </table>
+  </div>`, false);
+}
+
 function fdExportar() {
   if (typeof XLSX === 'undefined') { showToast('Biblioteca XLSX não carregada', 'error'); return; }
   const ctx = fdContexto();
@@ -5412,8 +5464,33 @@ function buildHistoricoCargoSalarioBaseline() {
     } else {
       crudCreate('historico_cargo_salario', {
         colaboradorId: c.id, colaborador: c.nome, data: c.adm || dataHojeDDMMAAAA(),
-        salario: parseSalNumHist(c.sal), motivo: 'ADMISSÃO', cargo: c.cargo || '', percentual: null
+        salario: moedaNum(c.sal), motivo: 'ADMISSÃO', cargo: c.cargo || '', percentual: null
       }, {modulo:'Histórico Cargo/Salário', label: c.nome});
+    }
+  });
+  repararHistoricoSalarioAntigo();
+}
+
+// Linhas de histórico geradas ANTES da correção do parser de salário podem ter
+// ficado com o valor errado gravado (ex.: R$ 2.571.700.000,00 em vez de
+// R$ 2.571,70). Aqui a gente conserta sozinho: quando o colaborador tem uma
+// única linha de ADMISSÃO (nunca teve cargo/salário alterado depois) e o
+// valor gravado não bate com o salário atual do cadastro já lido
+// corretamente, corrige a linha — sem mexer em quem já tem histórico real
+// com mais de uma linha (esses ficam como estão, pois o valor daquela data
+// pode legitimamente ser diferente do salário de hoje).
+function repararHistoricoSalarioAntigo() {
+  const colabs = loadData('colaboradores');
+  const hist = loadData('historico_cargo_salario');
+  const porColab = {};
+  hist.forEach(h => { (porColab[h.colaboradorId] = porColab[h.colaboradorId] || []).push(h); });
+  colabs.forEach(c => {
+    const linhas = porColab[c.id];
+    if (!linhas || linhas.length !== 1 || linhas[0].motivo !== 'ADMISSÃO') return;
+    const linha = linhas[0];
+    const salCorreto = moedaNum(c.sal);
+    if (salCorreto > 0 && Math.abs(linha.salario - salCorreto) > 0.01) {
+      crudUpdate('historico_cargo_salario', linha.id, {salario: salCorreto}, {modulo:'Histórico Cargo/Salário', label: c.nome});
     }
   });
 }
@@ -6252,7 +6329,7 @@ function benefRemoverInscrito(id, nome) {
 }
 
 function benefAtualizarDesconto(id, valor) {
-  let num = parseFloat(String(valor).replace(',', '.'));
+  let num = moedaNum(valor);
   if (isNaN(num) || num < 0) num = 0;
   num = Math.round(num * 100) / 100;
   const data = loadData('beneficios_inscritos');
@@ -6345,7 +6422,7 @@ function benefInscritosHtml(tipoNome) {
       const obsSalario = c ? `<span class="muted" style="font-size:9px">(6% de R$ ${fmtBRL(sal)})</span>` : '<span class="muted" style="font-size:9px">(salário não encontrado no cadastro)</span>';
       colunaValor = `R$ ${fmtBRL(valor)} ${obsSalario}`;
     } else {
-      colunaValor = `<input type="number" step="0.01" min="0" style="width:90px" value="${i.valorDesconto||0}" onchange="benefAtualizarDesconto(${i.id},this.value)">`;
+      colunaValor = `<input type="text" inputmode="decimal" style="width:90px" value="${moedaFmt(i.valorDesconto||0)}" oninput="maskMoedaInput(this)" onchange="benefAtualizarDesconto(${i.id},this.value)">`;
     }
     return `<tr>
       <td style="font-size:11px">${i.colaborador}</td>
@@ -6969,8 +7046,8 @@ function cvInlineUpdate(id, field, value) {
 
   // Validações
   if (field === 'valorCesta' || field === 'valorVegas') {
-    let num = parseFloat(String(value).replace(',', '.'));
-    if (isNaN(num) || num < 0) num = 0;
+    let num = moedaNum(value);
+    if (num < 0) num = 0;
     value = Math.round(num * 100) / 100;
   }
   if (field === 'qtdCesta') {
@@ -7042,9 +7119,9 @@ function cvRowRender(r) {
     <td style="font-size:11px">${r.colaborador}</td>
     <td style="font-size:11px">${r.cnpj||'—'}</td>
     <td><select style="width:100%" onchange="cvInlineUpdate(${r.id},'cesta',this.value)"><option value="SIM" ${r.cesta==='SIM'?'selected':''}>SIM</option><option value="NÃO" ${r.cesta==='NÃO'?'selected':''}>NÃO</option></select></td>
-    <td><input type="number" step="0.01" min="0" style="width:100%" value="${r.valorCesta||0}" onchange="cvInlineUpdate(${r.id},'valorCesta',this.value)" ${r.cesta==='NÃO'?'disabled':''}></td>
+    <td><input type="text" inputmode="decimal" style="width:100%" value="${moedaFmt(r.valorCesta||0)}" oninput="maskMoedaInput(this)" onchange="cvInlineUpdate(${r.id},'valorCesta',this.value)" ${r.cesta==='NÃO'?'disabled':''}></td>
     <td><select style="width:100%" onchange="cvInlineUpdate(${r.id},'vegas',this.value)"><option value="SIM" ${r.vegas==='SIM'?'selected':''}>SIM</option><option value="NÃO" ${r.vegas==='NÃO'?'selected':''}>NÃO</option></select></td>
-    <td><input type="number" step="0.01" min="0" style="width:100%" value="${r.valorVegas||0}" onchange="cvInlineUpdate(${r.id},'valorVegas',this.value)" ${r.vegas==='NÃO'?'disabled':''}></td>
+    <td><input type="text" inputmode="decimal" style="width:100%" value="${moedaFmt(r.valorVegas||0)}" oninput="maskMoedaInput(this)" onchange="cvInlineUpdate(${r.id},'valorVegas',this.value)" ${r.vegas==='NÃO'?'disabled':''}></td>
     <td><input type="number" min="0" style="width:100%" value="${r.qtdCesta!=null?r.qtdCesta:0}" onchange="cvInlineUpdate(${r.id},'qtdCesta',this.value)"></td>
     <td><input type="text" style="width:100%" value="${escAttr(r.observacoes||'')}" onchange="cvInlineUpdate(${r.id},'observacoes',this.value)"></td>
     <td style="white-space:nowrap">
