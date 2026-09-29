@@ -425,7 +425,7 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
   <div class="l-box">
     <div class="l-logo">
       <div class="l-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
-      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.61 — Moeda em Benefícios/Cesta &amp; Vegas + Relatório na Folha</div></div>
+      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.62 — Novas Pastas de Documentos e Ajuste do Termo de Confidencialidade</div></div>
     </div>
     <div class="f-row"><label>Usuário</label><input type="text" id="l-user" value="jakeline@acmetalurgica.com.br"></div>
     <div class="f-row"><label>Senha</label><input type="password" id="l-pass" value="••••••••"></div>
@@ -3622,7 +3622,7 @@ function colabGerarTermoConfidencialidade(colabId) {
   const nomeEmp = emp.nome.toUpperCase();
   const nomeCurto = emp === CV_EMPRESA_INFO['BRASS'] ? 'BRASSMETAL' : 'AC METAL';
   const dataAdm = dataAdmissaoExtenso(c);
-  const html = `${docPageCSS(emp)}<div class="doc-print" style="padding:16px 20px;font-size:13px;line-height:1.8;text-align:justify">
+  const html = `${docPageCSS(emp)}<div class="doc-print" style="padding:16px 20px;font-size:12px;line-height:1.6;text-align:justify">
     <h3 style="text-align:center;margin-bottom:16px">TERMO DE CONFIDENCIALIDADE E SIGILO</h3>
     <p style="margin-bottom:12px">Pelo presente instrumento particular, de um lado, <strong>${nomeEmp}</strong>, empresa de direito privado, inscrita no CNPJ sob nº ${emp.cnpj}, com sede na ${emp.endereco} e, de outro <strong>${c.nome}</strong>, portador (a) do CPF <strong>${c.cpf||'____________________'}</strong>, integrante do quadro de funcionários da empresa acima qualificada e de ora em diante designado COLABORADOR, celebram entre si o presente ACORDO DE CONFIDENCIALIDADE E SIGILO, que se regerá pelas cláusulas e condições abaixo:</p>
     <p style="font-weight:700;margin-bottom:8px">DEFINIÇÕES</p>
@@ -4154,7 +4154,7 @@ function colabGerarTermoDadosBiometricos(colabId) {
   abrirReciboModal('🖨 Termo de Dados Biométricos — ' + c.nome, html, false);
 }
 
-const COLAB_DOC_CATEGORIAS = ['Acordos - Termos','Advertências','Atestados','Avaliação de Desempenho','Documentos Admissionais','Feedbacks','Férias','Ficha de EPI','Processo Seletivo','Registro E-Social / Integração / Efetivação / ASO','Treinamentos'];
+const COLAB_DOC_CATEGORIAS = ['Acordos - Termos','Advertências','ASOs','Atestados','Avaliação de Desempenho','Certificados','Documentos Admissionais','Documentos Pessoais','Efetivação','Feedbacks','Férias','Ficha de EPI','Integração','Processo Seletivo','Recibos E-Social','Treinamentos'];
 
 function colabDocumentosHtml(c) {
   const docs = loadData('colab_documentos').filter(d => d.status !== 'Inativo' && d.colaboradorId === c.id);
