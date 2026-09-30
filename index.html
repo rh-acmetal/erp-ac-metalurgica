@@ -425,7 +425,7 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
   <div class="l-box">
     <div class="l-logo">
       <div class="l-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
-      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.62 — Novas Pastas de Documentos e Ajuste do Termo de Confidencialidade</div></div>
+      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.63 — Ordens de Serviço (NR-1) Auto-Preenchidas</div></div>
     </div>
     <div class="f-row"><label>Usuário</label><input type="text" id="l-user" value="jakeline@acmetalurgica.com.br"></div>
     <div class="f-row"><label>Senha</label><input type="password" id="l-pass" value="••••••••"></div>
@@ -481,6 +481,9 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
     </div>
     <div class="nav-item" onclick="go('desccargos',this,'Descrição de Cargos','Manual de Referência')">
       <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>Descrição de Cargos
+    </div>
+    <div class="nav-item" onclick="go('ordemservico',this,'Ordens de Serviço','SST — NR-1')">
+      <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Ordens de Serviço
     </div>
     <div class="nav-item" onclick="go('sstfin',this,'Financeiro SST','Fechamento MedClass')">
       <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Financeiro SST
@@ -950,6 +953,25 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
         <button class="btn btn-s btn-sm" onclick="exportTableToExcel('descricao_cargos',[{field:'cargo',label:'Cargo',width:35},{field:'cbo',label:'CBO',width:12},{field:'area',label:'Área',width:20},{field:'descricao',label:'Descrição',width:60}],'DescricaoCargos')">⬇ Exportar</button>
       </div>
       <div id="dc-lista"></div>
+    </div>
+
+    <!-- ══ ORDENS DE SERVIÇO ══ -->
+    <div id="page-ordemservico" class="page">
+      <div class="layer-badge lb-op">● Operacional</div>
+      <div class="section-hdr">
+        <div class="sec-title"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Ordens de Serviço — NR-1</div>
+        <button class="btn btn-p" onclick="openCrudModal(MOD_OS,null)">+ Nova Ordem de Serviço</button>
+      </div>
+      <div class="muted" style="margin-bottom:12px;font-size:12px">Uma O.S. cadastrada aqui por cargo/função. Ao imprimir pela ficha do colaborador, o sistema busca a O.S. do cargo dele e já preenche nome, CPF e data de admissão — sem digitar nada na hora.</div>
+      <div class="filters" style="margin-bottom:12px">
+        <div class="srch-wrap"><input class="finp" type="text" id="os-search" placeholder="🔎 Buscar cargo ou CBO..." oninput="renderOrdensServico()"></div>
+        <select class="fsel" id="os-empresa-sel" onchange="renderOrdensServico()">
+          <option value="">Todas as empresas</option><option value="AC">AC Metal</option><option value="BRASS">Brass Metal</option>
+        </select>
+        <span class="chip" id="os-count">— ordens</span>
+        <button class="btn btn-s btn-sm" onclick="document.getElementById('os-search').value='';document.getElementById('os-empresa-sel').value='';renderOrdensServico()">🔄 Limpar</button>
+      </div>
+      <div id="os-lista"></div>
     </div>
 
     <!-- ══ FINANCEIRO SST ══ -->
@@ -2349,6 +2371,7 @@ function go(id,el,title,bread){
   if(id==='cestavegas'){setTimeout(()=>{try{renderCestaVegas();buildCestaVegasHistorico();}catch(e){console.warn('cestavegas:',e);}},80);}
   if(id==='feedback90'){setTimeout(()=>{try{renderFeedback90();}catch(e){console.warn('feedback90:',e);}},80);}
   if(id==='desccargos'){setTimeout(()=>{try{renderDescCargos();}catch(e){console.warn('desccargos:',e);}},80);}
+  if(id==='ordemservico'){setTimeout(()=>{try{renderOrdensServico();}catch(e){console.warn('ordemservico:',e);}},80);}
   if(id==='sstfin'){setTimeout(()=>{try{renderSSTFinanceiro();}catch(e){console.warn('sstfin:',e);}},80);}
   if(id==='pcmso'){setTimeout(()=>{try{pcmsoRenderAll();}catch(e){console.warn('pcmso:',e);}},80);}
   if(id==='folhadesc'){setTimeout(()=>{try{renderFolhaDesc();}catch(e){console.warn('folhadesc:',e);}},80);}
@@ -4176,6 +4199,7 @@ function colabDocumentosHtml(c) {
       <button class="btn btn-s btn-sm" onclick="colabGerarTermoConfidencialidade(${c.id})">🖨 Termo de Confidencialidade</button>
       <button class="btn btn-s btn-sm" onclick="colabGerarTermoEPI(${c.id})">🖨 Termo de Responsabilidade de EPI</button>
       <button class="btn btn-s btn-sm" onclick="colabGerarTermoDadosBiometricos(${c.id})">🖨 Termo de Dados Biométricos</button>
+      <button class="btn btn-s btn-sm" onclick="colabGerarOrdemServico(${c.id})">🖨 Ordem de Serviço</button>
     </div>
     <div class="muted" style="margin-top:6px">Nome, CPF, cargo, setor e empresa (${c.cnpj||'—'}) preenchidos automaticamente — só a assinatura fica em branco. O Manual do Colaborador já inclui os termos de imagem, uniforme e cadastro de e-mail.</div>
   </div>`;
@@ -5515,6 +5539,7 @@ function initCrudModules() {
 
   initColabTable();
   buildHistoricoCargoSalarioBaseline();
+  buildOrdensServicoSeed();
   buildFeriasFromColabs();
   initFeriasTable();
   buildTreinosFromColabs();
@@ -7601,6 +7626,232 @@ function renderDescCargos() {
   setText('dc-count', all.length + ' cargos');
 }
 
+/* ═══════════════ MÓDULO: ORDENS DE SERVIÇO (NR-1) ═══════════════ */
+const MOD_OS = {
+  table: 'ordens_servico',
+  label: 'Ordem de Serviço',
+  onSave: () => { renderOrdensServico(); },
+  fields: [
+    {field:'cargo', label:'Cargo / Função (igual ao cadastro do colaborador)', required:true, full:true},
+    {field:'empresa', label:'Empresa', type:'select', options:['AC','BRASS'], required:true},
+    {field:'cbo', label:'CBO', placeholder:'0000-00'},
+    {field:'setor', label:'Setor'},
+    {field:'revisao', label:'Revisão', placeholder:'00'},
+    {field:'atividades', label:'Atividades Desenvolvidas', type:'textarea', full:true},
+    {field:'fisicos', label:'Agentes Físicos', type:'textarea', full:true},
+    {field:'quimicos', label:'Agentes Químicos', type:'textarea', full:true},
+    {field:'ergonomicos', label:'Agentes Ergonômicos', type:'textarea', full:true},
+    {field:'biologicos', label:'Agentes Biológicos', type:'textarea', full:true},
+    {field:'mecanicos', label:'Agentes Mecânicos/Acidentes', type:'textarea', full:true},
+    {field:'epcs', label:"E.P.C.'s (Equip. de Proteção Coletiva)", type:'textarea', full:true},
+    {field:'epis', label:"E.P.I's (Equip. de Proteção Individual)", type:'textarea', full:true},
+    {field:'treinamentos', label:'Treinamentos Necessários (deixe em branco para usar o texto padrão)', type:'textarea', full:true},
+  ]
+};
+
+const OS_SEED_EMPRESA = {nome:'AC Metal Fundição Eireli'}; // apenas para referência
+const OS_SEED = [
+{cargo:'Analista de RH/DP JR',empresa:'AC',cbo:'2524-05',setor:'Administrativo/RH',revisao:'00',atividades:'Executar atividades operacionais inerentes à área de Departamento Pessoal e Recursos Humanos, bem como, monitorar, dar suporte às operações e implementar processos de melhoria para a sua área de atuação, com o objetivo de contribuir para o alcance de metas e atingimento dos objetivos da área, contribuindo com a garantia e a otimização dos resultados da organização.',fisicos:'Ruído.',quimicos:'Não se Aplica.',ergonomicos:'Fadiga visual; Postura sentada por longos períodos.',biologicos:'Não se aplica.',mecanicos:'Atropelamentos; Projeção de Partículas; Queda com Diferença de Nível; Queda de Materiais.',epcs:'Extintores; sinalizações de segurança; Sistema de ventilação ar-condicionado.',epis:'Sapato de Segurança; protetor auricular; Óculos de segurança.',treinamentos:''},
+{cargo:'Analista de RH/DP PL',empresa:'AC',cbo:'2524-05',setor:'Administrativo/RH',revisao:'00',atividades:'Executar atividades operacionais inerentes à área de Departamento Pessoal e Recursos Humanos, bem como, monitorar, dar suporte às operações e implementar processos de melhoria para a sua área de atuação, com o objetivo de contribuir para o alcance de metas e atingimento dos objetivos da área,  contribuindo com a garantia e a otimização dos resultados da organização.',fisicos:'Ruído.',quimicos:'Não se Aplica.',ergonomicos:'Fadiga visual; Postura sentada por longos períodos.',biologicos:'Não se aplica.',mecanicos:'Atropelamentos; Projeção de Partículas; Queda com Diferença de Nível; Queda de Materiais.',epcs:'Extintores; sinalizações de segurança; Sistema de ventilação ar-condicionado.',epis:'Sapato de Segurança; protetor auricular; Óculos de segurança.',treinamentos:''},
+{cargo:'Analista de RH/DP SR',empresa:'AC',cbo:'2524-05',setor:'Administrativo/RH',revisao:'00',atividades:'Executar, controlar, analisar, desenvolver e apoiar projetos e atividades inerentes à área de Recursos Humanos, bem como, monitorar, dar suporte às operações e implementar indicadores para a sua área de atuação, com o objetivo de garantir a demonstração e o alcance de metas e dados reais, contribuindo com a garantia e a otimização dos resultados da organização.',fisicos:'Ruído.',quimicos:'Não se Aplica.',ergonomicos:'Fadiga visual; Postura sentada por longos períodos.',biologicos:'Não se aplica.',mecanicos:'Atropelamentos; Projeção de Partículas; Queda com Diferença de Nível; Queda de Materiais.',epcs:'Extintores; sinalizações de segurança; Sistema de ventilação ar-condicionado.',epis:'Sapato de Segurança; protetor auricular; Óculos de segurança.',treinamentos:''},
+{cargo:'Operador de Manufatura A',empresa:'AC',cbo:'7222-20',setor:'Fundição/Forno',revisao:'00',atividades:'Atuar em todo o processo de fundição envolvendo as operações de fusão, centrifuga e contínua. Assim como operações correlatas de acabamento. Controlar os parâmetros de processo e a qualidade das peças fundidas, aplicar procedimentos de segurança nas atividades desempenhadas de acordo com as normas internas de segurança da organização.  Planejar sequencias de operações de acordo com critérios da organização e prazos de entrega, executar cálculos técnicos, contribuir com as ações de preservação do meio ambiente, bem como supervisionar, monitorar e dar suporte às operações e aos colaboradores do setor, com o objetivo de garantir a otimização e o alcance de metas. O colaborador deve possuir um perfil eclético e colaborativo de forma atuar nas diversas atividades que compõem o processo.',fisicos:'Calor; Radiação Não ionizantes; Ruído; Vibração (Mãos e braços).',quimicos:'Alumínio metal e compostos insolúveis; Antimônio e seus compostos; Cádmio e seus compostos tóxicos; Chumbo e seus compostos; Cobalto e seus compostos inorgânicos; Cobre; Cromo e seus compostos tóxicos; Dióxido de titânio; Estanho e seus compostos orgânicos; Ferro, óxido (Fe2O3); Hidrocarbonetos (óleo e graxa); Manganês e seus compostos; Molibdênio - metal e compostos insolúveis; Níquel e seus compostos tóxicos; Óxido de cálcio; Óxido de magnésio; Óxido de zinco; Poeira Inalável.',ergonomicos:'Atividades com pressão, preensão, flexão, extensão ou torção dos segmentos corporais; Atividades de puxar e/ou empurrar cargas ou volumes; Desconforto Térmico; Esforço Físico Moderado, Exigência de elevação de membros superiores, Exigência de flexões e/ou extensões de coluna vertebral; Exposição a vibrações de mãos e braços; Levantamento e/ou transporte manual de cargas ou volumes; Postura em pé sentada por longos períodos.',biologicos:'Não se aplica.',mecanicos:'Atropelamento; Cortes e Perfurações; Prensamentos; Projeção de Partículas; Quedas de materiais; Queda de Mesmo Nível; Queimadura.',epcs:'Extintores; sinalizações de segurança; Sistema de ventilação Artificial Ventilador Convencional Pedestal e Exaustor.',epis:'Avental de Raspa, Luva de Raspa; Protetor Facial incolor e esverdeado, Perneira de Raspa, Mangote de raspa; Protetor auricular; Respirador PFF2; Creme de proteção para as mãos; Luva de látex; Luva de PU; Botina de Segurança; Óculos de segurança; Capacete de segurança.',treinamentos:''},
+{cargo:'Operador de Manufatura B',empresa:'AC',cbo:'7222-20',setor:'Fundição/Forno',revisao:'00',atividades:'Atuar em todo o processo de fundição envolvendo as operações de fusão, coquilha, centrifuga e contínua. Assim como nas operações correlatas de acabamento, aplicar procedimentos de segurança nas atividades desempenhadas de acordo com as normas internas de segurança da organização. Executar os procedimentos de preservação do meio ambiente. O colaborador deve possuir um perfil eclético e colaborativo de forma atuar nas diversas atividades que compõem o processo.',fisicos:'Calor; Radiação Não ionizantes; Ruído; Vibração (Mãos e braços).',quimicos:'Alumínio metal e compostos insolúveis; Antimônio e seus compostos; Cádmio e seus compostos tóxicos; Chumbo e seus compostos; Cobalto e seus compostos inorgânicos; Cobre; Cromo e seus compostos tóxicos; Dióxido de titânio; Estanho e seus compostos orgânicos; Ferro, óxido (Fe2O3); Hidrocarbonetos (óleo e graxa); Manganês e seus compostos; Molibdênio - metal e compostos insolúveis; Níquel e seus compostos tóxicos; Óxido de cálcio; Óxido de magnésio; Óxido de zinco; Poeira Inalável.',ergonomicos:'Atividades com pressão, preensão, flexão, extensão ou torção dos segmentos corporais; Atividades de puxar e/ou empurrar cargas ou volumes; Desconforto Térmico; Esforço Físico Moderado, Exigência de elevação de membros superiores, Exigência de flexões e/ou extensões de coluna vertebral; Exposição a vibrações de mãos e braços; Levantamento e/ou transporte manual de cargas ou volumes; Postura em pé sentada por longos períodos.',biologicos:'Não se aplica.',mecanicos:'Atropelamento; Cortes e Perfurações; Prensamentos; Projeção de Partículas; Quedas de materiais; Queda de Mesmo Nível; Queimadura.',epcs:'Extintores; sinalizações de segurança; Sistema de ventilação Artificial Ventilador Convencional Pedestal e Exaustor.',epis:'Avental de raspa; Luva de raspa; Protetor facial incolor e esverdeado; Perneira de raspa; Mangote de raspa; Protetor auricular; respirador PFF2; Creme de proteção para as mãos; Luva de PU; Botina de Segurança; Óculos de segurança; Capacete de segurança.',treinamentos:''},
+{cargo:'Operador de Manufatura C',empresa:'AC',cbo:'7222-20',setor:'Fundição/Forno',revisao:'00',atividades:'Atuar em todo o processo de fundição envolvendo as operações de fusão, coquilha, centrifuga e contínua. Assim como nas operações correlatas de acabamento, aplicar procedimentos de segurança nas atividades desempenhadas de acordo com as normas internas de segurança da organização. Executar os procedimentos de preservação do meio ambiente. O colaborador deve possuir um perfil eclético e colaborativo de forma atuar nas diversas atividades que compõem o processo.',fisicos:'Calor; Radiação Não ionizantes; Ruído; Vibração (Mãos e braços).',quimicos:'Alumínio metal e compostos insolúveis; Antimônio e seus compostos; Cádmio e seus compostos tóxicos; Chumbo e seus compostos; Cobalto e seus compostos inorgânicos; Cobre; Cromo e seus compostos tóxicos; Dióxido de titânio; Estanho e seus compostos orgânicos; Ferro, óxido (Fe2O3); Hidrocarbonetos (óleo e graxa); Manganês e seus compostos; Molibdênio - metal e compostos insolúveis; Níquel e seus compostos tóxicos; Óxido de cálcio; Óxido de magnésio; Óxido de zinco; Poeira Inalável.',ergonomicos:'Atividades com pressão, preensão, flexão, extensão ou torção dos segmentos corporais; Atividades de puxar e/ou empurrar cargas ou volumes; Desconforto Térmico; Esforço Físico Moderado, Exigência de elevação de membros superiores, Exigência de flexões e/ou extensões de coluna vertebral; Exposição a vibrações de mãos e braços; Levantamento e/ou transporte manual de cargas ou volumes; Postura em pé sentada por longos períodos.',biologicos:'Não se aplica.',mecanicos:'Atropelamento; Cortes e Perfurações; Prensamentos; Projeção de Partículas; Quedas de materiais; Queda de Mesmo Nível; Queimadura.',epcs:'Extintores; sinalizações de segurança; Sistema de ventilação Artificial Ventilador Convencional Pedestal e Exaustor.',epis:'Avental de raspa; Luva de raspa; protetor facial incolor e esverdeado; Perneira de raspa; Mangote de raspa; Protetor auricular; respirador PFF2; Creme de proteção para as mãos; Luva de PU; Botina de Segurança; Óculos de segurança; Capacete de segurança.',treinamentos:''},
+{cargo:'Técnico da Qualidade JR',empresa:'AC',cbo:'3912-10',setor:'Qualidade/Produção',revisao:'00',atividades:'Atuar nas atividades que suportem e de garantias para que todos os requisitos definidos pelo cliente, pela organização, estatutários, regulamentares e normativos sejam atendidos durante todas as etapas do processo de fabricação ou serviço.  Fazer cumprir os procedimentos, instruções, fluxogramas e sistemáticas que contribuem para a conformidade do SGQ, segurança, saúde, higiene e boas práticas de fabricação. Atender aos objetivos, metas e satisfação de clientes, provedores externos e colaboradores. Participar e propor ações de melhorias contínuas para a manutenção do SGQ.',fisicos:'Calor; Ruído.',quimicos:'Acetato de etila; Álcool etílico (etanol); Hidrocarbonetos; n-Butano; n-propano (propano); Tolueno (toluol).',ergonomicos:'Atividades com pressão, preensão, flexão, extensão ou torção dos segmentos corporais; Esforço Físico Moderado; Levantamento e/ou transporte manual de cargas ou volumes; Manuseio ou movimentação de cargas e volumes sem pega ou com pega pobre; Postura de pé por longos períodos.',biologicos:'Não se aplica.',mecanicos:'Atropelamento; Cortes e Perfurações; Prensamentos; Projeção de Partículas; Queda de Materiais.',epcs:'Extintores; sinalizações de segurança; Sistema de ventilação ar-condicionado.',epis:'Protetor auricular; Creme de Proteção para as mãos; Luva PU; Luva de látex; Botina de Segurança; Óculos de Segurança.',treinamentos:''},
+{cargo:'Técnico da Qualidade PL',empresa:'AC',cbo:'3912-10',setor:'Qualidade/Produção',revisao:'00',atividades:'Atuar nas atividades que suportem e de garantias para que todos os requisitos definidos pelo cliente, pela organização, estatutários, regulamentares e normativos sejam atendidos durante todas as etapas do processo de fabricação ou serviço.  Fazer cumprir os procedimentos, instruções, fluxogramas e sistemáticas que contribuem para a conformidade do SGQ, segurança, saúde, higiene e boas práticas de fabricação. Atender aos objetivos, metas e satisfação de clientes, provedores externos e colaboradores. Participar e propor ações de melhorias contínuas para a manutenção do SGQ.',fisicos:'Calor; Ruído.',quimicos:'Acetato de etila; Álcool etílico (etanol); Hidrocarbonetos; n-Butano; n-propano (propano); Tolueno (toluol).',ergonomicos:'Atividades com pressão, preensão, flexão, extensão ou torção dos segmentos corporais; Esforço Físico Moderado; Levantamento e/ou transporte manual de cargas ou volumes; Manuseio ou movimentação de cargas e volumes sem pega ou com pega pobre; Postura de pé por longos períodos.',biologicos:'Não se aplica.',mecanicos:'Atropelamento; Cortes e Perfurações; Prensamentos; Projeção de Partículas; Queda de Materiais.',epcs:'Extintores; sinalizações de segurança; Sistema de ventilação ar-condicionado.',epis:'Protetor auricular; Creme de Proteção para as mãos; Luva PU; Luva de látex; Botina de Segurança; Óculos de Segurança.',treinamentos:''},
+{cargo:'Técnico da Qualidade SR',empresa:'AC',cbo:'3912-10',setor:'Qualidade/Produção',revisao:'00',atividades:'Atuar nas atividades que suportem e de garantias para que todos os requisitos definidos pelo cliente, pela organização, estatutários, regulamentares e normativos sejam atendidos durante todas as etapas do processo de fabricação ou serviço.  Fazer cumprir os procedimentos, instruções, fluxogramas e sistemáticas que contribuem para a conformidade do SGQ, segurança, saúde, higiene e boas práticas de fabricação. Atender aos objetivos, metas e satisfação de clientes, provedores externos e colaboradores. Participar e propor ações de melhorias contínuas para a manutenção do SGQ.',fisicos:'Calor; Ruído.',quimicos:'Acetato de etila; Álcool etílico (etanol); Hidrocarbonetos; n-Butano; n-propano (propano); Tolueno (toluol).',ergonomicos:'Atividades com pressão, preensão, flexão, extensão ou torção dos segmentos corporais; Esforço Físico Moderado; Levantamento e/ou transporte manual de cargas ou volumes; Manuseio ou movimentação de cargas e volumes sem pega ou com pega pobre; Postura de pé por longos períodos.',biologicos:'Não se aplica.',mecanicos:'Atropelamento; Cortes e Perfurações; Prensamentos; Projeção de Partículas; Queda de Materiais.',epcs:'Extintores; sinalizações de segurança; Sistema de ventilação ar-condicionado.',epis:'Protetor auricular; Creme de Proteção para as mãos; Luva PU; Luva de látex; Botina de Segurança; Óculos de Segurança.',treinamentos:''},
+{cargo:'Lider de Usinagem JR',empresa:'AC',cbo:'7201-50',setor:'Usinagem/Produção',revisao:'00',atividades:'Planejar sequencias de operações e de produção de acordo com critérios da organização e prazos de entrega, executar cálculos técnicos, planejamento e controle recursos como matéria prima, produtos e demais materiais inerentes ao setor, realizar relatório de apontamento de produção e resultados, contribuir com as ações de preservação do meio ambiente, bem como supervisionar, monitorar e dar suporte às operações e aos colaboradores do setor, com o objetivo de garantir a otimização e o alcance de metas. Atuar de modo a supervisionar e executar atividades necessárias no processo de usinagem envolvendo as operações de usinagem convencional e cnc e demais equipamentos relacionados à área, assim como operações correlatas de acabamento. Controlar os parâmetros de processo e a qualidade das peças usinadas, aplicar, acompanhar e supervisionar, procedimentos de segurança nas atividades desempenhadas de acordo com as normas internas de segurança da organização.  O colaborador deve possuir um perfil eclético e colaborativo de forma atuar nas diversas atividades que compõem o processo, devido o perfil da demanda diária ser variável e interrupta.',fisicos:'Calor; Ruído.',quimicos:'Acetato de etila; Álcool etílico (etanol); Hidrocarbonetos; n-Butano; n-propano (propano); Tolueno (toluol).',ergonomicos:'Atividades com pressão, preensão, flexão, extensão ou torção dos segmentos corporais; Esforço Físico Moderado; Levantamento e/ou transporte manual de cargas ou volumes; Manuseio ou movimentação de cargas e volumes sem pega ou com pega pobre; Postura de pé por longos período;',biologicos:'Não se aplica.',mecanicos:'Atropelamento; Cortes e Perfurações; Prensamentos; Projeção de Partículas; Queda de Materiais.',epcs:'Extintores; sinalizações de segurança; Sistema de ventilação convencional.',epis:'Protetor auricular; Botina de segurança; Creme de proteção para as mãos; Luva de PU; Óculos de Segurança.',treinamentos:''},
+{cargo:'Lider de Usinagem PL',empresa:'AC',cbo:'7201-50',setor:'Usinagem/Produção',revisao:'00',atividades:'Planejar sequencias de operações e de produção de acordo com critérios da organização e prazos de entrega, executar cálculos técnicos, planejamento e controle recursos como matéria prima, produtos e demais materiais inerentes ao setor, realizar relatório de apontamento de produção e resultados, contribuir com as ações de preservação do meio ambiente, bem como supervisionar, monitorar e dar suporte às operações e aos colaboradores do setor, com o objetivo de garantir a otimização e o alcance de metas. Atuar de modo a supervisionar e executar atividades necessárias no processo de usinagem envolvendo as operações de usinagem convencional e cnc e demais equipamentos relacionados à área, assim como operações correlatas de acabamento. Controlar os parâmetros de processo e a qualidade das peças usinadas, aplicar, acompanhar e supervisionar, procedimentos de segurança nas atividades desempenhadas de acordo com as normas internas de segurança da organização.  O colaborador deve possuir um perfil eclético e colaborativo de forma atuar nas diversas atividades que compõem o processo, devido o perfil da demanda diária ser variável e interrupta.',fisicos:'Calor; Ruído.',quimicos:'Acetato de etila; Álcool etílico (etanol); Hidrocarbonetos; n-Butano; n-propano (propano); Tolueno (toluol).',ergonomicos:'Atividades com pressão, preensão, flexão, extensão ou torção dos segmentos corporais; Esforço Físico Moderado; Levantamento e/ou transporte manual de cargas ou volumes; Manuseio ou movimentação de cargas e volumes sem pega ou com pega pobre; Postura de pé por longos período;',biologicos:'Não se aplica.',mecanicos:'Atropelamento; Cortes e Perfurações; Prensamentos; Projeção de Partículas; Queda de Materiais.',epcs:'Extintores; sinalizações de segurança; Sistema de ventilação convencional.',epis:'Protetor auricular; Botina de segurança; Creme de proteção para as mãos; Luva de PU; Óculos de Segurança.',treinamentos:''},
+{cargo:'Lider de Usinagem SR',empresa:'AC',cbo:'7201-50',setor:'Usinagem/Produção',revisao:'00',atividades:'Planejar sequencias de operações e de produção de acordo com critérios da organização e prazos de entrega, executar cálculos técnicos, planejamento e controle recursos como matéria prima, produtos e demais materiais inerentes ao setor, realizar relatório de apontamento de produção e resultados, contribuir com as ações de preservação do meio ambiente, bem como supervisionar, monitorar e dar suporte às operações e aos colaboradores do setor, com o objetivo de garantir a otimização e o alcance de metas. Atuar de modo a supervisionar e executar atividades necessárias no processo de usinagem envolvendo as operações de usinagem convencional e cnc e demais equipamentos relacionados à área, assim como operações correlatas de acabamento. Controlar os parâmetros de processo e a qualidade das peças usinadas, aplicar, acompanhar e supervisionar, procedimentos de segurança nas atividades desempenhadas de acordo com as normas internas de segurança da organização.  O colaborador deve possuir um perfil eclético e colaborativo de forma atuar nas diversas atividades que compõem o processo, devido o perfil da demanda diária ser variável e interrupta.',fisicos:'Calor; Ruído.',quimicos:'Acetato de etila; Álcool etílico (etanol); Hidrocarbonetos; n-Butano; n-propano (propano); Tolueno (toluol).',ergonomicos:'Atividades com pressão, preensão, flexão, extensão ou torção dos segmentos corporais; Esforço Físico Moderado; Levantamento e/ou transporte manual de cargas ou volumes; Manuseio ou movimentação de cargas e volumes sem pega ou com pega pobre; Postura de pé por longos período;',biologicos:'Não se aplica.',mecanicos:'Atropelamento; Cortes e Perfurações; Prensamentos; Projeção de Partículas; Queda de Materiais.',epcs:'Extintores; sinalizações de segurança; Sistema de ventilação convencional.',epis:'Protetor auricular; Botina de segurança; Creme de proteção para as mãos; Luva de PU; Óculos de Segurança.',treinamentos:''}
+];
+
+function buildOrdensServicoSeed() {
+  if (localStorage.getItem('ac_ordemservico_v1')) return;
+  const now = nowStr();
+  const seeded = OS_SEED.map((s, i) => Object.assign({}, s, {
+    id: i + 1, status: 'Ativo', criadoEm: now, atualizadoEm: now
+  }));
+  saveData('ordens_servico', seeded);
+  logAudit('Ordens de Serviço', 'Inclusão', 0, `Importação inicial — ${seeded.length} O.S. (modelo NR-1)`);
+  seeded.forEach(r => syncRecordToCloud('ordens_servico', r));
+  localStorage.setItem('ac_ordemservico_v1', '1');
+}
+
+function osCardRender(r) {
+  const empLabel = r.empresa === 'BRASS' ? 'Brass Metal' : 'AC Metal';
+  return `<div class="card" style="padding:12px;margin-bottom:8px">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+      <div>
+        <div style="font-weight:700;font-size:13px">${r.cargo}</div>
+        <div style="margin-top:4px;display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+          <span class="badge bb">${empLabel}</span>
+          ${r.setor ? `<span class="badge bgy">${r.setor}</span>` : ''}
+          ${r.cbo ? `<span class="badge bgy" style="font-family:monospace">CBO ${r.cbo}</span>` : '<span class="badge br">CBO não definido</span>'}
+        </div>
+      </div>
+      <div style="white-space:nowrap">
+        <button class="btn btn-s btn-xs" onclick="openCrudModal(MOD_OS,${r.id})">✏</button>
+        <button class="btn btn-s btn-xs" onclick="crudDeleteAction(MOD_OS,${r.id},'${escAttr(r.cargo)}')">🗑</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderOrdensServico() {
+  buildOrdensServicoSeed();
+  const search = (document.getElementById('os-search')?.value || '').toUpperCase();
+  const empresa = document.getElementById('os-empresa-sel')?.value || '';
+  let all = loadData('ordens_servico').filter(r => r.status !== 'Inativo');
+  if (search) all = all.filter(r => r.cargo.toUpperCase().includes(search) || (r.cbo||'').includes(search));
+  if (empresa) all = all.filter(r => r.empresa === empresa);
+  all.sort((a,b) => a.cargo.localeCompare(b.cargo));
+  const box = document.getElementById('os-lista');
+  if (!box) return;
+  box.innerHTML = all.length ? all.map(osCardRender).join('') : '<div class="muted" style="text-align:center;padding:20px">Nenhuma O.S. cadastrada ainda.</div>';
+  setText('os-count', all.length + ' ordens de serviço');
+}
+
+// Gera a Ordem de Serviço (NR-1) já preenchida com os dados do colaborador,
+// buscando o cadastro correspondente ao cargo dele em 'ordens_servico'.
+function colabGerarOrdemServico(colabId) {
+  const c = loadData('colaboradores').find(x => x.id === colabId);
+  if (!c) return;
+  const emp = empresaInfoDoColaborador(c);
+  const ehBrass = emp === CV_EMPRESA_INFO['BRASS'];
+  const empresaKey = ehBrass ? 'BRASS' : 'AC';
+  buildOrdensServicoSeed();
+  const candidatas = loadData('ordens_servico').filter(o => o.status !== 'Inativo' && normSemAcento(o.cargo) === normSemAcento(c.cargo||''));
+  const os = candidatas.find(o => o.empresa === empresaKey) || candidatas[0];
+  if (!os) {
+    showToast(`Ainda não há Ordem de Serviço cadastrada para o cargo "${c.cargo||'—'}". Cadastre em Ordens de Serviço.`, 'warn');
+    return;
+  }
+  const dataAdm = dataAdmissaoExtenso(c);
+  const pb = '<div style="page-break-before:always"></div>';
+  const treinamentosHtml = os.treinamentos ? `<p style="margin-bottom:14px">${os.treinamentos}</p>` : `
+    <p style="margin:0 0 4px 14px">- Prevenção de Segurança no Trabalho; DSS – Diálogo de Saúde, Segurança e Higiene; Treinamento de Ergonomia.</p>
+    <p style="margin-bottom:14px;margin-left:14px">- Noções Básicas de Prevenção e Combate à Incêndio; Noções Básicas de 1º Socorros.</p>`;
+
+  const html = `${docPageCSS(emp)}<div class="doc-print" style="padding:16px 20px;font-size:11px;line-height:1.5;text-align:justify">
+    <table style="width:100%;border-collapse:collapse;margin-bottom:14px"><tr>
+      <td style="border:1px solid #000;padding:8px;width:34%;font-weight:700;vertical-align:top">${emp.nome.toUpperCase()}<br><span style="font-weight:400;font-size:10px">CNPJ: ${emp.cnpj}</span></td>
+      <td style="border:1px solid #000;padding:8px;text-align:center;vertical-align:middle">
+        <div style="font-weight:700">Instrução de Saúde, Segurança e Higiene do Trabalho</div>
+        <div style="font-size:10px">NR - 1 - Subitem 1.4.1 e 1.4.2</div>
+        <div style="font-weight:700;margin-top:4px">ORDEM DE SERVIÇO (O.S)</div>
+      </td>
+      <td style="border:1px solid #000;padding:8px;width:26%;font-size:9.5px;vertical-align:top">Elaboração: Aravyt Assessoria de Segurança do Trabalho<br>CNPJ nº 17.260.542/0001-04<br>Inscrição Municipal: 31404</td>
+    </tr></table>
+
+    <table style="width:100%;border-collapse:collapse;margin-bottom:12px;font-size:11px">
+      <tr><td style="border:1px solid #999;padding:5px;font-weight:700;width:25%">FUNÇÃO</td><td style="border:1px solid #999;padding:5px">${os.cargo}</td>
+          <td style="border:1px solid #999;padding:5px;font-weight:700;width:15%">CBO</td><td style="border:1px solid #999;padding:5px;width:15%">${os.cbo||'—'}</td></tr>
+      <tr><td style="border:1px solid #999;padding:5px;font-weight:700">SETOR</td><td style="border:1px solid #999;padding:5px">${os.setor||'—'}</td>
+          <td style="border:1px solid #999;padding:5px;font-weight:700">REVISÃO</td><td style="border:1px solid #999;padding:5px">${os.revisao||'00'}</td></tr>
+    </table>
+    <p style="font-weight:700;margin-bottom:4px">ATIVIDADES DESENVOLVIDAS:</p>
+    <p style="margin-bottom:12px">${os.atividades||'—'}</p>
+
+    <p style="font-weight:700;margin-bottom:6px">Agentes ambientais inerentes ao local de trabalho/atividades:</p>
+    <p style="margin-bottom:4px"><strong>FÍSICOS:</strong> ${os.fisicos||'Não se aplica.'}</p>
+    <p style="margin-bottom:4px"><strong>QUÍMICOS:</strong> ${os.quimicos||'Não se aplica.'}</p>
+    <p style="margin-bottom:4px"><strong>ERGONÔMICOS:</strong> ${os.ergonomicos||'Não se aplica.'}</p>
+    <p style="margin-bottom:4px"><strong>BIOLÓGICOS:</strong> ${os.biologicos||'Não se aplica.'}</p>
+    <p style="margin-bottom:12px"><strong>MECÂNICOS/ACIDENTES:</strong> ${os.mecanicos||'Não se aplica.'}</p>
+
+    <p style="font-weight:700;margin-bottom:6px">Tecnologias de proteção:</p>
+    <p style="margin-bottom:4px"><strong>E.P.C.'s:</strong> ${os.epcs||'—'}</p>
+    <p style="margin-bottom:14px"><strong>E.P.I's:</strong> ${os.epis||'—'}</p>
+
+    <p style="font-weight:700;margin-bottom:6px">Observações:</p>
+    <p style="margin-bottom:10px">O Líder/supervisor deve treinar e acompanhar seus subordinados, até certificar-se de que seus conhecimentos sobre segurança nas tarefas de rotina estão perfeitamente dominados. Trabalhos fora da rotina devem ser planejados previamente pelo supervisor, prevendo, identificando e controlando seus riscos através de medidas de ordem coletiva ou individual. Além destas ações o líder/supervisor deve orientar os executantes sobre os procedimentos a serem seguidos. Não executar qualquer atividade sem treinamento e pleno conhecimento dos riscos e cuidados a serem observados. As instruções contidas nesta O.S. não esgotam o assunto sobre prevenção de acidentes, podendo ser modificadas ou melhoradas. Devendo ser observadas todas as instruções existentes ainda que verbais, em especial as NORMAS E REGULAMENTOS DA EMPRESA.</p>
+    <p style="font-weight:700;margin-bottom:6px">Procedimento em caso de Acidentes:</p>
+    <p style="margin-bottom:4px">Todo e qualquer acidente de trabalho deverá ser comunicado ao superior imediato ou, na falta deste, aos membros da CIPA, Técnico de Segurança e Recursos Humanos, para que possa ser providenciada a emissão da CAT – Comunicação de Acidente do Trabalho, cujo prazo é de 24 horas. O colaborador, quando precisar sair da empresa no horário de trabalho, deverá comunicar por escrito (Comunicação Interna – C.I) junto ao Setor de Recursos Humanos o motivo de sua saída.</p>
+    <p style="margin-bottom:10px">Obs.: O acidente não comunicado não será considerado para efeitos legais.</p>
+    <p style="font-weight:700;margin-bottom:6px">Procedimentos em caso de Incêndio:</p>
+    <p style="margin-bottom:4px">-&gt; Em caso de incêndio, acionar o sistema de alarme de incêndio, comunicar a supervisão/liderança imediatamente, Brigadista e/ou a CIPA.</p>
+    <p style="margin-bottom:4px">-&gt; Iniciar o combate ao princípio de incêndio.</p>
+    <p style="margin-bottom:4px">-&gt; Ao ser solicitado o abandono do local de trabalho, dirigir-se imediatamente ao ponto de encontro estabelecido pela empresa (Portaria).</p>
+    <p style="margin-bottom:14px">-&gt; O acionamento ao Corpo de Bombeiros (193) deverá ser feito pela Brigada de Incêndio, Membros da CIPA e/ou Supervisão/Liderança.</p>
+
+    <p style="text-align:center;font-weight:700;margin-bottom:10px">BASES LEGAIS — SEGURANÇA E SAÚDE OCUPACIONAL — PORTARIA Nº 3.214, 08 DE JUNHO DE 1978 — NR 1</p>
+    <p style="text-align:center;margin-bottom:10px">ALTERADA PELA PORTARIA SEPRT Nº 6.730 DE 09 DE MARÇO DE 2020</p>
+    <p style="font-weight:700;margin-bottom:6px">1.4.1 — CABE AO EMPREGADOR:</p>
+    <p style="margin:0 0 4px 14px">a) cumprir e fazer cumprir as disposições legais e regulamentares sobre segurança e saúde no trabalho;</p>
+    <p style="margin:0 0 4px 14px">b) informar aos trabalhadores: (I) os riscos ocupacionais existentes nos locais de trabalho; (II) as medidas de prevenção adotadas pela empresa para eliminar ou reduzir tais riscos; (III) os resultados dos exames médicos e de exames complementares de diagnóstico aos quais os próprios trabalhadores forem submetidos; e (IV) os resultados das avaliações ambientais realizadas nos locais de trabalho;</p>
+    <p style="margin:0 0 4px 14px">c) elaborar ordens de serviço sobre segurança e saúde no trabalho, dando ciência aos trabalhadores;</p>
+    <p style="margin:0 0 4px 14px">d) permitir que representantes dos trabalhadores acompanhem a fiscalização dos preceitos legais e regulamentares sobre segurança e saúde no trabalho;</p>
+    <p style="margin:0 0 4px 14px">e) determinar procedimentos que devem ser adotados em caso de acidente ou doença relacionada ao trabalho, incluindo a análise de suas causas;</p>
+    <p style="margin:0 0 4px 14px">f) disponibilizar à Inspeção do Trabalho todas as informações relativas à segurança e saúde no trabalho; e</p>
+    <p style="margin:0 0 10px 14px">g) implementar medidas de prevenção, ouvidos os trabalhadores, na seguinte ordem de prioridade: (I) eliminação dos fatores de risco; (II) minimização e controle dos fatores de risco, com a adoção de medidas de proteção coletiva; (III) minimização e controle dos fatores de risco, com a adoção de medidas administrativas ou de organização do trabalho; e (IV) adoção de medidas de proteção individual.</p>
+    <p style="font-weight:700;margin-bottom:6px">1.4.2 — CABE AO TRABALHADOR:</p>
+    <p style="margin:0 0 4px 14px">a) cumprir as disposições legais e regulamentares sobre segurança e saúde no trabalho, inclusive as ordens de serviço expedidas pelo empregador;</p>
+    <p style="margin:0 0 4px 14px">b) submeter-se aos exames médicos previstos nas NR;</p>
+    <p style="margin:0 0 4px 14px">c) colaborar com a organização na aplicação das NR; e</p>
+    <p style="margin:0 0 6px 14px">d) usar o equipamento de proteção individual fornecido pelo empregador.</p>
+    <p style="margin-bottom:10px">1.4.2.1 Constitui ato faltoso a recusa injustificada do empregado ao cumprimento do disposto nas alíneas do subitem anterior.</p>
+    <p style="font-weight:700;margin-bottom:6px">NR – 6 item 6.7.1 — Cabe ao empregado quanto ao EPI (Equipamento de Proteção Individual):</p>
+    <p style="margin:0 0 4px 14px">a) usar, utilizando-o apenas para a finalidade a que se destina;</p>
+    <p style="margin:0 0 4px 14px">b) responsabilizar-se pela guarda e conservação;</p>
+    <p style="margin:0 0 4px 14px">c) comunicar ao empregador qualquer alteração que o torne impróprio para uso; e</p>
+    <p style="margin-bottom:14px;margin-left:14px">d) cumprir as determinações do empregador sobre o uso adequado.</p>
+
+    <p style="text-align:center;font-weight:700;margin-bottom:10px">INSTRUÇÕES DE SEGURANÇA E SAÚDE OCUPACIONAL</p>
+    <p style="margin:0 0 4px 14px">- Não acionar nem parar qualquer máquina e/ou equipamento que não esteja sob sua responsabilidade.</p>
+    <p style="margin:0 0 4px 14px">- Comunicar quaisquer condições inseguras, defeitos de máquinas e equipamentos à supervisão/liderança.</p>
+    <p style="margin:0 0 4px 14px">- Não utilizar ferramentas defeituosas, inadequadas e/ou improvisadas.</p>
+    <p style="margin:0 0 4px 14px">- Ao levantar peso, faça-o com os músculos das pernas, mantendo a coluna reta. Se o peso for demasiado, peça ajuda ou utilize dispositivo mecânico.</p>
+    <p style="margin:0 0 4px 14px">- Use efetivamente os EPIs indicados para a função.</p>
+    <p style="margin:0 0 4px 14px">- Obedeça a todas as sinalizações, placas e avisos de segurança.</p>
+    <p style="margin:0 0 4px 14px">- Não brinque ou corra no local de trabalho.</p>
+    <p style="margin:0 0 4px 14px">- É proibido utilizar o ar comprimido para limpeza do corpo.</p>
+    <p style="margin:0 0 4px 14px">- Nunca obstrua o acesso aos extintores e hidrantes, e não retire lacres, etiquetas ou selos do corpo dos extintores; uma vez utilizado, comunique a Brigada de Incêndio, Membros da CIPA e/ou a supervisão/liderança.</p>
+    <p style="margin:0 0 4px 14px">- Não pendure extintor vazio; comunique a Brigada de Incêndio, Membros da CIPA e/ou a supervisão/liderança.</p>
+    <p style="margin:0 0 4px 14px">- Não inutilize nem retire dispositivos de proteção dos equipamentos sem autorização da supervisão/liderança.</p>
+    <p style="margin:0 0 4px 14px">- Os EPIs são de uso obrigatório. A guarda, conservação e higienização dos mesmos são de responsabilidade exclusiva do colaborador.</p>
+    <p style="margin-bottom:14px;margin-left:14px">- Nunca permitir que pessoas desautorizadas operem qualquer tipo de equipamento no setor sem a prévia autorização.</p>
+
+    <p style="text-align:center;font-weight:700;margin-bottom:10px">NORMAS INTERNAS</p>
+    <p style="margin:0 0 4px 14px">- Cumprir as disposições legais e regulamentadoras sobre Saúde, Segurança e Higiene do Trabalho;</p>
+    <p style="margin:0 0 4px 14px">- Cumprir e respeitar o horário de expediente e intervalos, não se admitindo atrasos ou faltas injustificados;</p>
+    <p style="margin:0 0 4px 14px">- É proibido usar relógios, anéis, alianças, pulseiras e demais adereços que atrapalhem, comprometam ou prejudiquem a segurança no trabalho;</p>
+    <p style="margin:0 0 4px 14px">- É proibido consumir bebida alcoólica ou qualquer tipo de entorpecente no local e durante a jornada de trabalho;</p>
+    <p style="margin:0 0 4px 14px">- Não fazer uso do copo coletivo; não fumar no interior da empresa;</p>
+    <p style="margin:0 0 4px 14px">- É proibido o porte de armas brancas ou de fogo nas dependências da empresa;</p>
+    <p style="margin:0 0 4px 14px">- Não realizar nenhum tipo de reparo ou manutenção em equipamentos/máquinas energizadas sem a prévia autorização da supervisão;</p>
+    <p style="margin:0 0 4px 14px">- Interromper seu serviço sempre que constatar qualquer irregularidade quanto à sua segurança, comunicando imediatamente a sua supervisão;</p>
+    <p style="margin:0 0 4px 14px">- O colaborador deverá submeter-se aos exames médicos determinados pela Medicina do Trabalho;</p>
+    <p style="margin:0 0 4px 14px">- Utilizar os EPI's somente para a finalidade a que se destinam, zelando pela sua guarda e conservação;</p>
+    <p style="margin:0 0 4px 14px">- Vestir roupas adequadas e/ou uniformes, quando exigido, para transitar no interior da empresa ou de acordo com a tarefa a ser executada;</p>
+    <p style="margin-bottom:14px;margin-left:14px">- Participar dos treinamentos de Saúde, Segurança e Higiene quando oferecidos pela empresa.</p>
+    ${pb}
+
+    <p style="text-align:center;font-weight:700;margin-bottom:10px">TREINAMENTO(S) NECESSÁRIO(S)</p>
+    ${treinamentosHtml}
+
+    <p style="text-align:center;font-weight:700;margin-bottom:10px">PUNIÇÕES</p>
+    <p style="margin-bottom:6px">Constitui ato faltoso a recusa injustificada do colaborador quanto ao cumprimento do disposto nesta O.S., podendo gerar justa causa, processo que ocorrerá conforme:</p>
+    <p style="margin:0 0 4px 14px">- 03 advertências por escrito;</p>
+    <p style="margin:0 0 4px 14px">- Dispensa por justa causa, caso as advertências e suspensões cabíveis tenham sido aplicadas e não tenham surtido o efeito esperado;</p>
+    <p style="margin-bottom:16px;margin-left:14px">- Descontos em salário ou indenizações em caso de danos propositais ou extravios dos EPI's, nos termos do Artigo 462, parágrafo 1º da CLT.</p>
+
+    <p style="text-align:center;font-weight:700;margin-bottom:10px">TERMO DE RECEBIMENTO E COMPROMISSO</p>
+    <p style="margin-bottom:20px">DECLARO ter recebido informações, orientações, treinamento e uma cópia desta O.S. para permitir um trabalho seguro na atividade de <strong>${os.cargo.toUpperCase()}</strong>, assim como DECLARO estar ciente que a não obediência das normas estabelecidas nesta O.S. poderá me sujeitar às penalidades disciplinares, conforme regulamento interno da Empresa.</p>
+    <p style="margin-bottom:6px">Nome: <strong>${c.nome}</strong></p>
+    <p style="margin-bottom:6px">CPF: <strong>${c.cpf||'____________________'}</strong></p>
+    <p style="margin-bottom:20px">Data de Admissão: <strong>${c.adm||'—'}</strong></p>
+    <p style="margin-bottom:30px">Santa Bárbara d'Oeste, ${dataAdm.dia}/${MESES_EXTENSO.indexOf(dataAdm.mes)+1<10?'0':''}${MESES_EXTENSO.indexOf(dataAdm.mes)+1}/${dataAdm.ano}</p>
+    <p style="margin-bottom:40px">Assinatura: __________________________________</p>
+    <table style="width:100%;border-collapse:collapse;margin-top:20px"><tr>
+      <td style="text-align:center;padding-top:20px;border-top:1px solid #000;width:45%">Patrícia Souza<br><span style="font-size:10px">Recursos Humanos</span></td>
+      <td style="width:10%"></td>
+      <td style="text-align:center;padding-top:20px;border-top:1px solid #000;width:45%">Albin Eduard M. Listmaier<br><span style="font-size:10px">Técnico de Segurança do Trabalho — MTb/SP 014718.4</span></td>
+    </tr></table>
+  </div>`;
+  abrirReciboModal('🖨 Ordem de Serviço — ' + c.nome, html, false);
+}
+
+
 
 /* ═══════════════ MÓDULO: FINANCEIRO SST ═══════════════ */
 const SST_FIN_SEED = [
@@ -9686,7 +9937,7 @@ async function pullOutrasTabelasAntesDoBoot() {
     'vagas','beneficios_mov','beneficios_inscritos','beneficios_tipos','cargos','ponto',
     'clima_pesquisas','clima_acoes','sucessao','terceiros','documentos','usuarios','holerites',
     'comunicados','cesta_vegas','folha_descontos','feedback90','desccargos','sstfin','pcmso',
-    'epi','auditoria','historico_cargo_salario'];
+    'epi','auditoria','historico_cargo_salario','ordens_servico'];
   for (const t of TABELAS) {
     try {
       if (loadData(t).length) continue;
