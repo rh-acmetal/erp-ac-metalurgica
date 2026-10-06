@@ -332,7 +332,7 @@ tr:last-child td{border-bottom:none}
 @media print {
   body > *:not(#m-recibo) { display: none !important; }
   #m-recibo{display:block!important;position:static!important;background:none!important;padding:0!important;inset:auto!important;align-items:flex-start!important;justify-content:flex-start!important;min-height:0!important;height:auto!important;margin:0!important}
-  #m-recibo .modal{max-height:none!important;overflow:visible!important;box-shadow:none!important;border-radius:0!important;width:100%!important;background:none!important;margin:0!important}
+  #m-recibo .modal{max-height:none!important;overflow:visible!important;box-shadow:none!important;border:none!important;outline:none!important;border-radius:0!important;width:100%!important;background:none!important;margin:0!important}
   #m-recibo .m-body{padding:0!important;margin:0!important}
   #recibo-preview{position:static!important;width:100%;margin:0!important;padding:0!important}
   .no-print{display:none !important}
@@ -425,7 +425,7 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
   <div class="l-box">
     <div class="l-logo">
       <div class="l-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
-      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.65 — Ordem de Serviço em 2 Páginas com Linhas de Assinatura</div></div>
+      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.66 — Ordem de Serviço em 2 Páginas e Uma Só Borda</div></div>
     </div>
     <div class="f-row"><label>Usuário</label><input type="text" id="l-user" value="jakeline@acmetalurgica.com.br"></div>
     <div class="f-row"><label>Senha</label><input type="password" id="l-pass" value="••••••••"></div>
@@ -7732,23 +7732,36 @@ function colabGerarOrdemServico(colabId) {
 
   // td/th da tabela única com borda, igual ao modelo em Word: célula de seção
   // (título centralizado, fundo cinza-claro) e célula de conteúdo.
-  const tdSecao = (titulo) => `<tr><td colspan="4" style="border:1px solid #000;background:#e9e9e9;padding:2px 5px;text-align:center;font-weight:700">${titulo}</td></tr>`;
-  const tdTexto = (html) => `<tr><td colspan="4" style="border:1px solid #000;padding:3px 5px">${html}</td></tr>`;
+  const tdSecao = (titulo) => `<tr><td colspan="4" style="border:1px solid #000;background:#e9e9e9;padding:1px 4px;text-align:center;font-weight:700">${titulo}</td></tr>`;
+  const tdTexto = (html) => `<tr><td colspan="4" style="border:1px solid #000;padding:2px 4px">${html}</td></tr>`;
 
-  const html = `${docPageCSS(emp)}<style>.doc-print table{page-break-inside:auto!important} .doc-print tr{page-break-inside:avoid}</style>
-  <div class="doc-print" style="padding:6px 10px;font-size:9px;line-height:1.22">
-    <table style="width:100%;border-collapse:collapse;border:2px solid #000">
+  const montarHtml = (fontePx, forcaQuebra = true) => `${docPageCSS(emp)}<style>@page{margin:0.8cm 1cm 1.3cm 1cm}
+    .doc-os table{page-break-inside:auto!important}
+    .doc-os tr{page-break-inside:avoid}
+    .doc-os,.doc-os *{font-family:Arial,'Liberation Sans',Helvetica,sans-serif!important}
+    .doc-os td{font-size:${fontePx}px!important;line-height:1.12;padding:2px 4px!important;border:1px solid #000!important;vertical-align:middle!important}
+    .doc-os td.peq{font-size:${(fontePx-0.8).toFixed(1)}px!important}
+    .doc-os td.topo{vertical-align:top!important}
+    .doc-os td.celula-pad{padding:0!important}
+    .doc-os td.col-esq{border:none!important;border-right:1px solid #000!important;vertical-align:top!important}
+    .doc-os td.col-dir{border:none!important;vertical-align:top!important}
+    .doc-os td.termo-campos{padding:5px 5px 14px!important;vertical-align:top!important}
+    .doc-os td.assin{border:none!important;padding:26px 0 0!important;text-align:center;vertical-align:top!important}
+    .doc-os td.vazio{border:none!important}
+  </style>
+  <div class="doc-print doc-os" style="padding:2px 4px">
+    <table style="width:100%;border-collapse:collapse;border:2px solid #000;table-layout:fixed"><colgroup><col style="width:28%"><col style="width:22%"><col style="width:28%"><col style="width:22%"></colgroup>
       <tr>
-        <td style="border:1px solid #000;padding:6px;width:26%;text-align:center;vertical-align:middle">
-          <div style="font-weight:700;font-size:12px">${emp.nome.toUpperCase()}</div>
+        <td style="border:1px solid #000;padding:3px;text-align:center;vertical-align:middle">
+          <div style="font-weight:700;font-size:10px">${emp.nome.toUpperCase()}</div>
           <div style="font-size:9px">CNPJ: ${emp.cnpj}</div>
         </td>
-        <td style="border:1px solid #000;padding:6px;width:48%;text-align:center;vertical-align:middle;color:#1a6b3c">
+        <td colspan="2" style="border:1px solid #000;padding:3px;text-align:center;vertical-align:middle;color:#1a6b3c">
           <div style="font-weight:700">Instrução de Saúde, Segurança e Higiene do Trabalho</div>
           <div style="font-weight:700">NR - 1 - Subitem 1.4.1 e 1.4.2</div>
           <div style="font-weight:700">ORDEM DE SERVIÇO (O.S)</div>
         </td>
-        <td style="border:1px solid #000;padding:6px;width:26%;text-align:center;vertical-align:middle;font-size:9px">
+        <td class="peq" style="text-align:center">
           <div>Elaboração: Aravyt Assessoria de Segurança do Trabalho</div>
           <div>CNPJ nº 17.260.542/0001-04</div>
           <div>Inscrição Municipal: 31404</div>
@@ -7777,8 +7790,9 @@ function colabGerarOrdemServico(colabId) {
       ${tdSecao('Procedimentos em caso de Incêndio:')}
       ${tdTexto(`-&gt; Em caso de incêndio, acionar o sistema de alarme de incêndio, comunicar a supervisão/liderança imediatamente, Brigadista e/ou a CIPA.<br>-&gt; Iniciar o combate ao princípio de incêndio.<br>-&gt; Ao ser solicitado o abandono do local de trabalho, dirigir-se imediatamente ao ponto de encontro estabelecido pela empresa (Portaria).<br>-&gt; O acionamento ao Corpo de Bombeiros (193) deverá ser feito pela Brigada de Incêndio, Membros da CIPA e/ou Supervisão/Liderança.`)}
       ${tdSecao('BASES LEGAIS - SEGURANÇA E SAÚDE OCUPACIONAL - PORTARIA N.° 3.214, 08 DE JUNHO DE 1978 - NR 1<br>ALTERADA PELA PORTARIA SEPRT Nº 6.730 DE 09 DE MARÇO DE 2020')}
-      <tr>
-        <td colspan="2" style="border:1px solid #000;padding:5px 7px;vertical-align:top">
+      <tr><td colspan="4" class="celula-pad">
+        <table style="width:100%;border-collapse:collapse;table-layout:fixed;border:none"><tr>
+          <td class="col-esq" style="width:50%">
           <strong>1.4.1 - CABE AO EMPREGADOR:</strong><br>
           <strong>a)</strong> cumprir e fazer cumprir as disposições legais e regulamentares sobre segurança e saúde no trabalho;<br>
           <strong>b)</strong> informar aos trabalhadores:<br>
@@ -7796,7 +7810,7 @@ function colabGerarOrdemServico(colabId) {
           III. minimização e controle dos fatores de risco, com a adoção de medidas administrativas ou de organização do trabalho; e<br>
           IV. adoção de medidas de proteção individual.
         </td>
-        <td colspan="2" style="border:1px solid #000;padding:5px 7px;vertical-align:top">
+          <td class="col-dir" style="width:50%">
           <strong>1.4.2 - CABE AO TRABALHADOR:</strong><br>
           <strong>a)</strong> cumprir as disposições legais e regulamentares sobre segurança e saúde no trabalho, inclusive as ordens de serviço expedidas pelo empregador;<br>
           <strong>b)</strong> submeter-se aos exames médicos previstos nas NR;<br>
@@ -7810,8 +7824,9 @@ function colabGerarOrdemServico(colabId) {
           <strong>c)</strong> comunicar ao empregador qualquer alteração que o torne impróprio para uso;<br>
           <strong>d)</strong> cumprir as determinações do empregador sobre o uso adequado.
         </td>
-      </tr>
-      <tr style="break-before:page;page-break-before:always"><td colspan="4" style="border:1px solid #000;background:#e9e9e9;padding:2px 5px;text-align:center;font-weight:700">INSTRUÇÕES DE SEGURANÇA E SAÚDE OCUPACIONAL</td></tr>
+        </tr></table>
+      </td></tr>
+      <tr data-quebra="1" style="${forcaQuebra?'break-before:page;page-break-before:always':''}"><td colspan="4" style="border:1px solid #000;background:#e9e9e9;padding:2px 5px;text-align:center;font-weight:700">INSTRUÇÕES DE SEGURANÇA E SAÚDE OCUPACIONAL</td></tr>
       ${tdTexto(`- Não acionar, parar qualquer máquina e ou equipamento que não esteja sob sua responsabilidade.<br>- Comunicar quaisquer condições inseguras, defeitos de máquinas e equipamentos à supervisão/liderança.<br>- Não utilizar ferramentas defeituosas, inadequadas e ou improvisadas.<br>- Ao levantar peso faça-o com os músculos das pernas, mantendo a coluna reta. Se o peso for demasiado peça ajuda ou utilize dispositivo mecânico.<br>- Use efetivamente os EPIs indicados para a função.<br>- Obedeça a todas as sinalizações, placas e avisos de segurança.<br>- Não brinque ou corra no local de trabalho.<br>- É proibido utilizar o ar comprimido para limpeza do corpo.<br>- Nunca obstrua o acesso aos extintores, hidrantes e não retire lacres, etiquetas ou selos do corpo dos extintores, uma vez utilizado comunique a Brigada de Incêndio, Membros da CIPA e/ou a supervisão/liderança.<br>- Não pendure extintor vazio, comunique a Brigada de Incêndio, Membros da CIPA e/ou a supervisão/liderança.<br>- Não inutilize nem retire dispositivos de proteção dos equipamentos sem autorização da supervisão/liderança.<br>- Os EPIs são de uso obrigatório. A guarda, conservação e higienização dos mesmos são de responsabilidade exclusiva do Colaborador.<br>- Nunca permitir que pessoas desautorizadas operem qualquer tipo de equipamento no setor sem a prévia autorização.`)}
       ${tdSecao('NORMAS INTERNAS')}
       ${tdTexto(`- Cumprir as disposições legais e regulamentadoras sobre Saúde, Segurança e Higiene do Trabalho;<br>- Cumprir e respeitar o horário de expediente e intervalos, não se admitindo atrasos ou faltas injustificados;<br>- É proibido usar relógios, anéis, alianças, pulseiras, e demais adereços, que atrapalhem, comprometa e prejudiquem a segurança no trabalho;<br>- É proibido consumir bebida alcoólica ou qualquer tipo de entorpecente, no local e durante a jornada de trabalho;<br>- Não fazer uso do copo coletivo; não fumar no interior da empresa;<br>- É proibido o porte de armas brancas ou de fogo nas dependências da empresa;<br>- Não realizar nenhum tipo de reparo ou manutenção em equipamentos/máquinas energizadas sem a prévia autorização da supervisão;<br>- Interromper seu serviço sempre que constatar qualquer irregularidade quanto a sua segurança, comunicando imediatamente a sua supervisão;<br>- O Colaborador deverá submeter-se aos exames médicos determinados pela (Medicina do Trabalho);<br>- Utilizar os EPI's somente para a finalidade que se destina, zelando pela sua guarda e conservação;<br>- Vestir roupas adequadas e/ou uniformes, quando exigido, para transitar no interior da empresa ou de acordo com a tarefa que será executada;<br>- Participar dos treinamentos de Saúde, Segurança e Higiene quando oferecido pela empresa.`)}
@@ -7819,9 +7834,9 @@ function colabGerarOrdemServico(colabId) {
       ${tdTexto(treinamentosLinhas)}
       ${tdSecao('PUNIÇÕES')}
       ${tdTexto(`Constitui ato faltoso a recusa injustificada do colaborador, do cumprimento disposto nesta OS, gerando justa causa, o qual o processo ocorrerá conforme:<br>&nbsp;&nbsp;&nbsp;&nbsp;03 Advertências por escrito;<br>&nbsp;&nbsp;&nbsp;&nbsp;Dispensa por justa causa, caso as advertências e suspensões cabíveis tenham sido aplicadas e não tenham surtido o efeito esperado;<br>&nbsp;Descontos em salário ou indenizações em caso de danos propositais ou extravios dos EPI's, nos Termos do Artigo 462, parágrafo 1º da CLT.`)}
-      ${tdSecao('TERMO DE RECEBIMENTO E COMPROMISSO')}
+      <tr style="${forcaQuebra?'':'break-before:page;page-break-before:always'}"><td colspan="4" style="border:1px solid #000;background:#e9e9e9;padding:1px 4px;text-align:center;font-weight:700">TERMO DE RECEBIMENTO E COMPROMISSO</td></tr>
       ${tdTexto(`<strong>DECLARO:</strong> ter recebido informações, orientações, treinamento e uma cópia desta O.S. para permitir um trabalho seguro na atividade de, assim como <strong>${os.cargo.toUpperCase()},</strong> DECLARO estar ciente que a não obediência das normas estabelecidas nesta O.S. poderão me sujeitar às penalidades disciplinares, conforme regulamento interno da Empresa<strong>.</strong>`)}
-      <tr><td colspan="4" style="border:1px solid #000;padding:5px 5px 14px">
+      <tr><td colspan="4" class="termo-campos">
         <div style="margin-bottom:10px"><strong>Nome:</strong> ${c.nome}</div>
         <div style="margin-bottom:10px"><strong>CPF:</strong> ${c.cpf||''}</div>
         <div style="margin-bottom:18px"><strong>Data de Admissão:</strong> ${c.adm||''}</div>
@@ -7832,12 +7847,36 @@ function colabGerarOrdemServico(colabId) {
 
     <table style="width:100%;border-collapse:collapse;border:none;margin-top:6px">
       <tr>
-        <td style="width:45%;text-align:center;border:none!important;padding:26px 0 0;font-weight:700">______________________________<br>Patrícia Souza<br><span style="font-weight:400">Recursos Humanos</span></td>
-        <td style="width:10%;border:none!important"></td>
-        <td style="width:45%;text-align:center;border:none!important;padding:26px 0 0;font-weight:700">______________________________<br>Albin Eduard M. Listmaier<br><span style="font-weight:400">Técnico de Segurança do Trabalho<br>MTb/SP&nbsp;&nbsp;014718.4</span></td>
+        <td class="assin" style="width:45%;font-weight:700">______________________________<br>Patrícia Souza<br><span style="font-weight:400">Recursos Humanos</span></td>
+        <td class="vazio" style="width:10%"></td>
+        <td class="assin" style="width:45%;font-weight:700">______________________________<br>Albin Eduard M. Listmaier<br><span style="font-weight:400">Técnico de Segurança do Trabalho<br>MTb/SP&nbsp;&nbsp;014718.4</span></td>
       </tr>
     </table>
   </div>`;
+
+  // Escolhe automaticamente a MAIOR fonte em que o documento cabe em 2 páginas
+  // (página 1 até o bloco legal, página 2 do "Instruções" até as assinaturas).
+  // Mede no próprio navegador, com a mesma largura/altura útil de uma folha A4.
+  const ALT_PAG = 1010, LARG_PAG = 718;
+  let html = montarHtml(10.6);
+  let coube = false;
+  for (const f of [10.6, 10.4, 10.2, 10.0, 9.8, 9.6, 9.4, 9.2, 9.0, 8.8, 8.6, 8.4, 8.2, 8.0, 7.8]) {
+    html = montarHtml(f);
+    const tmp = document.createElement('div');
+    tmp.style.cssText = `position:absolute;left:-99999px;top:0;width:${LARG_PAG}px;visibility:hidden`;
+    tmp.innerHTML = html;
+    document.body.appendChild(tmp);
+    const tabela = tmp.querySelector('.doc-print > table');
+    const quebra = tmp.querySelector('tr[data-quebra]');
+    const topo = tabela.getBoundingClientRect().top;
+    const h1 = quebra.getBoundingClientRect().top - topo;
+    const fimDoc = tmp.querySelector('.doc-print').getBoundingClientRect().bottom;
+    const h2 = fimDoc - quebra.getBoundingClientRect().top;
+    document.body.removeChild(tmp);
+    if (h1 <= ALT_PAG && h2 <= ALT_PAG) { coube = true; break; }
+  }
+  // Cargo com texto longo demais para 2 páginas legíveis: fonte confortável e fluxo contínuo.
+  if (!coube) html = montarHtml(8.4, false);
   abrirReciboModal('🖨 Ordem de Serviço — ' + c.nome, html, false);
 }
 
