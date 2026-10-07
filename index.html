@@ -63,6 +63,17 @@ body{font-family:'IBM Plex Sans',sans-serif;font-size:13px;color:var(--g800);bac
 .layer-st{color:#5a2a8a}
 .layer-co{color:#8a3a1e}
 .layer-en{color:#be185d}
+.layer-sst{color:#c2410c}
+.layer-med{color:#0e7490}
+.layer-ctr{color:#475569}
+.layer-sys{color:#64748b}
+.dot-sst{background:#f97316}
+.dot-med{background:#06b6d4}
+.dot-ctr{background:#64748b}
+.dot-sys{background:#94a3b8}
+.lb-sst{background:#ffedd5;color:#c2410c}
+.lb-med{background:#cffafe;color:#0e7490}
+.lb-ctr{background:#e2e8f0;color:#334155}
 .dot-en{background:#ec4899}
 .sb-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
 .dot-op{background:#0d9488}
@@ -428,7 +439,7 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
   <div class="l-box">
     <div class="l-logo">
       <div class="l-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
-      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.76 — Operacional reorganizado, Endomarketing, 90 Dias e Cesta/Vegas novos</div></div>
+      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.79 — Provisão de 13º e Férias no sistema</div></div>
     </div>
     <div class="f-row"><label>Usuário</label><input type="text" id="l-user" value="jakeline@acmetalurgica.com.br"></div>
     <div class="f-row"><label>Senha</label><input type="password" id="l-pass" value="••••••••"></div>
@@ -495,65 +506,89 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
       <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Ordens de Serviço
     </div>
 
-    <div class="sb-layer layer-en"><div class="sb-dot dot-en"></div>Endomarketing</div>
+        <div class="sb-layer layer-ta"><div class="sb-dot dot-ta" style=""></div>Tático</div>
+<div class="nav-item" data-go="recrutamento" onclick="go('recrutamento',this,'Recrutamento & Seleção','R&S')">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>Recrutamento
+    </div>
+<div class="nav-item" data-go="cargos" onclick="go('cargos',this,'Cargos, Salários & Remuneração','Estrutura')">
+      <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Cargos & Salários
+    </div>
+<div class="nav-item" data-go="treinamentos" onclick="go('treinamentos',this,'Treinamento & Desenvolvimento','T&D / LMS')">
+      <svg viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>T&D / LMS
+    </div>
+<div class="nav-item" data-go="avaliacoes" onclick="go('avaliacoes',this,'Avaliação de Desempenho & PDI','Ciclo 1º Sem. 2026')">
+      <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Desempenho / PDI
+    </div>
+    <div class="sb-layer layer-st"><div class="sb-dot dot-st" style=""></div>Estratégico</div>
+    <div class="nav-item" data-go="ind-rh" onclick="go('ind-rh',this,'Indicadores de RH — Anual','Turnover · Engajamento · T&D')">
+      📊 Indicadores RH Anual
+    </div>
+    <div class="nav-item" data-go="planejamento" onclick="go('planejamento',this,'Planejamento Anual RH','5W2H · Plano de Ação · Endomkt')">
+      🎯 Planejamento Anual
+    </div>
+<div class="nav-item" data-go="sucessao" onclick="go('sucessao',this,'RH Estratégico & Sucessão','Talent Review')">
+      <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Sucessão & Talentos
+    </div>
+<div class="nav-item" data-go="indicadores" onclick="go('indicadores',this,'People Analytics','Business Intelligence RH')">
+      <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>People Analytics / BI
+    </div>
+    <div class="nav-item" data-go="provisao" onclick="go('provisao',this,'Provisão de 13º e Férias','Estratégico · Provisão anual')">
+      💰 Provisão 13º e Férias
+    </div>
+    <div class="sb-layer layer-sst"><div class="sb-dot dot-sst" style=""></div>SST</div>
+    <div class="nav-item" data-go="epi" onclick="go('epi',this,'Controle de EPI','Entrega · Devolução · Validade por Colaborador')">
+      🦺 Controle de EPI
+    </div>
+    <div class="nav-item" data-go="estoqueepi" onclick="go('estoqueepi',this,'Estoque de EPI','SST')">
+      📦 Estoque de EPI
+    </div>
+    <div class="nav-item" data-go="acidentes" onclick="go('acidentes',this,'Acidentes de Trabalho','SST')">
+      🚑 Acidentes
+    </div>
+    <div class="nav-item" data-go="afastamentos" onclick="go('afastamentos',this,'Afastamentos','SST')">
+      🏥 Afastamento
+    </div>
+    <div class="nav-item" data-go="visitas" onclick="go('visitas',this,'Controle de Visitas Técnicas','SST')">
+      🪪 Controle Visitas Técnicas
+    </div>
+    <div class="sb-layer layer-med"><div class="sb-dot dot-med" style=""></div>Medicina Ocupacional</div>
+    <div class="nav-item" data-go="exameaso" onclick="go('exameaso',this,'Exame / ASO','Medicina Ocupacional')">
+      🩺 Exame / ASO
+    </div>
+    <div class="nav-item" data-go="sstfin" onclick="go('sstfin',this,'Fechamento MedClass','Medicina Ocupacional')">
+      💲 Fechamento MedClass
+    </div>
+    <div class="nav-item" data-go="pcmso" onclick="go('pcmso',this,'Conferência PCMSO','Medicina Ocupacional')">
+      ✅ Conferência PCMSO
+    </div>
+    <div class="sb-layer layer-en"><div class="sb-dot dot-en" style=""></div>Endomarketing</div>
     <div class="nav-item" data-go="aniversariantes" onclick="go('aniversariantes',this,'Aniversariantes','Endomarketing')">
       🎂 Aniversariantes
     </div>
     <div class="nav-item" data-go="tempoempresa" onclick="go('tempoempresa',this,'Tempo de Empresa','Endomarketing')">
       🏅 Tempo de Empresa
     </div>
-    <div class="nav-item" data-go="sstfin" onclick="go('sstfin',this,'Financeiro SST','Endomarketing')">
-      <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Financeiro SST
+    <div class="nav-item" data-go="campanhas" onclick="go('campanhas',this,'Campanha de Conscientização','Endomarketing · Mês e Cor')">
+      🎗 Campanha de Conscientização
     </div>
-    <div class="nav-item" data-go="pcmso" onclick="go('pcmso',this,'Conferência PCMSO','Endomarketing')">
-      <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Conferência PCMSO
+    <div class="nav-item" data-go="evidencias" onclick="go('evidencias',this,'Relatório de Evidências','Endomarketing · Lei 15.377')">
+      📋 Relatório de Evidências
     </div>
-
-    <div class="sb-layer layer-ta"><div class="sb-dot dot-ta"></div>Tático</div>
-    <div class="nav-item" data-go="recrutamento" onclick="go('recrutamento',this,'Recrutamento & Seleção','R&S')">
-      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>Recrutamento
+    <div class="sb-layer layer-ctr"><div class="sb-dot dot-ctr" style=""></div>Contratos / Obrigações</div>
+    <div class="nav-item" data-go="ctr-seguro" onclick="go('ctr-seguro',this,'Seguro de Vida — AC / BRASS','Contratos / Obrigações')">
+      🛡 Seguro de Vida
     </div>
-    <div class="nav-item" data-go="cargos" onclick="go('cargos',this,'Cargos, Salários & Remuneração','Estrutura')">
-      <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Cargos & Salários
+    <div class="nav-item" data-go="ctr-ltcat" onclick="go('ctr-ltcat',this,'LTCAT — AC / BRASS','Contratos / Obrigações')">
+      📑 LTCAT
     </div>
-    <div class="nav-item" data-go="treinamentos" onclick="go('treinamentos',this,'Treinamento & Desenvolvimento','T&D / LMS')">
-      <svg viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>T&D / LMS
+    <div class="nav-item" data-go="ctr-pcmso" onclick="go('ctr-pcmso',this,'PCMSO — AC / BRASS','Contratos / Obrigações')">
+      🩺 PCMSO
     </div>
-    <div class="nav-item" data-go="avaliacoes" onclick="go('avaliacoes',this,'Avaliação de Desempenho & PDI','Ciclo 1º Sem. 2026')">
-      <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Desempenho / PDI
+    <div class="nav-item" data-go="ctr-pgr" onclick="go('ctr-pgr',this,'PGR — AC / BRASS','Contratos / Obrigações')">
+      ⚠ PGR
     </div>
-
-    <div class="sb-layer layer-st"><div class="sb-dot" style="background:#a855f7"></div>Estratégico</div>
-    <div class="nav-item" data-go="clima" onclick="go('clima',this,'Clima Organizacional & Engajamento','People Experience')">
-      <svg viewBox="0 0 24 24"><path d="M17 18a5 5 0 0 0-10 0"/><line x1="12" y1="9" x2="12" y2="2"/><line x1="4.22" y1="10.22" x2="5.64" y2="11.64"/><line x1="1" y1="18" x2="3" y2="18"/><line x1="21" y1="18" x2="23" y2="18"/><line x1="18.36" y1="11.64" x2="19.78" y2="10.22"/></svg>Clima & Engajamento
-    </div>
-    <div class="nav-item" data-go="sucessao" onclick="go('sucessao',this,'RH Estratégico & Sucessão','Talent Review')">
-      <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Sucessão & Talentos
-    </div>
-    <div class="nav-item" data-go="indicadores" onclick="go('indicadores',this,'People Analytics','Business Intelligence RH')">
-      <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>People Analytics / BI
-    </div>
-    <div class="nav-item" data-go="ind-rh" onclick="go('ind-rh',this,'Indicadores de RH','Turnover · Engajamento · T&D 2026')">
-      📊 Indicadores RH 2026
-    </div>
-    <div class="nav-item" data-go="planejamento" onclick="go('planejamento',this,'Planejamento Estratégico RH 2027','5W2H · Plano de Ação · Endomkt')">
-      🎯 Planejamento 2027
-    </div>
-    <div class="nav-item" data-go="epi" onclick="go('epi',this,'Controle de EPI','Entrega · Devolução · Validade por Colaborador')">
-      🦺 Controle de EPI
-    </div>
-    <div class="nav-item" data-go="terceiros" onclick="go('terceiros',this,'Gestão de Terceiros','Compliance')">
-      <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>Terceiros & Temp.
-    </div>
-
-    <div class="sb-layer layer-co"><div class="sb-dot dot-co"></div>Compliance</div>
-    <div class="nav-item" data-go="sst" onclick="go('sst',this,'SST — Saúde & Segurança','NRs / Medicina Ocupacional')">
-      <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>SST & Medicina Ocup.
-    </div>
-    <div class="nav-item" data-go="documentos" onclick="go('documentos',this,'Gestão de Documentos','Dossiê Eletrônico')">
-      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Documentos
-    </div>
-    <div class="nav-item" data-go="importar" onclick="go('importar',this,'Importar Planilha Excel','Atualizar dados dos módulos')">
+    <div class="sb-layer layer-sys"><div class="sb-dot dot-sys" style=""></div>Sistema</div>
+<div class="nav-item" data-go="importar" onclick="go('importar',this,'Importar Planilha Excel','Atualizar dados dos módulos')">
       <svg viewBox="0 0 24 24"><polyline points="8 17 12 21 16 17"/><line x1="12" y1="3" x2="12" y2="21"/></svg>Importar Excel
     </div>
     <div class="nav-item" data-go="configuracoes" onclick="go('configuracoes',this,'Configurações','Sistema')">
@@ -585,44 +620,22 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
 
     <!-- ══ DASHBOARD ══ -->
     <div id="page-dashboard" class="page active">
-      <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
-        <span class="layer-badge lb-op">● Operacional</span>
-        <span class="layer-badge lb-ta">● Tático</span>
-        <span class="layer-badge lb-st">● Estratégico</span>
-        <span class="layer-badge lb-co">● Compliance</span>
+      <div class="kpi-grid" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr))">
+        <div class="kpi-card" style="cursor:pointer" onclick="dashIr('colaboradores')" title="Abrir"><div class="kpi-lbl">Colaboradores ativos</div><div class="kpi-val" style="" id="dk-hc">…</div><div class="kpi-delta dn" id="dk-hc-sub"></div></div>
+        <div class="kpi-card" style="cursor:pointer" onclick="dashIr('feedback90')" title="Abrir"><div class="kpi-lbl">Em experiência (90 dias)</div><div class="kpi-val" style="" id="dk-exp">…</div><div class="kpi-delta dn" id="dk-exp-sub"></div></div>
+        <div class="kpi-card" style="cursor:pointer" onclick="dashIr('afastamentos')" title="Abrir"><div class="kpi-lbl">Afastados agora</div><div class="kpi-val" style="color:var(--orange)" id="dk-afast">…</div><div class="kpi-delta dn" id="dk-afast-sub"></div></div>
+        <div class="kpi-card" style="cursor:pointer" onclick="dashIr('exameaso')" title="Abrir"><div class="kpi-lbl">Exames vencidos / vencendo</div><div class="kpi-val" style="color:var(--red)" id="dk-aso">…</div><div class="kpi-delta dn" id="dk-aso-sub"></div></div>
+        <div class="kpi-card" style="cursor:pointer" onclick="dashIr('ferias')" title="Abrir"><div class="kpi-lbl">Férias vencidas</div><div class="kpi-val" style="color:var(--red)" id="dk-fer">…</div><div class="kpi-delta dn" id="dk-fer-sub"></div></div>
+        <div class="kpi-card" style="cursor:pointer" onclick="dashIr('ctr-seguro')" title="Abrir"><div class="kpi-lbl">Obrigações a regularizar</div><div class="kpi-val" style="color:var(--red)" id="dk-ctr">…</div><div class="kpi-delta dn" id="dk-ctr-sub"></div></div>
       </div>
-      <div style="background:linear-gradient(135deg,#0f2a4f,#1a3f6f);border-radius:10px;padding:12px 16px;margin-bottom:10px;display:flex;align-items:center;gap:12px;color:#fff">
-        <div style="font-size:22px">📂</div>
-        <div style="flex:1"><div style="font-size:13px;font-weight:700">Fonte: <span id="dash-fonte">AC Metal + Brass Metal — 41 colaboradores</span></div><div style="font-size:10px;color:#a8c4e8;margin-top:2px">Atualizado em: <span id="dash-update">04/09/2026</span> · Para atualizar vá em Importar Excel</div></div>
-        <button onclick="go('importar',document.querySelector('.nav-item[data-go=importar]'),'Importar Planilha Excel','Atualizar dados')" style="background:#fff;color:var(--blue);border:none;border-radius:7px;padding:7px 14px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit">⬆ Atualizar</button>
-      </div>
-      <div style="background:rgba(255,255,255,.08);border-radius:8px;padding:8px 14px;margin-bottom:14px;display:flex;align-items:center;gap:10px;border:1px solid rgba(255,255,255,.1)">
-        <div style="font-size:14px">☁</div>
-        <div style="font-size:11px;color:#a8c4e8;flex:1">Banco de dados: <strong id="db-status-badge" style="color:var(--yellow-t)">🟡 Verificando conexão Supabase...</strong></div>
-        <button onclick="go('configuracoes',null,'Configurações','Sistema')" style="background:none;border:1px solid rgba(255,255,255,.3);border-radius:6px;padding:4px 10px;font-size:10px;color:#a8c4e8;cursor:pointer">⚙ Config</button>
-      </div>
-      <div class="kpi-grid">
-        <div class="kpi-card"><div class="kpi-lbl">Headcount Real</div><div class="kpi-val" id="kpi-hc">…</div><div class="kpi-delta dn" id="kpi-hc-sub">Fonte: planilha real</div></div>
-        <div class="kpi-card"><div class="kpi-lbl">Torneiros</div><div class="kpi-val" id="kpi-torn">—</div><div class="kpi-delta dn">principal categoria</div></div>
-        <div class="kpi-card"><div class="kpi-lbl">Admissões 2025</div><div class="kpi-val" id="kpi-2025">—</div><div class="kpi-delta dg">crescimento recente</div></div>
-        <div class="kpi-card"><div class="kpi-lbl">Elegíveis Férias</div><div class="kpi-val" id="kpi-ferias-el">—</div><div class="kpi-delta dn">1 ano+ de casa</div></div>
-      </div>
-      <div class="kpi-grid">
-        <div class="kpi-card"><div class="kpi-lbl">Férias Vencidas</div><div class="kpi-val" style="color:var(--red)" id="dash-f-vencidas">—</div><div class="kpi-delta dr">Ação urgente</div></div>
-        <div class="kpi-card"><div class="kpi-lbl">Treino Pendentes</div><div class="kpi-val" style="color:var(--yellow)" id="dash-tr-pendentes">—</div></div>
-        <div class="kpi-card"><div class="kpi-lbl">Avaliações Pendentes</div><div class="kpi-val" id="dash-av-pendentes">—</div></div>
-        <div class="kpi-card"><div class="kpi-lbl">SST a Agendar</div><div class="kpi-val" style="color:var(--red)" id="dash-sst-agendar">—</div></div>
-      </div>
-      <!-- CENTRAL DE ALERTAS -->
       <div class="card" style="padding:12px;margin-bottom:14px">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-          <div style="font-size:12px;font-weight:700">🔔 Central de Alertas — o que precisa de atenção esta semana</div>
+          <div style="font-size:12px;font-weight:700">🔔 O que precisa da sua atenção</div>
           <span class="chip" id="central-alertas-count">0</span>
         </div>
         <div id="central-alertas-lista"><div class="muted" style="font-size:11px">Carregando...</div></div>
       </div>
-      <!-- ANIVERSARIANTES + TEMPO DE EMPRESA -->
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px;margin-bottom:14px">
         <div class="card" style="padding:12px">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
             <div style="font-size:12px;font-weight:700">🎂 Aniversariantes do Mês</div>
@@ -634,22 +647,9 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
           <div style="font-size:12px;font-weight:700;margin-bottom:8px">🏆 Aniversários de Empresa</div>
           <div id="dash-tempo-empresa"><div class="muted" style="font-size:11px;padding:4px 0">Carregando...</div></div>
         </div>
-      </div>
-      <div class="charts-grid">
-        <div class="chart-card"><div class="chart-ttl">Turnover 12 meses</div><div style="position:relative;height:170px"><canvas id="c-turn"></canvas></div></div>
-        <div class="chart-card"><div class="chart-ttl">Headcount por Setor</div><div style="position:relative;height:170px"><canvas id="c-hc"></canvas></div></div>
-      </div>
-      <div class="charts-grid">
-        <div class="chart-card"><div class="chart-ttl">Absenteísmo Jan–Jun 2026</div><div style="position:relative;height:140px"><canvas id="c-abs"></canvas></div></div>
-        <div class="card" style="margin:0">
-          <div style="font-size:12px;font-weight:700;margin-bottom:10px">⚠ Alertas Críticos do Sistema</div>
-          <div class="alert al-r" id="dash-sst-banner" style="display:none;margin-bottom:8px"></div>
-          <div class="alert al-r" id="dash-alertcrit-ferias" style="display:none"><div>📅</div><div><div class="al-title" id="dash-ac-ferias-t"></div><div class="al-sub" id="dash-ac-ferias-s"></div></div></div>
-          <div class="alert al-y" id="dash-alertcrit-nr" style="display:none"><div>📋</div><div><div class="al-title" id="dash-ac-nr-t"></div><div class="al-sub" id="dash-ac-nr-s"></div></div></div>
-          <div class="alert al-y" id="dash-alertcrit-aso" style="display:none"><div>🩺</div><div><div class="al-title" id="dash-ac-aso-t"></div><div class="al-sub" id="dash-ac-aso-s"></div></div></div>
-          <div class="alert al-b" id="dash-alertcrit-vaga" style="display:none"><div>👥</div><div><div class="al-title" id="dash-ac-vaga-t"></div><div class="al-sub" id="dash-ac-vaga-s"></div></div></div>
-          <div class="alert al-p" id="dash-alertcrit-aval" style="display:none"><div>🎯</div><div><div class="al-title" id="dash-ac-aval-t"></div><div class="al-sub" id="dash-ac-aval-s"></div></div></div>
-          <div class="muted" id="dash-ac-vazio" style="display:none;text-align:center;padding:10px;font-size:11px">✅ Nenhum alerta crítico no momento.</div>
+        <div class="card" style="padding:12px">
+          <div style="font-size:12px;font-weight:700;margin-bottom:8px">🎗 Campanha do Mês</div>
+          <div id="dash-campanha"></div>
         </div>
       </div>
     </div>
@@ -988,9 +988,9 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
 
     <!-- ══ FINANCEIRO SST ══ -->
     <div id="page-sstfin" class="page">
-      <div class="layer-badge lb-en">● Endomarketing</div>
+      <div class="layer-badge lb-med">● Medicina Ocupacional</div>
       <div class="section-hdr">
-        <div class="sec-title"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Financeiro SST — Fechamento MedClass</div>
+        <div class="sec-title"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Fechamento MedClass</div>
       </div>
       <div class="filters" style="margin-bottom:12px">
         <select class="fsel" id="sf-cnpj-sel" onchange="renderSSTFinanceiro()">
@@ -1015,7 +1015,7 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
 
     <!-- ══ CONFERÊNCIA PCMSO ══ -->
     <div id="page-pcmso" class="page">
-      <div class="layer-badge lb-en">● Endomarketing</div>
+      <div class="layer-badge lb-med">● Medicina Ocupacional</div>
       <div class="section-hdr">
         <div class="sec-title"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Conferência PCMSO × ASO × Valores</div>
         <button class="btn btn-p" onclick="openCrudModal(MOD_EXAMEREAL,null)">+ Lançar Exame Realizado</button>
@@ -1921,7 +1921,7 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
     <div id="page-ind-rh" class="page">
       <div class="layer-badge lb-st">● Estratégico — Indicadores</div>
       <div class="section-hdr">
-        <div class="sec-title">📊 Indicadores de RH — 2026</div>
+        <div class="sec-title">📊 Indicadores de RH — Anual</div>
         <span class="badge bb">Jan – Jul/2026</span>
       </div>
 
@@ -2041,7 +2041,7 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
 
     <!-- ══ PLANEJAMENTO ESTRATÉGICO 2027 ══ -->
     <div id="page-planejamento" class="page">
-      <div class="layer-badge lb-st">● Estratégico — Planejamento 2027</div>
+      <div class="layer-badge lb-st">● Estratégico — Planejamento Anual</div>
       <div class="section-hdr">
         <div class="sec-title">🎯 Planejamento Estratégico RH — 2027</div>
         <button class="btn btn-p btn-sm" onclick="openCrudModal(MOD_PLANO,null)">+ Nova Ação</button>
@@ -2147,7 +2147,7 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
 
     <!-- ══ CONTROLE DE EPI ══ -->
     <div id="page-epi" class="page">
-      <div class="layer-badge lb-co">● Compliance — SST</div>
+      <div class="layer-badge lb-sst">● SST</div>
       <div class="section-hdr">
         <div class="sec-title">🦺 Controle de EPI — Entrega e Devolução</div>
         <button class="btn btn-p btn-sm" onclick="openCrudModal(MOD_EPI,null)">+ Registrar Entrega</button>
@@ -2452,6 +2452,10 @@ function go(id,el,title,bread){
     'beneficios':'benefCtrl','cargos':'cargoAdvCtrl','ponto':'pontoCtrl',
     'holerite':'holeCtrl','comunicados':'comCtrl'};
   if(advMap[id]){setTimeout(()=>{try{window[advMap[id]]&&window[advMap[id]].load();}catch(e){}},150);}
+  if(typeof GP!=='undefined'&&GP[id]){setTimeout(()=>{try{gpRender(id);}catch(e){console.warn('gp:',e);}},60);}
+  if(id==='provisao'){setTimeout(()=>{try{renderProvisao();}catch(e){console.warn('prov:',e);}},60);}
+  if(id==='campanhas'){setTimeout(()=>{try{renderCampanhas();}catch(e){console.warn('camp:',e);}},60);}
+  if(id==='evidencias'){setTimeout(()=>{try{renderEvidencias();}catch(e){console.warn('evid:',e);}},60);}
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById('page-'+id).classList.add('active');
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
@@ -2782,6 +2786,7 @@ function atualizarAlertasCriticos() {
 }
 
 function atualizarKPIsDash(){
+  try{ dashEnxuto(); }catch(e){ console.warn('Dash enxuto:', e); }
   try{ buildCentralAlertas(); }catch(e){ console.warn('Central de Alertas:', e); }
   try{ atualizarAlertasCriticos(); }catch(e){ console.warn('Alertas Críticos:', e); }
   try{ refreshDBStatus(); }catch(e){ console.warn('Status DB:', e); }
@@ -2841,6 +2846,32 @@ function buildCentralAlertas(){
   const avalP = loadData('avaliacoes').filter(a=>a.status!=='Inativo'&&a.situacao&&a.situacao!=='Concluída');
   if (avalP.length) grupos.push({icone:'📋', titulo:'Avaliações não concluídas', cor:'var(--g400)', itens: avalP.map(a=>`${a.colaborador||'—'} (${a.ciclo||'—'})`)});
 
+  try{
+    const afAt=gpRows(GP.afastamentos).filter(r=>r.atrasado);
+    if(afAt.length) grupos.push({icone:'🏥', titulo:'Afastados com retorno previsto vencido', cor:'var(--orange)', ir:'afastamentos', itens: afAt.map(r=>`${r.colaborador} (previsto ${r.previsaoRetorno})`)});
+    const epiV=loadData('epi').filter(e=>e.status!=='Inativo'&&(e.situacao==='Vencido'||e.situacao==='Vencendo'));
+    if(epiV.length) grupos.push({icone:'🦺', titulo:'EPI vencido ou vencendo', cor:'var(--red)', ir:'epi', itens: epiV.map(e=>`${e.colaborador} (${e.nomeEpi||'EPI'})`)});
+    const stk=gpRows(GP.estoqueepi).filter(r=>r.sit!=='OK');
+    if(stk.length) grupos.push({icone:'📦', titulo:'Estoque de EPI com atenção', cor:'var(--orange)', ir:'estoqueepi', itens: stk.map(r=>`${r.item}${r.tamanho?' '+r.tamanho:''} — ${r.sit}`)});
+    const cat=gpRows(GP.acidentes).filter(r=>r.cat==='Pendente');
+    if(cat.length) grupos.push({icone:'🚑', titulo:'CAT pendente de emissão', cor:'var(--red)', ir:'acidentes', itens: cat.map(r=>`${r.colaborador} (${r.dataAcidente})`)});
+    const vis=gpRows(GP.visitas).filter(r=>r.orientacao==='Não');
+    if(vis.length) grupos.push({icone:'🪪', titulo:'Visitas sem orientação de segurança', cor:'var(--orange)', ir:'visitas', itens: vis.map(r=>`${r.visitante} (${r.data})`)});
+    const f90=[];
+    loadData('feedback90').filter(f=>f.status!=='Inativo'&&(f.situacao||'Em acompanhamento')==='Em acompanhamento').forEach(f=>{
+      FEEDBACK90_STAGES.forEach(st=>{ const d=gpDias(f[st+'Data']); if(d!==null&&d<0&&(f[st+'Status']||'Pendente')==='Pendente') f90.push(`${f.colaborador} (${FEEDBACK90_LABEL[st]})`); }); });
+    if(f90.length) grupos.push({icone:'⏱', titulo:'Acompanhamento 90 dias com etapa atrasada', cor:'var(--orange)', ir:'feedback90', itens:f90});
+    const ctr=dashCtrPendencias();
+    if(ctr.length) grupos.push({icone:'📑', titulo:'Contratos / Obrigações', cor:'var(--red)', itens:ctr});
+    const hoje=new Date(), mm=hoje.getMonth()+1, aa=hoje.getFullYear();
+    if(!loadData('evidencias').some(e=>e.status!=='Inativo'&&Number(e.mes)===mm&&Number(e.ano)===aa)) grupos.push({icone:'🎗', titulo:'Campanha do mês sem relatório de evidências', cor:'var(--g400)', ir:'campanhas', itens:[campMes(mm).nome]});
+  }catch(e){ console.warn('alertas novos:',e); }
+  // links: grupos antigos
+  const IRMAP={'Férias vencidas':'ferias','Exames SST vencidos ou vencendo':'exameaso','Treinamentos pendentes':'treinamentos','Avaliações não concluídas':'avaliacoes'};
+  grupos.forEach(g=>{ if(!g.ir&&IRMAP[g.titulo]) g.ir=IRMAP[g.titulo]; });
+  const PESO=c=>/red/.test(c)?0:(/orange/.test(c)?1:(/yellow/.test(c)?2:3));
+  grupos.sort((a,b)=>PESO(a.cor)-PESO(b.cor)||a.itens.length-b.itens.length);
+
   const totalItens = grupos.reduce((s,g)=>s+g.itens.length,0);
   countEl.textContent = totalItens;
 
@@ -2852,9 +2883,10 @@ function buildCentralAlertas(){
   box.innerHTML = grupos.map(g => {
     const visiveis = g.itens.slice(0,5);
     const resto = g.itens.length - visiveis.length;
+    const itHtml=visiveis.map(x=>typeof x==='object'?`<a href="#" onclick="dashIr('${x.ir}');return false" style="color:inherit;text-decoration:underline dotted">${gpEsc(x.t)}</a>`:x).join(' · ');
     return `<div style="margin-bottom:8px">
-      <div style="font-size:11px;font-weight:700;color:${g.cor};margin-bottom:3px">${g.icone} ${g.titulo} (${g.itens.length})</div>
-      <div style="font-size:10.5px;color:var(--g500);line-height:1.6">${visiveis.map(x=>x).join(' · ')}${resto>0?` · +${resto} outro(s)`:''}</div>
+      <div style="font-size:11px;font-weight:700;color:${g.cor};margin-bottom:3px">${g.icone} ${g.titulo} (${g.itens.length})${g.ir?` <a href="#" onclick="dashIr('${g.ir}');return false" style="font-weight:400;font-size:10px;color:var(--blue)">abrir →</a>`:''}</div>
+      <div style="font-size:10.5px;color:var(--g500);line-height:1.6">${itHtml}${resto>0?` · +${resto} outro(s)`:''}</div>
     </div>`;
   }).join('');
 }
@@ -10910,7 +10942,8 @@ async function pullOutrasTabelasAntesDoBoot() {
     'vagas','beneficios_mov','beneficios_inscritos','beneficios_tipos','cargos','ponto',
     'clima_pesquisas','clima_acoes','sucessao','terceiros','documentos','usuarios','holerites',
     'comunicados','cesta_vegas','folha_descontos','feedback90','tempo_empresa_ctrl','desccargos','sstfin','pcmso',
-    'epi','auditoria','historico_cargo_salario','ordens_servico'];
+    'epi','auditoria','historico_cargo_salario','ordens_servico',
+    'provisao_cfg','epi_estoque','acidentes','afastamentos','visitas_tecnicas','contratos_obrig','evidencias','campanhas_ctrl','anexos_gerais'];
   for (const t of TABELAS) {
     try {
       if (loadData(t).length) continue;
@@ -12983,6 +13016,867 @@ function initLote7() {
   atualizarKPIsSST();
 }
 
+/* ═══════════════════════════════════════════════════════════
+   GRUPOS NOVOS v4.77 — SST · Medicina Ocupacional · Endomarketing · Contratos/Obrigações
+   Motor genérico: cada página é descrita por uma configuração (gpRegister).
+   ═══════════════════════════════════════════════════════════ */
+const GP = {};
+const GP_MESES = ['','Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+const GP_GRUPOS = {
+  sst: {cls:'lb-sst', txt:'● SST'},
+  med: {cls:'lb-med', txt:'● Medicina Ocupacional'},
+  en:  {cls:'lb-en',  txt:'● Endomarketing'},
+  ctr: {cls:'lb-ctr', txt:'● Contratos / Obrigações'}
+};
+function gpDt(s){ const m=String(s||'').match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/); return m?new Date(+m[3],+m[2]-1,+m[1]):null; }
+function gpHoje(){ const d=new Date(); d.setHours(0,0,0,0); return d; }
+function gpDias(s){ const d=gpDt(s); return d?Math.round((d-gpHoje())/86400000):null; }
+function gpFmt(d){ return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear(); }
+function gpEsc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function gpBadge(txt,cor){ return `<span class="badge ${cor||'bgy'}">${gpEsc(txt)}</span>`; }
+function gpTxt(html){ return String(html==null?'':html).replace(/<[^>]+>/g,'').replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').trim(); }
+function gpEmpNome(e){ return e==='BRASS'?'Brass Metal':(e==='AC'?'AC Metal':(e||'—')); }
+function gpNum(v){ const n=parseFloat(String(v==null?'':v).replace(/\./g,'').replace(',','.')); return isNaN(n)?0:n; }
+
+/* ─── Registro de uma página ─── */
+function gpRegister(cfg){ GP[cfg.id]=cfg; return cfg; }
+
+function gpInit(){
+  const content=document.querySelector('.content'); if(!content) return;
+  Object.keys(GP).forEach(id=>{
+    const cfg=GP[id];
+    if(!cfg.mod){
+      cfg.mod={table:cfg.table,label:cfg.label,fields:cfg.fields,
+        beforeSave:(obj,rec,isEdit)=>{ if(cfg.tipo) obj.tipo=cfg.tipo; if(cfg.before) cfg.before(obj,rec,isEdit); }};
+    }
+    const origSave=cfg.mod.onSave;
+    cfg.mod.onSave=()=>{ try{ if(origSave) origSave(); }catch(e){} try{ gpRender(id); }catch(e){} };
+    window['MOD_GP_'+id.replace(/-/g,'_')]=cfg.mod;
+    if(document.getElementById('page-'+id)) return;
+    const g=GP_GRUPOS[cfg.group]||GP_GRUPOS.sst;
+    const filtros=(cfg.filters||[]).map((f,i)=>`<select class="fsel" id="gp-${id}-f${i}" onchange="gpRender('${id}')" style="min-width:140px"><option value="">${f.l}</option>${(f.opts||[]).map(o=>`<option>${gpEsc(o)}</option>`).join('')}</select>`).join('');
+    const empSel=cfg.empresaFilter?`<select class="fsel" id="gp-${id}-emp" onchange="gpRender('${id}')"><option value="">Todas as empresas</option><option value="AC">AC Metal</option><option value="BRASS">Brass Metal</option></select>`:'';
+    const div=document.createElement('div');
+    div.id='page-'+id; div.className='page';
+    div.innerHTML=`
+      <div class="layer-badge ${g.cls}">${g.txt}</div>
+      <div class="section-hdr">
+        <div class="sec-title">${cfg.icon||''} ${gpEsc(cfg.title)}</div>
+        <button class="btn btn-p btn-sm" onclick="gpNovo('${id}')">${cfg.novoBtn||'+ Novo'}</button>
+        <button class="btn btn-s btn-sm" onclick="gpImprimir('${id}')">🖨 Imprimir</button>
+        <button class="btn btn-s btn-sm" onclick="gpExportar('${id}')">⬇ Exportar Excel</button>
+      </div>
+      ${cfg.nota?`<div class="muted" style="font-size:11px;margin:-4px 0 10px">${cfg.nota}</div>`:''}
+      <div id="gp-${id}-extra"></div>
+      <div class="kpi-grid" id="gp-${id}-kpi"></div>
+      <div class="filters" style="margin-bottom:12px;flex-wrap:wrap">
+        <input class="finp" type="text" id="gp-${id}-q" placeholder="🔎 Buscar..." oninput="gpRender('${id}')" style="width:200px">
+        ${empSel}${filtros}
+        <span class="chip" id="gp-${id}-cnt">—</span>
+        <button class="btn btn-s btn-xs" onclick="gpLimpar('${id}')">🔄 Limpar</button>
+      </div>
+      <div class="card" style="padding:0;overflow-x:auto">
+        <table><thead><tr>${cfg.columns.map(c=>`<th>${c.l}</th>`).join('')}<th>Ações</th></tr></thead><tbody id="gp-${id}-tbody"></tbody></table>
+      </div>`;
+    content.appendChild(div);
+  });
+}
+
+function gpRows(cfg){
+  return loadData(cfg.table).filter(r=>r.status!=='Inativo' && (!cfg.pre||cfg.pre(r)))
+    .map(r=>cfg.comp?Object.assign({},r,cfg.comp(r)):r);
+}
+function gpLimpar(id){
+  const cfg=GP[id];
+  const q=document.getElementById(`gp-${id}-q`); if(q) q.value='';
+  const e=document.getElementById(`gp-${id}-emp`); if(e) e.value='';
+  (cfg.filters||[]).forEach((f,i)=>{ const s=document.getElementById(`gp-${id}-f${i}`); if(s) s.value=''; });
+  gpRender(id);
+}
+function gpFiltrados(id){
+  const cfg=GP[id]; let rows=gpRows(cfg);
+  const q=((document.getElementById(`gp-${id}-q`)||{}).value||'').toLowerCase().trim();
+  if(q) rows=rows.filter(r=>JSON.stringify(Object.values(r)).toLowerCase().includes(q));
+  const e=(document.getElementById(`gp-${id}-emp`)||{}).value;
+  if(e) rows=rows.filter(r=>(r.empresa||'')===e);
+  (cfg.filters||[]).forEach((f,i)=>{ const v=(document.getElementById(`gp-${id}-f${i}`)||{}).value; if(v) rows=rows.filter(r=>String(f.get?f.get(r):r[f.k]||'')===v); });
+  if(cfg.sort) rows.sort(cfg.sort);
+  return rows;
+}
+function gpRender(id){
+  const cfg=GP[id]; if(!cfg||!document.getElementById('gp-'+id+'-tbody')) return;
+  const todos=gpRows(cfg), rows=gpFiltrados(id);
+  const kp=document.getElementById(`gp-${id}-kpi`);
+  if(kp) kp.innerHTML=(cfg.kpis||[]).map(k=>`<div class="kpi-card"><div class="kpi-lbl">${k.l}</div><div class="kpi-val" style="${k.c?'color:'+k.c:''}">${k.v(todos)}</div></div>`).join('');
+  const ex=document.getElementById(`gp-${id}-extra`); if(ex) ex.innerHTML=cfg.extra?cfg.extra(todos):'';
+  const anx=loadData('anexos_gerais').filter(a=>a.ref===id&&a.status!=='Inativo'), nAnx={};
+  anx.forEach(a=>{ nAnx[a.regId]=(nAnx[a.regId]||0)+1; });
+  const tb=document.getElementById(`gp-${id}-tbody`);
+  tb.innerHTML=rows.length?rows.map(r=>`<tr>${cfg.columns.map(c=>`<td style="font-size:11px">${c.v(r)}</td>`).join('')}
+    <td style="white-space:nowrap">
+      <button class="btn btn-s btn-xs" onclick="gpEditar('${id}',${r.id})" title="Editar">✏</button>
+      ${cfg.anexo===false?'':`<button class="btn btn-s btn-xs" onclick="gpAnexos('${id}',${r.id})" title="Anexar documentos">📎${nAnx[r.id]?' ('+nAnx[r.id]+')':''}</button>`}
+      ${cfg.acoes?cfg.acoes(r):''}
+      <button class="btn btn-s btn-xs" onclick="gpExcluir('${id}',${r.id})" title="Excluir">🗑</button>
+    </td></tr>`).join(''):`<tr><td colspan="${cfg.columns.length+1}" class="muted" style="text-align:center;padding:18px">Nenhum registro${todos.length?' com os filtros atuais':' cadastrado ainda'}. Use o botão "${gpTxt(cfg.novoBtn||'+ Novo')}".</td></tr>`;
+  const c=document.getElementById(`gp-${id}-cnt`); if(c) c.textContent=rows.length+' registro(s)';
+}
+function gpNovo(id){ openCrudModal(GP[id].mod,null); }
+function gpEditar(id,regId){ openCrudModal(GP[id].mod,regId); }
+function gpExcluir(id,regId){
+  const cfg=GP[id]; const r=loadData(cfg.table).find(x=>x.id===regId); if(!r) return;
+  const lbl=cfg.rowLabel?cfg.rowLabel(r):('registro '+regId);
+  confirmAction(`Excluir "${lbl}" definitivamente?\n\nOs anexos deste registro também serão removidos.`,()=>{
+    loadData('anexos_gerais').filter(a=>a.ref===id&&a.regId===regId).forEach(a=>{
+      try{ if(supabaseClient&&a.caminho) supabaseClient.storage.from('documentos-rh').remove([a.caminho]); }catch(e){}
+      crudDeleteFisico('anexos_gerais',a.id,{modulo:cfg.label,label:a.nomeArquivo});
+    });
+    crudDeleteFisico(cfg.table,regId,{modulo:cfg.label,label:lbl});
+    showToast('🗑 Registro excluído');
+    gpRender(id); try{ refreshAllKPIs(); }catch(e){}
+  });
+}
+
+/* ─── Exportar / Imprimir ─── */
+function gpExportar(id){
+  const cfg=GP[id]; if(typeof XLSX==='undefined'){ showToast('Biblioteca de Excel indisponível (sem internet)','warn'); return; }
+  const rows=gpFiltrados(id);
+  const ws=XLSX.utils.aoa_to_sheet([cfg.columns.map(c=>c.l),...rows.map(r=>cfg.columns.map(c=>gpTxt(c.x?c.x(r):c.v(r))))]);
+  const wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,cfg.title.slice(0,28));
+  XLSX.writeFile(wb,`${cfg.title.replace(/[^\wÀ-ú]+/g,'_')}_${gpFmt(new Date()).replace(/\//g,'-')}.xlsx`);
+}
+function gpImprimir(id){
+  const cfg=GP[id], rows=gpFiltrados(id);
+  if(!rows.length){ showToast('Nada para imprimir','warn'); return; }
+  const th=cfg.columns.map(c=>`<th style="text-align:left;padding:4px;font-size:10px">${c.l}</th>`).join('');
+  const tr=rows.map(r=>`<tr style="border-bottom:1px solid #ccc">${cfg.columns.map(c=>`<td style="padding:4px;font-size:10px">${gpEsc(gpTxt(c.x?c.x(r):c.v(r)))}</td>`).join('')}</tr>`).join('');
+  abrirReciboModal('🖨 '+cfg.title,`${docPageCSS({nome:'AC Metalúrgica / Brassmetal',email:''})}<div class="doc-print" style="padding:10px 4px">
+    <h3 style="text-align:center;margin-bottom:4px">${gpEsc(cfg.title.toUpperCase())}</h3>
+    <p style="text-align:center;font-size:11px;color:#666;margin-bottom:12px">${rows.length} registro(s) — emitido em ${gpFmt(new Date())}</p>
+    <table style="width:100%;border-collapse:collapse"><thead><tr style="border-bottom:1.5px solid #000">${th}</tr></thead><tbody>${tr}</tbody></table></div>`,false);
+}
+
+/* ─── Anexos genéricos (mesma lógica de Colaboradores/Benefícios) ─── */
+let GP_ANX={pid:null,regId:null};
+function gpAnexos(pid,regId){
+  const cfg=GP[pid]; const r=loadData(cfg.table).find(x=>x.id===regId); if(!r) return;
+  GP_ANX={pid,regId};
+  const arqs=loadData('anexos_gerais').filter(a=>a.ref===pid&&a.regId===regId&&a.status!=='Inativo').sort((a,b)=>(b.id||0)-(a.id||0));
+  const lista=arqs.length?arqs.map(a=>`<div style="display:flex;align-items:center;gap:8px;padding:6px 8px;border:1px solid var(--g100);border-radius:6px;margin-bottom:6px">
+      <span style="font-size:16px">📄</span>
+      <a href="${a.url}" target="_blank" rel="noopener" style="flex:1;font-size:12px;word-break:break-all">${gpEsc(a.nomeArquivo)}</a>
+      <span class="muted" style="font-size:10px">${a.dataUpload||''}</span>
+      <button class="btn btn-s btn-xs" onclick="gpExcluirAnexo(${a.id})" title="Remover arquivo">🗑</button></div>`).join(''):'<div class="muted" style="padding:10px 0">Nenhum arquivo anexado ainda.</div>';
+  abrirModalSimples(`📎 Anexos — ${cfg.rowLabel?cfg.rowLabel(r):cfg.title}`,`
+    <div style="margin-bottom:12px">
+      <input type="file" id="gp-anexo-input" multiple style="display:none" onchange="gpUploadAnexos(this.files)">
+      <button class="btn btn-p btn-sm" onclick="document.getElementById('gp-anexo-input').click()">📎 Anexar arquivo(s)</button>
+    </div>${lista}`,640);
+}
+async function gpUploadAnexos(files){
+  if(!files||!files.length||!GP_ANX.pid) return;
+  if(!supabaseClient){ showToast('Conecte a nuvem primeiro (veja o Dashboard)','error'); return; }
+  const {pid,regId}=GP_ANX, cfg=GP[pid], r=loadData(cfg.table).find(x=>x.id===regId); if(!r) return;
+  showToast('📤 Enviando arquivo(s)...'); let ok=0;
+  for(const file of Array.from(files)){
+    const path=`gerais/${pid}/${regId}/${Date.now()}_${sanitizeStorageKey(file.name)}`;
+    try{
+      const {error}=await supabaseClient.storage.from('documentos-rh').upload(path,file); if(error) throw error;
+      const {data}=supabaseClient.storage.from('documentos-rh').getPublicUrl(path);
+      crudCreate('anexos_gerais',{ref:pid,regId,nomeArquivo:file.name,caminho:path,url:data.publicUrl,dataUpload:nowStr().split(' ')[0]},{modulo:cfg.label,label:file.name});
+      ok++;
+    }catch(e){ showToast('Erro ao enviar "'+file.name+'": '+e.message,'error'); }
+  }
+  if(ok) showToast(`✅ ${ok} arquivo(s) anexado(s)`);
+  gpAnexos(pid,regId); gpRender(pid);
+}
+function gpExcluirAnexo(id){
+  const a=loadData('anexos_gerais').find(x=>x.id===id); if(!a) return;
+  confirmAction(`Remover o arquivo "${a.nomeArquivo}"?`,()=>{
+    try{ if(supabaseClient&&a.caminho) supabaseClient.storage.from('documentos-rh').remove([a.caminho]); }catch(e){}
+    crudDeleteFisico('anexos_gerais',id,{modulo:'Anexos',label:a.nomeArquivo});
+    showToast('🗑 Arquivo removido'); gpAnexos(a.ref,a.regId); gpRender(a.ref);
+  });
+}
+
+/* ═══════════ Configurações das páginas ═══════════ */
+const GP_SETORES=['Fundição','Usinagem','Manutenção','Administrativo','Qualidade','Produção','Expedição','Almoxarifado'];
+const GP_SIM_NAO=['Sim','Não'];
+function gpEmpresaField(){ return {field:'empresa',label:'Empresa',type:'select',required:true,options:['AC','BRASS']}; }
+
+/* — SST: Estoque de EPI — */
+gpRegister({id:'estoqueepi',group:'sst',icon:'📦',title:'Estoque de EPI',label:'Item de Estoque de EPI',table:'epi_estoque',
+  novoBtn:'+ Novo item',nota:'Controle do que há no almoxarifado: quantidade, estoque mínimo e validade do CA. A entrega ao colaborador continua em Controle de EPI.',
+  empresaFilter:true,
+  rowLabel:r=>r.item+(r.tamanho?' '+r.tamanho:''),
+  fields:[
+    {field:'item',label:'EPI / Item',type:'select',required:true,full:true,options:['Capacete','Óculos de Proteção','Luva de Raspa','Luva de Látex','Luva de Malha Pigmentada','Botina de Segurança','Protetor Auricular (plug)','Protetor Auricular (concha)','Avental de Raspa','Máscara Respiratória (PFF2)','Cinto de Segurança','Uniforme / Camisa','Uniforme / Calça','Óculos de Solda','Perneira','Mangote','Protetor Facial','Outro']},
+    {field:'descricao',label:'Descrição / Modelo (opcional)',full:true},
+    gpEmpresaField(),
+    {field:'tamanho',label:'Tamanho / Nº (se houver)'},
+    {field:'ca',label:'Nº CA'},
+    {field:'validadeCA',label:'Validade do CA',placeholder:'dd/mm/aaaa'},
+    {field:'qtdAtual',label:'Quantidade em estoque',type:'number',step:'1',required:true},
+    {field:'qtdMinima',label:'Estoque mínimo',type:'number',step:'1'},
+    {field:'fornecedor',label:'Fornecedor'},
+    {field:'local',label:'Local / Prateleira'},
+    {field:'observacao',label:'Observações',type:'textarea',full:true}
+  ],
+  comp:r=>{ const q=Number(r.qtdAtual)||0,m=Number(r.qtdMinima)||0,d=gpDias(r.validadeCA);
+    let s='OK'; if(q<=0) s='Sem estoque'; else if(m&&q<=m) s='Abaixo do mínimo'; if(d!==null&&d<0) s='CA vencido'; else if(d!==null&&d<=30&&s==='OK') s='CA vence em breve';
+    return {sit:s}; },
+  kpis:[
+    {l:'Itens cadastrados',v:rs=>rs.length},
+    {l:'Sem estoque',v:rs=>rs.filter(r=>r.sit==='Sem estoque').length,c:'var(--red)'},
+    {l:'Abaixo do mínimo',v:rs=>rs.filter(r=>r.sit==='Abaixo do mínimo').length,c:'var(--orange)'},
+    {l:'CA vencido / vencendo',v:rs=>rs.filter(r=>r.sit==='CA vencido'||r.sit==='CA vence em breve').length,c:'var(--red)'}],
+  filters:[{l:'Todas as situações',k:'sit',opts:['OK','Abaixo do mínimo','Sem estoque','CA vence em breve','CA vencido']}],
+  sort:(a,b)=>String(a.item).localeCompare(String(b.item)),
+  columns:[
+    {l:'EPI',v:r=>`<b>${gpEsc(r.item)}</b>${r.descricao?'<br><span class="muted">'+gpEsc(r.descricao)+'</span>':''}`,x:r=>r.item+(r.descricao?' — '+r.descricao:'')},
+    {l:'Tam.',v:r=>gpEsc(r.tamanho||'—')},
+    {l:'Empresa',v:r=>gpEmpNome(r.empresa)},
+    {l:'CA',v:r=>gpEsc(r.ca||'—')},
+    {l:'Validade CA',v:r=>gpEsc(r.validadeCA||'—')},
+    {l:'Estoque',v:r=>`<b>${Number(r.qtdAtual)||0}</b>`},
+    {l:'Mínimo',v:r=>Number(r.qtdMinima)||0},
+    {l:'Fornecedor',v:r=>gpEsc(r.fornecedor||'—')},
+    {l:'Situação',v:r=>gpBadge(r.sit,r.sit==='OK'?'bg':(r.sit==='Abaixo do mínimo'||r.sit==='CA vence em breve'?'bo':'br'))}]
+});
+
+/* — SST: Acidentes — */
+gpRegister({id:'acidentes',group:'sst',icon:'🚑',title:'Acidentes de Trabalho',label:'Acidente',table:'acidentes',
+  novoBtn:'+ Registrar acidente',nota:'Inclui acidentes típicos, de trajeto, doenças ocupacionais e quase-acidentes. Anexe CAT, fotos e investigação em 📎.',
+  empresaFilter:true,
+  rowLabel:r=>(r.colaborador||'')+' — '+(r.dataAcidente||''),
+  fields:[
+    {field:'colaborador',label:'Colaborador',required:true,full:true},
+    gpEmpresaField(),
+    {field:'dataAcidente',label:'Data do acidente',required:true,placeholder:'dd/mm/aaaa'},
+    {field:'hora',label:'Hora',placeholder:'hh:mm'},
+    {field:'tipo2',label:'Tipo',type:'select',required:true,options:['Típico (no local de trabalho)','De trajeto','Doença ocupacional','Quase acidente (sem lesão)']},
+    {field:'setor',label:'Setor / Local',type:'select',options:GP_SETORES},
+    {field:'parteCorpo',label:'Parte do corpo atingida'},
+    {field:'descricao',label:'Descrição do ocorrido',type:'textarea',full:true,required:true},
+    {field:'causa',label:'Causa identificada',type:'textarea',full:true},
+    {field:'acaoCorretiva',label:'Ação corretiva / preventiva',type:'textarea',full:true},
+    {field:'diasAfastado',label:'Dias de afastamento',type:'number',step:'1'},
+    {field:'cat',label:'CAT',type:'select',options:['Não necessária','Pendente','Emitida']},
+    {field:'numCat',label:'Nº da CAT'},
+    {field:'investigacao',label:'Investigação',type:'select',options:['Aberta','Em andamento','Concluída']},
+    {field:'observacao',label:'Observações',type:'textarea',full:true}
+  ],
+  kpis:[
+    {l:'Acidentes no ano',v:rs=>rs.filter(r=>(r.tipo2||'').indexOf('Quase')!==0&&String(r.dataAcidente||'').endsWith('/'+new Date().getFullYear())).length},
+    {l:'Dias sem acidente',v:rs=>{ const ds=rs.filter(r=>(r.tipo2||'').indexOf('Quase')!==0).map(r=>gpDt(r.dataAcidente)).filter(Boolean).sort((a,b)=>b-a); return ds.length?Math.max(0,Math.round((gpHoje()-ds[0])/86400000)):'—'; },c:'var(--green)'},
+    {l:'CAT pendente',v:rs=>rs.filter(r=>r.cat==='Pendente').length,c:'var(--red)'},
+    {l:'Investigação em aberto',v:rs=>rs.filter(r=>r.investigacao&&r.investigacao!=='Concluída').length,c:'var(--orange)'}],
+  filters:[{l:'Todos os tipos',k:'tipo2',opts:['Típico (no local de trabalho)','De trajeto','Doença ocupacional','Quase acidente (sem lesão)']},{l:'CAT: todas',k:'cat',opts:['Não necessária','Pendente','Emitida']},{l:'Investigação: todas',k:'investigacao',opts:['Aberta','Em andamento','Concluída']}],
+  sort:(a,b)=>((gpDt(b.dataAcidente)||0)-(gpDt(a.dataAcidente)||0)),
+  columns:[
+    {l:'Data',v:r=>gpEsc(r.dataAcidente||'—')},
+    {l:'Colaborador',v:r=>`<b>${gpEsc(r.colaborador)}</b>`,x:r=>r.colaborador},
+    {l:'Empresa',v:r=>gpEmpNome(r.empresa)},
+    {l:'Tipo',v:r=>gpEsc(r.tipo2||'—')},
+    {l:'Setor',v:r=>gpEsc(r.setor||'—')},
+    {l:'Parte do corpo',v:r=>gpEsc(r.parteCorpo||'—')},
+    {l:'Afast. (dias)',v:r=>r.diasAfastado||0},
+    {l:'CAT',v:r=>gpBadge(r.cat||'—',r.cat==='Pendente'?'br':(r.cat==='Emitida'?'bg':'bgy'))},
+    {l:'Investigação',v:r=>gpBadge(r.investigacao||'—',r.investigacao==='Concluída'?'bg':'bo')}]
+});
+
+/* — SST: Afastamentos — */
+gpRegister({id:'afastamentos',group:'sst',icon:'🏥',title:'Afastamentos',label:'Afastamento',table:'afastamentos',
+  novoBtn:'+ Registrar afastamento',nota:'Atestados longos, INSS, acidente de trabalho, licenças. Ao retornar, informe a data de retorno e confirme o exame de retorno ao trabalho.',
+  empresaFilter:true,
+  rowLabel:r=>(r.colaborador||'')+' — '+(r.inicio||''),
+  fields:[
+    {field:'colaborador',label:'Colaborador',required:true,full:true},
+    gpEmpresaField(),
+    {field:'motivo',label:'Motivo',type:'select',required:true,options:['Doença (atestado)','Auxílio-doença INSS (B31)','Acidente de trabalho (B91)','Licença-maternidade','Licença-paternidade','Cirurgia / Internação','Outro']},
+    {field:'inicio',label:'Início do afastamento',required:true,placeholder:'dd/mm/aaaa'},
+    {field:'previsaoRetorno',label:'Previsão de retorno',placeholder:'dd/mm/aaaa'},
+    {field:'retornoReal',label:'Retorno efetivo',placeholder:'dd/mm/aaaa'},
+    {field:'exameRetorno',label:'Exame de retorno ao trabalho realizado?',type:'select',options:['Não aplicável','Pendente','Realizado']},
+    {field:'situacao',label:'Situação',type:'select',options:['Afastado','Retornou','Prorrogado']},
+    {field:'observacao',label:'Observações',type:'textarea',full:true}
+  ],
+  before:(o)=>{ if(o.retornoReal&&(!o.situacao||o.situacao==='Afastado')) o.situacao='Retornou'; if(!o.retornoReal&&!o.situacao) o.situacao='Afastado'; },
+  comp:r=>{ const i=gpDt(r.inicio),f=gpDt(r.retornoReal)||gpHoje(); return {dias:i?Math.max(0,Math.round((f-i)/86400000)+1):0,
+    atrasado:(r.situacao!=='Retornou'&&!r.retornoReal&&gpDias(r.previsaoRetorno)!==null&&gpDias(r.previsaoRetorno)<0)}; },
+  kpis:[
+    {l:'Afastados agora',v:rs=>rs.filter(r=>r.situacao!=='Retornou').length,c:'var(--red)'},
+    {l:'Retorno vencido (sem baixa)',v:rs=>rs.filter(r=>r.atrasado).length,c:'var(--orange)'},
+    {l:'Exame de retorno pendente',v:rs=>rs.filter(r=>r.exameRetorno==='Pendente').length,c:'var(--orange)'},
+    {l:'Afastamentos no ano',v:rs=>rs.filter(r=>String(r.inicio||'').endsWith('/'+new Date().getFullYear())).length}],
+  filters:[{l:'Todas as situações',k:'situacao',opts:['Afastado','Prorrogado','Retornou']},{l:'Todos os motivos',k:'motivo',opts:['Doença (atestado)','Auxílio-doença INSS (B31)','Acidente de trabalho (B91)','Licença-maternidade','Licença-paternidade','Cirurgia / Internação','Outro']}],
+  sort:(a,b)=>((gpDt(b.inicio)||0)-(gpDt(a.inicio)||0)),
+  columns:[
+    {l:'Colaborador',v:r=>`<b>${gpEsc(r.colaborador)}</b>`,x:r=>r.colaborador},
+    {l:'Empresa',v:r=>gpEmpNome(r.empresa)},
+    {l:'Motivo',v:r=>gpEsc(r.motivo||'—')},
+    {l:'Início',v:r=>gpEsc(r.inicio||'—')},
+    {l:'Prev. retorno',v:r=>`<span style="${r.atrasado?'color:var(--red);font-weight:700':''}">${gpEsc(r.previsaoRetorno||'—')}</span>`,x:r=>r.previsaoRetorno||''},
+    {l:'Retorno',v:r=>gpEsc(r.retornoReal||'—')},
+    {l:'Dias',v:r=>r.dias},
+    {l:'Exame retorno',v:r=>gpBadge(r.exameRetorno||'—',r.exameRetorno==='Pendente'?'bo':(r.exameRetorno==='Realizado'?'bg':'bgy'))},
+    {l:'Situação',v:r=>gpBadge(r.situacao||'—',r.situacao==='Retornou'?'bg':'br')}]
+});
+
+/* — SST: Visitas Técnicas — */
+gpRegister({id:'visitas',group:'sst',icon:'🪪',title:'Controle de Visitas Técnicas',label:'Visita Técnica',table:'visitas_tecnicas',
+  novoBtn:'+ Registrar visita',nota:'Registro de visitantes, prestadores e técnicos que entram na planta, com orientação de segurança e EPI. Anexe o termo assinado em 📎.',
+  empresaFilter:true,
+  rowLabel:r=>(r.visitante||'')+' — '+(r.data||''),
+  fields:[
+    {field:'data',label:'Data da visita',required:true,placeholder:'dd/mm/aaaa'},
+    gpEmpresaField(),
+    {field:'visitante',label:'Nome do visitante / técnico',required:true},
+    {field:'empresaVisitante',label:'Empresa do visitante',required:true},
+    {field:'documento',label:'Documento (RG/CPF)'},
+    {field:'motivo',label:'Motivo / Assunto',type:'select',options:['Manutenção de equipamento','Instalação / Obra','Auditoria / Certificação','Fornecedor / Comercial','Cliente','Fiscalização','Entrega / Coleta','Outro']},
+    {field:'descricao',label:'Detalhe da visita',type:'textarea',full:true},
+    {field:'responsavel',label:'Responsável interno',required:true},
+    {field:'setor',label:'Setor visitado',type:'select',options:GP_SETORES},
+    {field:'entrada',label:'Hora de entrada',placeholder:'hh:mm'},
+    {field:'saida',label:'Hora de saída',placeholder:'hh:mm'},
+    {field:'orientacao',label:'Orientação de segurança realizada?',type:'select',options:GP_SIM_NAO},
+    {field:'epiFornecido',label:'EPI fornecido?',type:'select',options:['Sim','Não','Não necessário']},
+    {field:'termo',label:'Termo / Ficha assinada?',type:'select',options:['Sim','Não']},
+    {field:'observacao',label:'Observações',type:'textarea',full:true}
+  ],
+  kpis:[
+    {l:'Visitas no mês',v:rs=>{ const h=new Date(); return rs.filter(r=>{const d=gpDt(r.data);return d&&d.getMonth()===h.getMonth()&&d.getFullYear()===h.getFullYear();}).length; }},
+    {l:'Visitas hoje',v:rs=>rs.filter(r=>r.data===gpFmt(new Date())).length,c:'var(--blue)'},
+    {l:'Sem orientação de segurança',v:rs=>rs.filter(r=>r.orientacao==='Não').length,c:'var(--red)'},
+    {l:'Sem termo assinado',v:rs=>rs.filter(r=>r.termo==='Não').length,c:'var(--orange)'}],
+  filters:[{l:'Todos os motivos',k:'motivo',opts:['Manutenção de equipamento','Instalação / Obra','Auditoria / Certificação','Fornecedor / Comercial','Cliente','Fiscalização','Entrega / Coleta','Outro']},{l:'Orientação: todas',k:'orientacao',opts:['Sim','Não']}],
+  sort:(a,b)=>((gpDt(b.data)||0)-(gpDt(a.data)||0)),
+  columns:[
+    {l:'Data',v:r=>gpEsc(r.data||'—')},
+    {l:'Visitante',v:r=>`<b>${gpEsc(r.visitante)}</b>`,x:r=>r.visitante},
+    {l:'Empresa visitante',v:r=>gpEsc(r.empresaVisitante||'—')},
+    {l:'Motivo',v:r=>gpEsc(r.motivo||'—')},
+    {l:'Responsável',v:r=>gpEsc(r.responsavel||'—')},
+    {l:'Entrada / Saída',v:r=>gpEsc((r.entrada||'—')+' / '+(r.saida||'—'))},
+    {l:'Orientação',v:r=>gpBadge(r.orientacao||'—',r.orientacao==='Sim'?'bg':(r.orientacao==='Não'?'br':'bgy'))},
+    {l:'Termo',v:r=>gpBadge(r.termo||'—',r.termo==='Sim'?'bg':(r.termo==='Não'?'bo':'bgy'))}]
+});
+
+/* — Medicina Ocupacional: Exame / ASO (usa a tabela 'sst', onde o colaborador novo já entra) — */
+gpRegister({id:'exameaso',group:'med',icon:'🩺',title:'Exame / ASO',label:'Registro SST',table:'sst',
+  novoBtn:'+ Lançar exame / ASO',nota:'Todo colaborador novo entra aqui automaticamente para agendar o exame admissional. Anexe o ASO em 📎.',
+  empresaFilter:false,
+  mod:null, rowLabel:r=>(r.colaborador||'')+' — '+(r.tipoExame||''),
+  fields:null,
+  comp:r=>{ const d=gpDias(r.proximoExame); let s=r.situacao||'Agendar'; if(d!==null){ s=d<0?'Vencido':(d<=30?'Vence em breve':'Em dia'); } return {sit:s,dprox:d}; },
+  kpis:[
+    {l:'Colaboradores no controle',v:rs=>rs.length},
+    {l:'Em dia',v:rs=>rs.filter(r=>r.sit==='Em dia').length,c:'var(--green)'},
+    {l:'Agendar',v:rs=>rs.filter(r=>r.sit==='Agendar').length,c:'var(--blue)'},
+    {l:'Vencendo / vencidos',v:rs=>rs.filter(r=>r.sit==='Vence em breve'||r.sit==='Vencido').length,c:'var(--red)'}],
+  filters:[{l:'Todas as situações',k:'sit',opts:['Em dia','Agendar','Vence em breve','Vencido']},{l:'Todos os tipos',k:'tipoExame',opts:['Admissional','Periódico','Retorno ao Trabalho','Mudança de Função','Demissional']}],
+  sort:(a,b)=>String(a.colaborador).localeCompare(String(b.colaborador)),
+  columns:[
+    {l:'Colaborador',v:r=>`<b>${gpEsc(r.colaborador)}</b>`,x:r=>r.colaborador},
+    {l:'Cargo',v:r=>gpEsc(r.cargo||'—')},
+    {l:'Tipo',v:r=>gpEsc(r.tipoExame||'—')},
+    {l:'Data do exame',v:r=>gpEsc(r.dataExame||'—')},
+    {l:'Próximo exame',v:r=>`<span style="${r.sit==='Vencido'?'color:var(--red);font-weight:700':''}">${gpEsc(r.proximoExame||'—')}</span>`,x:r=>r.proximoExame||''},
+    {l:'Clínica',v:r=>gpEsc(r.clinica||'—')},
+    {l:'Aptidão',v:r=>gpEsc(r.restricoes||'—')},
+    {l:'Situação',v:r=>gpBadge(r.sit,r.sit==='Em dia'?'bg':(r.sit==='Agendar'?'bb':(r.sit==='Vence em breve'?'bo':'br')))}]
+});
+
+/* — Contratos / Obrigações — */
+const CTR_DEF={
+  seguro:{id:'ctr-seguro',tipo:'Seguro de Vida',icon:'🛡',nota:'Apólice do seguro de vida em grupo de cada empresa. Anexe a apólice e a lista de segurados em 📎.',
+    extras:[{field:'seguradora',label:'Seguradora',required:true},{field:'apolice',label:'Nº da apólice'},{field:'vidas',label:'Nº de vidas seguradas',type:'number',step:'1'},{field:'capital',label:'Capital segurado (R$)',moeda:true},{field:'premio',label:'Prêmio mensal (R$)',moeda:true},{field:'corretor',label:'Corretor / Contato'}],
+    cols:[{l:'Seguradora',v:r=>gpEsc(r.seguradora||'—')},{l:'Apólice',v:r=>gpEsc(r.apolice||'—')},{l:'Vidas',v:r=>r.vidas||'—'},{l:'Prêmio mensal',v:r=>r.premio?'R$ '+gpEsc(r.premio):'—'}]},
+  ltcat:{id:'ctr-ltcat',tipo:'LTCAT',icon:'📑',nota:'Referência: o LTCAT deve ser atualizado sempre que mudar o ambiente, o processo ou os riscos. Confirme a periodicidade com o seu SESMT / engenheiro de segurança.',
+    extras:[{field:'responsavel',label:'Responsável técnico (Eng. de Segurança)',required:true},{field:'registro',label:'Registro profissional (CREA)'},{field:'empresaElaboradora',label:'Empresa elaboradora'}],
+    cols:[{l:'Responsável técnico',v:r=>gpEsc(r.responsavel||'—')},{l:'Registro',v:r=>gpEsc(r.registro||'—')},{l:'Elaborado por',v:r=>gpEsc(r.empresaElaboradora||'—')}]},
+  pcmso:{id:'ctr-pcmso',tipo:'PCMSO',icon:'🩺',nota:'Referência: o PCMSO tem análise anual (NR-7). Confirme a periodicidade com o seu médico coordenador.',
+    extras:[{field:'responsavel',label:'Médico coordenador',required:true},{field:'registro',label:'CRM'},{field:'empresaElaboradora',label:'Empresa / Clínica responsável'}],
+    cols:[{l:'Médico coordenador',v:r=>gpEsc(r.responsavel||'—')},{l:'CRM',v:r=>gpEsc(r.registro||'—')},{l:'Clínica',v:r=>gpEsc(r.empresaElaboradora||'—')}]},
+  pgr:{id:'ctr-pgr',tipo:'PGR',icon:'⚠',nota:'Referência: o PGR tem análise global a cada 2 anos (NR-1). Confirme a periodicidade com o seu SESMT / engenheiro de segurança.',
+    extras:[{field:'responsavel',label:'Responsável técnico',required:true},{field:'registro',label:'Registro profissional'},{field:'empresaElaboradora',label:'Empresa elaboradora'}],
+    cols:[{l:'Responsável técnico',v:r=>gpEsc(r.responsavel||'—')},{l:'Registro',v:r=>gpEsc(r.registro||'—')},{l:'Elaborado por',v:r=>gpEsc(r.empresaElaboradora||'—')}]}
+};
+function ctrStatus(r){ const d=gpDias(r.validade); if(d===null) return {s:'Sem validade',cor:'bgy',d}; if(d<0) return {s:'Vencido',cor:'br',d}; if(d<=30) return {s:'Vence em '+d+' dia(s)',cor:'br',d}; if(d<=60) return {s:'Vence em '+d+' dias',cor:'bo',d}; if(d<=90) return {s:'Vence em '+d+' dias',cor:'by',d}; return {s:'Vigente',cor:'bg',d}; }
+Object.keys(CTR_DEF).forEach(k=>{
+  const D=CTR_DEF[k];
+  gpRegister({id:D.id,group:'ctr',icon:D.icon,title:D.tipo+' — AC / BRASS',label:D.tipo,table:'contratos_obrig',tipo:D.tipo,
+    novoBtn:'+ Novo '+D.tipo,nota:D.nota,empresaFilter:true,
+    pre:r=>r.tipo===D.tipo, rowLabel:r=>D.tipo+' '+gpEmpNome(r.empresa)+' — '+(r.emissao||''),
+    fields:[gpEmpresaField(),{field:'numero',label:'Identificação / Nº do documento'},{field:'emissao',label:'Data de emissão / início da vigência',required:true,placeholder:'dd/mm/aaaa'},{field:'validade',label:'Validade / fim da vigência',required:true,placeholder:'dd/mm/aaaa'}]
+      .concat(D.extras).concat([{field:'observacao',label:'Observações',type:'textarea',full:true}]),
+    comp:r=>{ const st=ctrStatus(r); return {sit:st.s,cor:st.cor,dd:st.d}; },
+    extra:rs=>{ return ['AC','BRASS'].map(e=>{ const docs=rs.filter(r=>r.empresa===e&&r.dd!==null&&r.dd!==undefined).sort((a,b)=>(gpDt(b.validade)||0)-(gpDt(a.validade)||0));
+        const v=docs[0]; const st=v?ctrStatus(v):null;
+        return `<div style="display:inline-block;min-width:260px;margin:0 10px 10px 0;padding:10px 14px;border:1px solid var(--g200);border-radius:9px;background:#fff">
+          <div style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--g500)">${gpEmpNome(e).toUpperCase()}</div>
+          <div style="margin-top:4px">${v?gpBadge(st.s,st.cor)+' <span class="muted">até '+gpEsc(v.validade)+'</span>':gpBadge('Sem documento cadastrado','br')}</div></div>`; }).join(''); },
+    kpis:[{l:'Documentos cadastrados',v:rs=>rs.length},
+      {l:'Vigentes',v:rs=>rs.filter(r=>r.sit==='Vigente').length,c:'var(--green)'},
+      {l:'Vencendo em 90 dias',v:rs=>rs.filter(r=>r.dd!==null&&r.dd>=0&&r.dd<=90).length,c:'var(--orange)'},
+      {l:'Vencidos',v:rs=>rs.filter(r=>r.sit==='Vencido').length,c:'var(--red)'}],
+    filters:[{l:'Todas as situações',get:r=>(r.sit==='Vigente'||r.sit==='Vencido'||r.sit==='Sem validade')?r.sit:'Vencendo',opts:['Vigente','Vencendo','Vencido']}],
+    sort:(a,b)=>((gpDt(b.validade)||0)-(gpDt(a.validade)||0)),
+    columns:[{l:'Empresa',v:r=>`<b>${gpEmpNome(r.empresa)}</b>`,x:r=>gpEmpNome(r.empresa)},{l:'Nº / Identificação',v:r=>gpEsc(r.numero||'—')}]
+      .concat(D.cols).concat([{l:'Emissão',v:r=>gpEsc(r.emissao||'—')},{l:'Validade',v:r=>gpEsc(r.validade||'—')},{l:'Situação',v:r=>gpBadge(r.sit,r.cor),x:r=>r.sit}])
+  });
+});
+
+/* ═══════════ Endomarketing: Campanha de Conscientização (Mês e Cor) ═══════════ */
+const CAMP_PADRAO=[
+  null,
+  {nome:'Janeiro Branco',cor:'#e5e7eb',txt:'#374151',tema:'Saúde Mental'},
+  {nome:'Fevereiro Roxo / Laranja',cor:'#a855f7',txt:'#fff',tema:'Lúpus, Alzheimer, Fibromialgia (roxo) · Leucemia (laranja)'},
+  {nome:'Março Lilás / Azul',cor:'#c084fc',txt:'#fff',tema:'Câncer do Colo do Útero (lilás) · Câncer Colorretal (azul)'},
+  {nome:'Abril Verde',cor:'#22c55e',txt:'#fff',tema:'Segurança e Saúde no Trabalho'},
+  {nome:'Maio Amarelo',cor:'#facc15',txt:'#422006',tema:'Segurança no Trânsito'},
+  {nome:'Junho Vermelho',cor:'#ef4444',txt:'#fff',tema:'Doação de Sangue'},
+  {nome:'Julho Amarelo',cor:'#fde047',txt:'#422006',tema:'Hepatites Virais'},
+  {nome:'Agosto Dourado',cor:'#d4a017',txt:'#fff',tema:'Aleitamento Materno'},
+  {nome:'Setembro Amarelo',cor:'#fbbf24',txt:'#422006',tema:'Prevenção ao Suicídio · Saúde Mental'},
+  {nome:'Outubro Rosa',cor:'#ec4899',txt:'#fff',tema:'Câncer de Mama'},
+  {nome:'Novembro Azul',cor:'#3b82f6',txt:'#fff',tema:'Câncer de Próstata · Saúde do Homem'},
+  {nome:'Dezembro Vermelho',cor:'#dc2626',txt:'#fff',tema:'Prevenção ao HIV/AIDS e outras ISTs'}
+];
+function campMes(m){ const base=CAMP_PADRAO[m]; const ov=loadData('campanhas_ctrl').find(x=>Number(x.mes)===m&&x.status!=='Inativo'); return Object.assign({},base,ov?{nome:ov.nome||base.nome,cor:ov.cor||base.cor,tema:ov.tema||base.tema,ovId:ov.id}:{}); }
+function campTxtCor(hex){ const h=String(hex||'#999').replace('#',''); if(h.length!==6) return '#fff'; const r=parseInt(h.substr(0,2),16),g=parseInt(h.substr(2,2),16),b=parseInt(h.substr(4,2),16); return (r*299+g*587+b*114)/1000>150?'#1f2937':'#fff'; }
+function campAnoSel(){ const s=document.getElementById('camp-ano-sel'); return s?Number(s.value):new Date().getFullYear(); }
+function renderCampanhas(){
+  const sel=document.getElementById('camp-ano-sel');
+  if(sel&&!sel.options.length){ const a=new Date().getFullYear(); for(let y=2026;y<=2050;y++){ const o=document.createElement('option'); o.value=y; o.textContent=y; if(y===a) o.selected=true; sel.appendChild(o);} if(!sel.value) sel.value=2026; }
+  const ano=campAnoSel(), mesAtual=(new Date().getMonth()+1), anoAtual=new Date().getFullYear();
+  const evid=loadData('evidencias').filter(e=>e.status!=='Inativo'&&Number(e.ano)===ano);
+  const cont=document.getElementById('camp-grid'); if(!cont) return;
+  let feitas=0;
+  cont.innerHTML=[1,2,3,4,5,6,7,8,9,10,11,12].map(m=>{
+    const c=campMes(m), ev=evid.filter(e=>Number(e.mes)===m), n=ev.length; if(n) feitas++;
+    const atual=(m===mesAtual&&ano===anoAtual);
+    const tc=campTxtCor(c.cor);
+    return `<div style="border:${atual?'3px solid #1e40af':'1px solid var(--g200)'};border-radius:12px;overflow:hidden;background:#fff;display:flex;flex-direction:column">
+      <div style="background:${c.cor};color:${tc};padding:12px 14px">
+        <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;opacity:.85">${GP_MESES[m].toUpperCase()} ${ano}${atual?' · MÊS ATUAL':''}</div>
+        <div style="font-size:16px;font-weight:800;margin-top:2px">${gpEsc(c.nome)}</div></div>
+      <div style="padding:10px 14px;flex:1;font-size:11.5px">${gpEsc(c.tema)}</div>
+      <div style="padding:8px 14px;border-top:1px solid var(--g100);display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+        ${n?gpBadge(n+' ação(ões) registrada(s)','bg'):gpBadge('Sem registro de ação','bgy')}
+        <span style="flex:1"></span>
+        <button class="btn btn-s btn-xs" onclick="campEditar(${m})" title="Editar nome, cor e tema">✏</button>
+        <button class="btn btn-p btn-xs" onclick="evidNovo(${m})">+ Relatório</button></div></div>`; }).join('');
+  setText('camp-kpi-feitas',feitas+' / 12');
+  const nm=campMes(mesAtual); setText('camp-kpi-mes',nm.nome);
+  setText('camp-kpi-total',evid.length);
+}
+function campEditar(m){
+  const c=campMes(m);
+  abrirModalSimples('✏ Campanha de '+GP_MESES[m],`
+    <div class="fg">
+      <div class="f-grp" style="grid-column:span 2"><label>Nome da campanha</label><input type="text" id="camp-ed-nome" value="${gpEsc(c.nome)}"></div>
+      <div class="f-grp"><label>Cor</label><input type="color" id="camp-ed-cor" value="${/^#[0-9a-f]{6}$/i.test(c.cor)?c.cor:'#999999'}" style="width:100%;height:34px"></div>
+      <div class="f-grp" style="grid-column:span 2"><label>Tema / foco</label><textarea id="camp-ed-tema">${gpEsc(c.tema)}</textarea></div>
+    </div>
+    <div style="margin-top:12px;display:flex;gap:8px;justify-content:flex-end">
+      ${c.ovId?`<button class="btn btn-s btn-sm" onclick="campRestaurar(${m})">↩ Voltar ao padrão</button>`:''}
+      <button class="btn btn-p btn-sm" onclick="campSalvar(${m})">Salvar</button></div>`,560);
+}
+function campSalvar(m){
+  const o={mes:m,nome:document.getElementById('camp-ed-nome').value.trim(),cor:document.getElementById('camp-ed-cor').value,tema:document.getElementById('camp-ed-tema').value.trim()};
+  const ex=loadData('campanhas_ctrl').find(x=>Number(x.mes)===m);
+  if(ex) crudUpdate('campanhas_ctrl',ex.id,Object.assign(o,{status:'Ativo'}),{modulo:'Campanhas'}); else crudCreate('campanhas_ctrl',o,{modulo:'Campanhas',label:o.nome});
+  fecharModalSimples(); renderCampanhas(); showToast('✓ Campanha atualizada');
+}
+function campRestaurar(m){
+  const ex=loadData('campanhas_ctrl').find(x=>Number(x.mes)===m);
+  if(ex) crudDeleteFisico('campanhas_ctrl',ex.id,{modulo:'Campanhas',label:'Campanha '+GP_MESES[m]});
+  fecharModalSimples(); renderCampanhas();
+}
+
+/* ═══════════ Endomarketing: Relatório de Evidências (modelo Lei 15.377) ═══════════ */
+const EVID_TEMAS=['Vacinação','HPV','Câncer de Mama','Câncer do Colo do Útero','Câncer de Próstata','Saúde Preventiva','Saúde Mental'];
+const EVID_CANAIS=['WhatsApp interno','Mural físico','DDS / Reunião','Cartaz impresso'];
+const EVID_ACOES=['Divulgação de cartazes','Comunicação via WhatsApp','DDS realizado','Compartilhamento de material preventivo','Divulgação de campanhas oficiais'];
+const EVID_EVID=['Print WhatsApp','Foto do mural/cartaz','Lista de presença DDS'];
+const EVID_OBJ_PADRAO='Realizar conscientização interna relacionada à campanha preventiva de saúde conforme comunicação institucional da empresa.';
+let evidFiltroAno=null;
+function evidAnoSel(){ const s=document.getElementById('evid-ano-sel'); return s?Number(s.value):new Date().getFullYear(); }
+function renderEvidencias(){
+  const sel=document.getElementById('evid-ano-sel');
+  if(sel&&!sel.options.length){ const a=new Date().getFullYear(); for(let y=2026;y<=2050;y++){ const o=document.createElement('option'); o.value=y; o.textContent=y; if(y===a) o.selected=true; sel.appendChild(o);} if(!sel.value) sel.value=2026; }
+  const ms=document.getElementById('evid-mes-sel');
+  if(ms&&!ms.options.length){ ms.innerHTML='<option value="">Todos os meses</option>'+GP_MESES.slice(1).map((n,i)=>`<option value="${i+1}">${n}</option>`).join(''); }
+  const ano=evidAnoSel(), mes=Number((ms||{}).value)||0, q=((document.getElementById('evid-busca')||{}).value||'').toLowerCase();
+  let rows=loadData('evidencias').filter(e=>e.status!=='Inativo'&&Number(e.ano)===ano&&(!mes||Number(e.mes)===mes));
+  if(q) rows=rows.filter(e=>JSON.stringify(e).toLowerCase().includes(q));
+  rows.sort((a,b)=>((gpDt(b.dataAcao)||0)-(gpDt(a.dataAcao)||0)));
+  const anx=loadData('anexos_gerais').filter(a=>a.ref==='evidencias'&&a.status!=='Inativo'), nA={}; anx.forEach(a=>{nA[a.regId]=(nA[a.regId]||0)+1;});
+  const todos=loadData('evidencias').filter(e=>e.status!=='Inativo'&&Number(e.ano)===ano);
+  setText('evid-kpi-total',todos.length);
+  setText('evid-kpi-meses',new Set(todos.map(e=>e.mes)).size+' / 12');
+  setText('evid-kpi-sem',todos.filter(e=>!nA[e.id]).length);
+  const tb=document.getElementById('evid-tbody'); if(!tb) return;
+  tb.innerHTML=rows.length?rows.map(e=>`<tr>
+    <td>${gpEsc(e.dataAcao||'—')}</td><td><b>${gpEsc(e.campanha||'—')}</b></td><td>${gpEmpNome(e.empresa)}</td>
+    <td style="font-size:11px">${gpEsc((e.temas||[]).concat(e.temaOutro?[e.temaOutro]:[]).join(', ')||'—')}</td>
+    <td style="font-size:11px">${gpEsc((e.canais||[]).join(', ')||'—')}</td>
+    <td>${gpEsc(e.responsavel||'—')}</td>
+    <td>${nA[e.id]?gpBadge(nA[e.id]+' arquivo(s)','bg'):gpBadge('Sem evidência anexada','bo')}</td>
+    <td style="white-space:nowrap"><button class="btn btn-s btn-xs" onclick="evidEditar(${e.id})" title="Editar">✏</button>
+      <button class="btn btn-s btn-xs" onclick="evidAnexos(${e.id})" title="Anexar evidências (fotos, prints, lista de presença)">📎${nA[e.id]?' ('+nA[e.id]+')':''}</button>
+      <button class="btn btn-s btn-xs" onclick="evidImprimir(${e.id})" title="Imprimir relatório">🖨</button>
+      <button class="btn btn-s btn-xs" onclick="evidExcluir(${e.id})" title="Excluir">🗑</button></td></tr>`).join('')
+    :`<tr><td colspan="8" class="muted" style="text-align:center;padding:18px">Nenhum relatório neste filtro. Use "+ Novo relatório" ou crie pela página Campanha de Conscientização.</td></tr>`;
+  setText('evid-count',rows.length+' relatório(s)');
+}
+function evidChecks(nome,lista,marcados){
+  return lista.map(o=>`<label style="display:flex;align-items:center;gap:6px;font-size:12px;margin:2px 0"><input type="checkbox" name="${nome}" value="${gpEsc(o)}" ${marcados&&marcados.indexOf(o)>=0?'checked':''}> ${gpEsc(o)}</label>`).join('');
+}
+function evidNovo(mes){ evidForm(null,mes); }
+function evidEditar(id){ evidForm(id,null); }
+function evidForm(id,mes){
+  const e=id!=null?loadData('evidencias').find(x=>x.id===id):null;
+  const hoje=gpFmt(new Date()), m=e?Number(e.mes):(mes||new Date().getMonth()+1), c=campMes(m);
+  const v=e||{ano:evidAnoSel(),mes:m,campanha:c.nome,dataAcao:hoje,empresa:'AC',responsavel:'Patrícia Ap. Martins Souza',cargo:'Analista de RH/DP',objetivo:EVID_OBJ_PADRAO,lei:'Adequação Lei 15.377',temas:[],canais:[],acoes:[],evid:[],regNome:'Patrícia Ap. Martins Souza',regData:hoje};
+  const anos=[];for(let y=2026;y<=2050;y++) anos.push(`<option ${Number(v.ano)===y?'selected':''}>${y}</option>`);
+  abrirModalSimples(e?'Editar Relatório de Evidências':'Novo Relatório de Evidências',`
+    <div id="evid-form" class="fg">
+      <div class="f-grp"><label>Empresa</label><select id="ev-emp"><option value="AC" ${v.empresa==='AC'?'selected':''}>AC Metal</option><option value="BRASS" ${v.empresa==='BRASS'?'selected':''}>Brass Metal</option></select></div>
+      <div class="f-grp"><label>Ano</label><select id="ev-ano">${anos.join('')}</select></div>
+      <div class="f-grp"><label>Mês</label><select id="ev-mes" onchange="document.getElementById('ev-camp').value=campMes(+this.value).nome">${GP_MESES.slice(1).map((n,i)=>`<option value="${i+1}" ${Number(v.mes)===i+1?'selected':''}>${n}</option>`).join('')}</select></div>
+      <div class="f-grp"><label>Mês / Campanha</label><input id="ev-camp" value="${gpEsc(v.campanha)}"></div>
+      <div class="f-grp"><label>Data da ação</label><input id="ev-data" value="${gpEsc(v.dataAcao)}" placeholder="dd/mm/aaaa"></div>
+      <div class="f-grp"><label>Lei / Adequação</label><input id="ev-lei" value="${gpEsc(v.lei)}"></div>
+      <div class="f-grp"><label>Responsável pela ação</label><input id="ev-resp" value="${gpEsc(v.responsavel)}"></div>
+      <div class="f-grp"><label>Cargo</label><input id="ev-cargo" value="${gpEsc(v.cargo)}"></div>
+      <div class="f-grp" style="grid-column:span 2"><label>1. Objetivo da ação</label><textarea id="ev-obj">${gpEsc(v.objetivo)}</textarea></div>
+      <div class="f-grp"><label>2. Tema da campanha</label>${evidChecks('ev-tema',EVID_TEMAS,v.temas)}<input id="ev-tema-out" placeholder="Outro tema..." value="${gpEsc(v.temaOutro||'')}" style="margin-top:4px"></div>
+      <div class="f-grp"><label>3. Canais utilizados</label>${evidChecks('ev-canal',EVID_CANAIS,v.canais)}</div>
+      <div class="f-grp"><label>4. Ações realizadas</label>${evidChecks('ev-acao',EVID_ACOES,v.acoes)}</div>
+      <div class="f-grp"><label>5. Evidências anexadas</label>${evidChecks('ev-evid',EVID_EVID,v.evid)}<input id="ev-evid-out" placeholder="Outra evidência..." value="${gpEsc(v.evidOutro||'')}" style="margin-top:4px"></div>
+      <div class="f-grp"><label>6. Responsável pelo registro</label><input id="ev-regnome" value="${gpEsc(v.regNome)}"></div>
+      <div class="f-grp"><label>Data do registro</label><input id="ev-regdata" value="${gpEsc(v.regData)}" placeholder="dd/mm/aaaa"></div>
+    </div>
+    <div class="muted" style="font-size:11px;margin-top:8px">Depois de salvar, use 📎 para anexar os prints, fotos e a lista de presença — eles saem impressos junto com o relatório.</div>
+    <div style="margin-top:12px;display:flex;gap:8px;justify-content:flex-end"><button class="btn btn-s btn-sm" onclick="fecharModalSimples()">Cancelar</button><button class="btn btn-p btn-sm" onclick="evidSalvar(${id==null?'null':id})">Salvar relatório</button></div>`,820);
+}
+function evidSalvar(id){
+  const marc=n=>Array.from(document.querySelectorAll(`#evid-form input[name="${n}"]:checked`)).map(i=>i.value);
+  const val=x=>document.getElementById(x).value.trim();
+  const o={empresa:val('ev-emp'),ano:Number(val('ev-ano')),mes:Number(val('ev-mes')),campanha:val('ev-camp'),dataAcao:val('ev-data'),lei:val('ev-lei'),responsavel:val('ev-resp'),cargo:val('ev-cargo'),objetivo:val('ev-obj'),
+    temas:marc('ev-tema'),temaOutro:val('ev-tema-out'),canais:marc('ev-canal'),acoes:marc('ev-acao'),evid:marc('ev-evid'),evidOutro:val('ev-evid-out'),regNome:val('ev-regnome'),regData:val('ev-regdata')};
+  if(!o.dataAcao){ showToast('Informe a data da ação','warn'); return; }
+  if(id==null) crudCreate('evidencias',o,{modulo:'Relatório de Evidências',label:o.campanha+' '+o.dataAcao}); else crudUpdate('evidencias',id,o,{modulo:'Relatório de Evidências'});
+  fecharModalSimples(); showToast('✓ Relatório salvo'); renderEvidencias(); try{ renderCampanhas(); }catch(e){}
+}
+function evidExcluir(id){
+  const e=loadData('evidencias').find(x=>x.id===id); if(!e) return;
+  confirmAction(`Excluir o relatório "${e.campanha} — ${e.dataAcao}" definitivamente?\n\nOs anexos também serão removidos.`,()=>{
+    loadData('anexos_gerais').filter(a=>a.ref==='evidencias'&&a.regId===id).forEach(a=>{ try{ if(supabaseClient&&a.caminho) supabaseClient.storage.from('documentos-rh').remove([a.caminho]); }catch(x){} crudDeleteFisico('anexos_gerais',a.id,{modulo:'Anexos',label:a.nomeArquivo}); });
+    crudDeleteFisico('evidencias',id,{modulo:'Relatório de Evidências',label:e.campanha});
+    renderEvidencias(); try{ renderCampanhas(); }catch(x){} showToast('🗑 Relatório excluído');
+  });
+}
+function evidAnexos(id){ gpAnexos('evidencias',id); }
+function evidImprimir(id){
+  const e=loadData('evidencias').find(x=>x.id===id); if(!e) return;
+  const emp=CV_EMPRESA_INFO[e.empresa]||CV_EMPRESA_INFO.AC;
+  const cb=(lista,marc,outro,rotOutro)=>{ const linhas=lista.map(o=>`<span>${(marc||[]).indexOf(o)>=0?'☒':'☐'} ${gpEsc(o)}</span>`); if(rotOutro!==undefined) linhas.push(`<span>${outro?'☒':'☐'} Outro: ${outro?gpEsc(outro):'______________________'}</span>`); return `<div style="display:flex;flex-wrap:wrap;gap:3px 18px">${linhas.join('')}</div>`; };
+  const sec=(n,t)=>`<div style="font-weight:700;margin:10px 0 3px">${n}. ${t}</div>`;
+  const anx=loadData('anexos_gerais').filter(a=>a.ref==='evidencias'&&a.regId===id&&a.status!=='Inativo');
+  const imgs=anx.filter(a=>/\.(jpe?g|png|gif|webp|bmp)$/i.test(a.nomeArquivo||'')), outros=anx.filter(a=>imgs.indexOf(a)<0);
+  const anexosHtml=anx.length?`<div style="page-break-before:always"></div><div style="font-weight:700;text-align:center;margin-bottom:8px">ANEXOS — EVIDÊNCIAS DA AÇÃO (${gpEsc(e.campanha)} · ${gpEsc(e.dataAcao)})</div>
+    ${outros.length?`<div style="font-size:11px;margin-bottom:8px">Arquivos anexados ao registro: ${outros.map(a=>gpEsc(a.nomeArquivo)).join('; ')}</div>`:''}
+    <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center">${imgs.map(a=>`<div style="width:46%;page-break-inside:avoid;text-align:center"><img src="${a.url}" style="max-width:100%;max-height:300px;border:1px solid #bbb"><div style="font-size:9px;color:#555">${gpEsc(a.nomeArquivo)}</div></div>`).join('')}</div>`:'';
+  abrirReciboModal('🖨 Relatório de Evidências',`${docPageCSS(emp)}<div class="doc-print" style="padding:6px 14px;font-size:11.5px;line-height:1.45">
+    <div style="text-align:center;font-weight:800;font-size:16px">RELATÓRIO DE EVIDÊNCIAS</div>
+    <div style="text-align:center;font-weight:700;margin-top:2px">${gpEsc(e.lei||'')}</div>
+    <div style="text-align:center;font-weight:700;margin:10px 0 12px">RELATÓRIO DE AÇÃO DE CONSCIENTIZAÇÃO INTERNA</div>
+    <div><b>Responsável pela ação:</b> ${gpEsc(e.responsavel||'')}</div>
+    <div><b>Cargo:</b> ${gpEsc(e.cargo||'')}</div>
+    <div><b>Data da ação:</b> ${gpEsc(e.dataAcao||'')}</div>
+    <div><b>Mês/Campanha:</b> ${gpEsc((e.campanha||'').toUpperCase())}</div>
+    <div><b>Empresa:</b> ${gpEsc(emp.nome)} — CNPJ ${gpEsc(emp.cnpj)}</div>
+    ${sec(1,'OBJETIVO DA AÇÃO')}<div>${gpEsc(e.objetivo||'')}</div>
+    ${sec(2,'TEMA DA CAMPANHA')}${cb(EVID_TEMAS,e.temas,e.temaOutro,'x')}
+    ${sec(3,'CANAIS UTILIZADOS')}${cb(EVID_CANAIS,e.canais)}
+    ${sec(4,'AÇÕES REALIZADAS')}${cb(EVID_ACOES,e.acoes)}
+    ${sec(5,'EVIDÊNCIAS ANEXADAS')}${cb(EVID_EVID,e.evid,e.evidOutro,'x')}
+    ${sec(6,'RESPONSÁVEL PELO REGISTRO')}
+    <div>Nome: ${gpEsc(e.regNome||'')}</div>
+    <div style="margin-top:14px">Assinatura: ____________________________________</div>
+    <div style="margin-top:6px">Data: ${gpEsc(e.regData||'')}</div>
+    <div style="margin-top:14px;border-top:1px solid #999;padding-top:4px;font-size:9.5px;color:#444;text-align:center;page-break-inside:avoid">${gpEsc(emp.endereco)}</div>
+    ${anexosHtml}</div>`,false);
+}
+
+/* ═══════════ Páginas próprias (Campanha e Evidências) — injetadas junto com as demais ═══════════ */
+function gpInitEndo(){
+  const content=document.querySelector('.content'); if(!content) return;
+  if(!document.getElementById('page-campanhas')){
+    const d=document.createElement('div'); d.id='page-campanhas'; d.className='page';
+    d.innerHTML=`<div class="layer-badge lb-en">● Endomarketing</div>
+      <div class="section-hdr"><div class="sec-title">🎗 Campanha de Conscientização — Mês e Cor</div>
+        <button class="btn btn-p btn-sm" onclick="evidNovo()">+ Novo relatório de evidências</button></div>
+      <div class="muted" style="font-size:11px;margin:-4px 0 10px">Calendário anual de campanhas de saúde e segurança. Edite nome, cor e tema de cada mês. Cada ação realizada vira um Relatório de Evidências.</div>
+      <div class="kpi-grid">
+        <div class="kpi-card"><div class="kpi-lbl">Campanha do mês</div><div class="kpi-val" style="font-size:16px" id="camp-kpi-mes">—</div></div>
+        <div class="kpi-card"><div class="kpi-lbl">Meses com ação registrada</div><div class="kpi-val" id="camp-kpi-feitas">—</div></div>
+        <div class="kpi-card"><div class="kpi-lbl">Relatórios no ano</div><div class="kpi-val" id="camp-kpi-total">—</div></div>
+      </div>
+      <div class="filters" style="margin-bottom:12px"><select class="fsel" id="camp-ano-sel" onchange="renderCampanhas()"></select></div>
+      <div id="camp-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px"></div>`;
+    content.appendChild(d);
+  }
+  if(!document.getElementById('page-evidencias')){
+    const d=document.createElement('div'); d.id='page-evidencias'; d.className='page';
+    d.innerHTML=`<div class="layer-badge lb-en">● Endomarketing</div>
+      <div class="section-hdr"><div class="sec-title">📋 Relatório de Evidências</div>
+        <button class="btn btn-p btn-sm" onclick="evidNovo()">+ Novo relatório</button></div>
+      <div class="muted" style="font-size:11px;margin:-4px 0 10px">Comprovação das ações de conscientização (Lei 15.377). Preencha, anexe prints/fotos/lista de presença em 📎 e imprima no modelo da empresa.</div>
+      <div class="kpi-grid">
+        <div class="kpi-card"><div class="kpi-lbl">Relatórios no ano</div><div class="kpi-val" id="evid-kpi-total">—</div></div>
+        <div class="kpi-card"><div class="kpi-lbl">Meses cobertos</div><div class="kpi-val" id="evid-kpi-meses">—</div></div>
+        <div class="kpi-card"><div class="kpi-lbl">Sem evidência anexada</div><div class="kpi-val" style="color:var(--orange)" id="evid-kpi-sem">—</div></div>
+      </div>
+      <div class="filters" style="margin-bottom:12px;flex-wrap:wrap">
+        <select class="fsel" id="evid-ano-sel" onchange="renderEvidencias()"></select>
+        <select class="fsel" id="evid-mes-sel" onchange="renderEvidencias()"></select>
+        <input class="finp" type="text" id="evid-busca" placeholder="🔎 Buscar..." oninput="renderEvidencias()" style="width:200px">
+        <span class="chip" id="evid-count">—</span></div>
+      <div class="card" style="padding:0;overflow-x:auto"><table><thead><tr><th>Data</th><th>Campanha</th><th>Empresa</th><th>Temas</th><th>Canais</th><th>Responsável</th><th>Evidências</th><th>Ações</th></tr></thead><tbody id="evid-tbody"></tbody></table></div>`;
+    content.appendChild(d);
+  }
+}
+
+/* Exame/ASO usa o módulo SST já existente */
+(function(){
+  const c=GP['exameaso'];
+  c.fields=MOD_SST_COMPLETO.fields;
+  c.mod=MOD_SST_COMPLETO;
+})();
+
+gpInit(); gpInitEndo();
+
+
+/* ═══════════ v4.78 — Entrega de EPI dá baixa no Estoque de EPI ═══════════ */
+function epiNorm(s){ return String(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toUpperCase().trim(); }
+function epiEstoqueAcha(empresa,item,tam){
+  const emp=(empresa==='PJ'||!empresa)?'AC':empresa;
+  let rows=loadData('epi_estoque').filter(r=>r.status!=='Inativo'&&epiNorm(r.item)===epiNorm(item));
+  const daEmp=rows.filter(r=>(r.empresa||'AC')===emp); if(daEmp.length) rows=daEmp;
+  if(!rows.length) return null;
+  if(tam){ const t=rows.filter(r=>epiNorm(r.tamanho)===epiNorm(tam)); if(t.length) rows=t; }
+  return rows.find(r=>(Number(r.qtdAtual)||0)>0)||rows[0];
+}
+function epiBaixaEstoque(obj){
+  obj.baixaEstoqueId=null; obj.baixaQtd=0; obj.baixaAtiva=false;
+  if(!obj.nomeEpi) return;
+  const stk=epiEstoqueAcha(obj.empresa,obj.nomeEpi,obj.tamanho);
+  if(!stk){ showToast('⚠ "'+obj.nomeEpi+'" não está cadastrado no Estoque de EPI — baixa não feita','warn'); return; }
+  const qtd=Math.max(1,Number(obj.quantidade)||1), atual=Number(stk.qtdAtual)||0, tira=Math.min(atual,qtd), novo=atual-tira;
+  crudUpdate('epi_estoque',stk.id,{qtdAtual:novo},{modulo:'Estoque de EPI',label:stk.item});
+  obj.baixaEstoqueId=stk.id; obj.baixaQtd=tira; obj.baixaAtiva=true;
+  showToast(tira<qtd?`⚠ Estoque de ${stk.item} insuficiente: baixou ${tira} de ${qtd} (estoque zerado)`:`📦 Estoque de ${stk.item}: ${atual} → ${novo}`,tira<qtd?'warn':undefined);
+}
+function epiDevolveEstoque(rec){
+  if(!rec||!rec.baixaEstoqueId||!rec.baixaQtd||rec.baixaAtiva===false) return;
+  const stk=loadData('epi_estoque').find(r=>r.id===rec.baixaEstoqueId); if(!stk) return;
+  crudUpdate('epi_estoque',stk.id,{qtdAtual:(Number(stk.qtdAtual)||0)+Number(rec.baixaQtd)},{modulo:'Estoque de EPI',label:stk.item});
+}
+(function(){
+  const f=MOD_EPI.fields;
+  if(!f.some(x=>x.field==='tamanho')){ const i=f.findIndex(x=>x.field==='nomeEpi'); f.splice(i+1,0,{field:'tamanho',label:'Tamanho / Nº (se houver)'}); }
+  const bs=MOD_EPI.beforeSave;
+  MOD_EPI.beforeSave=(obj,rec,isEdit)=>{
+    if(bs) bs(obj,rec,isEdit);
+    try{
+      if(isEdit&&rec&&!rec.baixaEstoqueId&&rec.baixaAtiva===undefined){ return; }   // entrega antiga (anterior ao controle de estoque): não mexe
+      if(isEdit&&rec) epiDevolveEstoque(rec);
+      epiBaixaEstoque(obj);
+    }catch(e){ console.warn('baixa estoque:',e); }
+  };
+  const origSave=MOD_EPI.onSave;
+  MOD_EPI.onSave=()=>{ if(origSave) origSave(); try{ gpRender('estoqueepi'); }catch(e){} };
+  const _cd=crudDelete;
+  crudDelete=function(table,id,opts){
+    try{
+      if(table==='epi'){ const r=loadData('epi').find(x=>x.id===id);
+        if(r&&r.baixaEstoqueId&&r.baixaAtiva!==false){ epiDevolveEstoque(r); if(!(opts&&opts.fisica)) crudUpdate('epi',id,{baixaAtiva:false},{modulo:'Entrega de EPI'}); showToast('📦 Estoque devolvido: '+r.baixaQtd+' × '+r.nomeEpi); } }
+    }catch(e){ console.warn('devolve estoque:',e); }
+    return _cd.apply(this,arguments);
+  };
+  const _cr=crudRestore;
+  crudRestore=function(table,id,opts){
+    const ret=_cr.apply(this,arguments);
+    try{
+      if(table==='epi'){ const r=loadData('epi').find(x=>x.id===id);
+        if(r&&r.baixaEstoqueId&&r.baixaAtiva===false){ const tmp={nomeEpi:r.nomeEpi,empresa:r.empresa,tamanho:r.tamanho,quantidade:r.baixaQtd||r.quantidade}; epiBaixaEstoque(tmp);
+          crudUpdate('epi',id,{baixaEstoqueId:tmp.baixaEstoqueId,baixaQtd:tmp.baixaQtd,baixaAtiva:tmp.baixaAtiva},{modulo:'Entrega de EPI'}); } }
+    }catch(e){ console.warn('rebaixa estoque:',e); }
+    return ret;
+  };
+  // itens do estoque = mesma lista do Controle de EPI
+  const opts=(MOD_EPI.fields.find(x=>x.field==='nomeEpi')||{}).options||[];
+  const it=GP.estoqueepi.fields.find(x=>x.field==='item'); if(it&&opts.length) it.options=opts.slice();
+  GP.estoqueepi.acoes=r=>`<button class="btn btn-s btn-xs" onclick="gpEntradaEstoque(${r.id})" title="Registrar entrada de material no estoque">➕ Entrada</button>`;
+})();
+function gpEntradaEstoque(id){
+  const r=loadData('epi_estoque').find(x=>x.id===id); if(!r) return;
+  const v=prompt('Quantidade recebida de "'+r.item+(r.tamanho?' '+r.tamanho:'')+'" ('+gpEmpNome(r.empresa)+'):','');
+  if(v===null) return; const n=parseInt(v,10); if(!n||n<=0){ showToast('Informe uma quantidade válida','warn'); return; }
+  const novo=(Number(r.qtdAtual)||0)+n;
+  crudUpdate('epi_estoque',id,{qtdAtual:novo},{modulo:'Estoque de EPI',label:r.item});
+  showToast(`📦 Entrada registrada: ${r.item} agora com ${novo}`); gpRender('estoqueepi');
+}
+
+/* ═══════════ v4.78 — Dashboard enxuto: o que precisa de atenção ═══════════ */
+function dashIr(id){ const el=document.querySelector('.nav-item[data-go="'+id+'"]'); if(el) el.click(); }
+function dashCtrPendencias(){
+  const tipos=['Seguro de Vida','LTCAT','PCMSO','PGR'], pg={'Seguro de Vida':'ctr-seguro','LTCAT':'ctr-ltcat','PCMSO':'ctr-pcmso','PGR':'ctr-pgr'};
+  const docs=loadData('contratos_obrig').filter(r=>r.status!=='Inativo'), out=[];
+  tipos.forEach(t=>['AC','BRASS'].forEach(e=>{
+    const ds=docs.filter(r=>r.tipo===t&&r.empresa===e).map(r=>gpDias(r.validade)).filter(d=>d!==null).sort((a,b)=>b-a);
+    const melhor=ds.length?ds[0]:null;
+    if(melhor===null) out.push({t:t+' '+gpEmpNome(e)+' — sem documento cadastrado',ir:pg[t]});
+    else if(melhor<0) out.push({t:t+' '+gpEmpNome(e)+' — VENCIDO',ir:pg[t]});
+    else if(melhor<=90) out.push({t:t+' '+gpEmpNome(e)+' — vence em '+melhor+' dia(s)',ir:pg[t]});
+  }));
+  return out;
+}
+function dashEnxuto(){
+  const ativos=loadData('colaboradores').filter(c=>c.status!=='Inativo');
+  const ac=ativos.filter(c=>c.cnpj==='01').length, br=ativos.filter(c=>c.cnpj==='02').length;
+  setText('dk-hc',ativos.length); setText('dk-hc-sub','AC '+ac+' · Brass '+br+(ativos.length-ac-br?' · PJ '+(ativos.length-ac-br):''));
+  setText('dk-exp',loadData('feedback90').filter(f=>f.status!=='Inativo'&&(f.situacao||'Em acompanhamento')==='Em acompanhamento').length);
+  setText('dk-afast',loadData('afastamentos').filter(a=>a.status!=='Inativo'&&a.situacao!=='Retornou').length);
+  setText('dk-aso',gpRows(GP.exameaso).filter(r=>r.sit==='Vencido'||r.sit==='Vence em breve').length);
+  setText('dk-fer',loadData('ferias').filter(f=>f.status!=='Inativo'&&f.situacao==='Vencida').length);
+  setText('dk-ctr',dashCtrPendencias().length);
+  // campanha do mês
+  const m=new Date().getMonth()+1, a=new Date().getFullYear(), c=campMes(m);
+  const n=loadData('evidencias').filter(e=>e.status!=='Inativo'&&Number(e.mes)===m&&Number(e.ano)===a).length;
+  const el=document.getElementById('dash-campanha');
+  if(el) el.innerHTML=`<div style="background:${c.cor};color:${campTxtCor(c.cor)};border-radius:8px;padding:10px 12px"><div style="font-size:9px;font-weight:700;letter-spacing:1.5px;opacity:.85">${GP_MESES[m].toUpperCase()} ${a}</div><div style="font-size:15px;font-weight:800">${gpEsc(c.nome)}</div><div style="font-size:10.5px;margin-top:2px;opacity:.95">${gpEsc(c.tema)}</div></div>
+    <div style="margin-top:8px;display:flex;align-items:center;gap:8px">${n?gpBadge(n+' relatório(s) de evidência','bg'):gpBadge('Nenhum relatório de evidência neste mês','bo')}<span style="flex:1"></span><button class="btn btn-p btn-xs" onclick="evidNovo(${m})">+ Relatório</button></div>`;
+}
+
+
+/* ═══════════ v4.79 — Provisão de 13º e Férias (Estratégico) ═══════════ */
+function provCfg(){ const r=loadData('provisao_cfg')[0]; return {id:r&&r.id, fgts:r&&r.fgts!=null?Number(r.fgts):8, patronal:r&&r.patronal!=null?Number(r.patronal):28.8}; }
+function provSalvarCfg(){
+  const g=parseFloat(String(document.getElementById('prov-fgts').value).replace(',','.')), p=parseFloat(String(document.getElementById('prov-pat').value).replace(',','.'));
+  if(isNaN(g)||isNaN(p)||g<0||p<0){ showToast('Informe alíquotas válidas','warn'); return; }
+  const c=provCfg();
+  if(c.id) crudUpdate('provisao_cfg',c.id,{fgts:g,patronal:p},{modulo:'Provisão'}); else crudCreate('provisao_cfg',{fgts:g,patronal:p},{modulo:'Provisão',label:'Alíquotas'});
+  showToast('✓ Alíquotas salvas'); renderProvisao();
+}
+function provMeses(adm,ano){
+  const m=String(adm||'').match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/); if(!m) return 12;
+  const d=+m[1], mo=+m[2], y=+m[3];
+  if(y<ano||(y===ano&&mo===1&&d===1)) return 12;
+  if(y>ano) return 0;
+  const ultimo=new Date(ano,mo,0).getDate();
+  return (12-mo)+(((ultimo-d+1)>=15)?1:0);
+}
+function provDados(){
+  const ano=Number((document.getElementById('prov-ano')||{}).value)||new Date().getFullYear();
+  const emp=(document.getElementById('prov-emp')||{}).value||'';
+  const q=((document.getElementById('prov-busca')||{}).value||'').toLowerCase().trim();
+  const cfg=provCfg(), fg=cfg.fgts/100, pt=cfg.patronal/100;
+  const todos=loadData('colaboradores').filter(c=>c.status!=='Inativo');
+  const pj=todos.filter(c=>c.cnpj!=='01'&&c.cnpj!=='02');
+  let rows=todos.filter(c=>c.cnpj==='01'||c.cnpj==='02').map(c=>{
+    const sal=moedaNum(c.sal)||0, m=provMeses(c.adm,ano);
+    const d13=sal/12*m, dias=m>0?Math.max(1,Math.round(30*m/12)):0, fer=sal/30*dias*4/3;
+    const base=d13+fer;
+    return {nome:c.nome,cargo:c.cargo||'',empresa:c.cnpj==='01'?'AC':'BRASS',adm:c.adm||'',sal,m,d13,fer,fgts:base*fg,pat:base*pt,total:base*(1+fg+pt),semSal:!sal};
+  }).filter(r=>r.m>0);
+  if(emp) rows=rows.filter(r=>r.empresa===emp);
+  if(q) rows=rows.filter(r=>(r.nome+' '+r.cargo).toLowerCase().includes(q));
+  rows.sort((a,b)=>a.nome.localeCompare(b.nome));
+  return {ano,rows,pj,cfg};
+}
+function provSoma(rows,k){ return rows.reduce((s,r)=>s+(r[k]||0),0); }
+function provBRL(n){ return 'R$ '+(Number(n)||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function renderProvisao(){
+  const sel=document.getElementById('prov-ano');
+  if(sel&&!sel.options.length){ const a=new Date().getFullYear(); for(let y=2026;y<=2050;y++){ const o=document.createElement('option'); o.value=y; o.textContent=y; if(y===a) o.selected=true; sel.appendChild(o);} if(!sel.value) sel.value='2026'; }
+  const c=provCfg(); const f=document.getElementById('prov-fgts'), p=document.getElementById('prov-pat');
+  if(f&&document.activeElement!==f) f.value=String(c.fgts).replace('.',','); if(p&&document.activeElement!==p) p.value=String(c.patronal).replace('.',',');
+  const D=provDados(), rows=D.rows;
+  const enc=provSoma(rows,'fgts')+provSoma(rows,'pat');
+  setText('prov-k-n',rows.length); setText('prov-k-13',provBRL(provSoma(rows,'d13'))); setText('prov-k-fer',provBRL(provSoma(rows,'fer'))); setText('prov-k-enc',provBRL(enc)); setText('prov-k-tot',provBRL(provSoma(rows,'total')));
+  const nomes={AC:'AC Metal',BRASS:'Brass Metal'};
+  const todosAno=(()=>{ const sv=document.getElementById('prov-emp'); const old=sv.value; sv.value=''; const x=provDados().rows; sv.value=old; return x; })();
+  document.getElementById('prov-emps').innerHTML=['AC','BRASS'].map(e=>{ const r=todosAno.filter(x=>x.empresa===e); return `<tr><td><b>${nomes[e]}</b></td><td style="text-align:center">${r.length}</td><td>${provBRL(provSoma(r,'d13'))}</td><td>${provBRL(provSoma(r,'fer'))}</td><td>${provBRL(provSoma(r,'fgts')+provSoma(r,'pat'))}</td><td><b>${provBRL(provSoma(r,'total'))}</b></td></tr>`; }).join('')
+    +`<tr style="background:var(--g50,#f8fafc);font-weight:700"><td>Total</td><td style="text-align:center">${todosAno.length}</td><td>${provBRL(provSoma(todosAno,'d13'))}</td><td>${provBRL(provSoma(todosAno,'fer'))}</td><td>${provBRL(provSoma(todosAno,'fgts')+provSoma(todosAno,'pat'))}</td><td>${provBRL(provSoma(todosAno,'total'))}</td></tr>`;
+  document.getElementById('prov-tbody').innerHTML=rows.length?rows.map(r=>`<tr${r.semSal?' style="background:#fef2f2"':''}>
+    <td><b>${gpEsc(r.nome)}</b><br><span class="muted">${gpEsc(r.cargo)}</span></td><td>${gpEmpNome(r.empresa)}</td><td>${gpEsc(r.adm)}</td>
+    <td style="text-align:right">${r.semSal?'<span style="color:var(--red)">sem salário</span>':provBRL(r.sal)}</td><td style="text-align:center">${r.m}</td>
+    <td style="text-align:right">${provBRL(r.d13)}</td><td style="text-align:right">${provBRL(r.fer)}</td><td style="text-align:right">${provBRL(r.fgts)}</td><td style="text-align:right">${provBRL(r.pat)}</td><td style="text-align:right"><b>${provBRL(r.total)}</b></td></tr>`).join('')
+    :'<tr><td colspan="10" class="muted" style="text-align:center;padding:18px">Nenhum colaborador neste filtro.</td></tr>';
+  document.getElementById('prov-aviso').innerHTML=(D.pj.length?`ℹ ${D.pj.length} colaborador(es) PJ não entram na provisão (sem 13º nem férias): ${D.pj.map(x=>gpEsc(x.nome)).join(', ')}. `:'')+(rows.some(r=>r.semSal)?'⚠ Há colaborador(es) sem salário no cadastro (linha em vermelho).':'');
+}
+function provImprimir(){
+  const D=provDados(), rows=D.rows; if(!rows.length){ showToast('Nada para imprimir','warn'); return; }
+  const cel=(t,al)=>`<td style="padding:3px 4px;font-size:9.5px;text-align:${al||'left'}">${t}</td>`;
+  const lin=rows.map(r=>`<tr style="border-bottom:1px solid #ddd">${cel(gpEsc(r.nome))}${cel(gpEmpNome(r.empresa))}${cel(provBRL(r.sal),'right')}${cel(r.m,'center')}${cel(provBRL(r.d13),'right')}${cel(provBRL(r.fer),'right')}${cel(provBRL(r.fgts+r.pat),'right')}${cel(provBRL(r.total),'right')}</tr>`).join('');
+  const th=['Colaborador','Empresa','Salário','Meses','13º','Férias + 1/3','Encargos','Total'].map(t=>`<th style="text-align:left;padding:3px 4px;font-size:9.5px">${t}</th>`).join('');
+  const emps=['AC','BRASS'].map(e=>{ const r=rows.filter(x=>x.empresa===e); return r.length?`<tr>${cel('<b>'+gpEmpNome(e)+'</b>')}${cel(r.length,'center')}${cel(provBRL(provSoma(r,'d13')),'right')}${cel(provBRL(provSoma(r,'fer')),'right')}${cel(provBRL(provSoma(r,'fgts')+provSoma(r,'pat')),'right')}${cel('<b>'+provBRL(provSoma(r,'total'))+'</b>','right')}</tr>`:''; }).join('');
+  abrirReciboModal('🖨 Provisão 13º e Férias '+D.ano,`${docPageCSS({nome:'AC Metalúrgica / Brassmetal',email:''})}<div class="doc-print" style="padding:8px 4px">
+    <h3 style="text-align:center;margin-bottom:2px">PROVISÃO DE 13º SALÁRIO E FÉRIAS — ${D.ano}</h3>
+    <p style="text-align:center;font-size:10px;color:#666;margin-bottom:10px">Projeção até 31/12/${D.ano} · salários atuais do cadastro · emitido em ${gpFmt(new Date())}</p>
+    <table style="width:60%;margin:0 auto 12px;border-collapse:collapse;font-size:11px">
+      <tr><td style="padding:3px 6px">13º salário (bruto)</td><td style="text-align:right">${provBRL(provSoma(rows,'d13'))}</td></tr>
+      <tr><td style="padding:3px 6px">Férias + 1/3 constitucional</td><td style="text-align:right">${provBRL(provSoma(rows,'fer'))}</td></tr>
+      <tr><td style="padding:3px 6px">FGTS (${String(D.cfg.fgts).replace('.',',')}%)</td><td style="text-align:right">${provBRL(provSoma(rows,'fgts'))}</td></tr>
+      <tr><td style="padding:3px 6px">INSS patronal + RAT + Terceiros (${String(D.cfg.patronal).replace('.',',')}%)</td><td style="text-align:right">${provBRL(provSoma(rows,'pat'))}</td></tr>
+      <tr style="border-top:1.5px solid #000;font-weight:700"><td style="padding:4px 6px">TOTAL DA PROVISÃO</td><td style="text-align:right">${provBRL(provSoma(rows,'total'))}</td></tr></table>
+    <table style="width:100%;border-collapse:collapse;margin-bottom:12px"><thead><tr style="border-bottom:1.5px solid #000"><th style="text-align:left;padding:3px 4px;font-size:9.5px">Empresa</th><th style="font-size:9.5px">Colab.</th><th style="text-align:right;font-size:9.5px">13º</th><th style="text-align:right;font-size:9.5px">Férias + 1/3</th><th style="text-align:right;font-size:9.5px">Encargos</th><th style="text-align:right;font-size:9.5px">Total</th></tr></thead><tbody>${emps}</tbody></table>
+    <table style="width:100%;border-collapse:collapse"><thead><tr style="border-bottom:1.5px solid #000">${th}</tr></thead><tbody>${lin}</tbody></table></div>`,false);
+}
+function provExportar(){
+  if(typeof XLSX==='undefined'){ showToast('Biblioteca de Excel indisponível (sem internet)','warn'); return; }
+  const D=provDados();
+  const ws=XLSX.utils.aoa_to_sheet([['Colaborador','Empresa','Admissão','Salário','Meses no ano','13º bruto','Férias + 1/3','FGTS','INSS patronal+RAT+Terceiros','Total'],...D.rows.map(r=>[r.nome,gpEmpNome(r.empresa),r.adm,r.sal,r.m,+r.d13.toFixed(2),+r.fer.toFixed(2),+r.fgts.toFixed(2),+r.pat.toFixed(2),+r.total.toFixed(2)])]);
+  const wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,'Provisão '+D.ano); XLSX.writeFile(wb,'Provisao_13o_Ferias_'+D.ano+'.xlsx');
+}
+(function(){
+  const content=document.querySelector('.content'); if(!content||document.getElementById('page-provisao')) return;
+  const d=document.createElement('div'); d.id='page-provisao'; d.className='page';
+  d.innerHTML=`<div class="layer-badge lb-st">● Estratégico — Provisão</div>
+    <div class="section-hdr"><div class="sec-title">💰 Provisão de 13º e Férias</div>
+      <button class="btn btn-s btn-sm" onclick="provImprimir()">🖨 Imprimir</button>
+      <button class="btn btn-s btn-sm" onclick="provExportar()">⬇ Exportar Excel</button></div>
+    <div class="muted" style="font-size:11px;margin:-4px 0 10px">Calculada com os salários e datas de admissão do cadastro de Colaboradores, projetada até 31/12 do ano escolhido. 13º = salário ÷ 12 × meses · Férias = salário ÷ 30 × dias proporcionais + 1/3.</div>
+    <div class="kpi-grid" style="grid-template-columns:repeat(auto-fit,minmax(160px,1fr))">
+      <div class="kpi-card"><div class="kpi-lbl">Colaboradores (CLT)</div><div class="kpi-val" id="prov-k-n">—</div></div>
+      <div class="kpi-card"><div class="kpi-lbl">13º salário</div><div class="kpi-val" style="font-size:18px" id="prov-k-13">—</div></div>
+      <div class="kpi-card"><div class="kpi-lbl">Férias + 1/3</div><div class="kpi-val" style="font-size:18px" id="prov-k-fer">—</div></div>
+      <div class="kpi-card"><div class="kpi-lbl">Encargos</div><div class="kpi-val" style="font-size:18px" id="prov-k-enc">—</div></div>
+      <div class="kpi-card"><div class="kpi-lbl">Total da provisão</div><div class="kpi-val" style="font-size:18px;color:var(--blue)" id="prov-k-tot">—</div></div>
+    </div>
+    <div class="filters" style="margin-bottom:10px;flex-wrap:wrap">
+      <select class="fsel" id="prov-ano" onchange="renderProvisao()"></select>
+      <select class="fsel" id="prov-emp" onchange="renderProvisao()"><option value="">Todas as empresas</option><option value="AC">AC Metal</option><option value="BRASS">Brass Metal</option></select>
+      <input class="finp" type="text" id="prov-busca" placeholder="🔎 Nome ou cargo..." oninput="renderProvisao()" style="width:200px">
+      <span style="flex:1"></span>
+      <span style="font-size:11px;color:var(--g500)">FGTS %</span><input class="finp" id="prov-fgts" style="width:60px">
+      <span style="font-size:11px;color:var(--g500)">INSS patronal+RAT+Terceiros %</span><input class="finp" id="prov-pat" style="width:60px">
+      <button class="btn btn-s btn-xs" onclick="provSalvarCfg()">Salvar alíquotas</button>
+    </div>
+    <div id="prov-aviso" class="muted" style="font-size:11px;margin-bottom:10px"></div>
+    <div class="card" style="padding:0;margin-bottom:12px;overflow-x:auto"><table><thead><tr><th>Empresa</th><th>Colaboradores</th><th>13º</th><th>Férias + 1/3</th><th>Encargos</th><th>Total</th></tr></thead><tbody id="prov-emps"></tbody></table></div>
+    <div class="card" style="padding:0;overflow-x:auto"><table><thead><tr><th>Colaborador</th><th>Empresa</th><th>Admissão</th><th>Salário</th><th>Meses</th><th>13º</th><th>Férias + 1/3</th><th>FGTS</th><th>INSS pat.+RAT+Terc.</th><th>Total</th></tr></thead><tbody id="prov-tbody"></tbody></table></div>
+    <div class="muted" style="font-size:10.5px;margin-top:8px">A alíquota de INSS patronal + RAT + Terceiros (28,8%) é uma estimativa — ajuste conforme o regime tributário da empresa, com o contador.</div>`;
+  content.appendChild(d);
+})();
+
 </script>
 </body>
 </html>
+
