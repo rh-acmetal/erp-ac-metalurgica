@@ -62,6 +62,8 @@ body{font-family:'IBM Plex Sans',sans-serif;font-size:13px;color:var(--g800);bac
 .layer-ta{color:#1e4a8a}
 .layer-st{color:#5a2a8a}
 .layer-co{color:#8a3a1e}
+.layer-en{color:#be185d}
+.dot-en{background:#ec4899}
 .sb-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
 .dot-op{background:#0d9488}
 .dot-ta{background:#3b82f6}
@@ -106,6 +108,7 @@ body{font-family:'IBM Plex Sans',sans-serif;font-size:13px;color:var(--g800);bac
 .lb-ta{background:#dbeafe;color:#1d4ed8}
 .lb-st{background:#f3e8ff;color:#6b21a8}
 .lb-co{background:#ffedd5;color:#c2410c}
+.lb-en{background:#fce7f3;color:#be185d}
 
 /* COMPONENTS */
 .section-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
@@ -425,7 +428,7 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
   <div class="l-box">
     <div class="l-logo">
       <div class="l-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
-      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.75 — Termos de Participação, Celular e Veículo</div></div>
+      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.76 — Operacional reorganizado, Endomarketing, 90 Dias e Cesta/Vegas novos</div></div>
     </div>
     <div class="f-row"><label>Usuário</label><input type="text" id="l-user" value="jakeline@acmetalurgica.com.br"></div>
     <div class="f-row"><label>Senha</label><input type="password" id="l-pass" value="••••••••"></div>
@@ -461,91 +464,99 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
   </div>
   <div class="sb-body">
     <div class="sb-layer layer-op"><div class="sb-dot dot-op"></div>Operacional</div>
-    <div class="nav-item active" onclick="go('dashboard',this,'Dashboard Executivo','Visão geral')">
+    <div class="nav-item active" data-go="dashboard" onclick="go('dashboard',this,'Dashboard Executivo','Visão geral')">
       <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard
     </div>
-    <div class="nav-item" onclick="go('colaboradores',this,'Colaboradores','Core RH')">
-      <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Colaboradores
-    </div>
-    <div class="nav-item" onclick="go('beneficios',this,'Benefícios','Controle')">
-      <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>Benefícios
-    </div>
-    <div class="nav-item" onclick="go('cestavegas',this,'Cesta Básica & Vegas','Controle')">
-      <svg viewBox="0 0 24 24"><path d="M12.89 1.45l8 4A2 2 0 0 1 22 7.24v9.53a2 2 0 0 1-1.11 1.79l-8 4a2 2 0 0 1-1.79 0l-8-4a2 2 0 0 1-1.1-1.8V7.24a2 2 0 0 1 1.11-1.79l8-4a2 2 0 0 1 1.78 0z"/><polyline points="2.32 6.16 12 11 21.68 6.16"/><line x1="12" y1="22.76" x2="12" y2="11"/></svg>Cesta & Vegas
-    </div>
-    <div class="nav-item" onclick="go('admissao',this,'Admissão','Controle')">
+    <div class="nav-item" data-go="admissao" onclick="go('admissao',this,'Admissão','Controle')">
       <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>Admissão
     </div>
-    <div class="nav-item" onclick="go('feedback90',this,'Acompanhamento 90 Dias','Controle')">
+    <div class="nav-item" data-go="colaboradores" onclick="go('colaboradores',this,'Colaboradores','Core RH')">
+      <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Colaboradores
+    </div>
+    <div class="nav-item" data-go="feedback90" onclick="go('feedback90',this,'Acompanhamento 90 Dias','Controle')">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Acompanh. 90 Dias
     </div>
-    <div class="nav-item" onclick="go('desccargos',this,'Descrição de Cargos','Manual de Referência')">
-      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>Descrição de Cargos
+    <div class="nav-item" data-go="cestavegas" onclick="go('cestavegas',this,'Cesta Básica & Vegas','Controle')">
+      <svg viewBox="0 0 24 24"><path d="M12.89 1.45l8 4A2 2 0 0 1 22 7.24v9.53a2 2 0 0 1-1.11 1.79l-8 4a2 2 0 0 1-1.79 0l-8-4a2 2 0 0 1-1.1-1.8V7.24a2 2 0 0 1 1.11-1.79l8-4a2 2 0 0 1 1.78 0z"/><polyline points="2.32 6.16 12 11 21.68 6.16"/><line x1="12" y1="22.76" x2="12" y2="11"/></svg>Cesta & Vegas
     </div>
-    <div class="nav-item" onclick="go('ordemservico',this,'Ordens de Serviço','SST — NR-1')">
-      <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Ordens de Serviço
+    <div class="nav-item" data-go="beneficios" onclick="go('beneficios',this,'Benefícios','Controle')">
+      <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>Benefícios
     </div>
-    <div class="nav-item" onclick="go('sstfin',this,'Financeiro SST','Fechamento MedClass')">
-      <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Financeiro SST
+    <div class="nav-item" data-go="ferias" onclick="go('ferias',this,'Férias','Gestão')">
+      <svg viewBox="0 0 24 24"><path d="M8 3v3m8-3v3M3 8h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/></svg>Férias
     </div>
-    <div class="nav-item" onclick="go('pcmso',this,'Conferência PCMSO','Compliance')">
-      <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Conferência PCMSO
-    </div>
-    <div class="nav-item" onclick="go('folhadesc',this,'Controle de Desconto em Folha','Envio ao Contador')">
+    <div class="nav-item" data-go="folhadesc" onclick="go('folhadesc',this,'Controle de Desconto em Folha','Envio ao Contador')">
       <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2H10a2 2 0 0 0-2 2v16"/></svg>Desconto em Folha
     </div>
-    <div class="nav-item" onclick="go('ferias',this,'Férias','Gestão')">
-      <svg viewBox="0 0 24 24"><path d="M8 3v3m8-3v3M3 8h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/></svg>Férias
+    <div class="nav-item" data-go="desccargos" onclick="go('desccargos',this,'Descrição de Cargos','Manual de Referência')">
+      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>Descrição de Cargos
+    </div>
+    <div class="nav-item" data-go="ordemservico" onclick="go('ordemservico',this,'Ordens de Serviço','SST — NR-1')">
+      <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Ordens de Serviço
+    </div>
+
+    <div class="sb-layer layer-en"><div class="sb-dot dot-en"></div>Endomarketing</div>
+    <div class="nav-item" data-go="aniversariantes" onclick="go('aniversariantes',this,'Aniversariantes','Endomarketing')">
+      🎂 Aniversariantes
+    </div>
+    <div class="nav-item" data-go="tempoempresa" onclick="go('tempoempresa',this,'Tempo de Empresa','Endomarketing')">
+      🏅 Tempo de Empresa
+    </div>
+    <div class="nav-item" data-go="sstfin" onclick="go('sstfin',this,'Financeiro SST','Endomarketing')">
+      <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Financeiro SST
+    </div>
+    <div class="nav-item" data-go="pcmso" onclick="go('pcmso',this,'Conferência PCMSO','Endomarketing')">
+      <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Conferência PCMSO
     </div>
 
     <div class="sb-layer layer-ta"><div class="sb-dot dot-ta"></div>Tático</div>
-    <div class="nav-item" onclick="go('recrutamento',this,'Recrutamento & Seleção','R&S')">
+    <div class="nav-item" data-go="recrutamento" onclick="go('recrutamento',this,'Recrutamento & Seleção','R&S')">
       <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>Recrutamento
     </div>
-    <div class="nav-item" onclick="go('cargos',this,'Cargos, Salários & Remuneração','Estrutura')">
+    <div class="nav-item" data-go="cargos" onclick="go('cargos',this,'Cargos, Salários & Remuneração','Estrutura')">
       <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Cargos & Salários
     </div>
-    <div class="nav-item" onclick="go('treinamentos',this,'Treinamento & Desenvolvimento','T&D / LMS')">
+    <div class="nav-item" data-go="treinamentos" onclick="go('treinamentos',this,'Treinamento & Desenvolvimento','T&D / LMS')">
       <svg viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>T&D / LMS
     </div>
-    <div class="nav-item" onclick="go('avaliacoes',this,'Avaliação de Desempenho & PDI','Ciclo 1º Sem. 2026')">
+    <div class="nav-item" data-go="avaliacoes" onclick="go('avaliacoes',this,'Avaliação de Desempenho & PDI','Ciclo 1º Sem. 2026')">
       <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Desempenho / PDI
     </div>
 
     <div class="sb-layer layer-st"><div class="sb-dot" style="background:#a855f7"></div>Estratégico</div>
-    <div class="nav-item" onclick="go('clima',this,'Clima Organizacional & Engajamento','People Experience')">
+    <div class="nav-item" data-go="clima" onclick="go('clima',this,'Clima Organizacional & Engajamento','People Experience')">
       <svg viewBox="0 0 24 24"><path d="M17 18a5 5 0 0 0-10 0"/><line x1="12" y1="9" x2="12" y2="2"/><line x1="4.22" y1="10.22" x2="5.64" y2="11.64"/><line x1="1" y1="18" x2="3" y2="18"/><line x1="21" y1="18" x2="23" y2="18"/><line x1="18.36" y1="11.64" x2="19.78" y2="10.22"/></svg>Clima & Engajamento
     </div>
-    <div class="nav-item" onclick="go('sucessao',this,'RH Estratégico & Sucessão','Talent Review')">
+    <div class="nav-item" data-go="sucessao" onclick="go('sucessao',this,'RH Estratégico & Sucessão','Talent Review')">
       <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Sucessão & Talentos
     </div>
-    <div class="nav-item" onclick="go('indicadores',this,'People Analytics','Business Intelligence RH')">
+    <div class="nav-item" data-go="indicadores" onclick="go('indicadores',this,'People Analytics','Business Intelligence RH')">
       <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>People Analytics / BI
     </div>
-    <div class="nav-item" onclick="go('ind-rh',this,'Indicadores de RH','Turnover · Engajamento · T&D 2026')">
+    <div class="nav-item" data-go="ind-rh" onclick="go('ind-rh',this,'Indicadores de RH','Turnover · Engajamento · T&D 2026')">
       📊 Indicadores RH 2026
     </div>
-    <div class="nav-item" onclick="go('planejamento',this,'Planejamento Estratégico RH 2027','5W2H · Plano de Ação · Endomkt')">
+    <div class="nav-item" data-go="planejamento" onclick="go('planejamento',this,'Planejamento Estratégico RH 2027','5W2H · Plano de Ação · Endomkt')">
       🎯 Planejamento 2027
     </div>
-    <div class="nav-item" onclick="go('epi',this,'Controle de EPI','Entrega · Devolução · Validade por Colaborador')">
+    <div class="nav-item" data-go="epi" onclick="go('epi',this,'Controle de EPI','Entrega · Devolução · Validade por Colaborador')">
       🦺 Controle de EPI
     </div>
-    <div class="nav-item" onclick="go('terceiros',this,'Gestão de Terceiros','Compliance')">
+    <div class="nav-item" data-go="terceiros" onclick="go('terceiros',this,'Gestão de Terceiros','Compliance')">
       <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>Terceiros & Temp.
     </div>
 
     <div class="sb-layer layer-co"><div class="sb-dot dot-co"></div>Compliance</div>
-    <div class="nav-item" onclick="go('sst',this,'SST — Saúde & Segurança','NRs / Medicina Ocupacional')">
+    <div class="nav-item" data-go="sst" onclick="go('sst',this,'SST — Saúde & Segurança','NRs / Medicina Ocupacional')">
       <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>SST & Medicina Ocup.
     </div>
-    <div class="nav-item" onclick="go('documentos',this,'Gestão de Documentos','Dossiê Eletrônico')">
+    <div class="nav-item" data-go="documentos" onclick="go('documentos',this,'Gestão de Documentos','Dossiê Eletrônico')">
       <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Documentos
     </div>
-    <div class="nav-item" onclick="go('importar',this,'Importar Planilha Excel','Atualizar dados dos módulos')">
+    <div class="nav-item" data-go="importar" onclick="go('importar',this,'Importar Planilha Excel','Atualizar dados dos módulos')">
       <svg viewBox="0 0 24 24"><polyline points="8 17 12 21 16 17"/><line x1="12" y1="3" x2="12" y2="21"/></svg>Importar Excel
     </div>
-    <div class="nav-item" onclick="go('configuracoes',this,'Configurações','Sistema')">
+    <div class="nav-item" data-go="configuracoes" onclick="go('configuracoes',this,'Configurações','Sistema')">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Configurações
     </div>
   </div>
@@ -583,7 +594,7 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
       <div style="background:linear-gradient(135deg,#0f2a4f,#1a3f6f);border-radius:10px;padding:12px 16px;margin-bottom:10px;display:flex;align-items:center;gap:12px;color:#fff">
         <div style="font-size:22px">📂</div>
         <div style="flex:1"><div style="font-size:13px;font-weight:700">Fonte: <span id="dash-fonte">AC Metal + Brass Metal — 41 colaboradores</span></div><div style="font-size:10px;color:#a8c4e8;margin-top:2px">Atualizado em: <span id="dash-update">04/09/2026</span> · Para atualizar vá em Importar Excel</div></div>
-        <button onclick="go('importar',document.querySelector('.nav-item:nth-child(18)'),'Importar Planilha Excel','Atualizar dados')" style="background:#fff;color:var(--blue);border:none;border-radius:7px;padding:7px 14px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit">⬆ Atualizar</button>
+        <button onclick="go('importar',document.querySelector('.nav-item[data-go=importar]'),'Importar Planilha Excel','Atualizar dados')" style="background:#fff;color:var(--blue);border:none;border-radius:7px;padding:7px 14px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit">⬆ Atualizar</button>
       </div>
       <div style="background:rgba(255,255,255,.08);border-radius:8px;padding:8px 14px;margin-bottom:14px;display:flex;align-items:center;gap:10px;border:1px solid rgba(255,255,255,.1)">
         <div style="font-size:14px">☁</div>
@@ -651,8 +662,8 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
         <div style="display:flex;gap:8px">
           <button class="btn btn-s btn-sm" onclick="colabToggleView()" id="colab-view-toggle-btn">🗂 Visão Ficha</button>
           <button class="btn btn-s btn-sm" onclick="exportarColabExcel()">⬇ Exportar Excel</button>
-          <button class="btn btn-s btn-sm" onclick="openCrudModal(MOD_COLAB,null)">+ Novo</button>
-          <button class="btn btn-p btn-sm" onclick="go('importar',document.querySelector('.nav-item:nth-child(18)'),'Importar Planilha Excel','Atualizar dados')">📥 Importar Planilha</button>
+          <button class="btn btn-s btn-sm" onclick="colabAtualizar()" id="colab-atualizar-btn" title="Busca as alterações mais recentes e atualiza as telas">🔄 Atualizar</button>
+          <button class="btn btn-p btn-sm" onclick="go('importar',document.querySelector('.nav-item[data-go=importar]'),'Importar Planilha Excel','Atualizar dados')">📥 Importar Planilha</button>
         </div>
       </div>
 
@@ -672,7 +683,7 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
               <button class="btn btn-s btn-xs" onclick="colabFichaAcao('bloquear')">🔒 Inativar/Ativar</button>
               <button class="btn btn-s btn-xs" onclick="colabFichaAcao('excluir')">🗑 Excluir</button>
               <button class="btn btn-s btn-xs" onclick="colabFichaAcao('ficha')">🖨 Imprimir Ficha</button>
-              <button class="btn btn-s btn-xs" onclick="colabFichaAcao('historico')">📜 Histórico</button>
+              <button class="btn btn-s btn-xs" onclick="colabFichaAcao('historico')">📜 Histórico Salário/Cargo</button>
             </div>
             <div style="display:flex;gap:4px;padding:0 10px 8px;border-bottom:1px solid var(--g100);background:var(--g50,#fafbfc)">
               <span style="font-size:10px;color:var(--g500);align-self:center;margin-right:2px">Mostrar:</span>
@@ -761,7 +772,7 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
           <span class="chip" id="colab-count" style="font-weight:600">— colaboradores</span>
           <div style="display:flex;gap:6px;margin-left:auto">
             <button class="btn btn-s btn-sm" onclick="colabLimparFiltros()" title="Limpar todos os filtros">🔄 Limpar</button>
-            <button class="btn btn-s btn-sm" onclick="colabAtualizar()" title="Recarregar dados">🔃 Atualizar</button>
+            <button class="btn btn-s btn-sm" onclick="openCrudModal(MOD_COLAB,null)" title="Cadastrar novo colaborador">➕ Novo</button>
             <button class="btn btn-s btn-sm" onclick="toggleColunasColab()" title="Escolher colunas">⚙ Colunas</button>
           </div>
         </div>
@@ -858,13 +869,8 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
         <button class="btn btn-s" onclick="cvGerarRecibos('BRASS')">🖨 Gerar Recibos BRASS</button>
       </div>
       <div class="filters" style="margin-bottom:10px;flex-wrap:wrap">
-        <select class="fsel" id="cv-mes-sel" onchange="renderCestaVegas()">
-          <option value="1">Janeiro/2026</option><option value="2">Fevereiro/2026</option>
-          <option value="3">Março/2026</option><option value="4">Abril/2026</option>
-          <option value="5">Maio/2026</option><option value="6">Junho/2026</option>
-          <option value="7">Julho/2026</option><option value="8">Agosto/2026</option>
-          <option value="9">Setembro/2026</option><option value="10" selected>Outubro/2026</option>
-        </select>
+        <select class="fsel" id="cv-mes-sel" onchange="renderCestaVegas();buildCestaVegasHistorico()" title="Mês"><option value="1">Janeiro</option><option value="2">Fevereiro</option><option value="3">Março</option><option value="4">Abril</option><option value="5">Maio</option><option value="6">Junho</option><option value="7">Julho</option><option value="8">Agosto</option><option value="9">Setembro</option><option value="10">Outubro</option><option value="11">Novembro</option><option value="12">Dezembro</option></select>
+        <select class="fsel" id="cv-ano-sel" onchange="renderCestaVegas();buildCestaVegasHistorico()" title="Ano"></select>
         <select class="fsel" id="cv-empresa-sel" onchange="renderCestaVegas()"><option value="">Todas as empresas</option><option>AC</option><option>BRASS</option></select>
         <select class="fsel" id="cv-cesta-sel" onchange="renderCestaVegas()"><option value="">Cesta: Todos</option><option value="SIM">Cesta: SIM</option><option value="NÃO">Cesta: NÃO</option></select>
         <select class="fsel" id="cv-vegas-sel" onchange="renderCestaVegas()"><option value="">Vegas: Todos</option><option value="SIM">Vegas: SIM</option><option value="NÃO">Vegas: NÃO</option></select>
@@ -875,7 +881,7 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
         <label style="font-size:11px;color:var(--g500);display:flex;align-items:center;gap:4px">Valor padrão Vegas:
           <input class="finp" type="number" step="0.01" min="0" id="cv-valor-padrao" style="width:90px" value="200.00" onchange="localStorage.setItem('cv_valor_padrao_vegas', this.value)">
         </label>
-        <button class="btn btn-s btn-sm" onclick="document.getElementById('cv-mes-sel').value='10';document.getElementById('cv-empresa-sel').value='';document.getElementById('cv-cesta-sel').value='';document.getElementById('cv-vegas-sel').value='';document.getElementById('cv-busca').value='';renderCestaVegas()">🔄 Limpar Filtros</button>
+        <button class="btn btn-s btn-sm" onclick="cvLimparFiltros()">🔄 Limpar Filtros</button>
         <button class="btn btn-s btn-sm" onclick="cvExportarFiltrado()">⬇ Exportar</button>
       </div>
       <div class="kpi-grid">
@@ -903,7 +909,7 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
       </div>
       <div class="card" style="padding:0;margin-bottom:14px;overflow-x:auto">
         <div class="card-hdr">Controle do Mês <span class="muted" style="font-weight:400;font-size:10px">— campos com fundo branco são editáveis direto na tabela</span></div>
-        <table style="min-width:900px;table-layout:fixed"><thead><tr><th style="width:24px"></th><th style="width:150px">Colaborador</th><th style="width:55px">Empresa</th><th style="width:55px">Cesta</th><th style="width:65px">Val.Cesta</th><th style="width:55px">Vegas</th><th style="width:75px">Val.Vegas</th><th style="width:40px">Qtd</th><th>Observações</th><th style="width:60px">Ações</th></tr></thead>
+        <table style="min-width:900px;table-layout:fixed"><thead><tr><th style="width:24px"></th><th style="width:150px">Colaborador</th><th style="width:55px">Empresa</th><th style="width:70px">Cesta</th><th style="width:65px">Val.Cesta</th><th style="width:70px">Vegas</th><th style="width:75px">Val.Vegas</th><th style="width:40px">Qtd</th><th>Observações</th><th style="width:60px">Ações</th></tr></thead>
         <tbody id="cv-tbody"></tbody></table>
       </div>
       <div class="card" style="padding:12px">
@@ -918,21 +924,27 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
       <div class="section-hdr">
         <div class="sec-title"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Acompanhamento de Experiência — Feedback 90 Dias</div>
       </div>
-      <div class="filters" style="margin-bottom:12px">
+      <div class="kpi-grid">
+        <div class="kpi-card"><div class="kpi-lbl">Em acompanhamento</div><div class="kpi-val" style="color:var(--blue)" id="fb90-kpi-andamento">—</div></div>
+        <div class="kpi-card"><div class="kpi-lbl">Efetivados</div><div class="kpi-val" style="color:var(--green)" id="fb90-kpi-efetivado">—</div></div>
+        <div class="kpi-card"><div class="kpi-lbl">Desligados</div><div class="kpi-val" style="color:var(--red)" id="fb90-kpi-desligado">—</div></div>
+        <div class="kpi-card"><div class="kpi-lbl">Feedbacks pendentes</div><div class="kpi-val" style="color:var(--orange)" id="fb90-kpi-pendentes">—</div></div>
+      </div>
+      <div class="filters" style="margin-bottom:12px;flex-wrap:wrap">
+        <input class="finp" type="text" id="fb90-busca" placeholder="🔎 Nome do colaborador..." oninput="renderFeedback90()" style="width:200px">
+        <select class="fsel" id="fb90-sit-sel" onchange="renderFeedback90()">
+          <option value="">Todas as situações</option><option>Em acompanhamento</option><option>Efetivado</option><option>Desligado</option>
+        </select>
         <span class="chip" id="fb90-count">— colaboradores</span>
-        <span style="font-size:10px;color:var(--g500);display:flex;gap:8px;align-items:center">
+        <span style="font-size:10px;color:var(--g500);display:flex;gap:8px;align-items:center;flex-wrap:wrap">
           <span style="display:inline-flex;align-items:center;gap:3px"><span style="width:9px;height:9px;border-radius:50%;background:#92D050;display:inline-block"></span>Realizado</span>
           <span style="display:inline-flex;align-items:center;gap:3px"><span style="width:9px;height:9px;border-radius:50%;background:#2E75B6;display:inline-block"></span>Agendado</span>
           <span style="display:inline-flex;align-items:center;gap:3px"><span style="width:9px;height:9px;border-radius:50%;background:#FFC000;display:inline-block"></span>Pendente</span>
           <span style="display:inline-flex;align-items:center;gap:3px"><span style="width:9px;height:9px;border-radius:50%;background:#FF0000;display:inline-block"></span>Não realizado</span>
+          <span class="muted">· clique na data para reagendar</span>
         </span>
       </div>
-      <div class="card" style="padding:0;overflow-x:auto">
-        <table style="min-width:1100px"><thead><tr>
-          <th>Colaborador</th><th>Admissão</th><th>7d</th><th>14d</th><th>21d</th><th>30d</th><th>Av.Integ.</th><th>45d</th><th>60d</th><th>75d</th><th>90d</th><th>Observações</th><th>Ações</th>
-        </tr></thead>
-        <tbody id="fb90-tbody"></tbody></table>
-      </div>
+      <div id="fb90-lista"></div>
     </div>
 
     <!-- ══ DESCRIÇÃO DE CARGOS ══ -->
@@ -976,7 +988,7 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
 
     <!-- ══ FINANCEIRO SST ══ -->
     <div id="page-sstfin" class="page">
-      <div class="layer-badge lb-op">● Operacional</div>
+      <div class="layer-badge lb-en">● Endomarketing</div>
       <div class="section-hdr">
         <div class="sec-title"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Financeiro SST — Fechamento MedClass</div>
       </div>
@@ -1003,7 +1015,7 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
 
     <!-- ══ CONFERÊNCIA PCMSO ══ -->
     <div id="page-pcmso" class="page">
-      <div class="layer-badge lb-comp">● Compliance</div>
+      <div class="layer-badge lb-en">● Endomarketing</div>
       <div class="section-hdr">
         <div class="sec-title"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Conferência PCMSO × ASO × Valores</div>
         <button class="btn btn-p" onclick="openCrudModal(MOD_EXAMEREAL,null)">+ Lançar Exame Realizado</button>
@@ -1120,6 +1132,59 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
       </div>
       <div id="admissao-cards-crud"></div>
       <div style="display:flex;align-items:center;justify-content:flex-end;gap:4px;margin-top:8px" id="adm-pag"></div>
+    </div>
+
+    <!-- ══ ANIVERSARIANTES ══ -->
+    <div id="page-aniversariantes" class="page">
+      <div class="layer-badge lb-en">● Endomarketing</div>
+      <div class="section-hdr">
+        <div class="sec-title">🎂 Aniversariantes</div>
+        <button class="btn btn-s" onclick="anivImprimir()">🖨 Imprimir lista</button>
+        <button class="btn btn-s" onclick="anivExportar()">⬇ Exportar Excel</button>
+      </div>
+      <div class="kpi-grid">
+        <div class="kpi-card"><div class="kpi-lbl">Aniversariantes no mês</div><div class="kpi-val" id="aniv-kpi-mes">—</div></div>
+        <div class="kpi-card"><div class="kpi-lbl">Hoje</div><div class="kpi-val" style="color:var(--pink,#be185d)" id="aniv-kpi-hoje">—</div></div>
+        <div class="kpi-card"><div class="kpi-lbl">Próximos 7 dias</div><div class="kpi-val" style="color:var(--blue)" id="aniv-kpi-7d">—</div></div>
+        <div class="kpi-card"><div class="kpi-lbl">Sem data de nascimento</div><div class="kpi-val" style="color:var(--orange)" id="aniv-kpi-sem">—</div></div>
+      </div>
+      <div class="filters" style="margin-bottom:12px;flex-wrap:wrap">
+        <select class="fsel" id="aniv-mes-sel" onchange="renderAniversariantes()"></select>
+        <select class="fsel" id="aniv-emp-sel" onchange="renderAniversariantes()"><option value="">Todas as empresas</option><option value="AC">AC Metal</option><option value="BRASS">Brass Metal</option></select>
+        <input class="finp" type="text" id="aniv-busca" placeholder="🔎 Nome..." oninput="renderAniversariantes()" style="width:180px">
+        <label style="font-size:11px;color:var(--g500);display:flex;align-items:center;gap:4px" title="Pessoas que constam na planilha de aniversariantes da empresa mas não no cadastro (diretoria, familiares etc.)"><input type="checkbox" id="aniv-fora-chk" checked onchange="renderAniversariantes()"> incluir quem não está no cadastro</label>
+        <span class="chip" id="aniv-count">— aniversariantes</span>
+      </div>
+      <div class="card" style="padding:0;overflow-x:auto">
+        <table><thead><tr><th style="width:60px">Dia</th><th>Colaborador</th><th>Cargo</th><th>Setor</th><th>Empresa</th><th>Nascimento</th><th>Completa</th><th></th></tr></thead>
+        <tbody id="aniv-tbody"></tbody></table>
+      </div>
+    </div>
+
+    <!-- ══ TEMPO DE EMPRESA ══ -->
+    <div id="page-tempoempresa" class="page">
+      <div class="layer-badge lb-en">● Endomarketing</div>
+      <div class="section-hdr">
+        <div class="sec-title">🏅 Tempo de Empresa</div>
+        <button class="btn btn-s" onclick="tempoImprimir()">🖨 Imprimir lista</button>
+        <button class="btn btn-s" onclick="tempoExportar()">⬇ Exportar Excel</button>
+      </div>
+      <div class="kpi-grid">
+        <div class="kpi-card"><div class="kpi-lbl">Colaboradores ativos</div><div class="kpi-val" id="tempo-kpi-total">—</div></div>
+        <div class="kpi-card"><div class="kpi-lbl">Fazem aniversário de empresa no mês</div><div class="kpi-val" style="color:var(--blue)" id="tempo-kpi-mes">—</div></div>
+        <div class="kpi-card"><div class="kpi-lbl">Marcos no mês (5, 10, 15... anos)</div><div class="kpi-val" style="color:var(--pink,#be185d)" id="tempo-kpi-marcos">—</div></div>
+        <div class="kpi-card"><div class="kpi-lbl">Média de tempo de casa</div><div class="kpi-val" id="tempo-kpi-media">—</div></div>
+      </div>
+      <div class="filters" style="margin-bottom:12px;flex-wrap:wrap">
+        <select class="fsel" id="tempo-mes-sel" onchange="renderTempoEmpresa()"></select>
+        <select class="fsel" id="tempo-emp-sel" onchange="renderTempoEmpresa()"><option value="">Todas as empresas</option><option value="AC">AC Metal</option><option value="BRASS">Brass Metal</option></select>
+        <input class="finp" type="text" id="tempo-busca" placeholder="🔎 Nome..." oninput="renderTempoEmpresa()" style="width:180px">
+        <span class="chip" id="tempo-count">— colaboradores</span>
+      </div>
+      <div class="card" style="padding:0;overflow-x:auto">
+        <table><thead><tr><th>Colaborador</th><th>Cargo</th><th>Setor</th><th>Empresa</th><th>Admissão</th><th>Tempo de casa</th><th>Próximo aniversário de empresa</th><th>Presente</th><th style="width:70px">Entregue</th></tr></thead>
+        <tbody id="tempo-tbody"></tbody></table>
+      </div>
     </div>
 
     <!-- ══ FÉRIAS ══ -->
@@ -2279,7 +2344,7 @@ let COLABS=[
     const key = PREFIX + 'colaboradores';
     const stored = localStorage.getItem(key);
     const storedData = stored ? JSON.parse(stored) : [];
-    if (storedData.length < COLABS.length) {
+    if (storedData.length < COLABS.length && !localStorage.getItem('ac_erp_v4_colab_excluidos')) {
       const agora = new Date().toLocaleString('pt-BR');
       const migrado = COLABS.map((c,i) => Object.assign({id:i+1}, c, {
         criadoEm: agora, atualizadoEm: agora,
@@ -2326,7 +2391,7 @@ async function doLogin(){
   try {
     const key='ac_erp_v4_colaboradores';
     const stored=JSON.parse(localStorage.getItem(key)||'[]');
-    if(stored.length < COLABS.length){
+    if(stored.length < COLABS.length && !localStorage.getItem('ac_erp_v4_colab_excluidos')){
       const agora=new Date().toLocaleString('pt-BR');
       const migrado=COLABS.map((c,i)=>Object.assign({id:i+1},c,{criadoEm:agora,atualizadoEm:agora,status:c.status||'Ativo',nascimento:c.nascimento||'—',rg:c.rg||'—',cpf:c.cpf||'—'}));
       localStorage.setItem(key,JSON.stringify(migrado));
@@ -2368,7 +2433,9 @@ function go(id,el,title,bread){
   },200);}
   if(id==='holerite'){setTimeout(()=>{try{if(tcHolerite)tcHolerite.refresh();atualizarKPIsHolerite();}catch(e){}},80);}
   if(id==='comunicados'){setTimeout(()=>{try{if(tcComunicado)tcComunicado.refresh();atualizarKPIsComunicados();}catch(e){}},80);}
-  if(id==='cestavegas'){setTimeout(()=>{try{renderCestaVegas();buildCestaVegasHistorico();}catch(e){console.warn('cestavegas:',e);}},80);}
+  if(id==='aniversariantes'){setTimeout(()=>{try{renderAniversariantes();}catch(e){console.warn('aniv:',e);}},60);}
+  if(id==='tempoempresa'){setTimeout(()=>{try{renderTempoEmpresa();}catch(e){console.warn('tempo:',e);}},60);}
+  if(id==='cestavegas'){setTimeout(()=>{try{cvInitPeriodo();renderCestaVegas();buildCestaVegasHistorico();}catch(e){console.warn('cestavegas:',e);}},80);}
   if(id==='feedback90'){setTimeout(()=>{try{renderFeedback90();}catch(e){console.warn('feedback90:',e);}},80);}
   if(id==='desccargos'){setTimeout(()=>{try{renderDescCargos();}catch(e){console.warn('desccargos:',e);}},80);}
   if(id==='ordemservico'){setTimeout(()=>{try{renderOrdensServico();}catch(e){console.warn('ordemservico:',e);}},80);}
@@ -2903,6 +2970,7 @@ function crudCreate(table, record, opts) {
   opts = opts || {};
   const data = loadData(table);
   record.id = nextId(data);
+  if (table === 'colaboradores') { const tb = Array.from(colabTombstones()); if (tb.length) record.id = Math.max(record.id, Math.max.apply(null, tb) + 1); }
   record.criadoEm = nowStr();
   record.atualizadoEm = nowStr();
   record.status = record.status || 'Ativo';
@@ -3008,9 +3076,11 @@ function crudDelete(table, id, opts) {
   if (idx === -1) return false;
   const label = opts.label || data[idx].nome || ('#'+id);
   if (opts.fisica) {
+    const removido = data[idx];
     data.splice(idx, 1);
     logAudit(opts.modulo || table, 'Exclusão física', id, label);
     saveData(table, data);
+    cloudHardDelete(table, removido);
   } else {
     data[idx].status = 'Inativo';
     data[idx].atualizadoEm = nowStr();
@@ -3019,6 +3089,37 @@ function crudDelete(table, id, opts) {
     syncRecordToCloud(table, data[idx]);
   }
   return true;
+}
+
+
+/* ─────────── EXCLUSÃO DEFINITIVA (local + nuvem) ─────────── */
+function cloudHardDelete(table, rec) {
+  if (DB_MODE !== 'supabase' || !supabaseClient || !rec) return Promise.resolve(false);
+  const copia = Object.assign({}, rec);
+  return (async () => {
+    try {
+      let rowid = copia._rowid;
+      if (!rowid) { const todos = await dbLoadData(table); const f = todos.find(r => r.id === copia.id); rowid = f && f._rowid; }
+      if (!rowid) return true;
+      const res = await supabaseClient.from('ac_erp_registros').delete().eq('id', rowid).select();
+      if (res.error) throw res.error;
+      if (!res.data || !res.data.length) {
+        // A nuvem não permitiu apagar a linha: marca como excluída (nunca mais é carregada)
+        const up = await supabaseClient.from('ac_erp_registros')
+          .update({ dados: Object.assign({}, copia, {status:'Inativo', excluido:true}), atualizado_em: new Date().toISOString() }).eq('id', rowid);
+        if (up.error) throw up.error;
+      }
+      return true;
+    } catch(e) {
+      console.warn('Exclusão na nuvem falhou:', table, e.message);
+      showToast('⚠ Excluído neste computador, mas a nuvem não confirmou. Tente de novo mais tarde.', 'warn');
+      return false;
+    }
+  })();
+}
+function crudDeleteFisico(table, id, opts) { return crudDelete(table, id, Object.assign({}, opts || {}, {fisica:true})); }
+function colabTombstones() {
+  try { return new Set(loadData('colab_excluidos').map(t => t.colabId)); } catch(e) { return new Set(); }
 }
 
 function crudRestore(table, id, opts) {
@@ -3366,8 +3467,9 @@ function openCrudModal(moduleCfg, id) {
       crudUpdate(moduleCfg.table, id, obj, {modulo: moduleCfg.label});
       showToast(`✓ ${moduleCfg.label} atualizado`);
     } else {
-      crudCreate(moduleCfg.table, obj, {modulo: moduleCfg.label});
+      const novoReg = crudCreate(moduleCfg.table, obj, {modulo: moduleCfg.label});
       showToast(`✓ ${moduleCfg.label} cadastrado`);
+      if (moduleCfg.afterCreate) { try { moduleCfg.afterCreate(novoReg); } catch(e) { console.warn('afterCreate:', e); } }
     }
     closeCrudModal();
     if (moduleCfg.onSave) moduleCfg.onSave();
@@ -3459,6 +3561,7 @@ const CARGOS_COMUNS = ['TORNEIRO PRODUÇÃO A','TORNEIRO PRODUÇÃO B','TORNEIRO
 const MOD_COLAB = {
   table: 'colaboradores',
   label: 'Colaborador',
+  afterCreate: (c) => colabAposCadastro(c),
   fields: [
     {field:'mat', label:'Matrícula', required:true},
     {field:'nome', label:'Nome Completo', required:true, full:true},
@@ -4283,6 +4386,301 @@ function colabGerarTermoVeiculo(colabId) {
   abrirReciboModal('🖨 Termo de Responsabilidade de Veículo — ' + c.nome, html, false);
 }
 
+/* ═══════════ COLABORADORES — ATUALIZAR / EXCLUIR / INCLUSÃO AUTOMÁTICA (v4.76) ═══════════ */
+const COLAB_CNPJ_EMPRESA = {'01':'AC','02':'BRASS','PJ':'PJ','AC':'AC','BRASS':'BRASS'};
+
+async function colabAtualizar() {
+  const btn = document.getElementById('colab-atualizar-btn');
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Atualizando...'; }
+  try {
+    if (DB_MODE === 'supabase' && supabaseClient) {
+      await pullColaboradoresMerge();
+      for (const t of ['colab_excluidos','feedback90','cesta_vegas','ferias','sst','admissoes','beneficios_inscritos','beneficios_anexos','colab_documentos','historico_cargo_salario']) {
+        try { await pullTableFromCloud(t); } catch(e) {}
+      }
+    }
+    try { colabFiltrado = loadData('colaboradores'); colabFiltrar(); } catch(e) {}
+    try { if (typeof tcColab !== 'undefined' && tcColab) tcColab.refresh(); } catch(e) {}
+    try { colabFichaRenderList(); if (colabDetailAtual) colabDetailRender(colabDetailAtual); } catch(e) {}
+    try { atualizarKPIsDash(); refreshAllKPIs(); } catch(e) {}
+    showToast('🔄 Colaboradores atualizados');
+  } catch(e) {
+    showToast('Não foi possível atualizar agora: ' + e.message, 'error');
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = '🔄 Atualizar'; }
+  }
+}
+
+function colabRefreshTelas(idSelecionado) {
+  try { colabFiltrado = loadData('colaboradores'); colabFiltrar(); } catch(e) {}
+  try { if (typeof tcColab !== 'undefined' && tcColab) tcColab.refresh(); } catch(e) {}
+  try { colabFichaRenderList(); } catch(e) {}
+  try { if (idSelecionado) colabDetailRender(idSelecionado); } catch(e) {}
+  try { atualizarKPIsDash(); refreshAllKPIs(); } catch(e) {}
+}
+
+function colabAlternarAtivo(id) {
+  const c = loadData('colaboradores').find(x => x.id === id);
+  if (!c) return;
+  const novoStatus = c.status === 'Inativo' ? 'Ativo' : 'Inativo';
+  crudUpdate('colaboradores', c.id, {status: novoStatus}, {modulo:'Colaboradores', label: c.nome});
+  showToast(novoStatus === 'Inativo' ? '🔒 Colaborador inativado' : '🔓 Colaborador reativado');
+  colabRefreshTelas(c.id);
+}
+
+// Exclui o cadastro de verdade (local + nuvem) e os registros que o sistema criou
+// sozinho para ele nos controles (90 Dias, Férias, SST e Cesta/Vegas gerados no cadastro).
+function colabExcluirDefinitivo(id) {
+  const c = loadData('colaboradores').find(x => x.id === id);
+  if (!c) { showToast('Selecione um colaborador primeiro', 'warn'); return; }
+  confirmAction(`Excluir DEFINITIVAMENTE o cadastro de "${c.nome}"?\n\nO cadastro e os registros gerados automaticamente para ele (Acompanhamento 90 Dias, Férias, SST e Cesta/Vegas do mês de admissão) serão apagados e NÃO poderão ser recuperados.\n\nSe a pessoa apenas saiu da empresa, use "Inativar".`, () => {
+    const mesmo = r => r.colaboradorId === c.id || (r.colaboradorId == null && (r.colaborador||'').trim().toUpperCase() === (c.nome||'').trim().toUpperCase());
+    // registros automáticos vinculados
+    ['feedback90','ferias','sst'].forEach(t => {
+      loadData(t).filter(mesmo).forEach(r => crudDeleteFisico(t, r.id, {modulo:'Colaboradores', label: c.nome}));
+    });
+    loadData('cesta_vegas').filter(r => r.autoCadastro && mesmo(r)).forEach(r => crudDeleteFisico('cesta_vegas', r.id, {modulo:'Colaboradores', label: c.nome}));
+    // lápide: impede que a base inicial / nuvem recriem o cadastro
+    crudCreate('colab_excluidos', {colabId: c.id, nome: c.nome}, {modulo:'Colaboradores', label: 'Exclusão — ' + c.nome});
+    crudDeleteFisico('colaboradores', c.id, {modulo:'Colaboradores', label: c.nome});
+    if (colabDetailAtual === c.id) {
+      colabDetailAtual = null;
+      const det = document.getElementById('colab-ficha-detalhe'), vz = document.getElementById('colab-ficha-vazio');
+      if (det) det.style.display = 'none'; if (vz) vz.style.display = 'flex';
+    }
+    showToast(`🗑 Cadastro de ${c.nome} excluído`);
+    colabRefreshTelas(null);
+    try { if (typeof tcFerias !== 'undefined' && tcFerias) tcFerias.refresh(); if (typeof tcSST !== 'undefined' && tcSST) tcSST.refresh(); renderFeedback90(); renderCestaVegas(); } catch(e) {}
+  });
+}
+
+// Depois que um colaborador NOVO é cadastrado: entra sozinho nos controles.
+function colabAposCadastro(c) {
+  if (!c) return;
+  const incluidos = [];
+  try { if (fb90CriarParaColaborador(c)) incluidos.push('Acompanhamento 90 Dias'); } catch(e) { console.warn('fb90:', e); }
+  try { if (cvCriarParaColaborador(c)) incluidos.push('Cesta/Vegas'); } catch(e) { console.warn('cv:', e); }
+  incluidos.push('Férias', 'SST'); // criados na sequência pelo cadastro (buildFeriasFromColabs / buildSSTFromColabs)
+  showToast('✓ Colaborador incluído também em: ' + incluidos.join(', '));
+}
+
+/* ═══════════ ENDOMARKETING: ANIVERSARIANTES E TEMPO DE EMPRESA (cadastro + planilhas reais da empresa) ═══════════ */
+const ENDO_MESES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+function endoEsc(s) { return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+function endoEmpChave(c) { return COLAB_CNPJ_EMPRESA[c.cnpj] === 'BRASS' ? 'BRASS' : 'AC'; }
+function endoEmpNome(k) { return k === 'BRASS' ? 'Brass Metal' : 'AC Metal'; }
+function endoInitMeses(selId, comTodos) {
+  const sel = document.getElementById(selId);
+  if (!sel || sel.options.length) return;
+  if (comTodos) sel.innerHTML = '<option value="0">Todos os meses</option>';
+  ENDO_MESES.forEach((m,i) => sel.innerHTML += `<option value="${i+1}">${m}</option>`);
+  sel.value = String(new Date().getMonth() + 1);
+}
+const ENDO_CONECTORES = new Set(['DA','DE','DO','DAS','DOS','E']);
+function endoTokens(n) {
+  return normSemAcento(n).replace(/[.,]/g,' ').split(/\s+/).filter(t => t.length > 1 && !ENDO_CONECTORES.has(t));
+}
+// Mesma pessoa mesmo com abreviações / sobrenome a mais (ex.: "FRANCIELLE CRISTINA ASCARI" x "FRANCIELLE CRISTINA ASCARI RODRIGUES")
+function endoMesmaPessoa(a, b) {
+  if (normSemAcento(a) === normSemAcento(b)) return true;
+  const A = endoTokens(a), B = endoTokens(b);
+  if (!A.length || !B.length || A[0] !== B[0]) return false;
+  if (A[A.length-1] === B[B.length-1]) return true;
+  return A.every(t => B.includes(t)) || B.every(t => A.includes(t));
+}
+function endoAcharNaFonte(fonte, nome) {
+  const exato = fonte.filter(x => normSemAcento(x.nome) === normSemAcento(nome));
+  if (exato.length === 1) return exato[0];
+  const cand = fonte.filter(x => endoMesmaPessoa(x.nome, nome));
+  return cand.length === 1 ? cand[0] : null; // ambíguo => não arrisca
+}
+// Uma vez: completa a data de nascimento dos colaboradores que estão em branco usando a planilha de aniversariantes da empresa.
+function endoPreencherNascimentos() {
+  if (localStorage.getItem('ac_nasc_planilha_v1')) return 0;
+  let n = 0;
+  loadData('colaboradores').forEach(c => {
+    if (parseDate(c.nascimento)) return;
+    const f = endoAcharNaFonte(ANIVERSARIANTES_2026, c.nome);
+    if (f && parseDate(f.nascimento)) { crudUpdate('colaboradores', c.id, {nascimento: f.nascimento}, {modulo:'Colaboradores', label: c.nome}); n++; }
+  });
+  localStorage.setItem('ac_nasc_planilha_v1', '1');
+  return n;
+}
+function endoForaCadastro(fonte) {
+  const todos = loadData('colaboradores');
+  return fonte.filter(x => !todos.some(c => endoMesmaPessoa(x.nome, c.nome)));
+}
+const endoEmpSheet = e => String(e||'').toUpperCase().startsWith('BRAS') ? 'BRASS' : 'AC';
+
+/* ── Aniversariantes ── */
+function anivPessoas() {
+  try { endoPreencherNascimentos(); } catch(e) { console.warn('nasc:', e); }
+  const lista = [];
+  endoColabsAtivos().forEach(c => { const d = parseDate(c.nascimento); if (d) lista.push({nome:c.nome, cargo:c.cargo, setor:c.setor, emp:endoEmpChave(c), d, nasc:c.nascimento, fora:false}); });
+  if (document.getElementById('aniv-fora-chk')?.checked !== false) {
+    endoForaCadastro(ANIVERSARIANTES_2026).forEach(x => { const d = parseDate(x.nascimento); if (d) lista.push({nome:x.nome, cargo:'—', setor:'—', emp:endoEmpSheet(x.empresa), d, nasc:x.nascimento, fora:true}); });
+  }
+  return lista;
+}
+function endoColabsAtivos() { return loadData('colaboradores').filter(c => c.status !== 'Inativo'); }
+function anivDados() {
+  endoInitMeses('aniv-mes-sel', false);
+  const mes = parseInt(document.getElementById('aniv-mes-sel').value, 10);
+  const emp = document.getElementById('aniv-emp-sel')?.value || '';
+  const busca = (document.getElementById('aniv-busca')?.value || '').trim().toUpperCase();
+  const ano = new Date().getFullYear();
+  const todos = anivPessoas().filter(x => (!emp || x.emp === emp) && (!busca || (x.nome||'').toUpperCase().includes(busca)));
+  const lista = todos.filter(x => x.d.getMonth() + 1 === mes)
+    .map(x => Object.assign({}, x, {dia: x.d.getDate(), idade: ano - x.d.getFullYear()}))
+    .sort((a,b) => a.dia - b.dia || a.nome.localeCompare(b.nome));
+  const semNasc = endoColabsAtivos().filter(c => !parseDate(c.nascimento)).length;
+  return {mes, lista, semNasc, todos};
+}
+function renderAniversariantes() {
+  const tb = document.getElementById('aniv-tbody');
+  if (!tb) return;
+  const {mes, lista, semNasc, todos} = anivDados();
+  const hoje = new Date(); const dHoje = hoje.getDate(), mHoje = hoje.getMonth() + 1;
+  tb.innerHTML = lista.length ? lista.map(x => {
+    const ehHoje = mes === mHoje && x.dia === dHoje;
+    return `<tr${ehHoje ? ' style="background:#fdf2f8"' : ''}>
+      <td style="font-weight:700">${String(x.dia).padStart(2,'0')}/${String(mes).padStart(2,'0')}</td>
+      <td><strong style="font-size:11px">${endoEsc(x.nome)}</strong></td>
+      <td style="font-size:11px">${endoEsc(x.cargo)}</td><td>${endoEsc(x.setor)}</td>
+      <td><span class="badge bgy">${endoEmpNome(x.emp)}</span></td>
+      <td>${endoEsc(x.nasc)}</td><td>${x.idade} anos</td>
+      <td>${ehHoje ? '<span class="badge bo">🎉 Hoje!</span>' : ''}${x.fora ? ' <span class="badge bgy" title="Está na planilha de aniversariantes, mas não no cadastro de colaboradores">fora do cadastro</span>' : ''}</td></tr>`;
+  }).join('') : '<tr><td colspan="8" class="muted" style="text-align:center;padding:16px">Nenhum aniversariante neste mês com os filtros atuais.</td></tr>';
+  setText('aniv-count', lista.length + ' aniversariantes');
+  setText('aniv-kpi-mes', lista.length);
+  const hojeN = todos.filter(x => x.d.getMonth() + 1 === mHoje && x.d.getDate() === dHoje).length;
+  let prox7 = 0;
+  todos.forEach(x => {
+    for (let k = 1; k <= 7; k++) {
+      const t = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate() + k);
+      if (t.getMonth() === x.d.getMonth() && t.getDate() === x.d.getDate()) { prox7++; break; }
+    }
+  });
+  setText('aniv-kpi-hoje', hojeN); setText('aniv-kpi-7d', prox7); setText('aniv-kpi-sem', semNasc);
+}
+function anivImprimir() {
+  const {mes, lista} = anivDados();
+  if (!lista.length) { showToast('Nenhum aniversariante para imprimir neste mês', 'warn'); return; }
+  const linhas = lista.map(x => `<tr style="border-bottom:1px solid #ccc"><td style="padding:5px 4px">${String(x.dia).padStart(2,'0')}/${String(mes).padStart(2,'0')}</td><td style="padding:5px 4px">${endoEsc(x.nome)}</td><td style="padding:5px 4px">${endoEsc(x.cargo)}</td><td style="padding:5px 4px">${endoEsc(x.setor)}</td><td style="padding:5px 4px">${endoEmpNome(x.emp)}</td></tr>`).join('');
+  abrirReciboModal('🖨 Aniversariantes — ' + ENDO_MESES[mes-1], `${docPageCSS({nome:'AC Metalúrgica / Brassmetal', email:''})}<div class="doc-print" style="padding:10px 4px">
+    <h3 style="text-align:center;margin-bottom:4px">ANIVERSARIANTES DE ${ENDO_MESES[mes-1].toUpperCase()}</h3>
+    <p style="text-align:center;font-size:11px;color:#666;margin-bottom:12px">${lista.length} colaborador(es)</p>
+    <table style="width:100%;border-collapse:collapse;font-size:11px"><thead><tr style="border-bottom:1.5px solid #000"><th style="text-align:left;padding:5px 4px;width:60px">Dia</th><th style="text-align:left;padding:5px 4px">Colaborador</th><th style="text-align:left;padding:5px 4px">Cargo</th><th style="text-align:left;padding:5px 4px">Setor</th><th style="text-align:left;padding:5px 4px">Empresa</th></tr></thead><tbody>${linhas}</tbody></table></div>`, false);
+}
+function anivExportar() {
+  if (typeof XLSX === 'undefined') { showToast('Biblioteca XLSX não carregada', 'error'); return; }
+  const {mes, lista} = anivDados();
+  const rows = lista.map(x => [x.dia, x.nome, x.cargo, x.setor, endoEmpNome(x.emp), x.nasc, x.idade]);
+  const ws = XLSX.utils.aoa_to_sheet([['Dia','Colaborador','Cargo','Setor','Empresa','Nascimento','Completa (anos)'], ...rows]);
+  ws['!cols'] = [{wch:6},{wch:36},{wch:30},{wch:16},{wch:12},{wch:12},{wch:14}];
+  const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, 'Aniversariantes');
+  XLSX.writeFile(wb, `Aniversariantes_${ENDO_MESES[mes-1]}.xlsx`);
+  showToast(`📥 ${lista.length} aniversariantes exportados`);
+}
+
+/* ── Tempo de empresa ── */
+function tempoCasaTexto(d, ref) {
+  let m = (ref.getFullYear() - d.getFullYear()) * 12 + (ref.getMonth() - d.getMonth());
+  if (ref.getDate() < d.getDate()) m--;
+  if (m < 0) m = 0;
+  const a = Math.floor(m / 12), r = m % 12;
+  return {meses: m, texto: a === 0 ? `${r} ${r===1?'mês':'meses'}` : (r === 0 ? `${a} ${a===1?'ano':'anos'}` : `${a} ${a===1?'ano':'anos'} e ${r} ${r===1?'mês':'meses'}`)};
+}
+function tempoChave(nome, ano) { return normSemAcento(nome) + '|' + ano; }
+function tempoCtrl(nome, ano) {
+  // controle de presente/entrega: registro salvo ou, se não houver, o que consta na planilha de 2026
+  const salvo = loadData('tempo_empresa_ctrl').find(r => r.chave === tempoChave(nome, ano) && r.status !== 'Inativo');
+  if (salvo) return {id: salvo.id, presente: salvo.presente || '', entregue: !!salvo.entregue};
+  if (ano === 2026) {
+    const s = endoAcharNaFonte(TEMPO_EMPRESA_2026, nome);
+    if (s) return {id: null, presente: s.presente || '', entregue: s.status === 'OK'};
+  }
+  return {id: null, presente: '', entregue: false};
+}
+function tempoSalvarCtrl(nome, ano, campo, valor) {
+  const atual = tempoCtrl(nome, ano);
+  const dados = {chave: tempoChave(nome, ano), nome, ano, presente: atual.presente, entregue: atual.entregue};
+  dados[campo] = valor;
+  if (atual.id) crudUpdate('tempo_empresa_ctrl', atual.id, dados, {modulo:'Tempo de Empresa', label: nome});
+  else crudCreate('tempo_empresa_ctrl', dados, {modulo:'Tempo de Empresa', label: nome});
+  renderTempoEmpresa();
+}
+function tempoPessoas() {
+  const hoje = new Date(); const h0 = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate());
+  const base = [];
+  endoColabsAtivos().forEach(c => { const d = parseDate(c.adm); if (d) base.push({nome:c.nome, cargo:c.cargo, setor:c.setor, emp:endoEmpChave(c), d, adm:c.adm, fora:false}); });
+  endoForaCadastro(TEMPO_EMPRESA_2026).forEach(x => { const d = parseDate(x.admissao); if (d) base.push({nome:x.nome, cargo:'—', setor:'—', emp:endoEmpSheet(x.empresa), d, adm:x.admissao, fora:true}); });
+  return base.map(x => {
+    const t = tempoCasaTexto(x.d, hoje);
+    let prox = new Date(hoje.getFullYear(), x.d.getMonth(), x.d.getDate());
+    if (prox < h0) prox = new Date(hoje.getFullYear() + 1, x.d.getMonth(), x.d.getDate());
+    const anos = prox.getFullYear() - x.d.getFullYear();
+    return Object.assign({}, x, {t, prox, anos, marco: anos > 0 && anos % 5 === 0});
+  });
+}
+function tempoDados() {
+  endoInitMeses('tempo-mes-sel', true);
+  const mes = parseInt(document.getElementById('tempo-mes-sel').value, 10);
+  const emp = document.getElementById('tempo-emp-sel')?.value || '';
+  const busca = (document.getElementById('tempo-busca')?.value || '').trim().toUpperCase();
+  const itens = tempoPessoas().filter(x => (!emp || x.emp === emp) && (!busca || x.nome.toUpperCase().includes(busca)));
+  const lista = mes > 0
+    ? itens.filter(x => x.d.getMonth() + 1 === mes && x.anos > 0).sort((a,b) => a.d.getDate() - b.d.getDate())
+    : itens.slice().sort((a,b) => b.t.meses - a.t.meses);
+  return {mes, lista, itens};
+}
+const tempoFmt = d => String(d.getDate()).padStart(2,'0') + '/' + String(d.getMonth()+1).padStart(2,'0') + '/' + d.getFullYear();
+function renderTempoEmpresa() {
+  const tb = document.getElementById('tempo-tbody');
+  if (!tb) return;
+  const {mes, lista, itens} = tempoDados();
+  tb.innerHTML = lista.length ? lista.map(x => {
+    const ctrl = tempoCtrl(x.nome, x.prox.getFullYear());
+    const nomeJs = escAttr(x.nome);
+    return `<tr${x.marco ? ' style="background:#fdf2f8"' : ''}>
+      <td><strong style="font-size:11px">${endoEsc(x.nome)}</strong>${x.fora ? ' <span class="badge bgy" title="Está na planilha de tempo de empresa, mas não no cadastro de colaboradores">fora do cadastro</span>' : ''}</td>
+      <td style="font-size:11px">${endoEsc(x.cargo)}</td><td>${endoEsc(x.setor)}</td>
+      <td><span class="badge bgy">${endoEmpNome(x.emp)}</span></td>
+      <td>${endoEsc(x.adm)}</td><td>${x.t.texto}</td>
+      <td>${tempoFmt(x.prox)} — <strong>${x.anos} ${x.anos===1?'ano':'anos'}</strong>${x.marco ? ' <span class="badge bo">🏅 Marco</span>' : ''}</td>
+      <td><input type="text" class="finp" style="width:150px" value="${escAttr(ctrl.presente)}" placeholder="Presente..." onchange="tempoSalvarCtrl('${nomeJs}',${x.prox.getFullYear()},'presente',this.value)"></td>
+      <td style="text-align:center"><input type="checkbox" ${ctrl.entregue ? 'checked' : ''} title="Presente entregue" onchange="tempoSalvarCtrl('${nomeJs}',${x.prox.getFullYear()},'entregue',this.checked)"></td></tr>`;
+  }).join('') : '<tr><td colspan="9" class="muted" style="text-align:center;padding:16px">Nenhum colaborador com aniversário de empresa neste mês.</td></tr>';
+  setText('tempo-count', lista.length + ' colaboradores');
+  setText('tempo-kpi-total', itens.length);
+  const mesRef = mes > 0 ? mes : new Date().getMonth() + 1;
+  const doMes = itens.filter(x => x.d.getMonth() + 1 === mesRef && x.anos > 0);
+  setText('tempo-kpi-mes', doMes.length);
+  setText('tempo-kpi-marcos', doMes.filter(x => x.marco).length);
+  const media = itens.length ? itens.reduce((s,x) => s + x.t.meses, 0) / itens.length : 0;
+  const a = Math.floor(media / 12), m = Math.round(media % 12);
+  setText('tempo-kpi-media', itens.length ? (a ? `${a}a ${m}m` : `${m}m`) : '—');
+}
+function tempoImprimir() {
+  const {mes, lista} = tempoDados();
+  if (!lista.length) { showToast('Nada para imprimir com os filtros atuais', 'warn'); return; }
+  const linhas = lista.map(x => { const c = tempoCtrl(x.nome, x.prox.getFullYear()); return `<tr style="border-bottom:1px solid #ccc"><td style="padding:5px 4px">${endoEsc(x.nome)}</td><td style="padding:5px 4px">${endoEsc(x.cargo)}</td><td style="padding:5px 4px">${endoEmpNome(x.emp)}</td><td style="padding:5px 4px">${endoEsc(x.adm)}</td><td style="padding:5px 4px">${x.t.texto}</td><td style="padding:5px 4px">${tempoFmt(x.prox)} (${x.anos} ${x.anos===1?'ano':'anos'})${x.marco?' 🏅':''}</td><td style="padding:5px 4px">${endoEsc(c.presente)}${c.entregue?' ✔':''}</td></tr>`; }).join('');
+  const titulo = mes > 0 ? 'TEMPO DE EMPRESA — ANIVERSÁRIOS DE ' + ENDO_MESES[mes-1].toUpperCase() : 'TEMPO DE EMPRESA — TODOS OS COLABORADORES';
+  abrirReciboModal('🖨 Tempo de Empresa', `${docPageCSS({nome:'AC Metalúrgica / Brassmetal', email:''})}<div class="doc-print" style="padding:10px 4px">
+    <h3 style="text-align:center;margin-bottom:12px">${titulo}</h3>
+    <table style="width:100%;border-collapse:collapse;font-size:11px"><thead><tr style="border-bottom:1.5px solid #000"><th style="text-align:left;padding:5px 4px">Colaborador</th><th style="text-align:left;padding:5px 4px">Cargo</th><th style="text-align:left;padding:5px 4px">Empresa</th><th style="text-align:left;padding:5px 4px">Admissão</th><th style="text-align:left;padding:5px 4px">Tempo de casa</th><th style="text-align:left;padding:5px 4px">Próximo aniversário</th><th style="text-align:left;padding:5px 4px">Presente</th></tr></thead><tbody>${linhas}</tbody></table></div>`, false);
+}
+function tempoExportar() {
+  if (typeof XLSX === 'undefined') { showToast('Biblioteca XLSX não carregada', 'error'); return; }
+  const {lista} = tempoDados();
+  const rows = lista.map(x => { const c = tempoCtrl(x.nome, x.prox.getFullYear()); return [x.nome, x.cargo, x.setor, endoEmpNome(x.emp), x.adm, x.t.texto, tempoFmt(x.prox), x.anos, x.marco ? 'SIM' : '', c.presente, c.entregue ? 'OK' : '']; });
+  const ws = XLSX.utils.aoa_to_sheet([['Colaborador','Cargo','Setor','Empresa','Admissão','Tempo de casa','Próximo aniversário de empresa','Anos a completar','Marco','Presente','Entregue'], ...rows]);
+  ws['!cols'] = [{wch:36},{wch:30},{wch:16},{wch:12},{wch:12},{wch:20},{wch:26},{wch:16},{wch:8},{wch:24},{wch:10}];
+  const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, 'TempoDeEmpresa');
+  XLSX.writeFile(wb, 'Tempo_de_Empresa.xlsx');
+  showToast(`📥 ${lista.length} colaboradores exportados`);
+}
+
 const COLAB_DOC_CATEGORIAS = ['Acordos - Termos','Advertências','ASOs','Atestados','Avaliação de Desempenho','Certificados','Documentos Admissionais','Documentos Pessoais','Efetivação','Feedbacks','Férias','Ficha de EPI','Integração','Processo Seletivo','Recibos E-Social','Treinamentos'];
 
 function colabDocumentosHtml(c) {
@@ -4390,7 +4788,7 @@ function colabFichaAcao(acao) {
     colabFichaRenderList();
     colabDetailRender(c.id);
   }
-  else if (acao === 'excluir') crudDeleteAction(MOD_COLAB, c.id, c.nome);
+  else if (acao === 'excluir') colabExcluirDefinitivo(c.id);
   else if (acao === 'ficha') {
     const empFicha = empresaInfoDoColaborador(c);
     const cfSecao = (titulo) => `<h3 style="font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--blue);border-bottom:1.5px solid var(--blue);padding-bottom:4px;margin:12px 0 6px">${titulo}</h3>`;
@@ -4839,9 +5237,8 @@ function colabRowRender(rows) {
       <td style="white-space:nowrap">
         <button class="btn btn-s btn-xs" onclick="abrirDetalheColabId(${c.id})">Ver</button>
         <button class="btn btn-s btn-xs" onclick="openCrudModal(MOD_COLAB,${c.id})">✏</button>
-        ${inativo
-          ? `<button class="btn btn-s btn-xs" onclick="crudRestoreAction(MOD_COLAB,${c.id},'${escAttr(c.nome)}')">↩</button>`
-          : `<button class="btn btn-s btn-xs" onclick="crudDeleteAction(MOD_COLAB,${c.id},'${escAttr(c.nome)}')">🗑</button>`}
+        <button class="btn btn-s btn-xs" title="${inativo?'Ativar':'Inativar'}" onclick="colabAlternarAtivo(${c.id})">${inativo?'🔓':'🔒'}</button>
+        <button class="btn btn-s btn-xs" title="Excluir cadastro" onclick="colabExcluirDefinitivo(${c.id})">🗑</button>
       </td>
     </tr>`;
   }).join('');
@@ -5155,6 +5552,8 @@ function buildFeriasFromColabs() {
     const fim = new Date(d); fim.setFullYear(fim.getFullYear()+1);
     crudCreate('ferias', {
       colaborador: c.nome,
+      colaboradorId: c.id,
+      cnpj: COLAB_CNPJ_EMPRESA[c.cnpj] || 'AC',
       cargo: c.cargo,
       setor: c.setor,
       periodoInicio: c.adm,
@@ -5538,6 +5937,8 @@ function buildSSTFromColabs() {
     const nrs = nrsDoCargo(c.cargo||'').filter(n=>n.startsWith('NR-1')||n.startsWith('NR-9')||n.startsWith('NR-3'));
     crudCreate('sst', {
       colaborador: c.nome,
+      colaboradorId: c.id,
+      cnpj: COLAB_CNPJ_EMPRESA[c.cnpj] || 'AC',
       cargo: c.cargo,
       tipoExame: tipo,
       dataExame: meses<1 ? '' : c.adm,
@@ -5633,7 +6034,7 @@ function initCrudModules() {
   let colabs = loadData('colaboradores');
   if (typeof COLABS !== 'undefined' && COLABS.length > 0) {
     const seedCount = COLABS.length;
-    if (!colabs.length || colabs.length < seedCount) {
+    if (!colabs.length || (colabs.length < seedCount && !localStorage.getItem('ac_erp_v4_colab_excluidos'))) {
       // Primeira execução ou seed tem mais dados — migra tudo
       colabs = COLABS.map((c,i) => Object.assign({id:i+1}, c, {
         criadoEm: c.criadoEm||nowStr(), atualizadoEm: nowStr(),
@@ -5988,6 +6389,37 @@ function admDetalheHtml(a) {
   </div>`;
 }
 
+/* ─── Admissão: Concluído / Inativar-Ativar / Excluir definitivo ─── */
+function admRefreshTudo() {
+  try { if (typeof admCtrl !== 'undefined' && admCtrl) admCtrl.load(); } catch(e) {}
+  try { if (tcAdmissao) tcAdmissao.refresh(); } catch(e) {}
+  try { atualizarKPIsAdmissao(); refreshAllKPIs(); } catch(e) {}
+}
+function admMarcarConcluida(id) {
+  const a = loadData('admissoes').find(x => x.id === id);
+  if (!a) return;
+  crudUpdate('admissoes', id, {situacao:'Concluída'}, {modulo:'Admissão', label:a.nome});
+  showToast('✔ Admissão de ' + a.nome + ' marcada como concluída');
+  admRefreshTudo();
+}
+function admAlternarAtivo(id) {
+  const a = loadData('admissoes').find(x => x.id === id);
+  if (!a) return;
+  const novo = a.status === 'Inativo' ? 'Ativo' : 'Inativo';
+  crudUpdate('admissoes', id, {status:novo}, {modulo:'Admissão', label:a.nome});
+  showToast(novo === 'Inativo' ? '🔒 Admissão inativada' : '🔓 Admissão ativada');
+  admRefreshTudo();
+}
+function admExcluirDefinitivo(id) {
+  const a = loadData('admissoes').find(x => x.id === id);
+  if (!a) return;
+  confirmAction(`Excluir DEFINITIVAMENTE a admissão de "${a.nome}"?\n\nO registro e o checklist serão apagados e não poderão ser recuperados.\nPara apenas tirar da lista, use "Inativar".`, () => {
+    crudDeleteFisico('admissoes', id, {modulo:'Admissão', label:a.nome});
+    showToast('🗑 Admissão excluída');
+    admRefreshTudo();
+  });
+}
+
 function admissaoCardRender(rows) {
   if (!rows.length) return '<div class="muted" style="text-align:center;padding:24px">Nenhuma admissão em andamento</div>';
   return rows.map(a => {
@@ -6005,9 +6437,11 @@ function admissaoCardRender(rows) {
         </div>
         <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end">
           <button class="btn btn-s btn-xs" onclick="openCrudModal(MOD_ADMISSAO,${a.id})">✏ Editar</button>
-          ${inativo
-            ? `<button class="btn btn-s btn-xs" onclick="crudRestoreAction(MOD_ADMISSAO,${a.id},'${escAttr(a.nome)}')">↩ Restaurar</button>`
-            : `<button class="btn btn-s btn-xs" onclick="crudDeleteAction(MOD_ADMISSAO,${a.id},'${escAttr(a.nome)}')">🗑 Excluir</button>`}
+          ${a.situacao === 'Concluída'
+            ? `<span class="badge bg" style="text-align:center">✔ Concluída</span>`
+            : `<button class="btn btn-s btn-xs" style="color:#166534" onclick="admMarcarConcluida(${a.id})">✔ Concluído</button>`}
+          <button class="btn btn-s btn-xs" onclick="admAlternarAtivo(${a.id})">${inativo ? '🔓 Ativar' : '🔒 Inativar'}</button>
+          <button class="btn btn-s btn-xs" style="color:#b91c1c" onclick="admExcluirDefinitivo(${a.id})">🗑 Excluir</button>
         </div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:8px">
@@ -6541,6 +6975,82 @@ function benefGerarRelatorio(tipoNome) {
   </div>`, false);
 }
 
+/* ─── Modal simples reutilizável (não é de impressão) ─── */
+function abrirModalSimples(titulo, html, largura) {
+  let m = document.getElementById('m-simples');
+  if (!m) {
+    m = document.createElement('div');
+    m.id = 'm-simples'; m.className = 'modal-overlay';
+    m.onclick = e => { if (e.target === m) fecharModalSimples(); };
+    m.innerHTML = `<div class="modal" id="m-simples-box" style="width:720px"><div class="m-hdr"><div class="m-title" id="m-simples-titulo"></div><button class="m-close" onclick="fecharModalSimples()">×</button></div><div class="m-body" id="m-simples-corpo"></div></div>`;
+    document.body.appendChild(m);
+  }
+  document.getElementById('m-simples-titulo').textContent = titulo;
+  document.getElementById('m-simples-corpo').innerHTML = html;
+  document.getElementById('m-simples-box').style.width = (largura || 720) + 'px';
+  m.classList.add('open');
+}
+function fecharModalSimples() { const m = document.getElementById('m-simples'); if (m) m.classList.remove('open'); }
+
+/* ─── Benefícios: anexar documentos dos descontos ─── */
+let benefAnexoInscritoId = null;
+function benefAbrirAnexos(inscritoId) {
+  const ins = loadData('beneficios_inscritos').find(x => x.id === inscritoId);
+  if (!ins) return;
+  benefAnexoInscritoId = inscritoId;
+  const meses = ['','Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  const arqs = loadData('beneficios_anexos').filter(a => a.inscritoId === inscritoId && a.status !== 'Inativo')
+    .sort((a,b) => (b.id||0) - (a.id||0));
+  const lista = arqs.length ? arqs.map(a => `<div style="display:flex;align-items:center;gap:8px;padding:6px 8px;border:1px solid var(--g100);border-radius:6px;margin-bottom:6px">
+      <span style="font-size:16px">📄</span>
+      <a href="${a.url}" target="_blank" rel="noopener" style="flex:1;font-size:12px;word-break:break-all">${a.nomeArquivo}</a>
+      <span class="muted" style="font-size:10px">${a.dataUpload||''}</span>
+      <button class="btn btn-s btn-xs" onclick="benefExcluirAnexo(${a.id})" title="Remover arquivo">🗑</button>
+    </div>`).join('') : '<div class="muted" style="padding:10px 0">Nenhum arquivo anexado ainda.</div>';
+  abrirModalSimples(`📎 Anexos — ${ins.colaborador}`, `
+    <div class="muted" style="margin-bottom:10px">${ins.tipoBeneficio} · ${ins.empresa} · ${meses[Number(ins.mes)]||ins.mes}/${ins.ano}</div>
+    <div style="margin-bottom:12px">
+      <input type="file" id="benef-anexo-input" multiple style="display:none" onchange="benefUploadAnexos(this.files)">
+      <button class="btn btn-p btn-sm" onclick="document.getElementById('benef-anexo-input').click()">📎 Anexar arquivo(s)</button>
+    </div>
+    ${lista}`, 640);
+}
+async function benefUploadAnexos(files) {
+  if (!files || !files.length || benefAnexoInscritoId == null) return;
+  if (!supabaseClient) { showToast('Conecte a nuvem primeiro (veja o Dashboard)', 'error'); return; }
+  const ins = loadData('beneficios_inscritos').find(x => x.id === benefAnexoInscritoId);
+  if (!ins) return;
+  showToast('📤 Enviando arquivo(s)...');
+  let ok = 0;
+  for (const file of Array.from(files)) {
+    const path = `beneficios/${sanitizeStorageKey(ins.tipoBeneficio)}/${ins.empresa}/${ins.ano}-${String(ins.mes).padStart(2,'0')}/${ins.id}/${Date.now()}_${sanitizeStorageKey(file.name)}`;
+    try {
+      const { error } = await supabaseClient.storage.from('documentos-rh').upload(path, file);
+      if (error) throw error;
+      const { data } = supabaseClient.storage.from('documentos-rh').getPublicUrl(path);
+      crudCreate('beneficios_anexos', {
+        inscritoId: ins.id, colaborador: ins.colaborador, tipoBeneficio: ins.tipoBeneficio, empresa: ins.empresa,
+        ano: ins.ano, mes: ins.mes, nomeArquivo: file.name, caminho: path, url: data.publicUrl, dataUpload: nowStr().split(' ')[0]
+      }, {modulo:'Benefícios', label: `${ins.colaborador} — ${ins.tipoBeneficio} — ${file.name}`});
+      ok++;
+    } catch(e) { showToast('Erro ao enviar "' + file.name + '": ' + e.message, 'error'); }
+  }
+  if (ok) showToast(`✅ ${ok} arquivo(s) anexado(s)`);
+  benefAbrirAnexos(ins.id);
+  renderBeneficiosTipos();
+}
+function benefExcluirAnexo(id) {
+  const a = loadData('beneficios_anexos').find(x => x.id === id);
+  if (!a) return;
+  confirmAction(`Remover o arquivo "${a.nomeArquivo}"?`, () => {
+    try { if (supabaseClient && a.caminho) supabaseClient.storage.from('documentos-rh').remove([a.caminho]); } catch(e) {}
+    crudDeleteFisico('beneficios_anexos', id, {modulo:'Benefícios', label: a.colaborador + ' — ' + a.nomeArquivo});
+    showToast('🗑 Arquivo removido');
+    benefAbrirAnexos(a.inscritoId);
+    renderBeneficiosTipos();
+  });
+}
+
 function benefInscritosHtml(tipoNome) {
   const comp = benefComp();
   const inscritos = loadData('beneficios_inscritos').filter(i => i.status !== 'Inativo' && i.tipoBeneficio === tipoNome
@@ -6562,7 +7072,8 @@ function benefInscritosHtml(tipoNome) {
       <td style="font-size:11px">${i.colaborador}</td>
       <td style="font-size:11px">${colunaValor}</td>
       <td><span class="badge bg">Ativo</span></td>
-      <td style="white-space:nowrap"><button class="btn btn-s btn-xs" onclick="crudUpdate('beneficios_inscritos',${i.id},{status:'Inativo'},{modulo:'Benefícios',label:'${escAttr(i.colaborador)}'});renderBeneficiosTipos();showToast('🔒 Marcado como desligado/inativo')">🔒 Inativar</button>
+      <td style="white-space:nowrap"><button class="btn btn-s btn-xs" title="Anexar documentos do desconto (boletos, comprovantes, autorizações)" onclick="benefAbrirAnexos(${i.id})">📎 Anexar${(()=>{const n=loadData('beneficios_anexos').filter(x=>x.inscritoId===i.id&&x.status!=='Inativo').length;return n?' ('+n+')':'';})()}</button>
+      <button class="btn btn-s btn-xs" onclick="crudUpdate('beneficios_inscritos',${i.id},{status:'Inativo'},{modulo:'Benefícios',label:'${escAttr(i.colaborador)}'});renderBeneficiosTipos();showToast('🔒 Marcado como desligado/inativo')">🔒 Inativar</button>
       <button class="btn btn-s btn-xs" onclick="benefRemoverInscrito(${i.id},'${escAttr(i.colaborador)}')">🗑</button></td>
     </tr>`;
   }).join('');
@@ -6617,11 +7128,12 @@ function renderBeneficiosTipos() {
 const MOD_CESTAVEGAS = {
   table: 'cesta_vegas',
   label: 'Cesta Básica / Vegas',
+  beforeSave: obj => { obj.mesNum = MESES_NOME_NUM[obj.mes] || obj.mesNum; obj.ano = parseInt(obj.ano, 10) || obj.ano; if (obj.qtdCesta !== undefined && obj.qtdCesta !== '') obj.qtdCesta = parseInt(obj.qtdCesta, 10) || 0; },
   onSave: function(){ try{ renderCestaVegas(); buildCestaVegasHistorico(); }catch(e){} },
   fields: [
     {field:'colaborador', label:'Colaborador', required:true, full:true},
     {field:'mes', label:'Mês', type:'select', required:true, options:['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro']},
-    {field:'ano', label:'Ano', required:true, placeholder:'2026'},
+    {field:'ano', label:'Ano', type:'select', required:true, options:Array.from({length:25},(_,i)=>String(2026+i))},
     {field:'cnpj', label:'CNPJ', type:'select', options:['AC','BRASS','PJ']},
     {field:'cesta', label:'Cesta Básica', type:'select', required:true, options:['SIM','NÃO']},
     {field:'valorCesta', label:'Valor da Cesta (R$)', type:'number', step:'0.01'},
@@ -7172,6 +7684,54 @@ function buildCestaVegasSeed() {
 
 const cvSelecionados = new Set();
 
+/* ─── Período (mês + ano) da Cesta/Vegas ─── */
+function cvInitPeriodo() {
+  const selA = document.getElementById('cv-ano-sel');
+  const selM = document.getElementById('cv-mes-sel');
+  if (!selA || !selM) return;
+  if (!selA.options.length) {
+    for (let a = 2026; a <= 2050; a++) selA.innerHTML += `<option value="${a}">${a}</option>`;
+    const hoje = new Date();
+    selA.value = String(Math.min(Math.max(hoje.getFullYear(), 2026), 2050));
+    selM.value = String(hoje.getMonth() + 1);
+  }
+}
+function cvPeriodo() {
+  cvInitPeriodo();
+  return {
+    mes: parseInt(document.getElementById('cv-mes-sel')?.value || '10', 10),
+    ano: parseInt(document.getElementById('cv-ano-sel')?.value || '2026', 10)
+  };
+}
+function cvMesNum(r) { return r.mesNum != null ? Number(r.mesNum) : (MESES_NOME_NUM[r.mes] || 0); }
+function cvLimparFiltros() {
+  const hoje = new Date();
+  const set = (id, v) => { const el = document.getElementById(id); if (el) el.value = v; };
+  set('cv-mes-sel', String(hoje.getMonth() + 1)); set('cv-ano-sel', String(Math.min(Math.max(hoje.getFullYear(), 2026), 2050)));
+  set('cv-empresa-sel',''); set('cv-cesta-sel',''); set('cv-vegas-sel',''); set('cv-busca','');
+  renderCestaVegas(); buildCestaVegasHistorico();
+}
+// Inclui o colaborador novo no controle do mês da admissão (cesta e Vegas = SIM; ajustar na tabela se precisar)
+function cvCriarParaColaborador(c) {
+  const d = parseDate(c.adm) || new Date();
+  const mesNum = d.getMonth() + 1, ano = d.getFullYear();
+  const mesNome = Object.keys(MESES_NOME_NUM).find(k => MESES_NOME_NUM[k] === mesNum);
+  const jaTem = loadData('cesta_vegas').some(r => r.status !== 'Inativo' && cvMesNum(r) === mesNum && Number(r.ano) === ano
+    && (r.colaboradorId === c.id || (r.colaborador||'').trim().toUpperCase() === (c.nome||'').trim().toUpperCase()));
+  if (jaTem) return false;
+  const deMes = loadData('cesta_vegas').filter(r => r.status !== 'Inativo' && cvMesNum(r) === mesNum && Number(r.ano) === ano && r.cesta === 'SIM' && parseFloat(r.valorCesta) > 0);
+  const valorCesta = deMes.length ? parseFloat(deMes[0].valorCesta) : 0;
+  const valorVegas = parseFloat(localStorage.getItem('cv_valor_padrao_vegas')) || 200;
+  crudCreate('cesta_vegas', {
+    colaborador: c.nome, colaboradorId: c.id, mes: mesNome, mesNum, ano,
+    cnpj: COLAB_CNPJ_EMPRESA[c.cnpj] || 'AC', cesta: 'SIM', valorCesta, vegas: 'SIM', valorVegas,
+    qtdCesta: 1, observacoes: 'Incluído automaticamente no cadastro do colaborador', autoCadastro: true
+  }, {modulo:'Cesta Básica / Vegas', label: c.nome});
+  try { renderCestaVegas(); buildCestaVegasHistorico(); } catch(e) {}
+  return true;
+}
+
+
 function cvInlineUpdate(id, field, value) {
   const data = loadData('cesta_vegas');
   const idx = data.findIndex(d => d.id === id);
@@ -7233,12 +7793,12 @@ function cvAplicarEmMassa() {
 }
 
 function cvFiltrados() {
-  const mesNum = parseInt(document.getElementById('cv-mes-sel')?.value || '10', 10);
+  const {mes: mesNum, ano: anoSel} = cvPeriodo();
   const empresa = document.getElementById('cv-empresa-sel')?.value || '';
   const cestaF = document.getElementById('cv-cesta-sel')?.value || '';
   const vegasF = document.getElementById('cv-vegas-sel')?.value || '';
   const busca = (document.getElementById('cv-busca')?.value || '').toUpperCase();
-  let all = loadData('cesta_vegas').filter(r => r.status !== 'Inativo' && r.mesNum === mesNum && r.ano === 2026);
+  let all = loadData('cesta_vegas').filter(r => r.status !== 'Inativo' && cvMesNum(r) === mesNum && Number(r.ano) === anoSel);
   if (empresa) all = all.filter(r => r.cnpj === empresa);
   if (cestaF) all = all.filter(r => r.cesta === cestaF);
   if (vegasF) all = all.filter(r => r.vegas === vegasF);
@@ -7246,15 +7806,16 @@ function cvFiltrados() {
   return all.sort((a,b) => a.colaborador.localeCompare(b.colaborador));
 }
 
+const cvCorSelect = v => v === 'SIM' ? 'background:#bbf7d0!important;color:#166534!important;border:1px solid #22c55e!important;font-weight:700' : 'background:#fecaca!important;color:#991b1b!important;border:1px solid #ef4444!important;font-weight:700';
 function cvRowRender(r) {
   const checked = cvSelecionados.has(r.id) ? 'checked' : '';
   return `<tr>
     <td><input type="checkbox" class="cv-row-check" data-id="${r.id}" ${checked} onchange="cvToggleSelect(${r.id},this.checked)"></td>
     <td style="font-size:11px">${r.colaborador}</td>
     <td style="font-size:11px">${r.cnpj||'—'}</td>
-    <td><select style="width:100%" onchange="cvInlineUpdate(${r.id},'cesta',this.value)"><option value="SIM" ${r.cesta==='SIM'?'selected':''}>SIM</option><option value="NÃO" ${r.cesta==='NÃO'?'selected':''}>NÃO</option></select></td>
+    <td><select style="width:100%;${cvCorSelect(r.cesta)}" onchange="cvInlineUpdate(${r.id},'cesta',this.value)"><option value="SIM" ${r.cesta==='SIM'?'selected':''}>SIM</option><option value="NÃO" ${r.cesta==='NÃO'?'selected':''}>NÃO</option></select></td>
     <td><input type="text" inputmode="decimal" style="width:100%" value="${moedaFmt(r.valorCesta||0)}" oninput="maskMoedaInput(this)" onchange="cvInlineUpdate(${r.id},'valorCesta',this.value)" ${r.cesta==='NÃO'?'disabled':''}></td>
-    <td><select style="width:100%" onchange="cvInlineUpdate(${r.id},'vegas',this.value)"><option value="SIM" ${r.vegas==='SIM'?'selected':''}>SIM</option><option value="NÃO" ${r.vegas==='NÃO'?'selected':''}>NÃO</option></select></td>
+    <td><select style="width:100%;${cvCorSelect(r.vegas)}" onchange="cvInlineUpdate(${r.id},'vegas',this.value)"><option value="SIM" ${r.vegas==='SIM'?'selected':''}>SIM</option><option value="NÃO" ${r.vegas==='NÃO'?'selected':''}>NÃO</option></select></td>
     <td><input type="text" inputmode="decimal" style="width:100%" value="${moedaFmt(r.valorVegas||0)}" oninput="maskMoedaInput(this)" onchange="cvInlineUpdate(${r.id},'valorVegas',this.value)" ${r.vegas==='NÃO'?'disabled':''}></td>
     <td><input type="number" min="0" style="width:100%" value="${r.qtdCesta!=null?r.qtdCesta:0}" onchange="cvInlineUpdate(${r.id},'qtdCesta',this.value)"></td>
     <td><input type="text" style="width:100%" value="${escAttr(r.observacoes||'')}" onchange="cvInlineUpdate(${r.id},'observacoes',this.value)"></td>
@@ -7295,7 +7856,7 @@ function cvExportarFiltrado() {
   const all = cvFiltrados();
   const header = ['Colaborador','Empresa','CNPJ','Cesta','Valor Cesta','Vegas','Valor Recarga Vegas','Qtd','Observações','Competência'];
   const mesSel = document.getElementById('cv-mes-sel');
-  const competencia = mesSel ? mesSel.options[mesSel.selectedIndex].text : '';
+  const competencia = mesSel ? (mesSel.options[mesSel.selectedIndex].text + '/' + cvPeriodo().ano) : '';
   const rows = all.map(r => [r.colaborador, r.cnpj||'', r.cnpj||'', r.cesta, r.valorCesta||0, r.vegas, r.valorVegas||0, r.qtdCesta||0, r.observacoes||'', competencia]);
   const totalCestas = all.filter(r=>r.cesta==='SIM').length;
   const valorCestas = all.reduce((s,r)=>s+(r.cesta==='SIM'?(parseFloat(r.valorCesta)||0):0),0);
@@ -7333,7 +7894,7 @@ function cvGerarRecibos(cnpjEmpresa) {
   const mesNome = mesNomes[mesNum] || '';
   const emp = CV_EMPRESA_INFO[cnpjEmpresa];
   const lista = loadData('cesta_vegas')
-    .filter(r => r.status !== 'Inativo' && r.mesNum === mesNum && r.ano === 2026 && r.cnpj === cnpjEmpresa && r.cesta === 'SIM')
+    .filter(r => r.status !== 'Inativo' && cvMesNum(r) === mesNum && Number(r.ano) === cvPeriodo().ano && r.cnpj === cnpjEmpresa && r.cesta === 'SIM')
     .sort((a,b) => a.colaborador.localeCompare(b.colaborador));
   if (!lista.length) { showToast(`Nenhum colaborador da ${cnpjEmpresa} com direito à cesta neste mês`, 'warn'); return; }
 
@@ -7346,7 +7907,7 @@ function cvGerarRecibos(cnpjEmpresa) {
     const dataFimFmt = fimEl && fimEl.value ? fimEl.value.split('-').reverse().join('/') : '__/__/____';
     document.getElementById('recibo-preview').innerHTML = `<div style="padding:16px 4px">
       <h3 style="text-align:center;margin-bottom:8px">CONTROLE E RECIBO DE ENTREGA DA CESTA BÁSICA</h3>
-      <p style="font-size:12px;margin-bottom:10px;line-height:1.5">Declaro que recebi da Empresa ${emp.nome}, inscrita no CNPJ sob Nº ${emp.cnpj}, a cesta básica referente ao mês de ${mesNome.toUpperCase()} de 2026.</p>
+      <p style="font-size:12px;margin-bottom:10px;line-height:1.5">Declaro que recebi da Empresa ${emp.nome}, inscrita no CNPJ sob Nº ${emp.cnpj}, a cesta básica referente ao mês de ${mesNome.toUpperCase()} de ${cvPeriodo().ano}.</p>
       <p style="font-size:12px;margin-bottom:14px"><strong>DATA INÍCIO RETIRADA:</strong> ${dataIniFmt} &nbsp;&nbsp;&nbsp;&nbsp; <strong>DATA FINAL RETIRADA:</strong> ${dataFimFmt}</p>
       <table style="width:100%;border-collapse:collapse;font-size:11px">
         <thead><tr style="border-bottom:1.5px solid #000">
@@ -7370,20 +7931,20 @@ let cvHistoricoChart;
 function buildCestaVegasHistorico() {
   const canvas = document.getElementById('cv-chart-historico');
   if (!canvas || typeof Chart === 'undefined') return;
-  const all = loadData('cesta_vegas').filter(r => r.status !== 'Inativo' && r.ano === 2026);
+  const anoSel = cvPeriodo().ano;
+  const all = loadData('cesta_vegas').filter(r => r.status !== 'Inativo' && Number(r.ano) === anoSel);
   const nomesMes = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
-  const totais = Array(10).fill(0); // Jan–Out
+  const totais = Array(12).fill(0);
   all.forEach(r => {
-    if (r.mesNum >= 1 && r.mesNum <= 10 && r.cesta === 'SIM') {
-      totais[r.mesNum-1] += (r.qtdCesta || 1);
-    }
+    const mn = cvMesNum(r);
+    if (mn >= 1 && mn <= 12 && r.cesta === 'SIM') totais[mn-1] += (r.qtdCesta || 1);
   });
   if (cvHistoricoChart) cvHistoricoChart.destroy();
   cvHistoricoChart = new Chart(canvas.getContext('2d'), {
     type: 'bar',
     data: {
-      labels: nomesMes.slice(0,10),
-      datasets: [{ label: 'Cestas entregues', data: totais, backgroundColor: '#1a3f6f', borderRadius: 4 }]
+      labels: nomesMes,
+      datasets: [{ label: 'Cestas entregues em ' + anoSel, data: totais, backgroundColor: '#1a3f6f', borderRadius: 4 }]
     },
     options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true}} }
   });
@@ -7444,7 +8005,7 @@ function renderReciboPreview() {
   const dataIniFmt = iniEl && iniEl.value ? iniEl.value.split('-').reverse().join('/') : '__/__/____';
   const dataFimFmt = fimEl && fimEl.value ? fimEl.value.split('-').reverse().join('/') : '__/__/____';
 
-  const all = loadData('cesta_vegas').filter(r => r.status !== 'Inativo' && r.mesNum === mesNum && r.ano === 2026 && r.cesta === 'SIM');
+  const all = loadData('cesta_vegas').filter(r => r.status !== 'Inativo' && cvMesNum(r) === mesNum && Number(r.ano) === cvPeriodo().ano && r.cesta === 'SIM');
 
   let html = '';
   ['AC','BRASS'].forEach(cnpj => {
@@ -7453,7 +8014,7 @@ function renderReciboPreview() {
     if (!lista.length) return;
     html += `<div style="page-break-after:always;padding:16px 4px">
       <h3 style="text-align:center;margin-bottom:8px">CONTROLE E RECIBO DE ENTREGA DA CESTA BÁSICA</h3>
-      <p style="font-size:12px;margin-bottom:10px;line-height:1.5">Declaro que recebi da Empresa ${emp.nome}, inscrita no CNPJ sob Nº ${emp.cnpj}, a cesta básica referente ao mês de ${mesNome.toUpperCase()} de 2026.</p>
+      <p style="font-size:12px;margin-bottom:10px;line-height:1.5">Declaro que recebi da Empresa ${emp.nome}, inscrita no CNPJ sob Nº ${emp.cnpj}, a cesta básica referente ao mês de ${mesNome.toUpperCase()} de ${cvPeriodo().ano}.</p>
       <p style="font-size:12px;margin-bottom:14px"><strong>DATA INÍCIO RETIRADA:</strong> ${dataIniFmt} &nbsp;&nbsp;&nbsp;&nbsp; <strong>DATA FINAL RETIRADA:</strong> ${dataFimFmt}</p>
       <table style="width:100%;border-collapse:collapse;font-size:11px">
         <thead><tr style="border-bottom:1.5px solid #000">
@@ -7503,8 +8064,11 @@ const FEEDBACK90_STAGE_TEXT = {
   d90:{titulo:'8º FEEDBACK – 90 DIAS',texto:'É um feedback de BOAS-VINDAS (EFETIVAÇÃO) OU RESCISÃO DO CONTRATO: o líder ressalta o que foi melhor avaliado, se haverá reajuste salarial, e alinha pontos pendentes (curso, treinamento, desenvolvimento) com prazo para cobrança da ação. Importante o RH ajudar no acompanhamento do plano de desenvolvimento definido.'}
 };
 
-const FEEDBACK90_STAGES = ['d7','d14','d21','d30','avInt','d45','d60','d75','d90'];
+const FEEDBACK90_STAGES = ['d7','d14','d21','d30','d45','d60','d75','d90'];
+const FEEDBACK90_LABEL = {d7:'7 Dias',d14:'14 Dias',d21:'21 Dias',d30:'30 Dias',d45:'45 Dias',d60:'60 Dias',d75:'75 Dias',d90:'90 Dias'};
+const FEEDBACK90_OFFSET = {d7:6,d14:13,d21:20,d30:29,d45:44,d60:59,d75:74,d90:89}; // dias após a admissão (padrão do calendário já usado)
 const FEEDBACK90_STATUS_COLOR = {'Realizado':'#92D050','Agendado':'#2E75B6','Pendente':'#FFC000','Não realizado':'#FF0000'};
+const FEEDBACK90_SITUACOES = {'Em acompanhamento':'#2E75B6','Efetivado':'#16a34a','Desligado':'#dc2626'};
 
 function buildFeedback90Seed() {
   if (localStorage.getItem('ac_fb90_real_v1')) return;
@@ -7518,49 +8082,167 @@ function buildFeedback90Seed() {
   localStorage.setItem('ac_fb90_real_v1', '1');
 }
 
-function fb90UpdateStatus(id, stage, novoStatus) {
+
+function fb90Situacao(r) { return r.situacao || 'Em acompanhamento'; }
+
+// Colaborador novo entra sozinho no controle, com as 8 datas calculadas a partir da admissão.
+function fb90CriarParaColaborador(c) {
+  const ja = loadData('feedback90').some(r => r.status !== 'Inativo' &&
+    (r.colaboradorId === c.id || (r.colaborador||'').trim().toUpperCase() === (c.nome||'').trim().toUpperCase()));
+  if (ja) return false;
+  const adm = parseDate(c.adm);
+  const reg = {colaborador: c.nome, colaboradorId: c.id, admissao: c.adm || '', observacoes: '', situacao: 'Em acompanhamento', autoCadastro: true, notas: {}};
+  FEEDBACK90_STAGES.forEach(st => {
+    reg[st+'Data'] = adm ? fmtDate(new Date(adm.getFullYear(), adm.getMonth(), adm.getDate() + FEEDBACK90_OFFSET[st])) : '';
+    reg[st+'Status'] = 'Pendente';
+  });
+  crudCreate('feedback90', reg, {modulo:'Acompanhamento 90 Dias', label: c.nome});
+  try { renderFeedback90(); } catch(e) {}
+  return true;
+}
+
+function fb90Salvar(id, changes, logTxt) {
   const data = loadData('feedback90');
   const idx = data.findIndex(d => d.id === id);
-  if (idx === -1) return;
-  data[idx][stage+'Status'] = novoStatus;
-  data[idx].atualizadoEm = nowStr();
+  if (idx === -1) return null;
+  Object.assign(data[idx], changes, {atualizadoEm: nowStr()});
   saveData('feedback90', data);
-  logAudit('Acompanhamento 90 Dias', 'Atualização', id, `${data[idx].colaborador} — ${stage}: ${novoStatus}`);
+  logAudit('Acompanhamento 90 Dias', 'Atualização', id, `${data[idx].colaborador} — ${logTxt}`);
   syncRecordToCloud('feedback90', data[idx]);
+  return data[idx];
+}
+function fb90UpdateStatus(id, stage, novoStatus) {
+  fb90Salvar(id, {[stage+'Status']: novoStatus}, `${FEEDBACK90_LABEL[stage]||stage}: ${novoStatus}`);
+  renderFeedback90();
+}
+function fb90UpdateSituacao(id, sit) {
+  fb90Salvar(id, {situacao: sit}, 'situação: ' + sit);
+  renderFeedback90();
+  showToast('Situação: ' + sit);
+}
+function fb90EditarData(id, stage) {
+  const r = loadData('feedback90').find(d => d.id === id);
+  if (!r) return;
+  const nova = prompt(`Data do feedback de ${FEEDBACK90_LABEL[stage]} — ${r.colaborador}\n(formato dd/mm/aaaa, vazio para limpar):`, r[stage+'Data'] || '');
+  if (nova === null) return;
+  const v = nova.trim();
+  if (v && !/^\d{2}\/\d{2}\/\d{4}$/.test(v)) { showToast('Data inválida. Use dd/mm/aaaa', 'warn'); return; }
+  fb90Salvar(id, {[stage+'Data']: v}, `${FEEDBACK90_LABEL[stage]}: data ${v||'(vazia)'}`);
+  renderFeedback90();
+}
+function fb90Excluir(id) {
+  const r = loadData('feedback90').find(d => d.id === id);
+  if (!r) return;
+  confirmAction(`Excluir DEFINITIVAMENTE o acompanhamento de "${r.colaborador}"?\n\nAs datas e todas as anotações serão apagadas e não poderão ser recuperadas.`, () => {
+    crudDeleteFisico('feedback90', id, {modulo:'Acompanhamento 90 Dias', label: r.colaborador});
+    showToast('🗑 Acompanhamento excluído');
+    renderFeedback90();
+  });
 }
 
 function fb90Cell(r, stage) {
-  const data = r[stage+'Data'] || '—';
+  const data = r[stage+'Data'];
   const status = r[stage+'Status'] || 'Pendente';
   const color = FEEDBACK90_STATUS_COLOR[status] || '#ccc';
-  return `<td style="text-align:center;white-space:nowrap">
-    <div style="font-size:10px;color:var(--g500);margin-bottom:2px">${data}</div>
-    <select style="font-size:9px;padding:2px 3px;border-radius:4px;border:1px solid ${color};background:${color}22;color:#333" onchange="fb90UpdateStatus(${r.id},'${stage}',this.value)">
+  return `<div style="border:1px solid ${color};background:${color}1f;border-radius:7px;padding:4px 5px;text-align:center">
+    <div style="font-size:9px;font-weight:700;color:var(--g500);letter-spacing:.02em">${FEEDBACK90_LABEL[stage]}</div>
+    <div style="font-size:10.5px;cursor:pointer;margin:1px 0 3px;text-decoration:underline dotted" title="Clique para reagendar" onclick="fb90EditarData(${r.id},'${stage}')">${data || 'definir data'}</div>
+    <select style="width:100%;font-size:9px;padding:1px 2px;border-radius:4px;border:1px solid ${color};background:#fff;color:#333" onchange="fb90UpdateStatus(${r.id},'${stage}',this.value)">
       ${['Pendente','Agendado','Realizado','Não realizado'].map(s=>`<option value="${s}" ${s===status?'selected':''}>${s}</option>`).join('')}
     </select>
-  </td>`;
+  </div>`;
 }
 
 function fb90RowRender(r) {
-  return `<tr>
-    <td style="font-weight:600">${r.colaborador}</td>
-    <td>${r.admissao||'—'}</td>
-    ${FEEDBACK90_STAGES.map(st => fb90Cell(r, st)).join('')}
-    <td style="font-size:10px;color:var(--g500);max-width:160px">${r.observacoes||'—'}</td>
-    <td style="white-space:nowrap">
-      <button class="btn btn-s btn-xs" onclick="fb90PrintForm(${r.id})" title="Gerar formulário">🖨</button>
-    </td>
-  </tr>`;
+  const colab = loadData('colaboradores').find(c => c.id === r.colaboradorId) || loadData('colaboradores').find(c => (c.nome||'').trim().toUpperCase() === (r.colaborador||'').trim().toUpperCase());
+  const sit = fb90Situacao(r);
+  const corSit = FEEDBACK90_SITUACOES[sit] || '#64748b';
+  const feitos = FEEDBACK90_STAGES.filter(st => r[st+'Status'] === 'Realizado').length;
+  const pct = Math.round(feitos / FEEDBACK90_STAGES.length * 100);
+  const temNotas = r.notas && Object.values(r.notas).some(n => n && (n.lider || n.colaborador));
+  return `<div class="card" style="padding:10px 12px;margin-bottom:10px">
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:8px">
+      <div style="flex:1;min-width:220px">
+        <div style="font-size:13px;font-weight:700">${r.colaborador}</div>
+        <div class="muted" style="font-size:10.5px">${colab ? (colab.cargo||'—') + ' · ' + (colab.setor||'—') + ' · ' : ''}Admissão: ${r.admissao||'—'}</div>
+        ${r.observacoes ? `<div style="font-size:10px;color:var(--g500);margin-top:2px">📝 ${r.observacoes}</div>` : ''}
+      </div>
+      <div style="min-width:120px">
+        <div style="font-size:9px;color:var(--g500);margin-bottom:2px">${feitos} de ${FEEDBACK90_STAGES.length} realizados</div>
+        <div class="pbar" style="height:6px"><div class="pbar-fill" style="width:${pct}%;background:#92D050"></div></div>
+      </div>
+      <div>
+        <div style="font-size:9px;color:var(--g500);margin-bottom:2px">Situação</div>
+        <select style="font-size:11px;font-weight:700;padding:3px 6px;border-radius:6px;border:1.5px solid ${corSit};color:${corSit};background:#fff" onchange="fb90UpdateSituacao(${r.id},this.value)">
+          ${Object.keys(FEEDBACK90_SITUACOES).map(s=>`<option ${s===sit?'selected':''}>${s}</option>`).join('')}
+        </select>
+      </div>
+      <div style="white-space:nowrap">
+        <button class="btn btn-s btn-xs" onclick="fb90AbrirNotas(${r.id})" title="Anotar as falas do líder e do colaborador">📝 Anotações${temNotas?' ●':''}</button>
+        <button class="btn btn-s btn-xs" onclick="fb90PrintForm(${r.id})" title="Imprimir formulário com o histórico da conversa">🖨 Imprimir</button>
+        <button class="btn btn-s btn-xs" onclick="fb90Excluir(${r.id})" title="Excluir acompanhamento">🗑</button>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(8,minmax(92px,1fr));gap:6px;overflow-x:auto">
+      ${FEEDBACK90_STAGES.map(st => fb90Cell(r, st)).join('')}
+    </div>
+  </div>`;
 }
 
 function renderFeedback90() {
-  const all = loadData('feedback90').filter(r => r.status !== 'Inativo').sort((a,b)=>a.colaborador.localeCompare(b.colaborador));
-  const tbody = document.getElementById('fb90-tbody');
-  if (!tbody) return;
-  tbody.innerHTML = all.length ? all.map(fb90RowRender).join('') : '<tr><td colspan="13" class="muted" style="text-align:center;padding:16px">Nenhum colaborador em acompanhamento.</td></tr>';
+  const box = document.getElementById('fb90-lista');
+  if (!box) return;
+  const todos = loadData('feedback90').filter(r => r.status !== 'Inativo');
+  const busca = (document.getElementById('fb90-busca')?.value || '').trim().toUpperCase();
+  const sitF = document.getElementById('fb90-sit-sel')?.value || '';
+  let all = todos.filter(r => (!busca || (r.colaborador||'').toUpperCase().includes(busca)) && (!sitF || fb90Situacao(r) === sitF));
+  const ordem = {'Em acompanhamento':0,'Efetivado':1,'Desligado':2};
+  all.sort((a,b) => (ordem[fb90Situacao(a)] - ordem[fb90Situacao(b)]) || (a.colaborador||'').localeCompare(b.colaborador||''));
+  box.innerHTML = all.length ? all.map(fb90RowRender).join('') : '<div class="muted" style="text-align:center;padding:24px">Nenhum colaborador em acompanhamento.</div>';
   setText('fb90-count', all.length + ' colaboradores');
+  setText('fb90-kpi-andamento', todos.filter(r => fb90Situacao(r) === 'Em acompanhamento').length);
+  setText('fb90-kpi-efetivado', todos.filter(r => fb90Situacao(r) === 'Efetivado').length);
+  setText('fb90-kpi-desligado', todos.filter(r => fb90Situacao(r) === 'Desligado').length);
+  setText('fb90-kpi-pendentes', todos.filter(r => fb90Situacao(r) === 'Em acompanhamento')
+    .reduce((s,r) => s + FEEDBACK90_STAGES.filter(st => (r[st+'Status']||'Pendente') === 'Pendente').length, 0));
 }
 
+/* ─── Anotações das conversas (fala do líder / fala do colaborador) ─── */
+function fb90AbrirNotas(id) {
+  const r = loadData('feedback90').find(d => d.id === id);
+  if (!r) return;
+  const notas = r.notas || {};
+  const blocos = FEEDBACK90_STAGES.map(st => {
+    const n = notas[st] || {};
+    return `<div style="border:1px solid var(--g100);border-radius:8px;padding:8px 10px;margin-bottom:8px">
+      <div style="font-size:12px;font-weight:700;margin-bottom:4px">${FEEDBACK90_LABEL[st]} <span class="muted" style="font-weight:400">— ${r[st+'Data']||'sem data'} · ${r[st+'Status']||'Pendente'}</span></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div><label style="font-size:10px;font-weight:600">💬 Fala do líder</label>
+          <textarea class="finp fb90-nota" data-st="${st}" data-quem="lider" rows="3" style="width:100%;resize:vertical">${(n.lider||'').replace(/</g,'&lt;')}</textarea></div>
+        <div><label style="font-size:10px;font-weight:600">💬 Fala do colaborador</label>
+          <textarea class="finp fb90-nota" data-st="${st}" data-quem="colaborador" rows="3" style="width:100%;resize:vertical">${(n.colaborador||'').replace(/</g,'&lt;')}</textarea></div>
+      </div>
+    </div>`;
+  }).join('');
+  abrirModalSimples('📝 Anotações — ' + r.colaborador, `
+    <div style="max-height:62vh;overflow-y:auto;padding-right:4px">${blocos}</div>
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--g100)">
+      <button class="btn btn-s" onclick="fecharModalSimples()">Fechar</button>
+      <button class="btn btn-s" onclick="fb90SalvarNotas(${r.id},false)">💾 Salvar</button>
+      <button class="btn btn-p" onclick="fb90SalvarNotas(${r.id},true)">💾 Salvar e imprimir</button>
+    </div>`, 860);
+}
+function fb90SalvarNotas(id, imprimir) {
+  const notas = {};
+  document.querySelectorAll('.fb90-nota').forEach(t => {
+    const st = t.dataset.st; notas[st] = notas[st] || {lider:'', colaborador:''};
+    notas[st][t.dataset.quem] = t.value.trim();
+  });
+  fb90Salvar(id, {notas}, 'anotações das conversas atualizadas');
+  showToast('💾 Anotações salvas');
+  renderFeedback90();
+  if (imprimir) { fecharModalSimples(); fb90PrintForm(id); } else { fecharModalSimples(); }
+}
 
 /* ═══════════════ MÓDULO: DESCRIÇÃO DE CARGOS ═══════════════ */
 const MOD_DESCCARGO = {
@@ -9197,28 +9879,37 @@ function renderSSTFinanceiro() {
 function fb90PrintForm(id) {
   const r = loadData('feedback90').find(d => d.id === id);
   if (!r) return;
-  const colab = loadData('colaboradores').find(c => (c.nome||'').toUpperCase() === (r.colaborador||'').toUpperCase());
+  const colab = loadData('colaboradores').find(c => c.id === r.colaboradorId) || loadData('colaboradores').find(c => (c.nome||'').toUpperCase() === (r.colaborador||'').toUpperCase());
   const cargo = colab ? colab.cargo : '—';
   const setor = colab ? colab.setor : '—';
+  const emp = colab ? empresaInfoDoColaborador(colab) : CV_EMPRESA_INFO['AC'];
+  const notas = r.notas || {};
+  const esc = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/\n/g,'<br>');
+  const area = (rotulo, texto) => `<div style="margin-top:6px"><div style="font-size:10px;font-weight:700">${rotulo}</div>` +
+    (texto ? `<div style="border:1px solid #bbb;border-radius:4px;padding:5px 7px;font-size:11px;min-height:34px">${esc(texto)}</div>`
+           : `<div style="border-bottom:1px solid #000;height:26px"></div><div style="border-bottom:1px solid #000;height:26px"></div>`) + `</div>`;
 
-  let html = `<div style="page-break-after:always;padding:10px 4px">
+  let html = `${docPageCSS(emp)}<div class="doc-print" style="padding:10px 4px">
     <h2 style="text-align:center;margin-bottom:2px">PLANO DE ACOMPANHAMENTO DE EXPERIÊNCIA — FEEDBACK 90 DIAS</h2>
     <p style="text-align:center;font-size:11px;color:#666;margin-bottom:14px">Recursos Humanos — Uso Interno Confidencial</p>
     <table style="width:100%;border-collapse:collapse;font-size:12px;margin-bottom:16px">
-      <tr><td style="padding:4px;font-weight:700">Nome do Colaborador:</td><td style="padding:4px">${r.colaborador}</td></tr>
+      <tr><td style="padding:4px;font-weight:700;width:170px">Nome do Colaborador:</td><td style="padding:4px">${r.colaborador}</td></tr>
       <tr><td style="padding:4px;font-weight:700">Data de Admissão:</td><td style="padding:4px">${r.admissao||'—'}</td></tr>
       <tr><td style="padding:4px;font-weight:700">Cargo Atual:</td><td style="padding:4px">${cargo||'—'}</td></tr>
       <tr><td style="padding:4px;font-weight:700">Departamento:</td><td style="padding:4px">${setor||'—'}</td></tr>
+      <tr><td style="padding:4px;font-weight:700">Situação:</td><td style="padding:4px">${fb90Situacao(r)}</td></tr>
     </table>`;
 
   FEEDBACK90_STAGES.forEach(st => {
     const info = FEEDBACK90_STAGE_TEXT[st];
-    html += `<div style="margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid #ddd">
-      <div style="font-weight:700;font-size:12px;margin-bottom:4px">${info.titulo} — ${r[st+'Data']||'—'} <span style="font-weight:400;color:#666">(${r[st+'Status']})</span></div>
-      <div style="font-size:10.5px;color:#555;margin-bottom:10px">${info.texto}</div>
-      <div style="border-bottom:1px solid #000;height:40px"></div>
-      <div style="display:flex;justify-content:space-between;font-size:10px;margin-top:2px">
-        <span>ASSINATURA DO COLABORADOR(A)</span><span>ASSINATURA DO GESTOR(A)</span>
+    const n = notas[st] || {};
+    html += `<div style="margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid #ddd;page-break-inside:avoid">
+      <div style="font-weight:700;font-size:12px;margin-bottom:4px">${info.titulo} — ${r[st+'Data']||'—'} <span style="font-weight:400;color:#666">(${r[st+'Status']||'Pendente'})</span></div>
+      <div style="font-size:10.5px;color:#555;margin-bottom:6px">${info.texto}</div>
+      ${area('Fala do líder', n.lider)}
+      ${area('Fala do colaborador', n.colaborador)}
+      <div style="display:flex;justify-content:space-between;font-size:10px;margin-top:22px">
+        <span style="border-top:1px solid #000;padding-top:2px;width:44%;text-align:center">ASSINATURA DO COLABORADOR(A)</span><span style="border-top:1px solid #000;padding-top:2px;width:44%;text-align:center">ASSINATURA DO GESTOR(A)</span>
       </div>
     </div>`;
   });
@@ -10195,7 +10886,17 @@ async function pullColaboradoresMerge() {
   const porId = {};
   baseline.forEach(r => { porId[r.id] = r; });
   remoto.forEach(r => { porId[r.id] = Object.assign({}, porId[r.id]||{}, r); });
-  const mesclado = Object.values(porId).sort((a,b) => a.id - b.id);
+  // Exclusões definitivas (local + nuvem) nunca voltam, nem pela base inicial
+  try {
+    const tombRemoto = await dbLoadData('colab_excluidos');
+    if (tombRemoto && tombRemoto.length) {
+      const locais = loadData('colab_excluidos'); const ids = new Set(locais.map(t => t.colabId));
+      tombRemoto.forEach(t => { if (!ids.has(t.colabId)) locais.push(t); });
+      saveData('colab_excluidos', locais);
+    }
+  } catch(e) {}
+  const tomb = colabTombstones();
+  const mesclado = Object.values(porId).filter(r => !tomb.has(r.id)).sort((a,b) => a.id - b.id);
   saveData('colaboradores', mesclado);
 }
 
@@ -10205,10 +10906,10 @@ async function pullColaboradoresMerge() {
 // tem dado local, não mexe — evita sobrescrever algo em uso.
 async function pullOutrasTabelasAntesDoBoot() {
   if (DB_MODE !== 'supabase' || !supabaseClient) return;
-  const TABELAS = ['colab_documentos','ferias','treinamentos','avaliacoes','sst','admissoes',
+  const TABELAS = ['colab_excluidos','beneficios_anexos','colab_documentos','ferias','treinamentos','avaliacoes','sst','admissoes',
     'vagas','beneficios_mov','beneficios_inscritos','beneficios_tipos','cargos','ponto',
     'clima_pesquisas','clima_acoes','sucessao','terceiros','documentos','usuarios','holerites',
-    'comunicados','cesta_vegas','folha_descontos','feedback90','desccargos','sstfin','pcmso',
+    'comunicados','cesta_vegas','folha_descontos','feedback90','tempo_empresa_ctrl','desccargos','sstfin','pcmso',
     'epi','auditoria','historico_cargo_salario','ordens_servico'];
   for (const t of TABELAS) {
     try {
@@ -10283,7 +10984,7 @@ async function dbLoadData(table) {
         .order('id', { ascending: true });
       if (error) throw error;
       // Mapeia: row.dados + row.id (usa o id do postgres)
-      return (data || []).map(row => ({ ...row.dados, _rowid: row.id, id: row.dados.id || row.id }));
+      return (data || []).filter(row => !(row.dados && row.dados.excluido)).map(row => ({ ...row.dados, _rowid: row.id, id: row.dados.id || row.id }));
     } catch(e) {
       console.warn('Supabase read fallback to local:', e.message);
       return loadData(table); // fallback
@@ -10862,11 +11563,6 @@ function colabLimparFiltros() {
   colabFiltrar();
 }
 
-function colabAtualizar() {
-  colabFiltrar();
-  atualizarKPIsDash();
-  showToast('🔃 Dados atualizados');
-}
 
 function toggleColunasColab() {
   const p = document.getElementById('colab-colunas-panel');
@@ -10945,9 +11641,8 @@ function colabRenderizar() {
       cells.push(`<td style="white-space:nowrap">
         <button class="btn btn-s btn-xs" onclick="abrirDetalheColabId(${c.id})">Ver</button>
         <button class="btn btn-s btn-xs" onclick="openCrudModal(MOD_COLAB,${c.id})">✏</button>
-        ${inativo
-          ? `<button class="btn btn-s btn-xs" onclick="crudRestoreAction(MOD_COLAB,${c.id},'${escAttr(c.nome)}')">↩</button>`
-          : `<button class="btn btn-s btn-xs" onclick="crudDeleteAction(MOD_COLAB,${c.id},'${escAttr(c.nome)}')">🗑</button>`}
+        <button class="btn btn-s btn-xs" title="${inativo?'Ativar':'Inativar'}" onclick="colabAlternarAtivo(${c.id})">${inativo?'🔓':'🔒'}</button>
+        <button class="btn btn-s btn-xs" title="Excluir cadastro" onclick="colabExcluirDefinitivo(${c.id})">🗑</button>
       </td>`);
       return `<tr style="${inativo?'opacity:.5':''}">${cells.join('')}</tr>`;
     }).join('');
