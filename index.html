@@ -439,7 +439,7 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
   <div class="l-box">
     <div class="l-logo">
       <div class="l-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
-      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.83 — Dias de gozo ajustáveis por colaborador</div></div>
+      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.84 — Provisão sem INSS, IRRF e encargos</div></div>
     </div>
     <div class="f-row"><label>Usuário</label><input type="text" id="l-user" value="jakeline@acmetalurgica.com.br"></div>
     <div class="f-row"><label>Senha</label><input type="password" id="l-pass" value="••••••••"></div>
@@ -13791,12 +13791,12 @@ const PROV_INSS=[[1621,.075,0],[2902.84,.09,12.16],[4354.27,.12,99.15],[8475.55,
 const PROV_IRRF=[[2428.8,0,0],[2826.65,.075,182.16],[3751.05,.15,394.16],[4664.68,.225,675.49],[1e12,.275,908.73]];
 function provInss(b){ let t=0,ant=0; for(const [lim,al] of PROV_INSS){ if(b>ant) t+=(Math.min(b,lim)-ant)*al; ant=lim; } return t; }
 function provIrrf(b){ for(const [lim,al,ded] of PROV_IRRF){ if(b<=lim) return Math.max(b*al-ded,0); } return 0; }
-function provCfg(){ const r=loadData('provisao_cfg')[0]; return {id:r&&r.id, fgts:r&&r.fgts!=null?Number(r.fgts):8, patronal:r&&r.patronal!=null?Number(r.patronal):28.8, gozo:r&&r.gozo!=null?Number(r.gozo):12}; }
+function provCfg(){ const r=loadData('provisao_cfg')[0]; return {id:r&&r.id, gozo:r&&r.gozo!=null?Number(r.gozo):12}; }
 function provSalvarCfg(){
   const n=id=>parseFloat(String((document.getElementById(id)||{}).value).replace(',','.'));
-  const g=n('prov-fgts'), p=n('prov-pat'), z=n('prov-gozo');
-  if(isNaN(g)||isNaN(p)||isNaN(z)||g<0||p<0||z<1||z>30){ showToast('Informe valores válidos','warn'); return; }
-  const c=provCfg(), o={fgts:g,patronal:p,gozo:Math.round(z)};
+  const z=n('prov-gozo');
+  if(isNaN(z)||z<1||z>30){ showToast('Dias de gozo: de 1 a 30','warn'); return; }
+  const c=provCfg(), o={gozo:Math.round(z)};
   if(c.id) crudUpdate('provisao_cfg',c.id,o,{modulo:'Provisão'}); else crudCreate('provisao_cfg',o,{modulo:'Provisão',label:'Parâmetros'});
   showToast('✓ Parâmetros salvos'); renderProvisao();
 }
@@ -13833,17 +13833,17 @@ function provSetGozo(nome,ano,v){ provSetAj(nome,ano,'gozo',v); }
 function provDados(){
   const ano=Number((document.getElementById('prov-ano')||{}).value)||new Date().getFullYear();
   const q=((document.getElementById('prov-busca')||{}).value||'').toLowerCase().trim();
-  const cfg=provCfg(), fg=cfg.fgts/100, pt=cfg.patronal/100, aj=provAjustes();
+  const cfg=provCfg(), aj=provAjustes();
   const V1=provVenc(ano,11,30), V2=provVenc(ano,12,20);
   let rows=loadData('colaboradores').filter(c=>c.status!=='Inativo').map(c=>{
     const sal=moedaNum(c.sal)||0, m=provMeses(c.adm,ano), emp=(c.cnpj==='02')?'BRASS':'AC';
-    const d13=sal/12*m, p1=d13*0.5, inss=provInss(d13), irrf=provIrrf(d13-inss), p2=Math.max(d13-p1-inss-irrf,0);
+    const d13=sal/12*m, p1=d13*0.5, p2=d13-p1;
     const est=provDiasDireito(c.adm,ano), a=aj[c.nome+'|'+ano], dd=(a&&a.dias!=null)?Number(a.dias):est;
     const gAj=!!(a&&a.gozo!=null), dias=gAj?Number(a.gozo):cfg.gozo, termo=dd<dias, vfer=sal/30*dias, terco=vfer/3, fer=vfer+terco;
     return {nome:c.nome,cargo:c.cargo||'',empresa:emp,adm:c.adm||'',sal,m,
-      d13,p1,p2,inss,irrf,V1,V2,v1:V1.data,v2:V2.data, f13:d13*fg, e13:d13*pt, t13:d13*(1+fg+pt),
-      dd,est,ajust:!!(a&&a.dias!=null),gAj,termo,dias,vfer,terco,fer, fF:fer*fg, eF:fer*pt, tF:fer*(1+fg+pt),
-      fgts:(d13+fer)*fg, pat:(d13+fer)*pt, total:(d13+fer)*(1+fg+pt), semSal:!sal};
+      d13,p1,p2,V1,V2,v1:V1.data,v2:V2.data,
+      dd,est,ajust:!!(a&&a.dias!=null),gAj,termo,dias,vfer,terco,fer,
+      total:d13+fer, semSal:!sal};
   }).filter(r=>r.m>0);
   if(q) rows=rows.filter(r=>(r.nome+' '+r.cargo).toLowerCase().includes(q));
   rows.sort((a,b)=>a.nome.localeCompare(b.nome));
@@ -13859,11 +13859,11 @@ function renderProvisao(){
   const sel=document.getElementById('prov-ano');
   if(sel&&!sel.options.length){ const a=new Date().getFullYear(); for(let y=2026;y<=2050;y++){ const o=document.createElement('option'); o.value=y; o.textContent=y; if(y===a) o.selected=true; sel.appendChild(o);} if(!sel.value) sel.value='2026'; }
   const c=provCfg(); const put=(id,v)=>{ const e=document.getElementById(id); if(e&&document.activeElement!==e) e.value=String(v).replace('.',','); };
-  put('prov-fgts',c.fgts); put('prov-pat',c.patronal); put('prov-gozo',c.gozo);
+  put('prov-gozo',c.gozo);
   const D=provDados(), rows=D.rows;
   setText('prov-k-n',rows.length); setText('prov-k-13',provBRL(provSoma(rows,'d13'))); setText('prov-k-fer',provBRL(provSoma(rows,'fer')));
-  setText('prov-k-enc',provBRL(provSoma(rows,'fgts')+provSoma(rows,'pat'))); setText('prov-k-tot',provBRL(provSoma(rows,'total')));
-  const linhaEmp=(lab,r,neg)=>`<tr${neg?' style="background:var(--g50,#f8fafc);font-weight:700"':''}><td>${neg?lab:'<b>'+lab+'</b>'}</td><td style="text-align:center">${r.length}</td><td>${provBRL(provSoma(r,'d13'))}</td><td>${provBRL(provSoma(r,'fer'))}</td><td>${provBRL(provSoma(r,'fgts')+provSoma(r,'pat'))}</td><td><b>${provBRL(provSoma(r,'total'))}</b></td></tr>`;
+  setText('prov-k-tot',provBRL(provSoma(rows,'total')));
+  const linhaEmp=(lab,r,neg)=>`<tr${neg?' style="background:var(--g50,#f8fafc);font-weight:700"':''}><td>${neg?lab:'<b>'+lab+'</b>'}</td><td style="text-align:center">${r.length}</td><td>${provBRL(provSoma(r,'d13'))}</td><td>${provBRL(provSoma(r,'fer'))}</td><td><b>${provBRL(provSoma(r,'total'))}</b></td></tr>`;
   document.getElementById('prov-emps').innerHTML=PROV_EMP.map(([e,n])=>linhaEmp(n,rows.filter(x=>x.empresa===e))).join('')+linhaEmp('Total',rows,true);
   const R=v=>`<td style="text-align:right">${v}</td>`, nome=r=>`<td><b>${gpEsc(r.nome)}</b><br><span class="muted">${gpEsc(r.cargo)}</span></td>`;
   const vazio=n=>`<tr><td colspan="${n}" class="muted" style="text-align:center;padding:18px">Nenhum colaborador neste filtro.</td></tr>`;
@@ -13871,10 +13871,10 @@ function renderProvisao(){
   const T=(rs,k)=>provBRL(provSoma(rs,k));
   PROV_EMP.forEach(([e])=>{
     const rs=rows.filter(x=>x.empresa===e);
-    document.getElementById('prov-tb-body-13'+e).innerHTML=rs.length?rs.map(r=>`<tr${r.semSal?' style="background:#fef2f2"':''}>${nome(r)}<td>${gpEsc(r.adm)}</td>${R(sal(r))}<td style="text-align:center">${r.m}</td>${R(provBRL(r.d13))}${R(provBRL(r.p1))}<td style="text-align:center">${provVencHtml(r.V1)}</td>${R(provBRL(r.inss))}${R(provBRL(r.irrf))}${R(provBRL(r.p2))}<td style="text-align:center">${provVencHtml(r.V2)}</td>${R(provBRL(r.f13+r.e13))}${R('<b>'+provBRL(r.t13)+'</b>')}</tr>`).join('')
-      +`<tr style="background:var(--g50,#f8fafc);font-weight:700"><td colspan="4">TOTAL (${rs.length})</td>${R(T(rs,'d13'))}${R(T(rs,'p1'))}<td></td>${R(T(rs,'inss'))}${R(T(rs,'irrf'))}${R(T(rs,'p2'))}<td></td>${R(provBRL(provSoma(rs,'f13')+provSoma(rs,'e13')))}${R(T(rs,'t13'))}</tr>`:vazio(13);
-    document.getElementById('prov-tb-body-fer'+e).innerHTML=rs.length?rs.map(r=>`<tr${r.semSal?' style="background:#fef2f2"':''}>${nome(r)}<td>${gpEsc(r.adm)}</td>${R(sal(r))}<td style="text-align:center"><input type="number" min="0" max="30" class="finp" style="width:58px;text-align:center${r.ajust?';background:#ecfdf5':';background:#fff7ed'}" value="${r.dd}" title="${r.ajust?'Ajustado por você — apague para voltar à estimativa ('+r.est+')':'Estimativa — digite o saldo real'}" onchange="provSetDias('${gpEsc(r.nome).replace(/'/g,"\\'")}',${D.ano},this.value)"></td><td style="text-align:center">${r.termo?'<span style="color:var(--red);font-weight:700">SIM</span>':'NÃO'}</td><td style="text-align:center"><input type="number" min="1" max="30" class="finp" style="width:58px;text-align:center${r.gAj?';background:#ecfdf5':''}" value="${r.dias}" title="${r.gAj?'Ajustado só para esta pessoa — apague para voltar ao padrão':'Padrão geral — digite para mudar só esta pessoa'}" onchange="provSetGozo('${gpEsc(r.nome).replace(/'/g,"\\'")}',${D.ano},this.value)"></td>${R(provBRL(r.vfer))}${R(provBRL(r.terco))}${R('<b>'+provBRL(r.fer)+'</b>')}${R(provBRL(r.fF+r.eF))}${R('<b>'+provBRL(r.tF)+'</b>')}</tr>`).join('')
-      +`<tr style="background:var(--g50,#f8fafc);font-weight:700"><td colspan="3">TOTAL (${rs.length})</td><td></td><td style="text-align:center">${rs.filter(r=>r.termo).length} c/ termo</td><td></td>${R(T(rs,'vfer'))}${R(T(rs,'terco'))}${R(T(rs,'fer'))}${R(provBRL(provSoma(rs,'fF')+provSoma(rs,'eF')))}${R(T(rs,'tF'))}</tr>`:vazio(11);
+    document.getElementById('prov-tb-body-13'+e).innerHTML=rs.length?rs.map(r=>`<tr${r.semSal?' style="background:#fef2f2"':''}>${nome(r)}<td>${gpEsc(r.adm)}</td>${R(sal(r))}<td style="text-align:center">${r.m}</td>${R(provBRL(r.d13))}${R(provBRL(r.p1))}<td style="text-align:center">${provVencHtml(r.V1)}</td>${R(provBRL(r.p2))}<td style="text-align:center">${provVencHtml(r.V2)}</td></tr>`).join('')
+      +`<tr style="background:var(--g50,#f8fafc);font-weight:700"><td colspan="4">TOTAL (${rs.length})</td>${R(T(rs,'d13'))}${R(T(rs,'p1'))}<td></td>${R(T(rs,'p2'))}<td></td></tr>`:vazio(9);
+    document.getElementById('prov-tb-body-fer'+e).innerHTML=rs.length?rs.map(r=>`<tr${r.semSal?' style="background:#fef2f2"':''}>${nome(r)}<td>${gpEsc(r.adm)}</td>${R(sal(r))}<td style="text-align:center"><input type="number" min="0" max="30" class="finp" style="width:58px;text-align:center${r.ajust?';background:#ecfdf5':';background:#fff7ed'}" value="${r.dd}" title="${r.ajust?'Ajustado por você — apague para voltar à estimativa ('+r.est+')':'Estimativa — digite o saldo real'}" onchange="provSetDias('${gpEsc(r.nome).replace(/'/g,"\\'")}',${D.ano},this.value)"></td><td style="text-align:center">${r.termo?'<span style="color:var(--red);font-weight:700">SIM</span>':'NÃO'}</td><td style="text-align:center"><input type="number" min="1" max="30" class="finp" style="width:58px;text-align:center${r.gAj?';background:#ecfdf5':''}" value="${r.dias}" title="${r.gAj?'Ajustado só para esta pessoa — apague para voltar ao padrão':'Padrão geral — digite para mudar só esta pessoa'}" onchange="provSetGozo('${gpEsc(r.nome).replace(/'/g,"\\'")}',${D.ano},this.value)"></td>${R(provBRL(r.vfer))}${R(provBRL(r.terco))}${R('<b>'+provBRL(r.fer)+'</b>')}</tr>`).join('')
+      +`<tr style="background:var(--g50,#f8fafc);font-weight:700"><td colspan="3">TOTAL (${rs.length})</td><td></td><td style="text-align:center">${rs.filter(r=>r.termo).length} c/ termo</td><td></td>${R(T(rs,'vfer'))}${R(T(rs,'terco'))}${R(T(rs,'fer'))}</tr>`:vazio(9);
   });
   document.getElementById('prov-aviso').innerHTML=(rows.some(r=>r.semSal)?'⚠ Há colaborador(es) sem salário no cadastro (linha em vermelho). ':'')+'Dias de direito em laranja são estimativas; digite o saldo real para ajustar (fica verde).';
   provAbaSel(provAba);
@@ -13890,8 +13890,8 @@ function provImprimir(){
   if(provAba.startsWith('13')){
     if(!rs.length){ showToast('Nada para imprimir','warn'); return; }
     titulo='Provisão 13º '+enome+' '+D.ano;
-    const lin=rs.map(r=>`<tr style="border-bottom:1px solid #ddd">${cel(gpEsc(r.nome))}${cel(gpEsc(r.adm),'center')}${cel(provBRL(r.sal),'right')}${cel(r.m,'center')}${cel(provBRL(r.d13),'right')}${cel(provBRL(r.p1),'right')}${cel(provBRL(r.inss),'right')}${cel(provBRL(r.irrf),'right')}${cel(provBRL(r.p2),'right')}${cel(provBRL(r.t13),'right')}</tr>`).join('');
-    corpo=cab('13º SALÁRIO — '+enome.toUpperCase(),`1ª parcela ${rs[0].v1} · 2ª parcela (líquida) ${rs[0].v2} · última coluna = total com encargos`)+`<table style="width:100%;border-collapse:collapse"><thead><tr style="border-bottom:1.5px solid #000">${th(['Colaborador','Admissão','Salário','Meses','13º bruto','1ª parcela','INSS','IRRF','2ª parcela','Total c/ encargos'])}</tr></thead><tbody>${lin}<tr style="border-top:1.5px solid #000;font-weight:700">${cel('TOTAL')}${cel('')}${cel('')}${cel('')}${cel(provBRL(provSoma(rs,'d13')),'right')}${cel(provBRL(provSoma(rs,'p1')),'right')}${cel(provBRL(provSoma(rs,'inss')),'right')}${cel(provBRL(provSoma(rs,'irrf')),'right')}${cel(provBRL(provSoma(rs,'p2')),'right')}${cel(provBRL(provSoma(rs,'t13')),'right')}</tr></tbody></table>`;
+    const lin=rs.map(r=>`<tr style="border-bottom:1px solid #ddd">${cel(gpEsc(r.nome))}${cel(gpEsc(r.adm),'center')}${cel(provBRL(r.sal),'right')}${cel(r.m,'center')}${cel(provBRL(r.d13),'right')}${cel(provBRL(r.p1),'right')}${cel(provBRL(r.p2),'right')}</tr>`).join('');
+    corpo=cab('13º SALÁRIO — '+enome.toUpperCase(),`1ª parcela ${rs[0].v1} · 2ª parcela ${rs[0].v2} · valores brutos`)+`<table style="width:100%;border-collapse:collapse"><thead><tr style="border-bottom:1.5px solid #000">${th(['Colaborador','Admissão','Salário','Meses','13º bruto','1ª parcela','2ª parcela'])}</tr></thead><tbody>${lin}<tr style="border-top:1.5px solid #000;font-weight:700">${cel('TOTAL')}${cel('')}${cel('')}${cel('')}${cel(provBRL(provSoma(rs,'d13')),'right')}${cel(provBRL(provSoma(rs,'p1')),'right')}${cel(provBRL(provSoma(rs,'p2')),'right')}</tr></tbody></table>`;
   } else if(provAba.startsWith('fer')){
     if(!rs.length){ showToast('Nada para imprimir','warn'); return; }
     titulo='Provisão de Férias Coletivas '+enome+' '+D.ano;
@@ -13899,29 +13899,27 @@ function provImprimir(){
     corpo=cab('FÉRIAS COLETIVAS — '+enome.toUpperCase(),`${D.cfg.gozo} dias de gozo · valor + 1/3 constitucional`)+`<table style="width:100%;border-collapse:collapse"><thead><tr style="border-bottom:1.5px solid #000">${th(['Colaborador','Admissão','Salário','Dias direito','Termo acordo','Dias gozo','Valor férias','1/3','Valor a pagar'])}</tr></thead><tbody>${lin}<tr style="border-top:1.5px solid #000;font-weight:700">${cel('TOTAL')}${cel('')}${cel('')}${cel('')}${cel('')}${cel('')}${cel(provBRL(provSoma(rs,'vfer')),'right')}${cel(provBRL(provSoma(rs,'terco')),'right')}${cel(provBRL(provSoma(rs,'fer')),'right')}</tr></tbody></table>`;
   } else {
     titulo='Provisão 13º e Férias '+D.ano;
-    const emps=PROV_EMP.map(([e,n])=>{ const r=rows.filter(x=>x.empresa===e); return r.length?`<tr>${cel('<b>'+n+'</b>')}${cel(r.length,'center')}${cel(provBRL(provSoma(r,'d13')),'right')}${cel(provBRL(provSoma(r,'fer')),'right')}${cel(provBRL(provSoma(r,'fgts')+provSoma(r,'pat')),'right')}${cel('<b>'+provBRL(provSoma(r,'total'))+'</b>','right')}</tr>`:''; }).join('');
+    const emps=PROV_EMP.map(([e,n])=>{ const r=rows.filter(x=>x.empresa===e); return r.length?`<tr>${cel('<b>'+n+'</b>')}${cel(r.length,'center')}${cel(provBRL(provSoma(r,'d13')),'right')}${cel(provBRL(provSoma(r,'fer')),'right')}${cel('<b>'+provBRL(provSoma(r,'total'))+'</b>','right')}</tr>`:''; }).join('');
     corpo=cab('PROVISÃO DE 13º SALÁRIO E FÉRIAS COLETIVAS','projeção até 31/12/'+D.ano+' · salários atuais do cadastro')+`
     <table style="width:60%;margin:0 auto 12px;border-collapse:collapse;font-size:11px">
       <tr><td style="padding:3px 6px">13º salário (bruto)</td><td style="text-align:right">${provBRL(provSoma(rows,'d13'))}</td></tr>
       <tr><td style="padding:3px 6px">Férias coletivas + 1/3 constitucional</td><td style="text-align:right">${provBRL(provSoma(rows,'fer'))}</td></tr>
-      <tr><td style="padding:3px 6px">FGTS (${String(D.cfg.fgts).replace('.',',')}%)</td><td style="text-align:right">${provBRL(provSoma(rows,'fgts'))}</td></tr>
-      <tr><td style="padding:3px 6px">INSS patronal + RAT + Terceiros (${String(D.cfg.patronal).replace('.',',')}%)</td><td style="text-align:right">${provBRL(provSoma(rows,'pat'))}</td></tr>
       <tr style="border-top:1.5px solid #000;font-weight:700"><td style="padding:4px 6px">TOTAL DA PROVISÃO</td><td style="text-align:right">${provBRL(provSoma(rows,'total'))}</td></tr></table>
-    <table style="width:100%;border-collapse:collapse"><thead><tr style="border-bottom:1.5px solid #000">${th(['Empresa','Colab.','13º','Férias + 1/3','Encargos','Total'])}</tr></thead><tbody>${emps}</tbody></table>`;
+    <table style="width:100%;border-collapse:collapse"><thead><tr style="border-bottom:1.5px solid #000">${th(['Empresa','Colab.','13º','Férias + 1/3','Total'])}</tr></thead><tbody>${emps}</tbody></table>`;
   }
   abrirReciboModal('🖨 '+titulo,`${docPageCSS({nome:'AC Metalúrgica / Brassmetal',email:''})}<div class="doc-print" style="padding:8px 4px">${corpo}</div>`,false);
 }
 function provExportar(){
   if(typeof XLSX==='undefined'){ showToast('Biblioteca de Excel indisponível (sem internet)','warn'); return; }
   const D=provDados(), n=x=>+Number(x).toFixed(2), wb=XLSX.utils.book_new();
-  const res=[['Empresa','Colaboradores','13º (bruto)','Férias + 1/3','FGTS','INSS patronal+RAT+Terceiros','Total da provisão']];
-  PROV_EMP.forEach(([e,nm])=>{ const r=D.rows.filter(x=>x.empresa===e); res.push([nm,r.length,n(provSoma(r,'d13')),n(provSoma(r,'fer')),n(provSoma(r,'fgts')),n(provSoma(r,'pat')),n(provSoma(r,'total'))]); });
-  res.push(['TOTAL',D.rows.length,n(provSoma(D.rows,'d13')),n(provSoma(D.rows,'fer')),n(provSoma(D.rows,'fgts')),n(provSoma(D.rows,'pat')),n(provSoma(D.rows,'total'))]);
+  const res=[['Empresa','Colaboradores','13º (bruto)','Férias + 1/3','Total da provisão']];
+  PROV_EMP.forEach(([e,nm])=>{ const r=D.rows.filter(x=>x.empresa===e); res.push([nm,r.length,n(provSoma(r,'d13')),n(provSoma(r,'fer')),n(provSoma(r,'total'))]); });
+  res.push(['TOTAL',D.rows.length,n(provSoma(D.rows,'d13')),n(provSoma(D.rows,'fer')),n(provSoma(D.rows,'total'))]);
   XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(res),'Resumo');
   PROV_EMP.forEach(([e,nm])=>{
     const r=D.rows.filter(x=>x.empresa===e);
-    XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([['Nome','Admissão','Salário Base (R$)','Meses Trabalhados no Ano','13º Proporcional (R$)','1ª Parcela 13º '+(r[0]?r[0].v1:''),'INSS (R$)','IRRF (R$)','2ª Parcela 13º líquida '+(r[0]?r[0].v2:''),'Encargos (R$)','Total c/ encargos (R$)'],...r.map(x=>[x.nome,x.adm,x.sal,x.m,n(x.d13),n(x.p1),n(x.inss),n(x.irrf),n(x.p2),n(x.f13+x.e13),n(x.t13)])]),('13º '+nm).slice(0,31));
-    XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([['Nome','Admissão','Salário Base (R$)','Dias de Direito','Termo de Acordo','Dias de Gozo','Valor Férias Proporcional (R$)','1/3 Constitucional (R$)','Valor a pagar (R$)','Encargos (R$)','Total c/ encargos (R$)'],...r.map(x=>[x.nome,x.adm,x.sal,x.dd,x.termo?'SIM':'NÃO',x.dias,n(x.vfer),n(x.terco),n(x.fer),n(x.fF+x.eF),n(x.tF)])]),('Férias '+nm).slice(0,31));
+    XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([['Nome','Admissão','Salário Base (R$)','Meses Trabalhados no Ano','13º Proporcional (R$)','1ª Parcela 13º '+(r[0]?r[0].v1:''),'2ª Parcela 13º '+(r[0]?r[0].v2:'')],...r.map(x=>[x.nome,x.adm,x.sal,x.m,n(x.d13),n(x.p1),n(x.p2)])]),('13º '+nm).slice(0,31));
+    XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([['Nome','Admissão','Salário Base (R$)','Dias de Direito','Termo de Acordo','Dias de Gozo','Valor Férias Proporcional (R$)','1/3 Constitucional (R$)','Valor a pagar (R$)'],...r.map(x=>[x.nome,x.adm,x.sal,x.dd,x.termo?'SIM':'NÃO',x.dias,n(x.vfer),n(x.terco),n(x.fer)])]),('Férias '+nm).slice(0,31));
   });
   XLSX.writeFile(wb,'Provisao_13o_Ferias_Coletivas_'+D.ano+'.xlsx');
 }
@@ -13930,22 +13928,21 @@ function provExportar(){
   const old=document.getElementById('page-provisao'); if(old) old.remove();
   const d=document.createElement('div'); d.id='page-provisao'; d.className='page';
   const th=a=>a.map(t=>`<th>${t}</th>`).join('');
-  const H13=['Colaborador','Admissão','Salário','Meses','13º bruto','1ª parcela (50%)','Venc. 1ª','INSS','IRRF','2ª parcela (líquida)','Venc. 2ª','Encargos','Total c/ encargos'];
-  const HF=['Colaborador','Admissão','Salário','Dias de direito','Termo de acordo','Dias de gozo','Valor das férias','1/3 constitucional','Valor a pagar','Encargos','Total c/ encargos'];
+  const H13=['Colaborador','Admissão','Salário','Meses','13º bruto','1ª parcela (50%)','Venc. 1ª','2ª parcela (50%)','Venc. 2ª'];
+  const HF=['Colaborador','Admissão','Salário','Dias de direito','Termo de acordo','Dias de gozo','Valor das férias','1/3 constitucional','Valor a pagar'];
   const tab=(id,rot)=>`<div class="tab${id==='resumo'?' active':''}" id="prov-tb-${id}" onclick="provAbaSel('${id}')">${rot}</div>`;
   const pane=(id,h,body,nota)=>`<div id="prov-t-${id}" style="display:none"><div class="card" style="padding:0;overflow-x:auto"><table><thead><tr>${th(h)}</tr></thead><tbody id="prov-tb-body-${id}"></tbody></table></div><div class="muted" style="font-size:10.5px;margin-top:8px">${nota}</div></div>`;
-  const n13='1ª parcela = 50% do 13º bruto. 2ª parcela = 13º − 1ª parcela − INSS − IRRF (valor líquido ao colaborador). Vencimentos ajustados: fim de semana → sexta; feriado → dia útil anterior.';
-  const nF='Férias coletivas: dias de gozo × salário ÷ 30, mais 1/3. Termo de acordo = SIM quando os dias de direito são menores que os dias de gozo. Dias de gozo podem ser alterados por pessoa (verde = ajustado). Tabelas de INSS/IRRF: confirme com o contador.';
+  const n13='1ª parcela = 50% do 13º bruto. 2ª parcela = restante do 13º. Valores brutos, sem INSS, IRRF ou encargos. Vencimentos ajustados: fim de semana → sexta; feriado → dia útil anterior.';
+  const nF='Férias coletivas: dias de gozo × salário ÷ 30, mais 1/3. Termo de acordo = SIM quando os dias de direito são menores que os dias de gozo. Dias de gozo podem ser alterados por pessoa (verde = ajustado).';
   d.innerHTML=`<div class="layer-badge lb-st">● Estratégico — Provisão</div>
     <div class="section-hdr"><div class="sec-title">💰 Provisão de 13º e Férias Coletivas</div>
       <button class="btn btn-s btn-sm" onclick="provImprimir()">🖨 Imprimir esta aba</button>
       <button class="btn btn-s btn-sm" onclick="provExportar()">⬇ Exportar Excel</button></div>
-    <div class="muted" style="font-size:11px;margin:-4px 0 10px">Calculada com os salários e datas de admissão do cadastro de Colaboradores, projetada até 31/12 do ano escolhido. O total da provisão inclui os encargos (FGTS e INSS patronal).</div>
+    <div class="muted" style="font-size:11px;margin:-4px 0 10px">Calculada com os salários e datas de admissão do cadastro de Colaboradores, projetada até 31/12 do ano escolhido. Valores brutos, sem INSS, IRRF ou encargos.</div>
     <div class="kpi-grid" style="grid-template-columns:repeat(auto-fit,minmax(160px,1fr))">
       <div class="kpi-card"><div class="kpi-lbl">Colaboradores</div><div class="kpi-val" id="prov-k-n">—</div></div>
       <div class="kpi-card"><div class="kpi-lbl">13º salário</div><div class="kpi-val" style="font-size:18px" id="prov-k-13">—</div></div>
       <div class="kpi-card"><div class="kpi-lbl">Férias coletivas + 1/3</div><div class="kpi-val" style="font-size:18px" id="prov-k-fer">—</div></div>
-      <div class="kpi-card"><div class="kpi-lbl">Encargos</div><div class="kpi-val" style="font-size:18px" id="prov-k-enc">—</div></div>
       <div class="kpi-card"><div class="kpi-lbl">Total da provisão</div><div class="kpi-val" style="font-size:18px;color:var(--blue)" id="prov-k-tot">—</div></div>
     </div>
     <div class="filters" style="margin-bottom:10px;flex-wrap:wrap">
@@ -13953,14 +13950,12 @@ function provExportar(){
       <input class="finp" type="text" id="prov-busca" placeholder="🔎 Nome ou cargo..." oninput="renderProvisao()" style="width:200px">
       <span style="flex:1"></span>
       <span style="font-size:11px;color:var(--g500)">Dias de gozo</span><input class="finp" id="prov-gozo" style="width:50px">
-      <span style="font-size:11px;color:var(--g500)">FGTS %</span><input class="finp" id="prov-fgts" style="width:60px">
-      <span style="font-size:11px;color:var(--g500)">INSS patronal+RAT+Terceiros %</span><input class="finp" id="prov-pat" style="width:60px">
       <button class="btn btn-s btn-xs" onclick="provSalvarCfg()">Salvar parâmetros</button>
     </div>
     <div id="prov-aviso" class="muted" style="font-size:11px;margin-bottom:10px"></div>
     <div class="tabs" style="margin-bottom:10px">${tab('resumo','📊 Resumo')}${tab('13AC','13º AC')}${tab('ferAC','Férias AC')}${tab('13BRASS','13º BRASS')}${tab('ferBRASS','Férias BRASS')}</div>
-    <div id="prov-t-resumo"><div class="card" style="padding:0;overflow-x:auto"><table><thead><tr>${th(['Empresa','Colaboradores','13º','Férias + 1/3','Encargos','Total'])}</tr></thead><tbody id="prov-emps"></tbody></table></div>
-      <div class="muted" style="font-size:10.5px;margin-top:8px">A alíquota de INSS patronal + RAT + Terceiros (28,8%) é uma estimativa — ajuste conforme o regime tributário da empresa, com o contador.</div></div>
+    <div id="prov-t-resumo"><div class="card" style="padding:0;overflow-x:auto"><table><thead><tr>${th(['Empresa','Colaboradores','13º','Férias + 1/3','Total'])}</tr></thead><tbody id="prov-emps"></tbody></table></div>
+      <div class="muted" style="font-size:10.5px;margin-top:8px">Valores brutos, sem INSS, IRRF ou encargos.</div></div>
     ${pane('13AC',H13,'',n13)}${pane('ferAC',HF,'',nF)}${pane('13BRASS',H13,'',n13)}${pane('ferBRASS',HF,'',nF)}`;
   content.appendChild(d);
 })();
