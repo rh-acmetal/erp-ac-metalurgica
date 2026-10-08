@@ -439,7 +439,7 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
   <div class="l-box">
     <div class="l-logo">
       <div class="l-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
-      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.84 — Provisão sem INSS, IRRF e encargos</div></div>
+      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.87 — Férias com programação da contabilidade (dias de direito automáticos)</div></div>
     </div>
     <div class="f-row"><label>Usuário</label><input type="text" id="l-user" value="jakeline@acmetalurgica.com.br"></div>
     <div class="f-row"><label>Senha</label><input type="password" id="l-pass" value="••••••••"></div>
@@ -1192,7 +1192,7 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
       <div class="layer-badge lb-op">● Operacional</div>
       <div class="section-hdr">
         <div class="sec-title"><svg viewBox="0 0 24 24"><path d="M8 3v3m8-3v3M3 8h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/></svg>Gestão de Férias</div>
-        <button class="btn btn-p" onclick="openCrudModal(MOD_FERIAS,null)">+ Novo Registro</button>
+        <div style="display:flex;gap:8px"><button class="btn btn-s" onclick="if(confirm('Atualizar as férias com o relatório da contabilidade (AC 03/09 e Brass 16/09)? Só colaboradores ativos entram.'))feriasAtualizarProg()">📥 Atualizar com relatório da contabilidade</button><button class="btn btn-p" onclick="openCrudModal(MOD_FERIAS,null)">+ Novo Registro</button></div>
       </div>
       <div class="kpi-grid">
         <div class="kpi-card"><div class="kpi-lbl">Total</div><div class="kpi-val" id="f-total-crud">21</div></div>
@@ -5441,7 +5441,10 @@ const MOD_FERIAS = {
     {field:'periodoFim', label:'Fim Período Aquisitivo', placeholder:'dd/mm/aaaa'},
     {field:'inicioGozo', label:'Início Gozo (Programado)', placeholder:'dd/mm/aaaa'},
     {field:'fimGozo', label:'Fim Gozo (Programado)', placeholder:'dd/mm/aaaa'},
-    {field:'dias', label:'Dias de Férias', type:'number', placeholder:'30'},
+    {field:'dias', label:'Dias de direito (período)', type:'number', placeholder:'30'},
+    {field:'diasGozados', label:'Dias já gozados', type:'number', placeholder:'0'},
+    {field:'afastDias', label:'Dias de afastamento', type:'number', placeholder:'0'},
+    {field:'faltas', label:'Faltas', type:'number', placeholder:'0'},
     {field:'limiteGozo', label:'Limite Legal p/ Gozo', placeholder:'dd/mm/aaaa'},
     {field:'situacao', label:'Situação', type:'select', options:['Em aquisição','Elegível','Programada','Em gozo','Vencida','Gozada']},
     {field:'status', label:'Status', type:'select', options:['Ativo','Inativo']},
@@ -5537,7 +5540,7 @@ function feriasRowRender(rows) {
       <td style="font-size:10px">${f.cargo||'—'}</td>
       <td>${f.periodoInicio||'—'}–${f.periodoFim||'—'}</td>
       <td>${f.inicioGozo||'—'}</td>
-      <td>${f.dias||30}d</td>
+      <td>${f.dias!=null&&f.dias!==''?String(f.dias).replace('.',','):30}d${f.diasGozados?`<br><span class="muted" style="font-size:9.5px">gozou ${String(f.diasGozados).replace('.',',')} · saldo ${String(Math.max((f.dias||0)-f.diasGozados,0)).replace('.',',')}</span>`:''}${(f.afastDias||f.faltas)?`<br><span class="muted" style="font-size:9.5px">${f.afastDias?'afast. '+f.afastDias+'d ':''}${f.faltas?'faltas '+f.faltas:''}</span>`:''}</td>
       <td><span class="badge ${sitBadge}">${f.situacao||'—'}</span></td>
       <td style="white-space:nowrap">
         <button class="btn btn-s btn-xs" onclick="openCrudModal(MOD_FERIAS,${f.id})">✏</button>
@@ -5574,6 +5577,7 @@ function buildFeriasFromColabs() {
   let novos = 0;
   colabs.forEach(c => {
     if (existentes.has(c.nome)) return;
+    if (typeof FERIAS_PROG!=='undefined' && FERIAS_PROG.some(r=>feriasAchaColab(r[0],r[2],[c]))) return;
     const d = parseDate(c.adm);
     if (!d) return;
     const meses = diffMonths(d, hoje);
@@ -5599,6 +5603,127 @@ function buildFeriasFromColabs() {
   });
   if (novos > 0 && tcFerias) tcFerias.refresh();
   return novos;
+}
+
+const FERIAS_PROG=[["AROLDO JOSE ISAIAS DE MORAES JUNIOR", "BRASS", "11/01/2021", "23/12/2025", "22/12/2026", 22.5, 0.0, 30, "23/11/2027", 0, 0, "16/09/2026"],
+["TOMY OGATA", "BRASS", "07/03/2022", "07/03/2025", "06/03/2026", 30.0, 15.0, 15, "20/02/2027", 0, 0, "16/09/2026"],
+["TOMY OGATA", "BRASS", "07/03/2022", "07/03/2026", "06/03/2027", 15.0, 0.0, 30, "06/02/2028", 0, 0, "16/09/2026"],
+["GABRIEL ANTONIO FERREIRA GARCIA DOS ANJOS", "BRASS", "24/03/2022", "24/03/2025", "23/03/2026", 30.0, 0.0, 30, "22/02/2027", 0, 0, "16/09/2026"],
+["GABRIEL ANTONIO FERREIRA GARCIA DOS ANJOS", "BRASS", "24/03/2022", "24/03/2026", "23/03/2027", 15.0, 0.0, 30, "23/02/2028", 0, 0, "16/09/2026"],
+["CLEYTON SANTOS DE SOUZA", "BRASS", "16/05/2022", "16/05/2025", "15/05/2026", 30.0, 0.0, 30, "16/04/2027", 0, 0, "16/09/2026"],
+["CLEYTON SANTOS DE SOUZA", "BRASS", "16/05/2022", "16/05/2026", "15/05/2027", 10.0, 0.0, 30, "16/04/2028", 0, 0, "16/09/2026"],
+["BRUNO DA SILVA NASCIMENTO VICHESI", "BRASS", "11/04/2023", "20/12/2025", "19/12/2026", 22.5, 0.0, 30, "20/11/2027", 0, 0, "16/09/2026"],
+["SERGIO HENRIQUE BUSINARI", "BRASS", "02/10/2023", "20/12/2025", "19/12/2026", 22.5, 0.0, 30, "20/11/2027", 0, 0, "16/09/2026"],
+["RAPHAEL HENRIQUE DE CARVALHO", "BRASS", "23/01/2024", "23/01/2025", "22/01/2026", 30.0, 15.0, 15, "08/01/2027", 0, 0, "16/09/2026"],
+["RAPHAEL HENRIQUE DE CARVALHO", "BRASS", "23/01/2024", "23/01/2026", "22/01/2027", 20.0, 0.0, 30, "24/12/2027", 0, 0, "16/09/2026"],
+["LEONARDO GOMES LANDIM DOS SANTOS", "BRASS", "20/03/2025", "20/03/2025", "19/03/2026", 30.0, 0.0, 30, "18/02/2027", 0, 0, "16/09/2026"],
+["LEONARDO GOMES LANDIM DOS SANTOS", "BRASS", "20/03/2025", "20/03/2026", "19/03/2027", 15.0, 0.0, 30, "19/02/2028", 0, 0, "16/09/2026"],
+["STEFANI MONIZE MONTEIRO", "BRASS", "28/04/2025", "28/04/2025", "27/04/2026", 30.0, 0.0, 30, "29/03/2027", 0, 0, "16/09/2026"],
+["STEFANI MONIZE MONTEIRO", "BRASS", "28/04/2025", "28/04/2026", "27/04/2027", 12.5, 0.0, 30, "29/03/2028", 0, 0, "16/09/2026"],
+["ALESSANDRO LUIZ DA COSTA", "BRASS", "12/08/2025", "12/08/2026", "11/08/2027", 2.5, 0.0, 30, "13/07/2028", 0, 0, "16/09/2026"],
+["MATHEUS HENRIQUE GOMES", "BRASS", "08/09/2025", "08/09/2025", "07/09/2026", 30.0, 0.0, 30, "09/08/2027", 0, 1, "16/09/2026"],
+["MATHEUS HENRIQUE GOMES", "BRASS", "08/09/2025", "08/09/2026", "07/09/2027", 0.0, 0.0, 30, "09/08/2028", 0, 0, "16/09/2026"],
+["GUSTAVO BISPO DOS SANTOS", "BRASS", "09/09/2025", "09/09/2025", "08/09/2026", 30.0, 0.0, 30, "10/08/2027", 0, 1, "16/09/2026"],
+["GUSTAVO BISPO DOS SANTOS", "BRASS", "09/09/2025", "09/09/2026", "08/09/2027", 0.0, 0.0, 30, "10/08/2028", 0, 0, "16/09/2026"],
+["LARA CRISTINA DA SILVA OLIVEIRA DOS SANTOS", "BRASS", "15/09/2025", "15/09/2025", "14/09/2026", 30.0, 0.0, 30, "16/08/2027", 0, 0, "16/09/2026"],
+["LARA CRISTINA DA SILVA OLIVEIRA DOS SANTOS", "BRASS", "15/09/2025", "15/09/2026", "14/09/2027", 0.0, 0.0, 30, "16/08/2028", 0, 0, "16/09/2026"],
+["EDUARDO RODRIGUES LIMA", "BRASS", "24/09/2025", "24/09/2025", "23/09/2026", 30.0, 0.0, 30, "25/08/2027", 0, 0, "16/09/2026"],
+["RAFAEL MANTOVANI", "AC", "26/04/2021", "23/12/2024", "22/12/2025", 30.0, 20.0, 10, "13/12/2026", 0, 0, "03/09/2026"],
+["RAFAEL MANTOVANI", "AC", "26/04/2021", "23/12/2025", "22/12/2026", 20.0, 0.0, 30, "23/11/2027", 0, 0, "03/09/2026"],
+["CLEOMAR MUNIZ ALVES", "AC", "10/01/2025", "10/01/2025", "09/01/2026", 30.0, 0.0, 30, "11/12/2026", 0, 0, "03/09/2026"],
+["CLEOMAR MUNIZ ALVES", "AC", "10/01/2025", "10/01/2026", "09/01/2027", 20.0, 0.0, 30, "11/12/2027", 0, 0, "03/09/2026"],
+["GUSTAVO NOGUEIRA ROSSANEZI", "AC", "20/01/2025", "20/01/2025", "19/01/2026", 30.0, 0.0, 30, "21/12/2026", 0, 0, "03/09/2026"],
+["GUSTAVO NOGUEIRA ROSSANEZI", "AC", "20/01/2025", "20/01/2026", "19/01/2027", 20.0, 0.0, 30, "21/12/2027", 0, 0, "03/09/2026"],
+["LUIS FERNANDO SOUZA DOS SANTOS", "AC", "05/02/2025", "05/02/2025", "04/02/2026", 30.0, 0.0, 30, "06/01/2027", 0, 0, "03/09/2026"],
+["LUIS FERNANDO SOUZA DOS SANTOS", "AC", "05/02/2025", "05/02/2026", "04/02/2027", 17.5, 0.0, 30, "06/01/2028", 0, 0, "03/09/2026"],
+["ANDRE LUIS DA SILVA BEZERRA", "AC", "11/04/2022", "11/04/2025", "10/04/2026", 30.0, 0.0, 30, "12/03/2027", 0, 0, "03/09/2026"],
+["ANDRE LUIS DA SILVA BEZERRA", "AC", "11/04/2022", "11/04/2026", "10/04/2027", 12.5, 0.0, 30, "12/03/2028", 0, 0, "03/09/2026"],
+["JURANDIR DIAS", "AC", "29/04/2024", "29/04/2025", "28/04/2026", 30.0, 0.0, 30, "30/03/2027", 0, 0, "03/09/2026"],
+["JURANDIR DIAS", "AC", "29/04/2024", "29/04/2026", "28/04/2027", 10.0, 0.0, 30, "30/03/2028", 0, 0, "03/09/2026"],
+["JHONI DE OLIVEIRA ALVES", "AC", "13/05/2013", "13/05/2025", "12/05/2026", 30.0, 0.0, 30, "13/04/2027", 0, 0, "03/09/2026"],
+["JHONI DE OLIVEIRA ALVES", "AC", "13/05/2013", "13/05/2026", "12/05/2027", 10.0, 0.0, 30, "13/04/2028", 0, 0, "03/09/2026"],
+["JOAO VITOR CAMARGO", "AC", "30/06/2025", "30/06/2025", "29/06/2026", 30.0, 0.0, 30, "31/05/2027", 0, 0, "03/09/2026"],
+["JOAO VITOR CAMARGO", "AC", "30/06/2025", "30/06/2026", "29/06/2027", 5.0, 0.0, 30, "31/05/2028", 0, 0, "03/09/2026"],
+["NICOLAS ALEXANDRE BRAGA DO AMARAL", "AC", "28/07/2025", "28/07/2025", "27/07/2026", 30.0, 0.0, 30, "28/06/2027", 0, 0, "03/09/2026"],
+["NICOLAS ALEXANDRE BRAGA DO AMARAL", "AC", "28/07/2025", "28/07/2026", "27/07/2027", 2.5, 0.0, 30, "28/06/2028", 0, 0, "03/09/2026"],
+["ADRIANE APARECIDA TAIOQUI LOPES", "AC", "05/08/2024", "05/08/2025", "04/08/2026", 30.0, 0.0, 30, "06/07/2027", 0, 0, "03/09/2026"],
+["ADRIANE APARECIDA TAIOQUI LOPES", "AC", "05/08/2024", "05/08/2026", "04/08/2027", 2.5, 0.0, 30, "06/07/2028", 0, 0, "03/09/2026"],
+["JOSE HENRIQUE DE BRITO NASCIMENTO", "AC", "05/09/2024", "05/09/2025", "04/09/2026", 30.0, 0.0, 30, "06/08/2027", 45, 0, "03/09/2026"],
+["FRANCIELLE CRISTINA ASCARI RODRIGUES", "AC", "01/10/2018", "01/10/2025", "30/09/2026", 27.5, 0.0, 30, "01/09/2027", 0, 0, "03/09/2026"],
+["ROQUE BATISTA MACHADO", "AC", "14/10/2024", "14/10/2025", "13/10/2026", 27.5, 0.0, 30, "14/09/2027", 0, 0, "03/09/2026"],
+["JOSE ADAUTO DE JESUS", "AC", "17/05/2023", "20/12/2025", "19/12/2026", 22.5, 0.0, 30, "20/11/2027", 0, 0, "03/09/2026"],
+["JOSE ITAMAR ESTEVES DE MENDONÇA", "AC", "28/03/2023", "20/12/2025", "19/12/2026", 22.5, 0.0, 30, "20/11/2027", 0, 0, "03/09/2026"],
+["GILMAR MARQUES DE BRITO", "AC", "07/04/2021", "23/12/2025", "22/12/2026", 20.0, 0.0, 30, "23/11/2027", 94, 0, "03/09/2026"],
+["RENATO PEREIRA DA ROCHA", "AC", "03/11/2021", "23/12/2025", "22/12/2026", 20.0, 0.0, 30, "23/11/2027", 0, 0, "03/09/2026"],
+["MARCOS ANTONIO MINHOTO MARTINS", "AC", "13/03/2026", "13/03/2026", "12/03/2027", 15.0, 0.0, 30, "12/02/2028", 0, 0, "03/09/2026"],
+["LEONARDO SOBRINHO DE BARROS", "AC", "04/05/2026", "04/05/2026", "03/05/2027", 10.0, 0.0, 30, "04/04/2028", 0, 0, "03/09/2026"],
+["NICOLLY VASSALO IGNACIO", "AC", "04/05/2026", "04/05/2026", "03/05/2027", 10.0, 0.0, 30, "04/04/2028", 0, 0, "03/09/2026"],
+["GABRIEL HENRIQUE BARCELO MARTINS", "AC", "07/05/2026", "07/05/2026", "06/05/2027", 10.0, 0.0, 30, "07/04/2028", 0, 0, "03/09/2026"],
+["REBECCA CAMPOS DE ALMEIDA", "AC", "22/06/2026", "22/06/2026", "21/06/2027", 5.0, 0.0, 30, "23/05/2028", 0, 0, "03/09/2026"],
+["LUIS CARLOS DE BRITO", "AC", "29/06/2026", "29/06/2026", "28/06/2027", 5.0, 0.0, 30, "30/05/2028", 0, 0, "03/09/2026"],
+["ANA CLAUDIA TELES MENESES DE SOUZA", "AC", "01/07/2026", "01/07/2026", "30/06/2027", 5.0, 0.0, 30, "01/06/2028", 0, 0, "03/09/2026"],
+["EDSON DECHEN", "AC", "01/07/2026", "01/07/2026", "30/06/2027", 5.0, 0.0, 30, "01/06/2028", 0, 0, "03/09/2026"],
+["JOAO GABRIEL ROBIS DE ALMEIDA", "AC", "22/07/2026", "22/07/2026", "21/07/2027", 2.5, 0.0, 30, "22/06/2028", 0, 0, "03/09/2026"],
+["EDIELSON FERNANDO BRITO CEZA", "AC", "12/08/2026", "12/08/2026", "11/08/2027", 2.5, 0.0, 30, "13/07/2028", 0, 0, "03/09/2026"],
+["PATRICIA APARECIDA MARTINS DE SOUZA", "AC", "01/09/2026", "01/09/2026", "31/08/2027", 0.0, 0.0, 30, "02/08/2028", 0, 0, "03/09/2026"]];
+
+/* ── v4.87: Programação de férias da contabilidade (AC 03/09/2026 · Brass 16/09/2026) ──
+   [nome, empresa, admissão, início aquisitivo, fim aquisitivo, dias de direito, dias gozados, dias restantes, limite p/ gozo, dias afastado, faltas, data-base] */
+function feriasNorm(s){ return String(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toUpperCase().replace(/\s+/g,' ').trim(); }
+function feriasAchaColab(nome,adm,colabs){
+  const n=feriasNorm(nome), p=n.split(' ')[0];
+  return colabs.find(c=>feriasNorm(c.nome)===n) || colabs.find(c=>c.adm===adm && feriasNorm(c.nome).split(' ')[0]===p) || null;
+}
+function feriasSituacaoProg(fimStr,saldo,limiteStr,atual){
+  if(atual==='Programada'||atual==='Em gozo') return atual;
+  const hoje=new Date(); hoje.setHours(0,0,0,0);
+  const fim=parseDate(fimStr), lim=parseDate(limiteStr);
+  if(!fim||fim>=hoje) return 'Em aquisição';
+  if(saldo<=0) return 'Gozada';
+  return (lim&&lim<hoje)?'Vencida':'Elegível';
+}
+function feriasAtualizarProg(){
+  const colabs=loadData('colaboradores').filter(c=>c.status!=='Inativo');
+  const ferias=loadData('ferias');
+  let atu=0, novo=0, dup=0; const ignorados={}, pessoas=new Set(), idsUsados=new Set(), per={}, cob={};
+  FERIAS_PROG.forEach(r=>{
+    const [nome,emp,adm,ini,fim,dir,goz,rest,lim,afast,faltas,db]=r;
+    const c=feriasAchaColab(nome,adm,colabs);
+    if(!c){ ignorados[nome]=emp; return; }
+    pessoas.add(c.nome); (per[c.id]=per[c.id]||new Set()).add(ini); cob[c.id]=c;
+    const saldo=Math.max(dir-goz,0);
+    const ex=ferias.find(f=>f.periodoInicio===ini&&(feriasNorm(f.colaborador)===feriasNorm(nome)||feriasNorm(f.colaborador)===feriasNorm(c.nome)));
+    const campos={colaborador:ex?ex.colaborador:c.nome,colaboradorId:c.id,cnpj:emp,cargo:c.cargo||(ex&&ex.cargo)||'',setor:c.setor||(ex&&ex.setor)||'',periodoInicio:ini,periodoFim:fim,
+      dias:dir,diasGozados:goz,saldoDias:saldo,limiteGozo:lim,afastDias:afast,faltas:faltas,baseProg:db,status:'Ativo',
+      situacao:feriasSituacaoProg(fim,saldo,lim,ex&&ex.situacao)};
+    if(ex){ crudUpdate('ferias',ex.id,campos,{modulo:'Férias'}); idsUsados.add(ex.id); atu++; }
+    else{ const n=crudCreate('ferias',Object.assign({inicioGozo:'',fimGozo:''},campos),{modulo:'Férias',label:c.nome}); if(n&&n.id) idsUsados.add(n.id); novo++; }
+  });
+  // registros genéricos duplicados (criados a partir só da data de admissão) de quem já tem programação
+  loadData('ferias').forEach(f=>{
+    if(f.status==='Inativo'||f.inicioGozo) return;
+    const c=Object.values(cob).find(x=>feriasNorm(x.nome)===feriasNorm(f.colaborador));
+    if(c&&!per[c.id].has(f.periodoInicio)){ crudDelete('ferias',f.id,{modulo:'Férias',label:f.colaborador}); dup++; }
+  });
+  // registros de quem não está ativo no cadastro ficam inativos (podem ser restaurados com ↩)
+  let desat=0; const desatNomes=new Set();
+  loadData('ferias').forEach(f=>{
+    if(f.status==='Inativo') return;
+    const ativo=!!feriasAchaColab(f.colaborador,(FERIAS_PROG.find(r=>feriasNorm(r[0])===feriasNorm(f.colaborador))||[])[2],colabs);
+    if(!ativo){ crudDelete('ferias',f.id,{modulo:'Férias',label:f.colaborador}); desat++; desatNomes.add(f.colaborador); }
+  });
+  if(typeof tcFerias!=='undefined'&&tcFerias) tcFerias.refresh();
+  try{ atualizarKPIsFerias(); }catch(e){}
+  localStorage.setItem('ac_ferias_prog_v2','1');
+  const lista=Object.keys(ignorados);
+  const semRel=colabs.filter(c=>!FERIAS_PROG.some(r=>feriasAchaColab(r[0],r[2],[c]))).map(c=>c.nome);
+  abrirModalSimples('📥 Programação de férias atualizada',`<div style="font-size:12.5px;line-height:1.6">
+    <p>Relatório da contabilidade: <b>AC (03/09/2026)</b> e <b>Brass (16/09/2026)</b>.</p>
+    <ul style="margin:6px 0 8px 18px"><li><b>${pessoas.size}</b> colaboradores ativos atualizados (${atu} períodos atualizados, ${novo} novos)</li>
+    <li>${dup} registro(s) genérico(s) duplicado(s) removido(s)</li><li><b>${desat}</b> registro(s) de colaboradores não ativos foram desativados${desatNomes.size?': '+[...desatNomes].map(gpEsc).join(', '):''}</li></ul>
+    <p><b>Ignorados por não estarem ativos no cadastro (${lista.length}):</b><br>${lista.length?lista.map(gpEsc).join('<br>'):'—'}</p>
+    <p><b>Ativos no cadastro que NÃO aparecem no relatório da contabilidade (${semRel.length}):</b><br>${semRel.length?semRel.map(gpEsc).join('<br>'):'—'}<br><span class="muted" style="font-size:11px">Confira: podem ser desligados que ainda estão como Ativo em Colaboradores, ou admitidos depois do relatório.</span></p>
+    <p class="muted" style="font-size:11px">Se alguém da lista acima ainda trabalha na empresa, ative-o em Colaboradores e clique em atualizar de novo. Registros desativados podem ser restaurados com ↩.</p></div>`,640);
 }
 
 function fmtDate(d) {
@@ -5955,6 +6080,7 @@ function buildSSTFromColabs() {
   let novos = 0;
   colabs.forEach(c => {
     if (existentes.has(c.nome)) return;
+    if (typeof FERIAS_PROG!=='undefined' && FERIAS_PROG.some(r=>feriasAchaColab(r[0],r[2],[c]))) return;
     const d = parseDate(c.adm);
     if (!d) return;
     const meses = diffMonths(d, hoje);
@@ -13791,12 +13917,13 @@ const PROV_INSS=[[1621,.075,0],[2902.84,.09,12.16],[4354.27,.12,99.15],[8475.55,
 const PROV_IRRF=[[2428.8,0,0],[2826.65,.075,182.16],[3751.05,.15,394.16],[4664.68,.225,675.49],[1e12,.275,908.73]];
 function provInss(b){ let t=0,ant=0; for(const [lim,al] of PROV_INSS){ if(b>ant) t+=(Math.min(b,lim)-ant)*al; ant=lim; } return t; }
 function provIrrf(b){ for(const [lim,al,ded] of PROV_IRRF){ if(b<=lim) return Math.max(b*al-ded,0); } return 0; }
-function provCfg(){ const r=loadData('provisao_cfg')[0]; return {id:r&&r.id, gozo:r&&r.gozo!=null?Number(r.gozo):12}; }
+function provCfg(){ const r=loadData('provisao_cfg')[0]; return {id:r&&r.id, gozo:r&&r.gozo!=null?Number(r.gozo):12, ref:(r&&r.ref)||'20/12'}; }
 function provSalvarCfg(){
   const n=id=>parseFloat(String((document.getElementById(id)||{}).value).replace(',','.'));
-  const z=n('prov-gozo');
+  const z=n('prov-gozo'), rf=String((document.getElementById('prov-ref')||{}).value||'20/12').trim();
   if(isNaN(z)||z<1||z>30){ showToast('Dias de gozo: de 1 a 30','warn'); return; }
-  const c=provCfg(), o={gozo:Math.round(z)};
+  if(!/^\d{1,2}\/\d{1,2}$/.test(rf)){ showToast('Data-base no formato dd/mm (ex.: 20/12)','warn'); return; }
+  const c=provCfg(), o={gozo:Math.round(z),ref:rf};
   if(c.id) crudUpdate('provisao_cfg',c.id,o,{modulo:'Provisão'}); else crudCreate('provisao_cfg',o,{modulo:'Provisão',label:'Parâmetros'});
   showToast('✓ Parâmetros salvos'); renderProvisao();
 }
@@ -13809,25 +13936,39 @@ function provMeses(adm,ano){
   return (12-mo)+(((ultimo-d+1)>=15)?1:0);
 }
 /* Dias de direito (estimativa): 1 ano ou mais = 30; menos de 1 ano = 2,5 dias por mês completo até a data-base (2ª parcela do 13º) */
-function provDiasDireito(adm,ano){
-  const m=String(adm||'').match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/); if(!m) return 30;
-  const d=+m[1], mo=+m[2], y=+m[3], ref=new Date(ano,11,18);
+function provDiasDireito(adm,ano,nome){
+  const ref=provRef(ano), fe=nome?loadData('ferias').filter(f=>f.status!=='Inativo'&&f.periodoInicio&&f.periodoFim&&feriasNorm(f.colaborador)===feriasNorm(nome)&&f.baseProg):[];
+  if(fe.length){
+    let tot=0;
+    fe.forEach(f=>{
+      const ini=parseDate(f.periodoInicio), fim=parseDate(f.periodoFim); if(!ini||!fim) return;
+      const goz=Number(f.diasGozados)||0;
+      if(fim<=ref) tot+=Math.max(30-goz,0);
+      else if(ini<=ref){ const mc=(ref.getFullYear()-ini.getFullYear())*12+ref.getMonth()-ini.getMonth()-(ref.getDate()<ini.getDate()?1:0); tot+=Math.max(Math.min(30,2.5*mc)-goz,0); }
+    });
+    return {dias:Math.round(tot*2)/2,fonte:'contabilidade'};
+  }
+  const m=String(adm||'').match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/); if(!m) return {dias:30,fonte:'estimativa'};
+  const d=+m[1], mo=+m[2], y=+m[3];
   const anos=(ref.getFullYear()-y)-((ref.getMonth()+1<mo||(ref.getMonth()+1===mo&&ref.getDate()<d))?1:0);
-  if(anos>=1) return 30;
+  if(anos>=1) return {dias:30,fonte:'estimativa'};
   const mc=(ref.getFullYear()-y)*12+(ref.getMonth()+1)-mo-(ref.getDate()<d?1:0);
-  return Math.max(0,Math.floor(2.5*mc+0.5));
+  return {dias:Math.max(0,Math.floor(2.5*mc+0.5)),fonte:'estimativa'};
 }
+function provRef(ano){ const c=provCfg(); const m=String(c.ref||'20/12').match(/^(\d{1,2})\/(\d{1,2})/); return new Date(ano,(m?+m[2]:12)-1,m?+m[1]:20); }
 function provAjustes(){ const o={}; loadData('provisao_ajuste').forEach(a=>{ o[a.chave]=a; }); return o; }
 function provSetAj(nome,ano,campo,v){
   const chave=nome+'|'+ano, a=provAjustes()[chave], s=String(v).trim();
   let val=null;
-  if(s!==''){ val=Math.round(parseFloat(s.replace(',','.'))); if(isNaN(val)||val<(campo==='gozo'?1:0)||val>30){ showToast((campo==='gozo'?'Dias de gozo: de 1 a 30':'Dias de direito: de 0 a 30'),'warn'); renderProvisao(); return; } }
-  const o=Object.assign({dias:a?a.dias:null,gozo:a?a.gozo:null},{[campo]:val});
-  if(o.dias==null&&o.gozo==null){ if(a) crudDeleteFisico('provisao_ajuste',a.id); showToast('↺ Voltou para o padrão'); }
-  else if(a) crudUpdate('provisao_ajuste',a.id,{dias:o.dias,gozo:o.gozo},{modulo:'Provisão'});
-  else crudCreate('provisao_ajuste',{chave,dias:o.dias,gozo:o.gozo},{modulo:'Provisão',label:nome});
+  if(campo==='termo'){ val=(s==='SIM'||s==='NÃO')?s:null; }
+  else if(s!==''){ val=Math.round(parseFloat(s.replace(',','.'))*2)/2; if(isNaN(val)||val<(campo==='gozo'?1:0)||val>(campo==='gozo'?30:90)){ showToast((campo==='gozo'?'Dias de gozo: de 1 a 30':'Dias de direito: de 0 a 90'),'warn'); renderProvisao(); return; } }
+  const o=Object.assign({dias:a&&a.dias!=null?a.dias:null,gozo:a&&a.gozo!=null?a.gozo:null,termo:a&&a.termo?a.termo:null},{[campo]:val});
+  if(o.dias==null&&o.gozo==null&&o.termo==null){ if(a) crudDeleteFisico('provisao_ajuste',a.id); showToast('↺ Voltou para o automático'); }
+  else if(a) crudUpdate('provisao_ajuste',a.id,{dias:o.dias,gozo:o.gozo,termo:o.termo},{modulo:'Provisão'});
+  else crudCreate('provisao_ajuste',{chave,dias:o.dias,gozo:o.gozo,termo:o.termo},{modulo:'Provisão',label:nome});
   renderProvisao();
 }
+function provSetTermo(nome,ano,v){ provSetAj(nome,ano,'termo',v); }
 function provSetDias(nome,ano,v){ provSetAj(nome,ano,'dias',v); }
 function provSetGozo(nome,ano,v){ provSetAj(nome,ano,'gozo',v); }
 function provDados(){
@@ -13838,11 +13979,11 @@ function provDados(){
   let rows=loadData('colaboradores').filter(c=>c.status!=='Inativo').map(c=>{
     const sal=moedaNum(c.sal)||0, m=provMeses(c.adm,ano), emp=(c.cnpj==='02')?'BRASS':'AC';
     const d13=sal/12*m, p1=d13*0.5, p2=d13-p1;
-    const est=provDiasDireito(c.adm,ano), a=aj[c.nome+'|'+ano], dd=(a&&a.dias!=null)?Number(a.dias):est;
-    const gAj=!!(a&&a.gozo!=null), dias=gAj?Number(a.gozo):cfg.gozo, termo=dd<dias, vfer=sal/30*dias, terco=vfer/3, fer=vfer+terco;
+    const dr=provDiasDireito(c.adm,ano,c.nome), est=dr.dias, a=aj[c.nome+'|'+ano], dd=(a&&a.dias!=null)?Number(a.dias):est;
+    const gAj=!!(a&&a.gozo!=null), dias=gAj?Number(a.gozo):cfg.gozo, tAj=!!(a&&a.termo), termo=tAj?a.termo==='SIM':dd<dias, vfer=sal/30*dias, terco=vfer/3, fer=vfer+terco;
     return {nome:c.nome,cargo:c.cargo||'',empresa:emp,adm:c.adm||'',sal,m,
       d13,p1,p2,V1,V2,v1:V1.data,v2:V2.data,
-      dd,est,ajust:!!(a&&a.dias!=null),gAj,termo,dias,vfer,terco,fer,
+      dd,est,fonte:dr.fonte,ajust:!!(a&&a.dias!=null),gAj,tAj,termo,dias,vfer,terco,fer,
       total:d13+fer, semSal:!sal};
   }).filter(r=>r.m>0);
   if(q) rows=rows.filter(r=>(r.nome+' '+r.cargo).toLowerCase().includes(q));
@@ -13859,7 +14000,7 @@ function renderProvisao(){
   const sel=document.getElementById('prov-ano');
   if(sel&&!sel.options.length){ const a=new Date().getFullYear(); for(let y=2026;y<=2050;y++){ const o=document.createElement('option'); o.value=y; o.textContent=y; if(y===a) o.selected=true; sel.appendChild(o);} if(!sel.value) sel.value='2026'; }
   const c=provCfg(); const put=(id,v)=>{ const e=document.getElementById(id); if(e&&document.activeElement!==e) e.value=String(v).replace('.',','); };
-  put('prov-gozo',c.gozo);
+  put('prov-gozo',c.gozo); { const e=document.getElementById('prov-ref'); if(e&&document.activeElement!==e) e.value=c.ref; }
   const D=provDados(), rows=D.rows;
   setText('prov-k-n',rows.length); setText('prov-k-13',provBRL(provSoma(rows,'d13'))); setText('prov-k-fer',provBRL(provSoma(rows,'fer')));
   setText('prov-k-tot',provBRL(provSoma(rows,'total')));
@@ -13873,10 +14014,10 @@ function renderProvisao(){
     const rs=rows.filter(x=>x.empresa===e);
     document.getElementById('prov-tb-body-13'+e).innerHTML=rs.length?rs.map(r=>`<tr${r.semSal?' style="background:#fef2f2"':''}>${nome(r)}<td>${gpEsc(r.adm)}</td>${R(sal(r))}<td style="text-align:center">${r.m}</td>${R(provBRL(r.d13))}${R(provBRL(r.p1))}<td style="text-align:center">${provVencHtml(r.V1)}</td>${R(provBRL(r.p2))}<td style="text-align:center">${provVencHtml(r.V2)}</td></tr>`).join('')
       +`<tr style="background:var(--g50,#f8fafc);font-weight:700"><td colspan="4">TOTAL (${rs.length})</td>${R(T(rs,'d13'))}${R(T(rs,'p1'))}<td></td>${R(T(rs,'p2'))}<td></td></tr>`:vazio(9);
-    document.getElementById('prov-tb-body-fer'+e).innerHTML=rs.length?rs.map(r=>`<tr${r.semSal?' style="background:#fef2f2"':''}>${nome(r)}<td>${gpEsc(r.adm)}</td>${R(sal(r))}<td style="text-align:center"><input type="number" min="0" max="30" class="finp" style="width:58px;text-align:center${r.ajust?';background:#ecfdf5':';background:#fff7ed'}" value="${r.dd}" title="${r.ajust?'Ajustado por você — apague para voltar à estimativa ('+r.est+')':'Estimativa — digite o saldo real'}" onchange="provSetDias('${gpEsc(r.nome).replace(/'/g,"\\'")}',${D.ano},this.value)"></td><td style="text-align:center">${r.termo?'<span style="color:var(--red);font-weight:700">SIM</span>':'NÃO'}</td><td style="text-align:center"><input type="number" min="1" max="30" class="finp" style="width:58px;text-align:center${r.gAj?';background:#ecfdf5':''}" value="${r.dias}" title="${r.gAj?'Ajustado só para esta pessoa — apague para voltar ao padrão':'Padrão geral — digite para mudar só esta pessoa'}" onchange="provSetGozo('${gpEsc(r.nome).replace(/'/g,"\\'")}',${D.ano},this.value)"></td>${R(provBRL(r.vfer))}${R(provBRL(r.terco))}${R('<b>'+provBRL(r.fer)+'</b>')}</tr>`).join('')
+    document.getElementById('prov-tb-body-fer'+e).innerHTML=rs.length?rs.map(r=>`<tr${r.semSal?' style="background:#fef2f2"':''}>${nome(r)}<td>${gpEsc(r.adm)}</td>${R(sal(r))}<td style="text-align:center"><input type="text" inputmode="numeric" class="finp" style="font-size:15px;font-weight:700;color:#0f172a;width:76px;height:34px;padding:2px 4px;text-align:center;border:1.5px solid #94a3b8;border-radius:6px${r.ajust?';background:#dcfce7!important':(r.fonte==='contabilidade'?';background:#dbeafe!important':';background:#ffedd5!important')}" value="${String(r.dd).replace('.',',')}" title="${r.ajust?'Ajustado por você — apague para voltar ao valor automático ('+String(r.est).replace('.',',')+')':(r.fonte==='contabilidade'?'Calculado com o relatório da contabilidade (saldo + dias acumulados até a data-base)':'Estimativa — digite o saldo real')}" onchange="provSetDias('${gpEsc(r.nome).replace(/'/g,"\\'")}',${D.ano},this.value)"></td><td style="text-align:center"><select class="finp" style="font-size:14px;font-weight:700;height:34px;width:140px;border:1.5px solid #94a3b8;border-radius:6px;color:${r.termo?'#b91c1c':'#0f172a'}${r.tAj?';background:#dcfce7!important':''}" title="${r.tAj?'Definido por você':'Automático: SIM quando dias de direito < dias de gozo'}" onchange="provSetTermo('${gpEsc(r.nome).replace(/'/g,"\\'")}',${D.ano},this.value)"><option value="">Auto (${r.termo?'SIM':'NÃO'})</option><option value="SIM"${r.tAj&&r.termo?' selected':''}>SIM</option><option value="NÃO"${r.tAj&&!r.termo?' selected':''}>NÃO</option></select><br><button class="btn btn-s btn-xs" style="margin-top:3px" onclick="provTermo('${gpEsc(r.nome).replace(/'/g,"\\'")}')">🖨 Termo</button></td><td style="text-align:center"><input type="text" inputmode="numeric" class="finp" style="font-size:15px;font-weight:700;color:#0f172a;width:76px;height:34px;padding:2px 4px;text-align:center;border:1.5px solid #94a3b8;border-radius:6px${r.gAj?';background:#dcfce7!important':''}" value="${r.dias}" title="${r.gAj?'Ajustado só para esta pessoa — apague para voltar ao padrão':'Padrão geral — digite para mudar só esta pessoa'}" onchange="provSetGozo('${gpEsc(r.nome).replace(/'/g,"\\'")}',${D.ano},this.value)"></td>${R(provBRL(r.vfer))}${R(provBRL(r.terco))}${R('<b>'+provBRL(r.fer)+'</b>')}</tr>`).join('')
       +`<tr style="background:var(--g50,#f8fafc);font-weight:700"><td colspan="3">TOTAL (${rs.length})</td><td></td><td style="text-align:center">${rs.filter(r=>r.termo).length} c/ termo</td><td></td>${R(T(rs,'vfer'))}${R(T(rs,'terco'))}${R(T(rs,'fer'))}</tr>`:vazio(9);
   });
-  document.getElementById('prov-aviso').innerHTML=(rows.some(r=>r.semSal)?'⚠ Há colaborador(es) sem salário no cadastro (linha em vermelho). ':'')+'Dias de direito em laranja são estimativas; digite o saldo real para ajustar (fica verde).';
+  document.getElementById('prov-aviso').innerHTML=(rows.some(r=>r.semSal)?'⚠ Há colaborador(es) sem salário no cadastro (linha em vermelho). ':'')+'Dias de direito: azul = calculado com o relatório da contabilidade; laranja = estimativa pela admissão; verde = ajustado por você.';
   provAbaSel(provAba);
 }
 function provImprimir(){
@@ -13923,6 +14064,33 @@ function provExportar(){
   });
   XLSX.writeFile(wb,'Provisao_13o_Ferias_Coletivas_'+D.ano+'.xlsx');
 }
+/* ── Termo de Acordo de férias coletivas (colaborador sem direito completo em dezembro) ── */
+function provTermoHtml(r,ano){
+  const c=loadData('colaboradores').find(x=>x.nome===r.nome)||{nome:r.nome,adm:r.adm};
+  const emp=empresaInfoDoColaborador(c);
+  const ant=Math.max(r.dias-r.dd,0);
+  const hoje=new Date().toLocaleDateString('pt-BR',{day:'numeric',month:'long',year:'numeric'});
+  const ctps=c.ctps||'______________', serie=c.serieCtps||c.serie||'________';
+  return `<div class="doc-print" style="padding:6px 18px;font-size:12.5px;line-height:1.7;text-align:justify;page-break-after:always">
+    <h3 style="text-align:center;margin:0 0 22px">TERMO DE ACORDO</h3>
+    <p><strong>${gpEsc(emp.nome.toUpperCase())}</strong>, CNPJ nº ${emp.cnpj}, localizada à ${gpEsc(emp.endereco)}, e o(a) funcionário(a) <strong>${gpEsc(r.nome.toUpperCase())}</strong>, CTPS nº ${ctps}, série nº ${serie}, admitido(a) em ${gpEsc(r.adm)}, firmam o seguinte acordo:</p>
+    <p>Em razão das <strong>férias coletivas</strong> concedidas pela empresa em dezembro de ${ano}, o(a) referido(a) funcionário(a), que nesta data possui direito a <strong>${String(r.dd).replace('.',',')} dia(s)</strong> de férias, gozará <strong>${r.dias} dias</strong> de descanso, sendo <strong>${String(ant).replace('.',',')} dia(s)</strong> gozados de forma antecipada, além do período aquisitivo já cumprido.</p>
+    <p>Os dias gozados antecipadamente serão devidamente abatidos quando da quitação efetiva de suas futuras férias, procedendo-se ao desconto e à sua documentação.</p>
+    <p style="margin-top:18px">Termos em que declaramos e damos fé.</p>
+    <p style="margin-top:26px">Santa Bárbara d'Oeste, ${hoje}.</p>
+    <p style="margin-top:6px">Atenciosamente.</p>
+    <div style="margin-top:60px">FUNCIONÁRIO(A): _____________________________________________<br><span style="margin-left:112px">${gpEsc(r.nome.toUpperCase())}</span></div>
+    <div style="margin-top:46px">EMPRESA: _____________________________________________<br><span style="margin-left:72px">${gpEsc(emp.nome.toUpperCase())}</span></div></div>`;
+}
+function provTermo(nome){
+  const D=provDados(), r=D.rows.find(x=>x.nome===nome); if(!r){ showToast('Colaborador não encontrado','warn'); return; }
+  abrirReciboModal('🖨 Termo de Acordo — '+r.nome,`${docPageCSS({nome:'AC Metalúrgica / Brassmetal',email:''})}${provTermoHtml(r,D.ano)}`,false);
+}
+function provTermosEmpresa(emp){
+  const D=provDados(), rs=D.rows.filter(x=>x.empresa===emp&&x.termo);
+  if(!rs.length){ showToast('Nenhum colaborador com Termo de Acordo = SIM','warn'); return; }
+  abrirReciboModal('🖨 Termos de Acordo — '+(emp==='AC'?'AC Metal':'Brass Metal')+' ('+rs.length+')',`${docPageCSS({nome:'AC Metalúrgica / Brassmetal',email:''})}${rs.map(r=>provTermoHtml(r,D.ano)).join('')}`,false);
+}
 (function(){
   const content=document.querySelector('.content'); if(!content) return;
   const old=document.getElementById('page-provisao'); if(old) old.remove();
@@ -13933,7 +14101,7 @@ function provExportar(){
   const tab=(id,rot)=>`<div class="tab${id==='resumo'?' active':''}" id="prov-tb-${id}" onclick="provAbaSel('${id}')">${rot}</div>`;
   const pane=(id,h,body,nota)=>`<div id="prov-t-${id}" style="display:none"><div class="card" style="padding:0;overflow-x:auto"><table><thead><tr>${th(h)}</tr></thead><tbody id="prov-tb-body-${id}"></tbody></table></div><div class="muted" style="font-size:10.5px;margin-top:8px">${nota}</div></div>`;
   const n13='1ª parcela = 50% do 13º bruto. 2ª parcela = restante do 13º. Valores brutos, sem INSS, IRRF ou encargos. Vencimentos ajustados: fim de semana → sexta; feriado → dia útil anterior.';
-  const nF='Férias coletivas: dias de gozo × salário ÷ 30, mais 1/3. Termo de acordo = SIM quando os dias de direito são menores que os dias de gozo. Dias de gozo podem ser alterados por pessoa (verde = ajustado).';
+  const nF='Férias coletivas: dias de gozo × salário ÷ 30, mais 1/3. Termo de acordo = SIM quando a pessoa ainda não tem direito aos dias de gozo em dezembro (dias de direito menores que os de gozo): ela assina o termo e os dias antecipados são descontados das férias futuras. Dias de direito, Termo de acordo e Dias de gozo podem ser alterados por pessoa (verde = ajustado por você; apague ou escolha "Auto" para voltar ao automático).';
   d.innerHTML=`<div class="layer-badge lb-st">● Estratégico — Provisão</div>
     <div class="section-hdr"><div class="sec-title">💰 Provisão de 13º e Férias Coletivas</div>
       <button class="btn btn-s btn-sm" onclick="provImprimir()">🖨 Imprimir esta aba</button>
@@ -13949,14 +14117,14 @@ function provExportar(){
       <select class="fsel" id="prov-ano" onchange="renderProvisao()"></select>
       <input class="finp" type="text" id="prov-busca" placeholder="🔎 Nome ou cargo..." oninput="renderProvisao()" style="width:200px">
       <span style="flex:1"></span>
-      <span style="font-size:11px;color:var(--g500)">Dias de gozo</span><input class="finp" id="prov-gozo" style="width:50px">
+      <span style="font-size:11px;color:var(--g500)" title="Data em que as férias coletivas começam; os dias de direito são calculados até ela">Data-base (dd/mm)</span><input class="finp" id="prov-ref" style="width:90px"><span style="font-size:11px;color:var(--g500)">Dias de gozo</span><input class="finp" id="prov-gozo" style="width:50px">
       <button class="btn btn-s btn-xs" onclick="provSalvarCfg()">Salvar parâmetros</button>
     </div>
     <div id="prov-aviso" class="muted" style="font-size:11px;margin-bottom:10px"></div>
     <div class="tabs" style="margin-bottom:10px">${tab('resumo','📊 Resumo')}${tab('13AC','13º AC')}${tab('ferAC','Férias AC')}${tab('13BRASS','13º BRASS')}${tab('ferBRASS','Férias BRASS')}</div>
     <div id="prov-t-resumo"><div class="card" style="padding:0;overflow-x:auto"><table><thead><tr>${th(['Empresa','Colaboradores','13º','Férias + 1/3','Total'])}</tr></thead><tbody id="prov-emps"></tbody></table></div>
       <div class="muted" style="font-size:10.5px;margin-top:8px">Valores brutos, sem INSS, IRRF ou encargos.</div></div>
-    ${pane('13AC',H13,'',n13)}${pane('ferAC',HF,'',nF)}${pane('13BRASS',H13,'',n13)}${pane('ferBRASS',HF,'',nF)}`;
+    ${pane('13AC',H13,'',n13)}${pane('ferAC',HF,'',nF+' <button class="btn btn-s btn-xs" onclick="provTermosEmpresa(\'AC\')">🖨 Imprimir todos os Termos (SIM)</button>')}${pane('13BRASS',H13,'',n13)}${pane('ferBRASS',HF,'',nF+' <button class="btn btn-s btn-xs" onclick="provTermosEmpresa(\'BRASS\')">🖨 Imprimir todos os Termos (SIM)</button>')}`;
   content.appendChild(d);
 })();
 
