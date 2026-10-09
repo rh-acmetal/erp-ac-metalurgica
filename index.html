@@ -441,7 +441,7 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
   <div class="l-box">
     <div class="l-logo">
       <div class="l-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
-      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.92 — O.S. Rebarbador B, Acidentes 2026, Indicadores com histórico mensal (turnover, engajamento por setor, T&D), Visitas do TST, Planejamento Anual, Desconto com histórico</div></div>
+      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.94 — Aniversariantes/Tempo de Empresa (1 folha, incluir/excluir), Visitas por mês/ano, Estoque EPI, contador da Brass (Correia Contábil), O.S. Rebarbador B, Acidentes 2026, Indicadores com histórico mensal (turnover, engajamento por setor, T&D), Visitas do TST, Planejamento Anual, Desconto com histórico</div></div>
     </div>
     <div class="f-row"><label>Usuário</label><input type="text" id="l-user" value="jakeline@acmetalurgica.com.br"></div>
     <div class="f-row"><label>Senha</label><input type="password" id="l-pass" value="••••••••"></div>
@@ -1092,7 +1092,7 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
         <tbody id="fd-tbody"></tbody></table>
       </div>
       <div class="card" style="padding:12px">
-        <div class="card-hdr" style="padding:0 0 10px 0">Fechamento com o Contador (SERVCONT)</div>
+        <div class="card-hdr" style="padding:0 0 10px 0" id="fd-contador-hdr">Fechamento com o Contador (SERVCONT)</div>
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr 2fr;gap:12px">
           <div><label style="font-size:11px;font-weight:600;display:block;margin-bottom:3px">Total Nota (R$)</label><input class="finp fd-moeda" type="text" inputmode="decimal" id="fd-total-nota" placeholder="R$ 0,00" style="width:100%" onfocus="this.select()" onchange="fdSalvarTotais()"></div>
           <div><label style="font-size:11px;font-weight:600;display:block;margin-bottom:3px">Valor Empresa (R$)</label><input class="finp fd-moeda" type="text" inputmode="decimal" id="fd-valor-empresa" placeholder="R$ 0,00" style="width:100%" onfocus="this.select()" onchange="fdSalvarTotais()"></div>
@@ -1140,7 +1140,10 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
       <div class="layer-badge lb-en">● Endomarketing</div>
       <div class="section-hdr">
         <div class="sec-title">🎂 Aniversariantes</div>
-        <button class="btn btn-s" onclick="anivImprimir()">🖨 Imprimir lista</button>
+        <button class="btn btn-p" onclick="endoIncluirForm('aniv')">+ Incluir</button>
+        <button class="btn btn-s" onclick="endoOcultosAbrir('aniv')">↩ Excluídos</button>
+        <button class="btn btn-s" onclick="anivImprimir()">🖨 Imprimir mês</button>
+        <button class="btn btn-s" onclick="endoImprimirAno('aniv')">🖨 Todos os meses (1 folha)</button>
         <button class="btn btn-s" onclick="anivExportar()">⬇ Exportar Excel</button>
       </div>
       <div class="kpi-grid">
@@ -1157,7 +1160,7 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
         <span class="chip" id="aniv-count">— aniversariantes</span>
       </div>
       <div class="card" style="padding:0;overflow-x:auto">
-        <table><thead><tr><th style="width:60px">Dia</th><th>Colaborador</th><th>Cargo</th><th>Setor</th><th>Empresa</th><th>Nascimento</th><th>Completa</th><th></th></tr></thead>
+        <table><thead><tr><th style="width:60px">Dia</th><th>Colaborador</th><th>Cargo</th><th>Setor</th><th>Empresa</th><th>Nascimento</th><th>Completa</th><th></th><th style="width:60px"></th></tr></thead>
         <tbody id="aniv-tbody"></tbody></table>
       </div>
     </div>
@@ -1167,7 +1170,10 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
       <div class="layer-badge lb-en">● Endomarketing</div>
       <div class="section-hdr">
         <div class="sec-title">🏅 Tempo de Empresa</div>
+        <button class="btn btn-p" onclick="endoIncluirForm('tempo')">+ Incluir</button>
+        <button class="btn btn-s" onclick="endoOcultosAbrir('tempo')">↩ Excluídos</button>
         <button class="btn btn-s" onclick="tempoImprimir()">🖨 Imprimir lista</button>
+        <button class="btn btn-s" onclick="endoImprimirAno('tempo')">🖨 Todos os meses (1 folha)</button>
         <button class="btn btn-s" onclick="tempoExportar()">⬇ Exportar Excel</button>
       </div>
       <div class="kpi-grid">
@@ -1183,7 +1189,7 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
         <span class="chip" id="tempo-count">— colaboradores</span>
       </div>
       <div class="card" style="padding:0;overflow-x:auto">
-        <table><thead><tr><th>Colaborador</th><th>Cargo</th><th>Setor</th><th>Empresa</th><th>Admissão</th><th>Tempo de casa</th><th>Próximo aniversário de empresa</th><th>Presente</th><th style="width:70px">Entregue</th></tr></thead>
+        <table><thead><tr><th>Colaborador</th><th>Cargo</th><th>Setor</th><th>Empresa</th><th>Admissão</th><th>Tempo de casa</th><th>Próximo aniversário de empresa</th><th>Presente</th><th style="width:70px">Entregue</th><th style="width:60px"></th></tr></thead>
         <tbody id="tempo-tbody"></tbody></table>
       </div>
     </div>
@@ -3475,13 +3481,15 @@ function renderFormFields(fields, record) {
       input = `<textarea data-field="${f.field}" ${req}></textarea>`;
     } else if (f.field === 'colaborador') {
       input = `<input type="text" data-field="${f.field}" ${req} list="global-colab-list" placeholder="${f.placeholder||'Digite para buscar...'}" autocomplete="off">`;
+    } else if (f.list) {
+      input = `<input type="text" data-field="${f.field}" ${req} list="dl-${f.field}" placeholder="${f.placeholder||'Escolha na lista ou digite um novo'}" autocomplete="off">`;
     } else if (f.moeda) {
       input = `<input type="text" data-field="${f.field}" data-moeda="1" ${req} inputmode="decimal" oninput="maskMoedaInput(this)" placeholder="${f.placeholder||'0,00'}">`;
     } else {
       input = `<input type="${f.type||'text'}" data-field="${f.field}" ${req} ${f.step?`step="${f.step}"`:''} placeholder="${f.placeholder||''}">`;
     }
     return `<div class="f-grp" style="${span}"><label>${f.label}${reqMark}</label>${input}</div>`;
-  }).join('') + `</div><datalist id="global-colab-list">${buildColabDatalistOptions()}</datalist>`;
+  }).join('') + `</div><datalist id="global-colab-list">${buildColabDatalistOptions()}</datalist>` + fields.filter(f=>f.list).map(f=>`<datalist id="dl-${f.field}">${f.list.map(o=>`<option value="${escAttr(o)}">`).join('')}</datalist>`).join('');
 }
 
 /* Lista de nomes reais de colaboradores ativos, usada no autocompletar de qualquer campo "Colaborador" */
@@ -4494,15 +4502,74 @@ function endoForaCadastro(fonte) {
 }
 const endoEmpSheet = e => String(e||'').toUpperCase().startsWith('BRAS') ? 'BRASS' : 'AC';
 
+
+/* ── v4.94: incluir / excluir manual + impressão do ano numa folha (Aniversariantes e Tempo de Empresa) ── */
+const ENDO_TXT={aniv:{titulo:'Aniversariante',campo:'Data de nascimento'},tempo:{titulo:'Colaborador (tempo de empresa)',campo:'Data de admissão'}};
+function endoOcultosSet(kind){ return new Set(loadData('endo_oculto').filter(r=>r.status!=='Inativo'&&r.kind===kind).map(r=>r.chave)); }
+// remove os excluídos e acrescenta os incluídos manualmente (modifica e devolve a lista)
+function endoAplicar(kind, lista, campoData){
+  const oc=endoOcultosSet(kind);
+  for(let i=lista.length-1;i>=0;i--) if(oc.has(normSemAcento(lista[i].nome))) lista.splice(i,1);
+  loadData('endo_extra').filter(r=>r.status!=='Inativo'&&r.kind===kind).forEach(r=>{ const d=parseDate(r.data); if(!d) return;
+    const o={nome:r.nome,cargo:r.cargo||'—',setor:r.setor||'—',emp:r.emp||'AC',d,fora:false,src:'extra',id:r.id}; o[campoData]=r.data; lista.push(o); });
+  return lista;
+}
+function endoBtnExcluir(kind,x){ return `<button class="btn btn-s btn-xs" title="Excluir desta lista" onclick="endoExcluirItem('${kind}','${escAttr(x.nome)}','${x.src||'cad'}',${x.id||0})">🗑</button>`; }
+function endoExcluirItem(kind,nome,src,id){
+  const msg=src==='extra'?`Excluir "${nome}" desta lista?`:`Excluir "${nome}" desta lista?\n\n(O colaborador continua no cadastro; ele só deixa de aparecer aqui. Dá para voltar em “↩ Excluídos”.)`;
+  confirmAction(msg,()=>{
+    if(src==='extra'&&id) crudDeleteFisico('endo_extra',id,{modulo:'Endomarketing',label:nome});
+    else crudCreate('endo_oculto',{kind,chave:normSemAcento(nome),nome},{modulo:'Endomarketing',label:nome});
+    showToast('✓ Excluído da lista'); endoRerender(kind);
+  });
+}
+function endoRerender(kind){ if(kind==='aniv') renderAniversariantes(); else renderTempoEmpresa(); }
+function endoOcultosAbrir(kind){
+  const oc=loadData('endo_oculto').filter(r=>r.status!=='Inativo'&&r.kind===kind);
+  abrirModalSimples('↩ Excluídos da lista',`<div class="muted" style="margin-bottom:8px;font-size:11px">Pessoas retiradas desta lista. “Restaurar” faz a pessoa voltar a aparecer.</div>`+(oc.length?`<table><tbody>${oc.map(r=>`<tr><td>${endoEsc(r.nome)}</td><td style="text-align:right"><button class="btn btn-s btn-xs" onclick="endoRestaurar('${kind}',${r.id})">↩ Restaurar</button></td></tr>`).join('')}</tbody></table>`:'<div class="muted">Nenhuma pessoa excluída.</div>'),'520px');
+}
+function endoRestaurar(kind,id){ crudDeleteFisico('endo_oculto',id,{modulo:'Endomarketing'}); fecharModalSimples(); showToast('✓ Restaurado'); endoRerender(kind); }
+function endoIncluirForm(kind){
+  const t=ENDO_TXT[kind], st='width:100%;box-sizing:border-box;padding:6px;border:1px solid var(--g200);border-radius:6px;font-size:12px';
+  abrirModalSimples('+ Incluir — '+t.titulo,`<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+    <label style="font-size:11px;font-weight:700;grid-column:span 2">Nome<input id="ee-nome" style="${st}" list="global-colab-list" autocomplete="off"></label>
+    <label style="font-size:11px;font-weight:700">${t.campo}<input id="ee-data" placeholder="dd/mm/aaaa" style="${st}"></label>
+    <label style="font-size:11px;font-weight:700">Empresa<select id="ee-emp" class="fsel" style="${st}"><option value="AC">AC Metal</option><option value="BRASS">Brass Metal</option></select></label>
+    <label style="font-size:11px;font-weight:700">Cargo (opcional)<input id="ee-cargo" style="${st}"></label>
+    <label style="font-size:11px;font-weight:700">Setor (opcional)<input id="ee-setor" style="${st}"></label></div>
+    <datalist id="global-colab-list">${buildColabDatalistOptions()}</datalist>
+    <div style="text-align:right;margin-top:10px"><button class="btn btn-p" onclick="endoIncluirSalvar('${kind}')">Incluir</button></div>`,'560px');
+}
+function endoIncluirSalvar(kind){
+  const nome=document.getElementById('ee-nome').value.trim(), data=document.getElementById('ee-data').value.trim();
+  if(!nome){ showToast('Informe o nome','warn'); return; } if(!parseDate(data)){ showToast('Data inválida (use dd/mm/aaaa)','warn'); return; }
+  loadData('endo_oculto').filter(r=>r.status!=='Inativo'&&r.kind===kind&&r.chave===normSemAcento(nome)).forEach(r=>crudDeleteFisico('endo_oculto',r.id,{modulo:'Endomarketing'}));
+  crudCreate('endo_extra',{kind,nome,data,emp:document.getElementById('ee-emp').value,cargo:document.getElementById('ee-cargo').value.trim(),setor:document.getElementById('ee-setor').value.trim()},{modulo:'Endomarketing',label:nome});
+  fecharModalSimples(); showToast('✓ '+nome+' incluído(a)'); endoRerender(kind);
+}
+function endoImprimirAno(kind){
+  const ano=new Date().getFullYear(), emp=document.getElementById(kind==='aniv'?'aniv-emp-sel':'tempo-emp-sel')?.value||'';
+  const base=kind==='aniv'?anivPessoas():tempoPessoas();
+  const itens=base.filter(x=>!emp||x.emp===emp);
+  const meses=ENDO_MESES.map((nome,i)=>{
+    const l=itens.filter(x=>x.d.getMonth()===i).map(x=>({dia:x.d.getDate(),nome:x.nome,anos:ano-x.d.getFullYear(),emp:x.emp}))
+      .filter(x=>kind==='aniv'||x.anos>0).sort((a,b)=>a.dia-b.dia||a.nome.localeCompare(b.nome));
+    return `<div style="border:1px solid #888;border-radius:4px;padding:4px 6px;break-inside:avoid"><div style="font-weight:700;font-size:12px;border-bottom:1px solid #888;margin-bottom:3px;display:flex;justify-content:space-between"><span>${nome.toUpperCase()}</span><span>${l.length}</span></div>`
+      +(l.map(x=>`<div style="font-size:10px;line-height:1.45"><b>${String(x.dia).padStart(2,'0')}</b> ${endoEsc(x.nome)}${kind==='tempo'?` — <b>${x.anos}a</b>${x.anos%5===0?' ★':''}`:''}${emp?'':` <span style="color:#666">(${x.emp==='BRASS'?'BR':'AC'})</span>`}</div>`).join('')||'<div style="font-size:10px;color:#888">—</div>')+'</div>';
+  }).join('');
+  const tit=kind==='aniv'?'ANIVERSARIANTES '+ano:'ANIVERSÁRIOS DE EMPRESA '+ano+' (tempo de casa a completar)';
+  abrirReciboModal('🖨 '+tit,`<style>@page{size:A4 landscape;margin:0.8cm}</style><div class="doc-print" style="font-family:Arial,sans-serif;color:#111;background:#fff"><div style="text-align:center;margin-bottom:6px"><div style="font-size:14px;font-weight:700">${tit}</div><div style="font-size:9px">AC Metalúrgica / Brassmetal${emp?' — '+endoEmpNome(emp):''}${kind==='tempo'?' · ★ = marco (5, 10, 15... anos)':''}</div></div><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;align-items:start">${meses}</div></div>`,false);
+}
+
 /* ── Aniversariantes ── */
 function anivPessoas() {
   try { endoPreencherNascimentos(); } catch(e) { console.warn('nasc:', e); }
   const lista = [];
-  endoColabsAtivos().forEach(c => { const d = parseDate(c.nascimento); if (d) lista.push({nome:c.nome, cargo:c.cargo, setor:c.setor, emp:endoEmpChave(c), d, nasc:c.nascimento, fora:false}); });
+  endoColabsAtivos().forEach(c => { const d = parseDate(c.nascimento); if (d) lista.push({nome:c.nome, cargo:c.cargo, setor:c.setor, emp:endoEmpChave(c), d, nasc:c.nascimento, fora:false, src:'cad'}); });
   if (document.getElementById('aniv-fora-chk')?.checked !== false) {
-    endoForaCadastro(ANIVERSARIANTES_2026).forEach(x => { const d = parseDate(x.nascimento); if (d) lista.push({nome:x.nome, cargo:'—', setor:'—', emp:endoEmpSheet(x.empresa), d, nasc:x.nascimento, fora:true}); });
+    endoForaCadastro(ANIVERSARIANTES_2026).forEach(x => { const d = parseDate(x.nascimento); if (d) lista.push({nome:x.nome, cargo:'—', setor:'—', emp:endoEmpSheet(x.empresa), d, nasc:x.nascimento, fora:true, src:'plan'}); });
   }
-  return lista;
+  return endoAplicar('aniv', lista, 'nasc');
 }
 function endoColabsAtivos() { return loadData('colaboradores').filter(c => c.status !== 'Inativo'); }
 function anivDados() {
@@ -4531,8 +4598,8 @@ function renderAniversariantes() {
       <td style="font-size:11px">${endoEsc(x.cargo)}</td><td>${endoEsc(x.setor)}</td>
       <td><span class="badge bgy">${endoEmpNome(x.emp)}</span></td>
       <td>${endoEsc(x.nasc)}</td><td>${x.idade} anos</td>
-      <td>${ehHoje ? '<span class="badge bo">🎉 Hoje!</span>' : ''}${x.fora ? ' <span class="badge bgy" title="Está na planilha de aniversariantes, mas não no cadastro de colaboradores">fora do cadastro</span>' : ''}</td></tr>`;
-  }).join('') : '<tr><td colspan="8" class="muted" style="text-align:center;padding:16px">Nenhum aniversariante neste mês com os filtros atuais.</td></tr>';
+      <td>${ehHoje ? '<span class="badge bo">🎉 Hoje!</span>' : ''}${x.fora ? ' <span class="badge bgy" title="Está na planilha de aniversariantes, mas não no cadastro de colaboradores">fora do cadastro</span>' : ''}</td><td>${endoBtnExcluir('aniv',x)}</td></tr>`;
+  }).join('') : '<tr><td colspan="9" class="muted" style="text-align:center;padding:16px">Nenhum aniversariante neste mês com os filtros atuais.</td></tr>';
   setText('aniv-count', lista.length + ' aniversariantes');
   setText('aniv-kpi-mes', lista.length);
   const hojeN = todos.filter(x => x.d.getMonth() + 1 === mHoje && x.d.getDate() === dHoje).length;
@@ -4595,8 +4662,9 @@ function tempoSalvarCtrl(nome, ano, campo, valor) {
 function tempoPessoas() {
   const hoje = new Date(); const h0 = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate());
   const base = [];
-  endoColabsAtivos().forEach(c => { const d = parseDate(c.adm); if (d) base.push({nome:c.nome, cargo:c.cargo, setor:c.setor, emp:endoEmpChave(c), d, adm:c.adm, fora:false}); });
-  endoForaCadastro(TEMPO_EMPRESA_2026).forEach(x => { const d = parseDate(x.admissao); if (d) base.push({nome:x.nome, cargo:'—', setor:'—', emp:endoEmpSheet(x.empresa), d, adm:x.admissao, fora:true}); });
+  endoColabsAtivos().forEach(c => { const d = parseDate(c.adm); if (d) base.push({nome:c.nome, cargo:c.cargo, setor:c.setor, emp:endoEmpChave(c), d, adm:c.adm, fora:false, src:'cad'}); });
+  endoForaCadastro(TEMPO_EMPRESA_2026).forEach(x => { const d = parseDate(x.admissao); if (d) base.push({nome:x.nome, cargo:'—', setor:'—', emp:endoEmpSheet(x.empresa), d, adm:x.admissao, fora:true, src:'plan'}); });
+  endoAplicar('tempo', base, 'adm');
   return base.map(x => {
     const t = tempoCasaTexto(x.d, hoje);
     let prox = new Date(hoje.getFullYear(), x.d.getMonth(), x.d.getDate());
@@ -4631,8 +4699,8 @@ function renderTempoEmpresa() {
       <td>${endoEsc(x.adm)}</td><td>${x.t.texto}</td>
       <td>${tempoFmt(x.prox)} — <strong>${x.anos} ${x.anos===1?'ano':'anos'}</strong>${x.marco ? ' <span class="badge bo">🏅 Marco</span>' : ''}</td>
       <td><input type="text" class="finp" style="width:150px" value="${escAttr(ctrl.presente)}" placeholder="Presente..." onchange="tempoSalvarCtrl('${nomeJs}',${x.prox.getFullYear()},'presente',this.value)"></td>
-      <td style="text-align:center"><input type="checkbox" ${ctrl.entregue ? 'checked' : ''} title="Presente entregue" onchange="tempoSalvarCtrl('${nomeJs}',${x.prox.getFullYear()},'entregue',this.checked)"></td></tr>`;
-  }).join('') : '<tr><td colspan="9" class="muted" style="text-align:center;padding:16px">Nenhum colaborador com aniversário de empresa neste mês.</td></tr>';
+      <td style="text-align:center"><input type="checkbox" ${ctrl.entregue ? 'checked' : ''} title="Presente entregue" onchange="tempoSalvarCtrl('${nomeJs}',${x.prox.getFullYear()},'entregue',this.checked)"></td><td>${endoBtnExcluir('tempo',x)}</td></tr>`;
+  }).join('') : '<tr><td colspan="10" class="muted" style="text-align:center;padding:16px">Nenhum colaborador com aniversário de empresa neste mês.</td></tr>';
   setText('tempo-count', lista.length + ' colaboradores');
   setText('tempo-kpi-total', itens.length);
   const mesRef = mes > 0 ? mes : new Date().getMonth() + 1;
@@ -4910,9 +4978,11 @@ function fdRowRender(r) {
   </tr>`;
 }
 
+function fdContador(c){ return c==='BRASS'?'CORREIA CONTÁBIL':'SERVCONT'; }
 function renderFolhaDesc() {
   fdPopularAnos();
   const ctx = fdContexto();
+  { const h=document.getElementById('fd-contador-hdr'); if(h) h.textContent='Fechamento com o Contador ('+fdContador(ctx.cnpj)+')'; }
   const all = loadData('folha_descontos').filter(r => r.status !== 'Inativo' && r.cnpj === ctx.cnpj && r.ano === ctx.ano && r.mes === ctx.mes)
     .sort((a,b) => a.colaborador.localeCompare(b.colaborador));
   const tbody = document.getElementById('fd-tbody');
@@ -5098,7 +5168,7 @@ function fdExportar() {
   ws['!cols'] = [{wch:32},{wch:14},{wch:14},{wch:14},{wch:12},{wch:16},{wch:30}];
   Object.keys(ws).forEach(a=>{ if(a[0]!=='!' && ws[a].t==='n') ws[a].z='"R$" #,##0.00'; });
   const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, 'SERVCONT');
+  XLSX.utils.book_append_sheet(wb, ws, fdContador(ctx.cnpj).replace('Á','A'));
   XLSX.writeFile(wb, `${String(ctx.mes).padStart(2,'0')}-${ctx.ano}_DESCONTO_FOLHA_${ctx.cnpj}.xlsx`);
   showToast(`📥 Planilha exportada — ${meses[ctx.mes]}/${ctx.ano} (${ctx.cnpj})`);
 }
@@ -6306,7 +6376,7 @@ function buildAdmissaoTemplateSeed() {
     {desc:'Conferência dos documentos entregues', ondeEncontro:''},
     {desc:'Cadastrar funcionário no sistema RH', ondeEncontro:''},
     {desc:'Anexar os arquivos de documentos', ondeEncontro:'Módulo Colaboradores - Documentos'},
-    {desc:'Enviar ao contador planilha de admissão', ondeEncontro:'Por e-mail (AC → Servcont / Brass → Contábil Correa)'},
+    {desc:'Enviar ao contador planilha de admissão', ondeEncontro:'Por e-mail (AC → Servcont / Brass → Correia Contábil)'},
     {desc:'Conferência dos documentos admissionais', ondeEncontro:''},
     {desc:'Cadastro sistema do ponto', ondeEncontro:'Passo a passo Procedimentos RH, aba "Sistema Web"'},
     {desc:'Incluir no sistema Web', ondeEncontro:'Site RHID'},
@@ -11186,7 +11256,7 @@ async function pullColaboradoresMerge() {
 // tem dado local, não mexe — evita sobrescrever algo em uso.
 async function pullOutrasTabelasAntesDoBoot() {
   if (DB_MODE !== 'supabase' || !supabaseClient) return;
-  const TABELAS = ['ind_turnover','ind_eng','ind_td','ind_hist','plano_cfg','plano_hist','plano_acoes','colab_excluidos','beneficios_anexos','colab_documentos','ferias','treinamentos','avaliacoes','sst','admissoes',
+  const TABELAS = ['endo_extra','endo_oculto','ind_turnover','ind_eng','ind_td','ind_hist','plano_cfg','plano_hist','plano_acoes','colab_excluidos','beneficios_anexos','colab_documentos','ferias','treinamentos','avaliacoes','sst','admissoes',
     'vagas','beneficios_mov','beneficios_inscritos','beneficios_tipos','cargos','ponto',
     'clima_pesquisas','clima_acoes','sucessao','terceiros','documentos','usuarios','holerites',
     'comunicados','cesta_vegas','folha_descontos','feedback90','tempo_empresa_ctrl','desccargos','sstfin','pcmso',
@@ -13511,6 +13581,7 @@ function gpInit(){
     if(document.getElementById('page-'+id)) return;
     const g=GP_GRUPOS[cfg.group]||GP_GRUPOS.sst;
     const filtros=(cfg.filters||[]).map((f,i)=>`<select class="fsel" id="gp-${id}-f${i}" onchange="gpRender('${id}')" style="min-width:140px"><option value="">${f.l}</option>${(f.opts||[]).map(o=>`<option>${gpEsc(o)}</option>`).join('')}</select>`).join('');
+    const perSel=cfg.periodo?`<select class="fsel" id="gp-${id}-mes" onchange="gpRender('${id}')"><option value="0">📅 Todos os meses</option>${['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'].map((n,i)=>`<option value="${i+1}"${i===new Date().getMonth()?' selected':''}>${n}</option>`).join('')}</select><select class="fsel" id="gp-${id}-ano" onchange="gpRender('${id}')"><option value="0">Todos os anos</option>${Array.from({length:25},(_,i)=>2026+i).map(a=>`<option value="${a}"${a===new Date().getFullYear()?' selected':''}>${a}</option>`).join('')}</select>`:'';
     const empSel=cfg.empresaFilter?`<select class="fsel" id="gp-${id}-emp" onchange="gpRender('${id}')"><option value="">Todas as empresas</option><option value="AC">AC Metal</option><option value="BRASS">Brass Metal</option></select>`:'';
     const div=document.createElement('div');
     div.id='page-'+id; div.className='page';
@@ -13527,7 +13598,7 @@ function gpInit(){
       <div class="kpi-grid" id="gp-${id}-kpi"></div>
       <div class="filters" style="margin-bottom:12px;flex-wrap:wrap">
         <input class="finp" type="text" id="gp-${id}-q" placeholder="🔎 Buscar..." oninput="gpRender('${id}')" style="width:200px">
-        ${empSel}${filtros}
+        ${perSel}${empSel}${filtros}
         <span class="chip" id="gp-${id}-cnt">—</span>
         <button class="btn btn-s btn-xs" onclick="gpLimpar('${id}')">🔄 Limpar</button>
       </div>
@@ -13542,10 +13613,13 @@ function gpRows(cfg){
   return loadData(cfg.table).filter(r=>r.status!=='Inativo' && (!cfg.pre||cfg.pre(r)))
     .map(r=>cfg.comp?Object.assign({},r,cfg.comp(r)):r);
 }
+function gpPeriodoSel(id){ const m=document.getElementById(`gp-${id}-mes`), a=document.getElementById(`gp-${id}-ano`); return {mes:m?+m.value:0,ano:a?+a.value:0}; }
+function gpMesRef(id){ const p=gpPeriodoSel(id), h=new Date(); return {mes:p.mes||(p.ano?0:h.getMonth()+1),ano:p.ano||h.getFullYear()}; }
 function gpLimpar(id){
   const cfg=GP[id];
   const q=document.getElementById(`gp-${id}-q`); if(q) q.value='';
   const e=document.getElementById(`gp-${id}-emp`); if(e) e.value='';
+  { const m=document.getElementById(`gp-${id}-mes`), a=document.getElementById(`gp-${id}-ano`); if(m) m.value='0'; if(a) a.value='0'; }
   (cfg.filters||[]).forEach((f,i)=>{ const s=document.getElementById(`gp-${id}-f${i}`); if(s) s.value=''; });
   gpRender(id);
 }
@@ -13555,6 +13629,7 @@ function gpFiltrados(id){
   if(q) rows=rows.filter(r=>JSON.stringify(Object.values(r)).toLowerCase().includes(q));
   const e=(document.getElementById(`gp-${id}-emp`)||{}).value;
   if(e) rows=rows.filter(r=>(r.empresa||'')===e);
+  if(cfg.periodo){ const pp=gpPeriodoSel(id); rows=rows.filter(r=>{ const d=gpDt(r[cfg.periodo]); if(!d) return !pp.mes&&!pp.ano; return (!pp.mes||d.getMonth()+1===pp.mes)&&(!pp.ano||d.getFullYear()===pp.ano); }); }
   (cfg.filters||[]).forEach((f,i)=>{ const v=(document.getElementById(`gp-${id}-f${i}`)||{}).value; if(v) rows=rows.filter(r=>String(f.get?f.get(r):r[f.k]||'')===v); });
   if(cfg.sort) rows.sort(cfg.sort);
   return rows;
@@ -13570,10 +13645,10 @@ function gpRender(id){
   const tb=document.getElementById(`gp-${id}-tbody`);
   tb.innerHTML=rows.length?rows.map(r=>`<tr>${cfg.columns.map(c=>`<td style="font-size:11px">${c.v(r)}</td>`).join('')}
     <td style="white-space:nowrap">
-      <button class="btn btn-s btn-xs" onclick="gpEditar('${id}',${r.id})" title="Editar">✏</button>
+      <button class="btn btn-s btn-xs" onclick="gpEditar('${id}',${r.id})" title="Editar">✏${cfg.botoesTexto?' Editar':''}</button>
       ${cfg.anexo===false?'':`<button class="btn btn-s btn-xs" onclick="gpAnexos('${id}',${r.id})" title="Anexar documentos">📎${nAnx[r.id]?' ('+nAnx[r.id]+')':''}</button>`}
       ${cfg.acoes?cfg.acoes(r):''}
-      <button class="btn btn-s btn-xs" onclick="gpExcluir('${id}',${r.id})" title="Excluir">🗑</button>
+      <button class="btn btn-s btn-xs" onclick="gpExcluir('${id}',${r.id})" title="Excluir">🗑${cfg.botoesTexto?' Excluir':''}</button>
     </td></tr>`).join(''):`<tr><td colspan="${cfg.columns.length+1}" class="muted" style="text-align:center;padding:18px">Nenhum registro${todos.length?' com os filtros atuais':' cadastrado ainda'}. Use o botão "${gpTxt(cfg.novoBtn||'+ Novo')}".</td></tr>`;
   const c=document.getElementById(`gp-${id}-cnt`); if(c) c.textContent=rows.length+' registro(s)';
 }
@@ -13661,12 +13736,12 @@ const GP_SIM_NAO=['Sim','Não'];
 function gpEmpresaField(){ return {field:'empresa',label:'Empresa',type:'select',required:true,options:['AC','BRASS']}; }
 
 /* — SST: Estoque de EPI — */
-gpRegister({id:'estoqueepi',group:'sst',icon:'📦',title:'Estoque de EPI',label:'Item de Estoque de EPI',table:'epi_estoque',
-  novoBtn:'+ Novo item',nota:'Controle do que há no almoxarifado: quantidade, estoque mínimo e validade do CA. A entrega ao colaborador continua em Controle de EPI.',
+gpRegister({id:'estoqueepi',botoesTexto:true,group:'sst',icon:'📦',title:'Estoque de EPI',label:'Item de Estoque de EPI',table:'epi_estoque',
+  novoBtn:'+ Novo item',nota:'Use “+ Novo item” para incluir (o nome do EPI pode ser digitado), ✏ Editar e 🗑 Excluir em cada linha, e ➕ Entrada para somar material recebido. Controle do que há no almoxarifado: quantidade, estoque mínimo e validade do CA. A entrega ao colaborador continua em Controle de EPI.',
   empresaFilter:true,
   rowLabel:r=>r.item+(r.tamanho?' '+r.tamanho:''),
   fields:[
-    {field:'item',label:'EPI / Item',type:'select',required:true,full:true,options:['Capacete','Óculos de Proteção','Luva de Raspa','Luva de Látex','Luva de Malha Pigmentada','Botina de Segurança','Protetor Auricular (plug)','Protetor Auricular (concha)','Avental de Raspa','Máscara Respiratória (PFF2)','Cinto de Segurança','Uniforme / Camisa','Uniforme / Calça','Óculos de Solda','Perneira','Mangote','Protetor Facial','Outro']},
+    {field:'item',label:'EPI / Item (escolha na lista ou digite um item novo)',required:true,full:true,list:['Capacete','Óculos de Proteção','Luva de Raspa','Luva de Látex','Luva de Malha Pigmentada','Botina de Segurança','Protetor Auricular (plug)','Protetor Auricular (concha)','Avental de Raspa','Máscara Respiratória (PFF2)','Cinto de Segurança','Uniforme / Camisa','Uniforme / Calça','Óculos de Solda','Perneira','Mangote','Protetor Facial','Outro']},
     {field:'descricao',label:'Descrição / Modelo (opcional)',full:true},
     gpEmpresaField(),
     {field:'tamanho',label:'Tamanho / Nº (se houver)'},
@@ -13807,7 +13882,7 @@ function gpDurMin(r){ const a=String(r.entrada||'').match(/^(\d{1,2}):(\d{2})/),
 function gpHM(m){ return Math.floor(m/60)+':'+String(m%60).padStart(2,'0'); }
 
 /* — SST: Visitas Técnicas — */
-gpRegister({id:'visitas',group:'sst',icon:'🪪',title:'Controle de Visitas Técnicas',label:'Visita Técnica',table:'visitas_tecnicas',
+gpRegister({id:'visitas',periodo:'data',group:'sst',icon:'🪪',title:'Controle de Visitas Técnicas',label:'Visita Técnica',table:'visitas_tecnicas',
   novoBtn:'+ Registrar visita',nota:'Registro de visitantes, prestadores e técnicos que entram na planta, com orientação de segurança e EPI. Anexe o termo assinado em 📎.',
   empresaFilter:true,
   rowLabel:r=>(r.visitante||'')+' — '+(r.data||''),
@@ -13831,12 +13906,12 @@ gpRegister({id:'visitas',group:'sst',icon:'🪪',title:'Controle de Visitas Téc
     {field:'observacao',label:'Observações',type:'textarea',full:true}
   ],
   kpis:[
-    {l:'Visitas no mês',v:rs=>{ const h=new Date(); return rs.filter(r=>{const d=gpDt(r.data);return d&&d.getMonth()===h.getMonth()&&d.getFullYear()===h.getFullYear();}).length; }},
+    {l:'Visitas no período',v:rs=>{ const h=gpMesRef('visitas'); return rs.filter(r=>{const d=gpDt(r.data);return d&&(!h.mes||d.getMonth()+1===h.mes)&&d.getFullYear()===h.ano;}).length; }},
     {l:'Visitas hoje',v:rs=>rs.filter(r=>r.data===gpFmt(new Date())).length,c:'var(--blue)'},
     {l:'Sem orientação de segurança',v:rs=>rs.filter(r=>r.orientacao==='Não').length,c:'var(--red)'},
     {l:'Sem termo assinado',v:rs=>rs.filter(r=>r.termo==='Não').length,c:'var(--orange)'},
-    {l:'Horas do TST no mês',v:rs=>{ const h=new Date(); return gpHM(rs.filter(r=>{const d=gpDt(r.data);return r.visitante&&/TST|Listmaier/i.test(r.empresaVisitante+r.visitante)&&d&&d.getMonth()===h.getMonth()&&d.getFullYear()===h.getFullYear();}).reduce((a,r)=>a+gpDurMin(r),0)); },c:'var(--blue)'},
-    {l:'TST fora do contrato (mês)',v:rs=>{ const h=new Date(); return rs.filter(r=>{const d=gpDt(r.data);return r.contrato==='Não incluso'&&d&&d.getMonth()===h.getMonth()&&d.getFullYear()===h.getFullYear();}).length; },c:'var(--orange)'}],
+    {l:'Horas do TST no período',v:rs=>{ const h=gpMesRef('visitas'); return gpHM(rs.filter(r=>{const d=gpDt(r.data);return r.visitante&&/TST|Listmaier/i.test(r.empresaVisitante+r.visitante)&&d&&(!h.mes||d.getMonth()+1===h.mes)&&d.getFullYear()===h.ano;}).reduce((a,r)=>a+gpDurMin(r),0)); },c:'var(--blue)'},
+    {l:'TST fora do contrato (período)',v:rs=>{ const h=gpMesRef('visitas'); return rs.filter(r=>{const d=gpDt(r.data);return r.contrato==='Não incluso'&&d&&(!h.mes||d.getMonth()+1===h.mes)&&d.getFullYear()===h.ano;}).length; },c:'var(--orange)'}],
   filters:[{l:'Todos os motivos',k:'motivo',opts:['Inspeção de rotina (TST)','Manutenção de equipamento','Instalação / Obra','Auditoria / Certificação','Fornecedor / Comercial','Cliente','Fiscalização','Entrega / Coleta','Outro']},{l:'Orientação: todas',k:'orientacao',opts:['Sim','Não']}],
   sort:(a,b)=>((gpDt(b.data)||0)-(gpDt(a.data)||0)),
   columns:[
@@ -14231,7 +14306,7 @@ function epiDevolveEstoque(rec){
   };
   // itens do estoque = mesma lista do Controle de EPI
   const opts=(MOD_EPI.fields.find(x=>x.field==='nomeEpi')||{}).options||[];
-  const it=GP.estoqueepi.fields.find(x=>x.field==='item'); if(it&&opts.length) it.options=opts.slice();
+  const it=GP.estoqueepi.fields.find(x=>x.field==='item'); if(it&&opts.length) it.list=Array.from(new Set(opts.concat(it.list||[])));
   GP.estoqueepi.acoes=r=>`<button class="btn btn-s btn-xs" onclick="gpEntradaEstoque(${r.id})" title="Registrar entrada de material no estoque">➕ Entrada</button>`;
 })();
 function gpEntradaEstoque(id){
