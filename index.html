@@ -349,6 +349,7 @@ tr:last-child td{border-bottom:none}
   #m-recibo .modal{max-height:none!important;overflow:visible!important;box-shadow:none!important;border:none!important;outline:none!important;border-radius:0!important;width:100%!important;background:none!important;margin:0!important}
   #m-recibo .m-body{padding:0!important;margin:0!important}
   #recibo-preview{position:static!important;width:100%;margin:0!important;padding:0!important}
+  html,body,#m-recibo,#m-recibo .modal,#m-recibo .m-body,#recibo-preview,.doc-print{background:#fff!important}
   .no-print{display:none !important}
 }
 
@@ -417,6 +418,7 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
 /* Abas (tabs) estilo pasta clássica */
 .tab{background:#d4d0c8!important;border:1px solid var(--ad-border-dark)!important;border-bottom:none!important;color:#000!important;font-family:var(--ad-font)!important;font-size:11px!important}
 .tab.active{background:var(--ad-panel)!important;font-weight:700!important}
+  .fd-moeda{text-align:right;font-variant-numeric:tabular-nums;font-weight:600;width:100%;min-width:0;box-sizing:border-box;padding:4px 6px;font-size:12px;color:#0f172a}
 </style>
 </head>
 <body>
@@ -439,7 +441,7 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
   <div class="l-box">
     <div class="l-logo">
       <div class="l-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
-      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.87 — Férias com programação da contabilidade (dias de direito automáticos)</div></div>
+      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.88 — Histórico mensal da Cesta/Vegas, ficha em 1 página, evidências no modelo, descontos em R$</div></div>
     </div>
     <div class="f-row"><label>Usuário</label><input type="text" id="l-user" value="jakeline@acmetalurgica.com.br"></div>
     <div class="f-row"><label>Senha</label><input type="password" id="l-pass" value="••••••••"></div>
@@ -883,6 +885,9 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
         </label>
         <button class="btn btn-s btn-sm" onclick="cvLimparFiltros()">🔄 Limpar Filtros</button>
         <button class="btn btn-s btn-sm" onclick="cvExportarFiltrado()">⬇ Exportar</button>
+        <button class="btn btn-s btn-sm" onclick="cvFecharMesAtual()" title="Salva uma cópia do mês para consulta futura">🔒 Fechar mês (salvar histórico)</button>
+        <button class="btn btn-s btn-sm" onclick="cvHistoricoAbrir()">📜 Histórico mensal</button>
+        <span class="chip" id="cv-hist-chip" style="display:none"></span>
       </div>
       <div class="kpi-grid">
         <div class="kpi-card"><div class="kpi-lbl">Colaboradores no mês</div><div class="kpi-val" id="cv-kpi-total">—</div></div>
@@ -1085,17 +1090,17 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
       </div>
       <div class="card" style="padding:0;margin-bottom:14px;overflow-x:auto">
         <div class="card-hdr">Descontos do Mês — enviar ao escritório contábil</div>
-        <table style="min-width:820px;table-layout:fixed"><thead><tr>
-          <th style="width:170px">Colaborador</th><th style="width:80px">Farmácia</th><th style="width:80px">Sindicato</th><th style="width:85px">Samaritano</th><th style="width:65px">Transp.</th><th style="width:90px">Termo Acordo</th><th>Observação</th><th style="width:50px">Ações</th>
+        <table style="min-width:1000px;table-layout:fixed"><thead><tr>
+          <th style="width:200px">Colaborador</th><th style="width:125px">Farmácia</th><th style="width:125px">Sindicato</th><th style="width:125px">Samaritano</th><th style="width:75px">Transp.</th><th style="width:125px">Termo Acordo</th><th>Observação</th><th style="width:50px">Ações</th>
         </tr></thead>
         <tbody id="fd-tbody"></tbody></table>
       </div>
       <div class="card" style="padding:12px">
         <div class="card-hdr" style="padding:0 0 10px 0">Fechamento com o Contador (SERVCONT)</div>
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr 2fr;gap:12px">
-          <div><label style="font-size:11px;font-weight:600;display:block;margin-bottom:3px">Total Nota (R$)</label><input class="finp" type="number" step="0.01" id="fd-total-nota" style="width:100%" onchange="fdSalvarTotais()"></div>
-          <div><label style="font-size:11px;font-weight:600;display:block;margin-bottom:3px">Valor Empresa (R$)</label><input class="finp" type="number" step="0.01" id="fd-valor-empresa" style="width:100%" onchange="fdSalvarTotais()"></div>
-          <div><label style="font-size:11px;font-weight:600;display:block;margin-bottom:3px">Valor Repasse (R$)</label><input class="finp" type="number" step="0.01" id="fd-valor-repasse" style="width:100%" onchange="fdSalvarTotais()"></div>
+          <div><label style="font-size:11px;font-weight:600;display:block;margin-bottom:3px">Total Nota (R$)</label><input class="finp fd-moeda" type="text" inputmode="decimal" id="fd-total-nota" placeholder="R$ 0,00" style="width:100%" onfocus="this.select()" onchange="fdSalvarTotais()"></div>
+          <div><label style="font-size:11px;font-weight:600;display:block;margin-bottom:3px">Valor Empresa (R$)</label><input class="finp fd-moeda" type="text" inputmode="decimal" id="fd-valor-empresa" placeholder="R$ 0,00" style="width:100%" onfocus="this.select()" onchange="fdSalvarTotais()"></div>
+          <div><label style="font-size:11px;font-weight:600;display:block;margin-bottom:3px">Valor Repasse (R$)</label><input class="finp fd-moeda" type="text" inputmode="decimal" id="fd-valor-repasse" placeholder="R$ 0,00" style="width:100%" onfocus="this.select()" onchange="fdSalvarTotais()"></div>
           <div><label style="font-size:11px;font-weight:600;display:block;margin-bottom:3px">Observação (ex: Samaritano - AC Metal)</label><input class="finp" type="text" id="fd-obs-geral" style="width:100%" onchange="fdSalvarTotais()"></div>
         </div>
       </div>
@@ -2435,7 +2440,7 @@ function go(id,el,title,bread){
   if(id==='comunicados'){setTimeout(()=>{try{if(tcComunicado)tcComunicado.refresh();atualizarKPIsComunicados();}catch(e){}},80);}
   if(id==='aniversariantes'){setTimeout(()=>{try{renderAniversariantes();}catch(e){console.warn('aniv:',e);}},60);}
   if(id==='tempoempresa'){setTimeout(()=>{try{renderTempoEmpresa();}catch(e){console.warn('tempo:',e);}},60);}
-  if(id==='cestavegas'){setTimeout(()=>{try{cvInitPeriodo();renderCestaVegas();buildCestaVegasHistorico();}catch(e){console.warn('cestavegas:',e);}},80);}
+  if(id==='cestavegas'){setTimeout(()=>{try{cvInitPeriodo();cvAutoArquivar();renderCestaVegas();buildCestaVegasHistorico();}catch(e){console.warn('cestavegas:',e);}},80);}
   if(id==='feedback90'){setTimeout(()=>{try{renderFeedback90();}catch(e){console.warn('feedback90:',e);}},80);}
   if(id==='desccargos'){setTimeout(()=>{try{renderDescCargos();}catch(e){console.warn('desccargos:',e);}},80);}
   if(id==='ordemservico'){setTimeout(()=>{try{renderOrdensServico();}catch(e){console.warn('ordemservico:',e);}},80);}
@@ -4825,12 +4830,13 @@ function colabFichaAcao(acao) {
     const empFicha = empresaInfoDoColaborador(c);
     const cfSecao = (titulo) => `<h3 style="font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--blue);border-bottom:1.5px solid var(--blue);padding-bottom:4px;margin:12px 0 6px">${titulo}</h3>`;
     abrirReciboModal('🖨 Ficha Cadastral — ' + c.nome, `${docPageCSS(empFicha)}
-      <div class="doc-print" style="padding:16px">
-        <h2 style="text-align:center;margin-bottom:4px">FICHA CADASTRAL DO COLABORADOR</h2>
-        <p style="text-align:center;font-size:11px;color:#666;margin-bottom:6px">${c.nome} — Matrícula ${c.mat||'—'}</p>
+      <style>.ficha1 .fgrid>div{margin-bottom:5px!important}.ficha1 .fgrid>div>div:last-child{font-size:12px!important;margin-top:1px!important;line-height:1.3}.ficha1 .fobs{grid-column:1/-1}.ficha1 .fobs>div>div:last-child{font-size:11px!important;line-height:1.3;max-height:7.8em;overflow:hidden}</style>
+      <div class="doc-print ficha1" style="padding:0;page-break-inside:avoid;break-inside:avoid">
+        <h2 style="text-align:center;margin:0 0 2px;font-size:16px">FICHA CADASTRAL DO COLABORADOR</h2>
+        <p style="text-align:center;font-size:10.5px;color:#666;margin-bottom:2px">${c.nome} — Matrícula ${c.mat||'—'}</p>
 
         ${cfSecao('Dados Cadastrais')}
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px 20px;font-size:12px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px 20px;font-size:11px" class="fgrid">
           ${cfField('Nome Completo', c.nome)}${cfField('Nome Curto / Apelido', c.nomeCurto)}
           ${cfField('CPF', c.cpf)}${cfField('RG', c.rg)}
           ${cfField('PIS/PASEP', c.pis)}${cfField('Data de Nascimento', c.nascimento)}
@@ -4842,14 +4848,14 @@ function colabFichaAcao(acao) {
         </div>
 
         ${cfSecao('Endereço')}
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px 20px;font-size:12px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px 20px;font-size:11px" class="fgrid">
           ${cfField('Endereço', [c.enderecoTipo,c.endereco,c.numero].filter(Boolean).join(' '))}${cfField('Complemento', c.complemento)}
           ${cfField('Bairro', c.bairro)}${cfField('Município/UF', [c.cidade,c.uf].filter(Boolean).join(' - '))}
           ${cfField('CEP', c.cep)}
         </div>
 
         ${cfSecao('Dados Contratuais')}
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px 20px;font-size:12px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px 20px;font-size:11px" class="fgrid">
           ${cfField('Empresa (CNPJ)', empFicha.nome + ' — ' + empFicha.cnpj)}${cfField('Cargo', c.cargo)}
           ${cfField('Setor', c.setor)}${cfField('Data de Admissão', c.adm)}
           ${cfField('CBO', c.cbo)}${cfField('Sindicato', c.sindicato)}
@@ -4857,9 +4863,9 @@ function colabFichaAcao(acao) {
         </div>
 
         ${cfSecao('Informações da Folha e Gestão')}
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px 20px;font-size:12px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px 20px;font-size:11px" class="fgrid">
           ${cfField('Salário', c.sal ? 'R$ '+moedaFmt(c.sal) : '')}${cfField('Horário de Trabalho', c.horarioTrabalho)}
-          ${cfField('Observações', c.observacoes)}
+          <div class="fobs">${cfField('Observações', c.observacoes)}</div>
         </div>
       </div>`, false);
   }
@@ -4917,7 +4923,7 @@ function fdInlineUpdate(id, field, value) {
   const idx = data.findIndex(d => d.id === id);
   if (idx === -1) return;
   if (['farmacia','sindicato','samaritano','termoAcordo'].includes(field)) {
-    let num = parseFloat(String(value).replace(',', '.'));
+    let num = moedaNum(value);
     if (isNaN(num) || num < 0) num = 0;
     value = Math.round(num * 100) / 100;
   }
@@ -4948,11 +4954,11 @@ function fdRemoverLinha(id, nome) {
 function fdRowRender(r) {
   return `<tr>
     <td style="font-size:11px">${r.colaborador}</td>
-    <td><input type="number" step="0.01" min="0" style="width:100%" value="${r.farmacia||0}" onchange="fdInlineUpdate(${r.id},'farmacia',this.value)"></td>
-    <td><input type="number" step="0.01" min="0" style="width:100%" value="${r.sindicato||0}" onchange="fdInlineUpdate(${r.id},'sindicato',this.value)"></td>
-    <td><input type="number" step="0.01" min="0" style="width:100%" value="${r.samaritano||0}" onchange="fdInlineUpdate(${r.id},'samaritano',this.value)"></td>
+    <td><input type="text" inputmode="decimal" class="fd-moeda" value="R$ ${fmtBRL(r.farmacia||0)}" onfocus="this.select()" onchange="fdInlineUpdate(${r.id},'farmacia',this.value)"></td>
+    <td><input type="text" inputmode="decimal" class="fd-moeda" value="R$ ${fmtBRL(r.sindicato||0)}" onfocus="this.select()" onchange="fdInlineUpdate(${r.id},'sindicato',this.value)"></td>
+    <td><input type="text" inputmode="decimal" class="fd-moeda" value="R$ ${fmtBRL(r.samaritano||0)}" onfocus="this.select()" onchange="fdInlineUpdate(${r.id},'samaritano',this.value)"></td>
     <td><select style="width:100%" onchange="fdInlineUpdate(${r.id},'transporte',this.value)"><option value="NÃO" ${r.transporte==='NÃO'?'selected':''}>NÃO</option><option value="SIM" ${r.transporte==='SIM'?'selected':''}>SIM</option></select></td>
-    <td><input type="number" step="0.01" min="0" style="width:100%" value="${r.termoAcordo||0}" onchange="fdInlineUpdate(${r.id},'termoAcordo',this.value)"></td>
+    <td><input type="text" inputmode="decimal" class="fd-moeda" value="R$ ${fmtBRL(r.termoAcordo||0)}" onfocus="this.select()" onchange="fdInlineUpdate(${r.id},'termoAcordo',this.value)"></td>
     <td><input type="text" style="width:100%" value="${escAttr(r.observacao||'')}" onchange="fdInlineUpdate(${r.id},'observacao',this.value)"></td>
     <td><button class="btn btn-s btn-xs" onclick="fdRemoverLinha(${r.id},'${escAttr(r.colaborador)}')">🗑</button></td>
   </tr>`;
@@ -4973,17 +4979,18 @@ function renderFolhaDesc() {
   setText('fd-kpi-termo', 'R$ ' + fmtBRL(all.reduce((s,r)=>s+(r.termoAcordo||0),0)));
 
   const tot = loadData('folha_totais').find(t => t.status !== 'Inativo' && t.cnpj === ctx.cnpj && t.ano === ctx.ano && t.mes === ctx.mes);
-  document.getElementById('fd-total-nota').value = tot ? tot.totalNota||0 : '';
-  document.getElementById('fd-valor-empresa').value = tot ? tot.valorEmpresa||0 : '';
-  document.getElementById('fd-valor-repasse').value = tot ? tot.valorRepasse||0 : '';
+  document.getElementById('fd-total-nota').value = tot ? 'R$ '+fmtBRL(tot.totalNota||0) : '';
+  document.getElementById('fd-valor-empresa').value = tot ? 'R$ '+fmtBRL(tot.valorEmpresa||0) : '';
+  document.getElementById('fd-valor-repasse').value = tot ? 'R$ '+fmtBRL(tot.valorRepasse||0) : '';
   document.getElementById('fd-obs-geral').value = tot ? tot.observacao||'' : '';
 }
 
 function fdSalvarTotais() {
   const ctx = fdContexto();
-  const totalNota = parseFloat(document.getElementById('fd-total-nota').value) || 0;
-  const valorEmpresa = parseFloat(document.getElementById('fd-valor-empresa').value) || 0;
-  const valorRepasse = parseFloat(document.getElementById('fd-valor-repasse').value) || 0;
+  const totalNota = moedaNum(document.getElementById('fd-total-nota').value) || 0;
+  const valorEmpresa = moedaNum(document.getElementById('fd-valor-empresa').value) || 0;
+  const valorRepasse = moedaNum(document.getElementById('fd-valor-repasse').value) || 0;
+  document.getElementById('fd-total-nota').value = 'R$ '+fmtBRL(totalNota); document.getElementById('fd-valor-empresa').value = 'R$ '+fmtBRL(valorEmpresa); document.getElementById('fd-valor-repasse').value = 'R$ '+fmtBRL(valorRepasse);
   const observacao = document.getElementById('fd-obs-geral').value || '';
   const all = loadData('folha_totais');
   let rec = all.find(t => t.cnpj === ctx.cnpj && t.ano === ctx.ano && t.mes === ctx.mes);
@@ -5054,9 +5061,10 @@ function fdExportar() {
   const all = loadData('folha_descontos').filter(r => r.status !== 'Inativo' && r.cnpj === ctx.cnpj && r.ano === ctx.ano && r.mes === ctx.mes).sort((a,b)=>a.colaborador.localeCompare(b.colaborador));
   const meses = ['','Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
   const header = ['NOME DO FUNCIONÁRIO','FARMÁCIA','SINDICATO','SAMARITANO','TRANSPORTE','TERMO ACORDO','OBSERVAÇÃO'];
+  const S=k=>all.reduce((s,r)=>s+(r[k]||0),0);
   const rows = all.map(r => [r.colaborador, r.farmacia||0, r.sindicato||0, r.samaritano||0, r.transporte, r.termoAcordo||0, r.observacao||'']);
   rows.push([]);
-  rows.push(['TOTAL', fmtBRL(all.reduce((s,r)=>s+(r.farmacia||0),0)), fmtBRL(all.reduce((s,r)=>s+(r.sindicato||0),0)), fmtBRL(all.reduce((s,r)=>s+(r.samaritano||0),0)), '', fmtBRL(all.reduce((s,r)=>s+(r.termoAcordo||0),0)), '']);
+  rows.push(['TOTAL', S('farmacia'), S('sindicato'), S('samaritano'), '', S('termoAcordo'), '']);
   const tot = loadData('folha_totais').find(t => t.cnpj === ctx.cnpj && t.ano === ctx.ano && t.mes === ctx.mes);
   if (tot) {
     rows.push([]);
@@ -5066,7 +5074,8 @@ function fdExportar() {
     if (tot.observacao) rows.push([tot.observacao]);
   }
   const ws = XLSX.utils.aoa_to_sheet([header, ...rows]);
-  ws['!cols'] = [{wch:32},{wch:12},{wch:12},{wch:12},{wch:12},{wch:14},{wch:30}];
+  ws['!cols'] = [{wch:32},{wch:14},{wch:14},{wch:14},{wch:12},{wch:16},{wch:30}];
+  Object.keys(ws).forEach(a=>{ if(a[0]!=='!' && ws[a].t==='n') ws[a].z='"R$" #,##0.00'; });
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, 'SERVCONT');
   XLSX.writeFile(wb, `${String(ctx.mes).padStart(2,'0')}-${ctx.ano}_DESCONTO_FOLHA_${ctx.cnpj}.xlsx`);
@@ -7989,8 +7998,9 @@ function renderCestaVegas() {
   const tbody = document.getElementById('cv-tbody');
   if (!tbody) return;
   tbody.innerHTML = all.length ? all.map(cvRowRender).join('')
-    : '<tr><td colspan="10" class="muted" style="text-align:center;padding:16px">Nenhum registro encontrado com os filtros atuais.</td></tr>';
+    : '<tr><td colspan="10" class="muted" style="text-align:center;padding:16px">Nenhum registro encontrado com os filtros atuais.<br><button class="btn btn-p btn-sm" style="margin-top:8px" onclick="cvGerarMesDoAnterior()">➕ Criar este mês a partir do mês anterior</button></td></tr>';
   setText('cv-count', all.length + ' registros');
+  { const pp=cvPeriodo(), h=cvHistRegistro(pp.ano,pp.mes), ch=document.getElementById('cv-hist-chip'); if(ch){ ch.style.display=h?'inline-block':'none'; ch.textContent=h?'🔒 Histórico salvo em '+h.fechadoEm:''; } }
 
   const total = all.length;
   const com = all.filter(r=>r.cesta==='SIM').length;
@@ -8007,6 +8017,96 @@ function renderCestaVegas() {
   setText('cv-kpi-vegasval', 'R$ ' + fmtBRL(valorVegasTotal));
   setText('cv-kpi-cestaval', 'R$ ' + fmtBRL(valorCestaTotal));
   setText('cv-kpi-custototal', 'R$ ' + fmtBRL((valorVegasTotal + valorCestaTotal)));
+}
+
+/* ═══ v4.87 — Cesta Básica / Vegas: histórico mensal salvo mês a mês ═══ */
+const CV_MESES=['','Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+function cvLinhasMes(ano,mes){
+  return loadData('cesta_vegas').filter(r=>r.status!=='Inativo'&&cvMesNum(r)===mes&&Number(r.ano)===Number(ano))
+    .sort((a,b)=>(a.cnpj||'').localeCompare(b.cnpj||'')||a.colaborador.localeCompare(b.colaborador))
+    .map(r=>({colaborador:r.colaborador,cnpj:r.cnpj||'',cesta:r.cesta,qtdCesta:r.qtdCesta||0,valorCesta:parseFloat(r.valorCesta)||0,vegas:r.vegas,valorVegas:parseFloat(r.valorVegas)||0,observacoes:r.observacoes||''}));
+}
+function cvTotais(linhas){
+  const z=()=>({colab:0,cestas:0,qtd:0,vegas:0,valorCesta:0,valorVegas:0});
+  const T={AC:z(),BRASS:z(),TOTAL:z()};
+  linhas.forEach(l=>{ [T[l.cnpj==='BRASS'?'BRASS':'AC'],T.TOTAL].forEach(x=>{ x.colab++; if(l.cesta==='SIM'){x.cestas++;x.qtd+=l.qtdCesta||1;x.valorCesta+=l.valorCesta;} if(l.vegas==='SIM'){x.vegas++;x.valorVegas+=l.valorVegas;} }); });
+  return T;
+}
+function cvHistRegistro(ano,mes){ return loadData('cesta_vegas_hist').find(h=>h.status!=='Inativo'&&Number(h.ano)===Number(ano)&&Number(h.mesNum)===Number(mes)); }
+function cvSalvarHistorico(ano,mes,silencioso){
+  const linhas=cvLinhasMes(ano,mes); if(!linhas.length){ if(!silencioso) showToast('Nenhum registro neste mês para salvar','warn'); return false; }
+  const dados={ano:Number(ano),mesNum:mes,mes:CV_MESES[mes],linhas,tot:cvTotais(linhas),fechadoEm:nowStr()}, ex=cvHistRegistro(ano,mes);
+  if(ex) crudUpdate('cesta_vegas_hist',ex.id,dados,{modulo:'Cesta Básica / Vegas'}); else crudCreate('cesta_vegas_hist',dados,{modulo:'Cesta Básica / Vegas',label:CV_MESES[mes]+'/'+ano});
+  if(!silencioso){ showToast('🔒 Histórico de '+CV_MESES[mes]+'/'+ano+' salvo'); renderCestaVegas(); }
+  return true;
+}
+function cvFecharMesAtual(){
+  const {mes,ano}=cvPeriodo(), ex=cvHistRegistro(ano,mes);
+  if(ex&&!confirm('O histórico de '+CV_MESES[mes]+'/'+ano+' já foi salvo em '+ex.fechadoEm+'. Substituir pelo estado atual da tabela?')) return;
+  cvSalvarHistorico(ano,mes,false);
+}
+// meses passados com registros e ainda sem histórico são arquivados automaticamente
+function cvAutoArquivar(){
+  const hoje=new Date(), ma=hoje.getFullYear()*12+hoje.getMonth(); let n=0;
+  const chaves=new Set(loadData('cesta_vegas').filter(r=>r.status!=='Inativo').map(r=>Number(r.ano)+'|'+cvMesNum(r)));
+  chaves.forEach(k=>{ const [a,m]=k.split('|').map(Number); if(!a||!m||a*12+(m-1)>=ma) return; if(!cvHistRegistro(a,m)&&cvSalvarHistorico(a,m,true)) n++; });
+  if(n) console.log('Cesta/Vegas: '+n+' mês(es) arquivado(s) automaticamente');
+}
+function cvGerarMesDoAnterior(){
+  const {mes,ano}=cvPeriodo(); if(cvLinhasMes(ano,mes).length){ showToast('Este mês já tem registros','warn'); return; }
+  let pm=mes-1, pa=ano; if(pm<1){ pm=12; pa=ano-1; }
+  const base=cvLinhasMes(pa,pm); if(!base.length){ showToast('O mês anterior não tem registros para copiar','warn'); return; }
+  if(!cvHistRegistro(pa,pm)) cvSalvarHistorico(pa,pm,true);
+  const ativos=loadData('colaboradores').filter(c=>c.status!=='Inativo').map(c=>feriasNorm(c.nome));
+  let n=0, fora=0;
+  base.forEach(l=>{
+    if(ativos.length&&!ativos.includes(feriasNorm(l.colaborador))&&l.colaborador.toUpperCase()!=='ZEZINHA'){ fora++; return; }
+    crudCreate('cesta_vegas',{colaborador:l.colaborador,mes:CV_MESES[mes],mesNum:mes,ano,cnpj:l.cnpj,cesta:l.cesta,qtdCesta:l.qtdCesta,valorCesta:l.valorCesta,vegas:l.vegas,valorVegas:l.valorVegas,observacoes:''},{modulo:'Cesta Básica / Vegas',label:l.colaborador}); n++;
+  });
+  showToast('✓ '+CV_MESES[mes]+'/'+ano+' criado com '+n+' colaboradores (copiados de '+CV_MESES[pm]+')'+(fora?' · '+fora+' não ativo(s) ignorado(s)':''));
+  renderCestaVegas(); buildCestaVegasHistorico();
+}
+function cvHistoricoAbrir(ano){
+  ano=Number(ano)||cvPeriodo().ano;
+  const hoje=new Date(), linhasTab=[]; let TT={colab:0,cestas:0,qtd:0,vegas:0,valorCesta:0,valorVegas:0};
+  const anos=[]; for(let a=2026;a<=2050;a++) anos.push(`<option value="${a}"${a===ano?' selected':''}>${a}</option>`);
+  for(let m=1;m<=12;m++){
+    const h=cvHistRegistro(ano,m), live=cvLinhasMes(ano,m);
+    const tot=h?h.tot.TOTAL:(live.length?cvTotais(live).TOTAL:null);
+    if(!tot){ linhasTab.push(`<tr style="color:var(--g400)"><td>${CV_MESES[m]}</td><td colspan="7" style="text-align:center">— sem registros —</td></tr>`); continue; }
+    ['colab','cestas','qtd','vegas','valorCesta','valorVegas'].forEach(k=>TT[k]+=tot[k]);
+    linhasTab.push(`<tr><td><b>${CV_MESES[m]}</b></td><td style="text-align:center">${tot.colab}</td><td style="text-align:center">${tot.cestas}</td><td style="text-align:center">${tot.vegas}</td><td style="text-align:right">R$ ${fmtBRL(tot.valorCesta)}</td><td style="text-align:right">R$ ${fmtBRL(tot.valorVegas)}</td><td style="text-align:right"><b>R$ ${fmtBRL(tot.valorCesta+tot.valorVegas)}</b></td>
+      <td style="font-size:10.5px">${h?'🔒 salvo em '+gpEsc(h.fechadoEm):'<span style="color:var(--orange)">em aberto</span>'} <button class="btn btn-s btn-xs" onclick="cvHistoricoVer(${ano},${m})">Ver</button></td></tr>`);
+  }
+  abrirModalSimples('📜 Histórico mensal — Cesta Básica e Vegas',`<div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap"><select class="fsel" onchange="cvHistoricoAbrir(this.value)">${anos.join('')}</select>
+    <button class="btn btn-s btn-sm" onclick="cvHistoricoExportar(${ano})">⬇ Exportar ano (Excel)</button><span class="muted" style="font-size:11px">Meses passados são arquivados automaticamente. Use “🔒 Fechar mês” para salvar o mês atual.</span></div>
+    <div style="overflow-x:auto"><table><thead><tr><th>Mês</th><th>Colab.</th><th>Cestas</th><th>Vegas</th><th>Valor cestas</th><th>Valor Vegas</th><th>Custo total</th><th>Situação</th></tr></thead><tbody>${linhasTab.join('')}
+    <tr style="font-weight:700;background:var(--g50,#f8fafc)"><td>TOTAL ${ano}</td><td></td><td style="text-align:center">${TT.cestas}</td><td style="text-align:center">${TT.vegas}</td><td style="text-align:right">R$ ${fmtBRL(TT.valorCesta)}</td><td style="text-align:right">R$ ${fmtBRL(TT.valorVegas)}</td><td style="text-align:right">R$ ${fmtBRL(TT.valorCesta+TT.valorVegas)}</td><td></td></tr></tbody></table></div>`,980);
+}
+function cvHistoricoVer(ano,mes){
+  const h=cvHistRegistro(ano,mes), linhas=h?h.linhas:cvLinhasMes(ano,mes), T=cvTotais(linhas);
+  const rows=linhas.map(l=>`<tr><td>${gpEsc(l.colaborador)}</td><td>${gpEsc(l.cnpj)}</td><td style="text-align:center">${l.cesta}</td><td style="text-align:center">${l.qtdCesta}</td><td style="text-align:right">R$ ${fmtBRL(l.valorCesta)}</td><td style="text-align:center">${l.vegas}</td><td style="text-align:right">R$ ${fmtBRL(l.valorVegas)}</td><td style="font-size:10.5px">${gpEsc(l.observacoes)}</td></tr>`).join('');
+  abrirModalSimples(CV_MESES[mes]+'/'+ano+' — '+(h?'🔒 histórico salvo em '+h.fechadoEm:'em aberto'),`<button class="btn btn-s btn-sm" style="margin-bottom:8px" onclick="cvHistoricoAbrir(${ano})">← Voltar ao histórico</button>
+    <div style="overflow-x:auto"><table><thead><tr><th>Colaborador</th><th>Empresa</th><th>Cesta</th><th>Qtd</th><th>Valor cesta</th><th>Vegas</th><th>Valor Vegas</th><th>Obs.</th></tr></thead><tbody>${rows}
+    <tr style="font-weight:700"><td colspan="3">TOTAL (${T.TOTAL.colab} colaboradores)</td><td style="text-align:center">${T.TOTAL.qtd}</td><td style="text-align:right">R$ ${fmtBRL(T.TOTAL.valorCesta)}</td><td style="text-align:center">${T.TOTAL.vegas}</td><td style="text-align:right">R$ ${fmtBRL(T.TOTAL.valorVegas)}</td><td>Custo: R$ ${fmtBRL(T.TOTAL.valorCesta+T.TOTAL.valorVegas)}</td></tr></tbody></table></div>`,980);
+}
+function cvHistoricoExportar(ano){
+  if(typeof XLSX==='undefined'){ showToast('Biblioteca de Excel indisponível','warn'); return; }
+  const wb=XLSX.utils.book_new(), fmt=ws=>Object.keys(ws).forEach(a=>{ if(a[0]!=='!'&&ws[a].t==='n'&&ws[a].z===undefined&&ws[a].moeda) ws[a].z='"R$" #,##0.00'; });
+  const res=[['Mês','Colaboradores','Cestas','Recargas Vegas','Valor Cestas','Valor Vegas','Custo Total','Situação']];
+  for(let m=1;m<=12;m++){
+    const h=cvHistRegistro(ano,m), live=h?null:cvLinhasMes(ano,m), tot=h?h.tot.TOTAL:(live.length?cvTotais(live).TOTAL:null); if(!tot) continue;
+    res.push([CV_MESES[m],tot.colab,tot.cestas,tot.vegas,tot.valorCesta,tot.valorVegas,tot.valorCesta+tot.valorVegas,h?'Salvo em '+h.fechadoEm:'Em aberto']);
+    const linhas=h?h.linhas:live;
+    const ws=XLSX.utils.aoa_to_sheet([['Colaborador','Empresa','Cesta','Qtd','Valor Cesta','Vegas','Valor Vegas','Observações'],...linhas.map(l=>[l.colaborador,l.cnpj,l.cesta,l.qtdCesta,l.valorCesta,l.vegas,l.valorVegas,l.observacoes])]);
+    ws['!cols']=[{wch:34},{wch:9},{wch:7},{wch:6},{wch:14},{wch:7},{wch:14},{wch:34}];
+    Object.keys(ws).forEach(a=>{ if(a[0]!=='!'&&/^[EG]\d+$/.test(a)&&ws[a].t==='n') ws[a].z='"R$" #,##0.00'; });
+    XLSX.utils.book_append_sheet(wb,ws,CV_MESES[m].slice(0,31));
+  }
+  const wr=XLSX.utils.aoa_to_sheet(res); wr['!cols']=[{wch:12},{wch:14},{wch:9},{wch:15},{wch:14},{wch:14},{wch:14},{wch:26}];
+  Object.keys(wr).forEach(a=>{ if(a[0]!=='!'&&/^[EFG]\d+$/.test(a)&&wr[a].t==='n') wr[a].z='"R$" #,##0.00'; });
+  wb.SheetNames.unshift('Resumo'); wb.Sheets['Resumo']=wr;
+  XLSX.writeFile(wb,'CestaVegas_Historico_'+ano+'.xlsx');
 }
 
 function cvExportarFiltrado() {
@@ -11069,7 +11169,7 @@ async function pullOutrasTabelasAntesDoBoot() {
     'clima_pesquisas','clima_acoes','sucessao','terceiros','documentos','usuarios','holerites',
     'comunicados','cesta_vegas','folha_descontos','feedback90','tempo_empresa_ctrl','desccargos','sstfin','pcmso',
     'epi','auditoria','historico_cargo_salario','ordens_servico',
-    'provisao_cfg','provisao_ajuste','epi_estoque','acidentes','afastamentos','visitas_tecnicas','contratos_obrig','evidencias','campanhas_ctrl','anexos_gerais'];
+    'provisao_cfg','provisao_ajuste','cesta_vegas_hist','epi_estoque','acidentes','afastamentos','visitas_tecnicas','contratos_obrig','evidencias','campanhas_ctrl','anexos_gerais'];
   for (const t of TABELAS) {
     try {
       if (loadData(t).length) continue;
@@ -13707,35 +13807,54 @@ function evidExcluir(id){
   });
 }
 function evidAnexos(id){ gpAnexos('evidencias',id); }
+const EVID_LOGO_AC='data:image/jpeg;base64,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';
+function evidRodape(emp){
+  const ac=(emp.nome||'').toUpperCase().indexOf('BRASS')<0;
+  const mail=(a)=>`<span style="color:#0563c1;text-decoration:underline">${a}</span>`;
+  const linhas=ac?[`<b style="text-decoration:underline">AC Metalúrgica / AC Metal Fundição</b>`,
+      `Rua José Nicolau Lux, 352 Pq. Industrial de Cillo – Sta. Bárbara D’Oeste/SP CEP: 13.457-162`,
+      `Fone/Fax: (19) 3454-5659 / 3454-6433 Home Page: ${mail('www.acmetalurgica.com.br')}`,
+      `Emails: ${mail('acmetalurgica@acmetalurgica.com.br')} / ${mail('comercial@acmetalurgica.com.br')}`]
+    :[`<b style="text-decoration:underline">${gpEsc(emp.nome)}</b>`,gpEsc(emp.endereco||''),`CNPJ: ${gpEsc(emp.cnpj||'')}`,`Email: ${mail(gpEsc(emp.email||''))}`];
+  return `<div style="position:absolute;left:20mm;right:20mm;bottom:11mm;text-align:center;font-size:9pt;line-height:1.25"><div style="border-top:2.5px solid #000;border-bottom:1px solid #000;height:3px;margin-bottom:4px"></div>${linhas.join('<br>')}</div>`;
+}
 function evidImprimir(id){
   const e=loadData('evidencias').find(x=>x.id===id); if(!e) return;
   const emp=CV_EMPRESA_INFO[e.empresa]||CV_EMPRESA_INFO.AC;
-  const cb=(lista,marc,outro,rotOutro)=>{ const linhas=lista.map(o=>`<span>${(marc||[]).indexOf(o)>=0?'☒':'☐'} ${gpEsc(o)}</span>`); if(rotOutro!==undefined) linhas.push(`<span>${outro?'☒':'☐'} Outro: ${outro?gpEsc(outro):'______________________'}</span>`); return `<div style="display:flex;flex-wrap:wrap;gap:3px 18px">${linhas.join('')}</div>`; };
-  const sec=(n,t)=>`<div style="font-weight:700;margin:10px 0 3px">${n}. ${t}</div>`;
+  const cb=(lista,marc,outro,rotOutro,vertical)=>{ const linhas=lista.map(o=>`${(marc||[]).indexOf(o)>=0?'☒':'☐'} ${gpEsc(o)}`); if(rotOutro!==undefined) linhas.push(`${outro?'☒':'☐'} Outro: ${outro?gpEsc(outro):'___________________________'}`); return vertical?linhas.map(l=>`<div>${l}</div>`).join(''):`<div>${linhas.join('&nbsp; ')}</div>`; };
+  const sec=(n,t)=>`<div style="font-weight:700;margin:14px 0 2px">${n}. ${t}</div>`;
   const anx=loadData('anexos_gerais').filter(a=>a.ref==='evidencias'&&a.regId===id&&a.status!=='Inativo');
   const imgs=anx.filter(a=>/\.(jpe?g|png|gif|webp|bmp)$/i.test(a.nomeArquivo||'')), outros=anx.filter(a=>imgs.indexOf(a)<0);
-  const anexosHtml=anx.length?`<div style="page-break-before:always"></div><div style="font-weight:700;text-align:center;margin-bottom:8px">ANEXOS — EVIDÊNCIAS DA AÇÃO (${gpEsc(e.campanha)} · ${gpEsc(e.dataAcao)})</div>
-    ${outros.length?`<div style="font-size:11px;margin-bottom:8px">Arquivos anexados ao registro: ${outros.map(a=>gpEsc(a.nomeArquivo)).join('; ')}</div>`:''}
-    <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center">${imgs.map(a=>`<div style="width:46%;page-break-inside:avoid;text-align:center"><img src="${a.url}" style="max-width:100%;max-height:300px;border:1px solid #bbb"><div style="font-size:9px;color:#555">${gpEsc(a.nomeArquivo)}</div></div>`).join('')}</div>`:'';
-  abrirReciboModal('🖨 Relatório de Evidências',`${docPageCSS(emp)}<div class="doc-print" style="padding:6px 14px;font-size:11.5px;line-height:1.45">
-    <div style="text-align:center;font-weight:800;font-size:16px">RELATÓRIO DE EVIDÊNCIAS</div>
-    <div style="text-align:center;font-weight:700;margin-top:2px">${gpEsc(e.lei||'')}</div>
-    <div style="text-align:center;font-weight:700;margin:10px 0 12px">RELATÓRIO DE AÇÃO DE CONSCIENTIZAÇÃO INTERNA</div>
-    <div><b>Responsável pela ação:</b> ${gpEsc(e.responsavel||'')}</div>
-    <div><b>Cargo:</b> ${gpEsc(e.cargo||'')}</div>
-    <div><b>Data da ação:</b> ${gpEsc(e.dataAcao||'')}</div>
-    <div><b>Mês/Campanha:</b> ${gpEsc((e.campanha||'').toUpperCase())}</div>
-    <div><b>Empresa:</b> ${gpEsc(emp.nome)} — CNPJ ${gpEsc(emp.cnpj)}</div>
-    ${sec(1,'OBJETIVO DA AÇÃO')}<div>${gpEsc(e.objetivo||'')}</div>
-    ${sec(2,'TEMA DA CAMPANHA')}${cb(EVID_TEMAS,e.temas,e.temaOutro,'x')}
-    ${sec(3,'CANAIS UTILIZADOS')}${cb(EVID_CANAIS,e.canais)}
-    ${sec(4,'AÇÕES REALIZADAS')}${cb(EVID_ACOES,e.acoes)}
-    ${sec(5,'EVIDÊNCIAS ANEXADAS')}${cb(EVID_EVID,e.evid,e.evidOutro,'x')}
-    ${sec(6,'RESPONSÁVEL PELO REGISTRO')}
-    <div>Nome: ${gpEsc(e.regNome||'')}</div>
-    <div style="margin-top:14px">Assinatura: ____________________________________</div>
-    <div style="margin-top:6px">Data: ${gpEsc(e.regData||'')}</div>
-    <div style="margin-top:14px;border-top:1px solid #999;padding-top:4px;font-size:9.5px;color:#444;text-align:center;page-break-inside:avoid">${gpEsc(emp.endereco)}</div>
+  const logo=`<div style="text-align:center"><img src="${EVID_LOGO_AC}" style="width:2.1cm;height:auto"></div>`;
+  const grupos=[]; for(let i=0;i<imgs.length;i+=6) grupos.push(imgs.slice(i,i+6)); if(!grupos.length&&anx.length) grupos.push([]);
+  const anexosHtml=grupos.map((g,gi)=>`<div class="ev-pg"><div style="padding-top:2mm">${logo}</div><div style="font-weight:700;text-align:center;margin:8px 0">ANEXOS — EVIDÊNCIAS DA AÇÃO (${gpEsc(e.campanha)} · ${gpEsc(e.dataAcao)})${grupos.length>1?' — '+(gi+1)+'/'+grupos.length:''}</div>
+    ${gi===0&&outros.length?`<div style="font-size:10pt;margin-bottom:8px">Arquivos anexados ao registro: ${outros.map(a=>gpEsc(a.nomeArquivo)).join('; ')}</div>`:''}
+    <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center">${g.map(a=>`<div style="width:46%;page-break-inside:avoid;text-align:center"><img src="${a.url}" style="max-width:100%;max-height:300px;border:1px solid #bbb"><div style="font-size:8pt;color:#555">${gpEsc(a.nomeArquivo)}</div></div>`).join('')}</div>${evidRodape(emp)}</div>`).join('');
+  abrirReciboModal('🖨 Relatório de Evidências',`<style>
+      @page{size:A4;margin:0}
+      .ev-doc{font-family:Arial,Helvetica,sans-serif;font-size:11pt;line-height:1.18;color:#000}
+      .ev-pg{position:relative;box-sizing:border-box;width:210mm;height:296mm;padding:8mm 20mm 0 20mm;overflow:hidden;page-break-after:always;break-after:page;margin:0 auto;background:#fff}
+      .ev-pg:last-child{page-break-after:auto;break-after:auto}
+      .ev-doc .t{text-align:center;font-weight:700}
+    </style><div class="ev-doc doc-print" style="padding:0">
+    <div class="ev-pg"><div style="padding-top:2mm">${logo}</div>
+      <div class="t" style="margin-top:7mm">RELATÓRIO DE EVIDÊNCIAS</div>
+      <div class="t">${gpEsc(e.lei||'')}</div>
+      <div class="t">RELATÓRIO DE AÇÃO DE CONSCIENTIZAÇÃO INTERNA</div>
+      <div style="margin-top:9mm"><b>Responsável pela ação:</b> ${gpEsc(e.responsavel||'')}</div>
+      <div><b>Cargo:</b> ${gpEsc(e.cargo||'')}</div>
+      <div><b>Data da ação:</b> ${gpEsc(e.dataAcao||'')}</div>
+      <div style="margin-top:12px"><b>Mês/Campanha:</b> ${gpEsc((e.campanha||'').toUpperCase())}</div>
+      ${sec(1,'OBJETIVO DA AÇÃO').replace('margin:14px','margin:18px')}<div style="text-align:justify">${gpEsc(e.objetivo||'')}</div>
+      ${sec(2,'TEMA DA CAMPANHA')}${cb(EVID_TEMAS,e.temas,e.temaOutro,'x')}
+      ${sec(3,'CANAIS UTILIZADOS')}${cb(EVID_CANAIS,e.canais)}
+      ${sec(4,'AÇÕES REALIZADAS')}${cb(EVID_ACOES,e.acoes,null,undefined,true)}
+      ${sec(5,'EVIDÊNCIAS ANEXADAS')}${cb(EVID_EVID,e.evid,e.evidOutro,'x',true)}
+      ${sec(7,'RESPONSÁVEL PELO REGISTRO').replace('margin:14px','margin:22px')}
+      <div><b>Nome:</b> ${gpEsc(e.regNome||'')}</div>
+      <div style="margin-top:6px"><b>Assinatura:</b> ____________________________________</div>
+      <div style="margin-top:6px"><b>Data:</b> ${gpEsc(e.regData||'')}</div>
+      ${evidRodape(emp)}</div>
     ${anexosHtml}</div>`,false);
 }
 
