@@ -441,7 +441,7 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
   <div class="l-box">
     <div class="l-logo">
       <div class="l-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
-      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.94 — Aniversariantes/Tempo de Empresa (1 folha, incluir/excluir), Visitas por mês/ano, Estoque EPI, contador da Brass (Correia Contábil), O.S. Rebarbador B, Acidentes 2026, Indicadores com histórico mensal (turnover, engajamento por setor, T&D), Visitas do TST, Planejamento Anual, Desconto com histórico</div></div>
+      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.95 — Entrega de EPI dá baixa certa no estoque, Aniversariantes/Tempo de Empresa (1 folha, incluir/excluir), Visitas por mês/ano, Estoque EPI, contador da Brass (Correia Contábil), O.S. Rebarbador B, Acidentes 2026, Indicadores com histórico mensal (turnover, engajamento por setor, T&D), Visitas do TST, Planejamento Anual, Desconto com histórico</div></div>
     </div>
     <div class="f-row"><label>Usuário</label><input type="text" id="l-user" value="jakeline@acmetalurgica.com.br"></div>
     <div class="f-row"><label>Senha</label><input type="password" id="l-pass" value="••••••••"></div>
@@ -13463,7 +13463,7 @@ function epiRowRender(rows) {
     return `<tr style="${inativo?'opacity:.5':''}">
       <td style="font-size:11px;font-weight:600">${e.colaborador}</td>
       <td style="font-size:10px">${e.setor||'—'}</td>
-      <td><span class="chip">${e.nomeEpi||'—'}</span></td>
+      <td><span class="chip">${e.nomeEpi||'—'}</span>${e.baixaAtiva===true?' <span class="badge bg" style="font-size:9px" title="Baixa feita no Estoque de EPI">📦 baixado</span>':(e.baixaAtiva===false&&!inativo?` <button class="btn btn-s btn-xs" style="color:var(--red)" onclick="epiBaixarManual(${e.id})" title="Esta entrega não deu baixa no estoque">📦 Baixar</button>`:'')}</td>
       <td class="mono" style="font-size:10px">${e.ca||'—'}</td>
       <td style="text-align:center">${e.quantidade||1}</td>
       <td>${e.dataEntrega||'—'}</td>
@@ -14251,7 +14251,13 @@ gpInit(); gpInitEndo();
 function epiNorm(s){ return String(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toUpperCase().trim(); }
 function epiEstoqueAcha(empresa,item,tam){
   const emp=(empresa==='PJ'||!empresa)?'AC':empresa;
-  let rows=loadData('epi_estoque').filter(r=>r.status!=='Inativo'&&epiNorm(r.item)===epiNorm(item));
+  const todos=loadData('epi_estoque').filter(r=>r.status!=='Inativo');
+  let rows=todos.filter(r=>epiNorm(r.item)===epiNorm(item));
+  if(!rows.length){ // nome parecido: um contém o outro ou todas as palavras de um estão no outro
+    const tk=x=>epiNorm(x).replace(/[^A-Z0-9 ]/g,' ').split(/\s+/).filter(w=>w.length>1&&!['DE','DA','DO','PARA','COM'].includes(w));
+    const tn=tk(item);
+    rows=todos.filter(r=>{ const ts=tk(r.item); if(!ts.length||!tn.length) return false; return ts.every(w=>tn.includes(w))||tn.every(w=>ts.includes(w)); });
+  }
   const daEmp=rows.filter(r=>(r.empresa||'AC')===emp); if(daEmp.length) rows=daEmp;
   if(!rows.length) return null;
   if(tam){ const t=rows.filter(r=>epiNorm(r.tamanho)===epiNorm(tam)); if(t.length) rows=t; }
@@ -14261,11 +14267,38 @@ function epiBaixaEstoque(obj){
   obj.baixaEstoqueId=null; obj.baixaQtd=0; obj.baixaAtiva=false;
   if(!obj.nomeEpi) return;
   const stk=epiEstoqueAcha(obj.empresa,obj.nomeEpi,obj.tamanho);
-  if(!stk){ showToast('⚠ "'+obj.nomeEpi+'" não está cadastrado no Estoque de EPI — baixa não feita','warn'); return; }
+  if(!stk){ showToast('⚠ "'+obj.nomeEpi+'" não está no Estoque de EPI — a baixa NÃO foi feita. Na lista, use o botão “📦 Baixar” da entrega para escolher o item do estoque.','warn'); return; }
+  if(!obj.ca&&stk.ca) obj.ca=stk.ca;
   const qtd=Math.max(1,Number(obj.quantidade)||1), atual=Number(stk.qtdAtual)||0, tira=Math.min(atual,qtd), novo=atual-tira;
   crudUpdate('epi_estoque',stk.id,{qtdAtual:novo},{modulo:'Estoque de EPI',label:stk.item});
   obj.baixaEstoqueId=stk.id; obj.baixaQtd=tira; obj.baixaAtiva=true;
   showToast(tira<qtd?`⚠ Estoque de ${stk.item} insuficiente: baixou ${tira} de ${qtd} (estoque zerado)`:`📦 Estoque de ${stk.item}: ${atual} → ${novo}`,tira<qtd?'warn':undefined);
+}
+
+/* ── v4.95: Nome do EPI da entrega vem do Estoque (mesmo nome = baixa certa) + baixa manual ── */
+function epiRefreshLista(){
+  const f=MOD_EPI.fields.find(x=>x.field==='nomeEpi'); if(!f) return;
+  const defaults=['Capacete','Óculos de Proteção','Luva de Raspa','Luva de Látex','Botina de Segurança','Protetor Auricular','Avental de Raspa','Máscara Respiratória','Cinto de Segurança','Uniforme','Óculos de Solda','Perneira','Mangote','Escudo Facial','Luva de Malha de Aço'];
+  const doEstoque=loadData('epi_estoque').filter(r=>r.status!=='Inativo').map(r=>r.item).filter(Boolean);
+  f.list=Array.from(new Set(doEstoque.concat(defaults))).sort((a,b)=>a.localeCompare(b,'pt-BR'));
+  delete f.type; delete f.options; f.label='Nome do EPI (lista do Estoque — ou digite outro)';
+}
+(function(){ const _o=openCrudModal; openCrudModal=function(m,id){ try{ if(m===MOD_EPI) epiRefreshLista(); }catch(e){} return _o.apply(this,arguments); }; })();
+function epiBaixarManual(id){
+  const r=loadData('epi').find(x=>x.id===id); if(!r) return;
+  const itens=loadData('epi_estoque').filter(x=>x.status!=='Inativo').sort((a,b)=>String(a.item).localeCompare(String(b.item),'pt-BR'));
+  if(!itens.length){ showToast('Estoque de EPI vazio — cadastre o item primeiro','warn'); return; }
+  abrirModalSimples('📦 Dar baixa no estoque',`<div style="font-size:12px;margin-bottom:8px">Entrega de <b>${gpEsc(r.nomeEpi||'')}</b> para <b>${gpEsc(r.colaborador||'')}</b> — quantidade <b>${r.quantidade||1}</b>.<br>Escolha de qual item do estoque sai:</div>
+    <select id="epb-sel" class="fsel" style="width:100%">${itens.map(x=>`<option value="${x.id}">${gpEsc(x.item)}${x.tamanho?' '+gpEsc(x.tamanho):''} — ${gpEmpNome(x.empresa)} (estoque: ${Number(x.qtdAtual)||0})</option>`).join('')}</select>
+    <div style="text-align:right;margin-top:10px"><button class="btn btn-p" onclick="epiBaixarManualOk(${id})">Dar baixa</button></div>`,'560px');
+}
+function epiBaixarManualOk(id){
+  const r=loadData('epi').find(x=>x.id===id), stk=loadData('epi_estoque').find(x=>x.id===+document.getElementById('epb-sel').value); if(!r||!stk) return;
+  const qtd=Math.max(1,Number(r.quantidade)||1), atual=Number(stk.qtdAtual)||0, tira=Math.min(atual,qtd);
+  crudUpdate('epi_estoque',stk.id,{qtdAtual:atual-tira},{modulo:'Estoque de EPI',label:stk.item});
+  crudUpdate('epi',id,{baixaEstoqueId:stk.id,baixaQtd:tira,baixaAtiva:true,ca:r.ca||stk.ca||''},{modulo:'Entrega de EPI'});
+  fecharModalSimples(); showToast(tira<qtd?`⚠ Estoque insuficiente: baixou ${tira} de ${qtd}`:`📦 Estoque de ${stk.item}: ${atual} → ${atual-tira}`,tira<qtd?'warn':undefined);
+  try{ if(epiCtrl) epiCtrl.load(); atualizarKPIsEPI(); gpRender('estoqueepi'); }catch(e){}
 }
 function epiDevolveEstoque(rec){
   if(!rec||!rec.baixaEstoqueId||!rec.baixaQtd||rec.baixaAtiva===false) return;
