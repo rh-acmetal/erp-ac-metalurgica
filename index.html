@@ -441,7 +441,7 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
   <div class="l-box">
     <div class="l-logo">
       <div class="l-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
-      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.98 — Descrição de Cargo: colunas de requisitos como no modelo e mais espaço nas assinaturas; Demissão; anexos PDF; histórico mensal de Benefícios e Férias</div></div>
+      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.99 — Lista de Treinamento (FR-008): 90 dias de experiência pelo cargo e modelo padrão em Treinamentos; Descrição de Cargo; Demissão; anexos PDF; histórico mensal de Benefícios e Férias</div></div>
     </div>
     <div class="f-row"><label>Usuário</label><input type="text" id="l-user" value="jakeline@acmetalurgica.com.br"></div>
     <div class="f-row"><label>Senha</label><input type="password" id="l-pass" value="••••••••"></div>
@@ -507,9 +507,6 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
     <div class="nav-item" data-go="desccargos" onclick="go('desccargos',this,'Descrição de Cargos','Manual de Referência')">
       <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>Descrição de Cargos
     </div>
-    <div class="nav-item" data-go="ordemservico" onclick="go('ordemservico',this,'Ordens de Serviço','SST — NR-1')">
-      <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Ordens de Serviço
-    </div>
 
         <div class="sb-layer layer-ta"><div class="sb-dot dot-ta" style=""></div>Tático</div>
 <div class="nav-item" data-go="recrutamento" onclick="go('recrutamento',this,'Recrutamento & Seleção','R&S')">
@@ -535,6 +532,9 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
       💰 Provisão 13º e Férias
     </div>
     <div class="sb-layer layer-sst"><div class="sb-dot dot-sst" style=""></div>SST</div>
+    <div class="nav-item" data-go="ordemservico" onclick="go('ordemservico',this,'Ordens de Serviço','SST — NR-1')">
+      <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Ordens de Serviço
+    </div>
     <div class="nav-item" data-go="epi" onclick="go('epi',this,'Controle de EPI','Entrega · Devolução · Validade por Colaborador')">
       🦺 Controle de EPI
     </div>
@@ -1408,7 +1408,7 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
       <div class="layer-badge lb-ta">● Tático — T&D / LMS</div>
       <div class="section-hdr">
         <div class="sec-title"><svg viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>Treinamento & Desenvolvimento</div>
-        <div style="display:flex;gap:8px"><button class="btn btn-p" onclick="openCrudModal(MOD_TREINO,null)">+ Novo Treinamento</button></div>
+        <div style="display:flex;gap:8px"><button class="btn btn-s" onclick="trListaNova()">📋 Lista de Treinamento (modelo FR-008)</button><button class="btn btn-s" onclick="trListasAbrir()">🗂 Listas salvas</button><button class="btn btn-p" onclick="openCrudModal(MOD_TREINO,null)">+ Novo Treinamento</button></div>
       </div>
       <div class="kpi-grid">
         <div class="kpi-card"><div class="kpi-lbl">Aderência Geral</div><div class="kpi-val" id="tr-aderencia-crud">0%</div><div class="pbar" style="margin-top:8px"><div class="pbar-fill pbar-y" id="tr-aderencia-bar" style="width:0%"></div></div></div>
@@ -2497,6 +2497,7 @@ async function buildAll(){
   try{buildDemissaoTemplateSeed();}catch(e){console.warn('buildDemissaoTemplateSeed:',e);}
   try{buildAdmissaoTemplateSeed();}catch(e){console.warn('buildAdmissaoTemplateSeed:',e);}
   try{buildAdmissaoTemplateIntegracaoSeed();}catch(e){console.warn('buildAdmissaoTemplateIntegracaoSeed:',e);}
+  try{buildAdmissaoTemplateTreino90Seed();}catch(e){console.warn('treino90Seed:',e);}
   try{migracaoAdmissaoChecklists();}catch(e){console.warn('migracaoAdmissaoChecklists:',e);}
   try{migracaoRealocacoes2026();}catch(e){console.warn('migracaoRealocacoes2026:',e);}
   try{tryRestoreSupabase();}catch(e){console.warn('tryRestoreSupabase:',e); updateDBStatusBadge('error');}
@@ -4802,6 +4803,7 @@ function colabDocumentosHtml(c) {
       <button class="btn btn-s btn-sm" onclick="colabGerarTermoDadosBiometricos(${c.id})">🖨 Termo de Dados Biométricos</button>
       <button class="btn btn-s btn-sm" onclick="colabGerarOrdemServico(${c.id})">🖨 Ordem de Serviço</button>
       <button class="btn btn-s btn-sm" onclick="colabGerarDescricaoCargo(${c.id})">🖨 Descrição de Cargo</button>
+      <button class="btn btn-s btn-sm" onclick="colabListaTreinamento90(${c.id})">🖨 Lista de Treinamento 90 dias</button>
       <button class="btn btn-s btn-sm" onclick="colabGerarTermoParticipacaoIntegracao(${c.id})">🖨 Termo de Participação na Integração</button>
       <button class="btn btn-s btn-sm" onclick="colabGerarTermoEntregaCelular(${c.id})">🖨 Termo de Entrega de Celular</button>
       <button class="btn btn-s btn-sm" onclick="colabGerarTermoVeiculo(${c.id})">🖨 Termo de Responsabilidade de Veículo</button>
@@ -11465,7 +11467,7 @@ async function pullColaboradoresMerge() {
 // tem dado local, não mexe — evita sobrescrever algo em uso.
 async function pullOutrasTabelasAntesDoBoot() {
   if (DB_MODE !== 'supabase' || !supabaseClient) return;
-  const TABELAS = ['beneficios_hist','ferias_hist','demissoes','demissao_templates','hist_pdfs','endo_extra','endo_oculto','ind_turnover','ind_eng','ind_td','ind_hist','plano_cfg','plano_hist','plano_acoes','colab_excluidos','beneficios_anexos','colab_documentos','ferias','treinamentos','avaliacoes','sst','admissoes',
+  const TABELAS = ['treino_listas','beneficios_hist','ferias_hist','demissoes','demissao_templates','hist_pdfs','endo_extra','endo_oculto','ind_turnover','ind_eng','ind_td','ind_hist','plano_cfg','plano_hist','plano_acoes','colab_excluidos','beneficios_anexos','colab_documentos','ferias','treinamentos','avaliacoes','sst','admissoes',
     'vagas','beneficios_mov','beneficios_inscritos','beneficios_tipos','cargos','ponto',
     'clima_pesquisas','clima_acoes','sucessao','terceiros','documentos','usuarios','holerites',
     'comunicados','cesta_vegas','folha_descontos','feedback90','tempo_empresa_ctrl','desccargos','sstfin','pcmso',
@@ -13056,6 +13058,167 @@ function fhHistExportar(ano){
   if(res.length===1){ showToast('Nenhum mês fechado neste ano','warn'); return; }
   const wr=XLSX.utils.aoa_to_sheet(res); wr['!cols']=[{wch:12},{wch:8},{wch:10},{wch:10},{wch:12},{wch:10},{wch:20}];
   wb.SheetNames.unshift('Resumo'); wb.Sheets['Resumo']=wr; XLSX.writeFile(wb,'Ferias_Historico_'+ano+'.xlsx');
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   LISTA DE TREINAMENTO (FR-008 REV. 01 — Controle de Treinamentos)
+   • 90 dias de experiência: gerada pelo cargo (Descrição de Cargo 4.1 — treinamentos específicos)
+   • Modelo padrão: para os demais treinamentos (salvo em Treinamentos)
+   ═══════════════════════════════════════════════════════════════ */
+const TR_ESCOPO_PADRAO = 'Desenvolvimento de técnicas operacionais e sistêmicas para atuar no processo gerando competências através de transferência de conhecimentos organizacionais.';
+const TR_INSTRUTORES = ['Francielle C. Ascari Rodrigues','Jhoni Alves de Oliveira','Leonardo Sobrinho de Barros','Jakeline Aparecida Cabrera Gimenes','Edson A. Jr','Rafael Mantovani','Patrícia A. Martins de Souza'];
+function trParseData(t){ const m=String(t||'').match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/); return m?new Date(+m[3],+m[2]-1,+m[1]):null; }
+function trFmtData(d){ return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear(); }
+function trAddDias(t,n){ const d=trParseData(t); if(!d) return ''; d.setDate(d.getDate()+n); return trFmtData(d); }
+
+function trListaHtml(d){
+  const emp = d.emp || CV_EMPRESA_INFO['AC'];
+  const n90 = d.modo === '90d';
+  const colabs = (d.colabs||[]).filter(Boolean);
+  const minLin = n90 ? 5 : 10;
+  const linhas = Math.max(minLin, colabs.length);
+  const cx = (on,t) => `<span style="font-family:'DejaVu Sans',Arial,sans-serif">${on?'☒':'☐'}</span> ${t}`;
+  const met = d.metodos || [];
+  const tipo = d.tipoEvento || 'Treinamento';
+  const rows = [];
+  for(let i=0;i<linhas;i++){
+    const nome = gpEsc(colabs[i]||'');
+    rows.push(n90
+      ? `<tr class="lin"><td>${nome}</td><td></td><td></td><td></td><td class="ef">SIM &nbsp;☐ &nbsp;&nbsp; ☐&nbsp; Não</td><td></td></tr>`
+      : `<tr class="lin"><td>${nome}</td><td></td><td class="ef">SIM &nbsp;☐ &nbsp;&nbsp; ☐&nbsp; Não</td><td></td></tr>`);
+  }
+  const cols = n90
+    ? '<col style="width:40%"><col style="width:6%"><col style="width:6%"><col style="width:6%"><col style="width:24%"><col style="width:18%">'
+    : '<col style="width:38%"><col style="width:22%"><col style="width:22%"><col style="width:18%">';
+  const head = n90
+    ? '<th>Colaborador</th><th>30 d</th><th>60 d</th><th>90 d</th><th>Eficaz?</th><th>Data</th>'
+    : '<th>Colaborador</th><th>Assinatura</th><th>Eficaz?</th><th>Data</th>';
+  const span = n90 ? 6 : 4;
+  return `<style>@page{size:A4;margin:1cm 1.2cm}
+    .doc-tr,.doc-tr *{font-family:Arial,'Liberation Sans',Helvetica,sans-serif!important}
+    .doc-tr table{width:100%;border-collapse:collapse;table-layout:fixed}
+    .doc-tr td,.doc-tr th{border:1.5px solid #000!important;padding:3px 6px!important;font-size:11px;vertical-align:middle;line-height:1.25}
+    .doc-tr .g{background:#d9d9d9!important;text-align:right;font-weight:400}
+    .doc-tr .gc{background:#d9d9d9!important;text-align:center;font-weight:700}
+    .doc-tr th{background:#fff!important;text-align:center;font-weight:700}
+    .doc-tr tr.lin td{height:24px}
+    .doc-tr td.ef{text-align:center;font-size:10px;white-space:nowrap}
+  </style>
+  <div class="doc-print doc-tr">
+    <table style="border:none;margin-bottom:10px"><tr>
+      <td style="border:none!important;width:30%;font-size:10px;font-weight:700">${gpEsc(emp.nome.toUpperCase())}</td>
+      <td style="border:none!important;text-align:center;font-size:15px;font-weight:400">CONTROLE DE TREINAMENTOS</td>
+      <td style="border:none!important;width:26%;text-align:right;font-size:11px"><b style="font-size:13px">FR-008 - REV. 01</b><br>Revisão: 17/10/22</td></tr></table>
+    <table>
+      <colgroup><col style="width:17%"><col style="width:12%"><col style="width:12%"><col style="width:17%"><col style="width:13%"><col style="width:29%"></colgroup>
+      <tr><td class="g">Evento:</td><td colspan="3" style="font-size:10px">${cx(tipo==='Curso','CURSO')} &nbsp; ${cx(tipo==='Palestra','PALESTRA')} &nbsp; ${cx(tipo==='Treinamento','TREINAMENTO')}</td><td class="g">Data:</td><td style="text-align:center">${gpEsc(d.data||'')}</td></tr>
+      <tr><td class="g" style="height:96px">Curso /<br>Treinamento:</td><td colspan="5" style="vertical-align:top;font-size:10.5px">${gpEsc(d.curso||'')}</td></tr>
+      <tr><td class="g" style="height:58px;font-size:10px">Escopo /<br>Expectativa:</td><td colspan="5" style="vertical-align:top;font-size:10.5px">${gpEsc(d.escopo||'')}</td></tr>
+      <tr><td class="g" colspan="2" style="font-size:10.5px">Palestrante/Instrutor:</td><td colspan="2" style="font-size:11px">${gpEsc(d.instrutor||'')}</td><td class="g">Local:</td><td>${cx(d.local!=='Externo','Interno')} &nbsp;&nbsp; ${cx(d.local==='Externo','Externo')}</td></tr>
+      <tr><td class="g" style="font-size:10px">Entidade:<br>(se for externo)</td><td colspan="5">${gpEsc(d.entidade||'')||'<span style="letter-spacing:1px;color:#555">----------------------------------------------------------------------</span>'}</td></tr>
+      <tr><td class="g" style="font-size:10px">Método de avaliação da eficácia:</td><td colspan="3" style="font-size:10px">${cx(met.includes('Escrita'),'ESCRITA')} &nbsp; ${cx(met.includes('Oral'),'ORAL')} &nbsp; ${cx(met.includes('Observação prática'),'OBSERVAÇÃO PRÁTICA')}</td><td class="gc" style="text-align:center">Prazo:</td><td style="text-align:center;font-weight:700">${gpEsc(d.prazo||'')}</td></tr>
+    </table>
+    <table style="border-top:none">
+      <colgroup>${cols}</colgroup>
+      <thead><tr>${head}</tr></thead>
+      <tbody>${rows.join('')}
+        <tr><td colspan="${span-2}" style="height:26px"></td><td style="font-weight:700;font-size:10px">RESPONSÁVEL</td><td></td></tr>
+        <tr><td colspan="${span-2}" style="height:24px"></td><td style="font-weight:700;font-size:10px">Ciência RH:</td><td></td></tr>
+      </tbody>
+    </table>
+  </div>`;
+}
+
+/* ── Formulário (usado pela ficha do colaborador e pelo modelo padrão) ── */
+let trFormCtx = null;
+function trFormAbrir(ctx){
+  trFormCtx = ctx;           // {titulo, d:{...}, id?, mostrarModo:bool}
+  const d = ctx.d;
+  const ativos = loadData('colaboradores').filter(c=>c.status!=='Inativo').map(c=>c.nome).sort((a,b)=>a.localeCompare(b));
+  const mt = d.metodos||[];
+  abrirModalSimples(ctx.titulo, `
+    <div class="fg" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="f-grp"><label>Tipo de evento</label><select id="trf-tipo">${['Treinamento','Curso','Palestra'].map(x=>`<option ${d.tipoEvento===x?'selected':''}>${x}</option>`).join('')}</select></div>
+      <div class="f-grp"><label>Data / período</label><input type="text" id="trf-data" value="${escAttr(d.data||'')}" placeholder="dd/mm/aaaa á dd/mm/aaaa"></div>
+      <div class="f-grp" style="grid-column:span 2"><label>Curso / Treinamento</label><textarea id="trf-curso" rows="5">${gpEsc(d.curso||'')}</textarea></div>
+      <div class="f-grp" style="grid-column:span 2"><label>Escopo / Expectativa</label><textarea id="trf-escopo" rows="2">${gpEsc(d.escopo||'')}</textarea></div>
+      <div class="f-grp"><label>Palestrante / Instrutor</label><input type="text" id="trf-instr" list="trf-instr-dl" value="${escAttr(d.instrutor||'')}"><datalist id="trf-instr-dl">${TR_INSTRUTORES.map(x=>`<option value="${escAttr(x)}">`).join('')}</datalist></div>
+      <div class="f-grp"><label>Prazo da avaliação de eficácia</label><input type="text" id="trf-prazo" value="${escAttr(d.prazo||'')}" placeholder="90 dias"></div>
+      <div class="f-grp"><label>Local</label><select id="trf-local"><option ${d.local!=='Externo'?'selected':''}>Interno</option><option ${d.local==='Externo'?'selected':''}>Externo</option></select></div>
+      <div class="f-grp"><label>Entidade (se for externo)</label><input type="text" id="trf-ent" value="${escAttr(d.entidade||'')}"></div>
+      <div class="f-grp" style="grid-column:span 2"><label>Método de avaliação da eficácia</label>
+        <div style="display:flex;gap:14px;font-size:12px">${['Escrita','Oral','Observação prática'].map(m=>`<label style="display:flex;gap:4px;align-items:center"><input type="checkbox" class="trf-met" value="${m}" ${mt.includes(m)?'checked':''}> ${m}</label>`).join('')}</div></div>
+      ${ctx.mostrarModo?`<div class="f-grp" style="grid-column:span 2"><label>Modelo da lista</label><select id="trf-modo"><option value="padrao" ${d.modo!=='90d'?'selected':''}>Padrão (Assinatura, Eficaz?, Data)</option><option value="90d" ${d.modo==='90d'?'selected':''}>90 dias de experiência (30 d / 60 d / 90 d)</option></select></div>`:''}
+      <div class="f-grp" style="grid-column:span 2"><label>Colaboradores (um por linha — deixe em branco para imprimir linhas vazias)</label>
+        <select id="trf-add" onchange="trAddColab(this)" style="margin-bottom:4px"><option value="">+ adicionar colaborador ativo...</option>${ativos.map(n=>`<option>${gpEsc(n)}</option>`).join('')}</select>
+        <textarea id="trf-colabs" rows="4">${gpEsc((d.colabs||[]).join('\n'))}</textarea></div>
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px"><button class="btn btn-s" onclick="fecharModalSimples()">Cancelar</button><button class="btn btn-p" onclick="trFormImprimir()">💾 Salvar e 🖨 Imprimir</button></div>`, 760);
+}
+function trAddColab(sel){ if(!sel.value) return; const t=document.getElementById('trf-colabs'); t.value=(t.value.trim()?t.value.trim()+'\n':'')+sel.value; sel.value=''; }
+function trFormLer(){
+  const v=id=>(document.getElementById(id)||{}).value||'';
+  const base = trFormCtx.d;
+  return Object.assign({}, base, {
+    tipoEvento:v('trf-tipo'), data:v('trf-data').trim(), curso:v('trf-curso').trim(), escopo:v('trf-escopo').trim(), instrutor:v('trf-instr').trim(),
+    prazo:v('trf-prazo').trim(), local:v('trf-local'), entidade:v('trf-ent').trim(),
+    metodos:[...document.querySelectorAll('.trf-met:checked')].map(x=>x.value),
+    modo: document.getElementById('trf-modo') ? v('trf-modo') : base.modo,
+    colabs: v('trf-colabs').split(/\r?\n/).map(x=>x.trim()).filter(Boolean)
+  });
+}
+function trFormImprimir(){
+  const d = trFormLer(), ctx = trFormCtx;
+  const rec = {origem:ctx.origem||'Modelo', titulo:(d.curso||'Lista de Treinamento').slice(0,80), tipoEvento:d.tipoEvento, data:d.data, curso:d.curso, escopo:d.escopo, instrutor:d.instrutor, prazo:d.prazo, local:d.local, entidade:d.entidade, metodos:d.metodos, modo:d.modo, colabs:d.colabs, colabId:ctx.colabId||null};
+  if(ctx.id){ crudUpdate('treino_listas', ctx.id, rec, {modulo:'Treinamentos', label:rec.titulo}); }
+  else { const novo = crudCreate('treino_listas', rec, {modulo:'Treinamentos', label:rec.titulo}); if(novo && novo.id) ctx.id = novo.id; }
+  fecharModalSimples();
+  abrirReciboModal('🖨 Lista de Treinamento'+(d.colabs.length===1?' — '+d.colabs[0]:''), trListaHtml(Object.assign({emp:ctx.emp},d)), false);
+}
+
+/* 90 dias de experiência — a partir da Descrição de Cargo (4.1 Requisitos mínimos → Treinamentos específicos) */
+function colabListaTreinamento90(colabId){
+  const c = loadData('colaboradores').find(x=>x.id===colabId); if(!c) return;
+  const cand = dcAcharPorCargo(c.cargo);
+  let r = cand[0];
+  if(cand.length>1){ const e=parseInt(prompt('Há mais de uma descrição para este cargo. Digite o número da desejada:\n'+cand.map((o,i)=>(i+1)+' - '+o.cargo).join('\n'),'1'),10); r=cand[e-1]; if(!r) return; }
+  const ini = c.adm || '', fim = trAddDias(ini,90);
+  const curso = r ? String(r.treinMin||'').trim() : '';
+  if(!r) showToast('Não há Descrição de Cargo para "'+(c.cargo||'—')+'" — preencha o treinamento manualmente.','warn');
+  else if(!curso) showToast('A descrição do cargo não tem "Treinamentos específicos" em 4.1 — preencha manualmente.','warn');
+  trFormAbrir({titulo:'📋 Lista de Treinamento — 90 dias de experiência — '+c.nome, origem:'90 dias de experiência', colabId:c.id, emp:empresaInfoDoColaborador(c), mostrarModo:false,
+    d:{tipoEvento:'Treinamento', data: ini? (ini+' á '+fim):'', curso, escopo:TR_ESCOPO_PADRAO, instrutor:'', prazo:'90 dias', local:'Interno', entidade:'', metodos:['Oral','Observação prática'], modo:'90d', colabs:[c.nome]}});
+}
+/* Modelo padrão (demais treinamentos) — fica em Treinamentos */
+function trListaNova(){
+  trFormAbrir({titulo:'📋 Lista de Treinamento — modelo padrão (FR-008)', origem:'Modelo', emp:CV_EMPRESA_INFO['AC'], mostrarModo:true,
+    d:{tipoEvento:'Treinamento', data:'', curso:'', escopo:TR_ESCOPO_PADRAO, instrutor:'', prazo:'1 dia', local:'Interno', entidade:'', metodos:['Oral','Observação prática'], modo:'padrao', colabs:[]}});
+}
+function trListasAbrir(){
+  const l = loadData('treino_listas').filter(x=>x.status!=='Inativo').sort((a,b)=>(b.id||0)-(a.id||0));
+  const rows = l.map(x=>`<tr style="border-bottom:1px solid var(--g100)">
+    <td style="font-size:10.5px;white-space:nowrap">${gpEsc(x.criadoEm||'')}</td><td style="font-size:11px"><b>${gpEsc(x.titulo||'')}</b><br><span class="muted" style="font-size:10px">${gpEsc(x.origem||'')} · ${(x.colabs||[]).length} colaborador(es)${x.data?' · '+gpEsc(x.data):''}</span></td>
+    <td style="white-space:nowrap"><button class="btn btn-s btn-xs" onclick="trListaReimprimir(${x.id})">🖨</button> <button class="btn btn-s btn-xs" onclick="trListaEditar(${x.id})">✏</button> <button class="btn btn-s btn-xs" onclick="trListaExcluir(${x.id})">🗑</button></td></tr>`).join('');
+  abrirModalSimples('📋 Listas de Treinamento salvas', `<div style="margin-bottom:10px"><button class="btn btn-p btn-sm" onclick="trListaNova()">+ Nova lista (modelo padrão)</button> <span class="muted" style="font-size:11px">As listas de 90 dias geradas na ficha do colaborador também ficam salvas aqui.</span></div>
+    <table style="width:100%"><tbody>${rows||'<tr><td class="muted" style="padding:14px">Nenhuma lista salva ainda.</td></tr>'}</tbody></table>`, 760);
+}
+function trListaCtx(x){ const colab = x.colabId ? loadData('colaboradores').find(c=>c.id===x.colabId) : null; return {titulo:'📋 '+(x.titulo||'Lista de Treinamento'), origem:x.origem, id:x.id, colabId:x.colabId, emp: colab?empresaInfoDoColaborador(colab):CV_EMPRESA_INFO['AC'], mostrarModo:x.origem==='Modelo', d:x}; }
+function trListaReimprimir(id){ const x=loadData('treino_listas').find(r=>r.id===id); if(!x) return; fecharModalSimples(); abrirReciboModal('🖨 Lista de Treinamento', trListaHtml(Object.assign({emp:trListaCtx(x).emp},x)), false); }
+function trListaEditar(id){ const x=loadData('treino_listas').find(r=>r.id===id); if(!x) return; trFormAbrir(trListaCtx(x)); }
+function trListaExcluir(id){ const x=loadData('treino_listas').find(r=>r.id===id); if(!x) return; confirmAction('Excluir a lista "'+(x.titulo||'')+'"?',()=>{ crudDeleteFisico('treino_listas',id,{modulo:'Treinamentos',label:x.titulo}); trListasAbrir(); }); }
+
+/* Acrescenta o item na Integração do modelo de Admissão (sem mexer nos existentes) */
+function buildAdmissaoTemplateTreino90Seed(){
+  if(localStorage.getItem('ac_admtemplate_treino90_v1')) return;
+  const ex = loadData('admissao_templates');
+  if(!ex.some(t=>t.etapa==='integracao' && /lista de treinamento/i.test(t.desc||''))){
+    const ordem = ex.filter(t=>t.etapa==='integracao').reduce((m,t)=>Math.max(m,t.ordem||0),0)+1;
+    const id = ex.reduce((m,t)=>Math.max(m,t.id||0),0)+1, now = nowStr();
+    const rec = {id, etapa:'integracao', desc:'Imprimir lista de treinamento — 90 dias de experiência', ondeEncontro:'Colaboradores → Ficha → Documentos → 🖨 Lista de Treinamento 90 dias (já sai com os treinamentos do cargo)', observacaoPadrao:'1 dia antes', ordem, obrigatorio:'Sim', status:'Ativo', criadoEm:now, atualizadoEm:now};
+    ex.push(rec); saveData('admissao_templates', ex); syncRecordToCloud('admissao_templates', rec);
+  }
+  localStorage.setItem('ac_admtemplate_treino90_v1','1');
 }
 
 /* ═══════════ ADMISSÃO ═══════════ */
