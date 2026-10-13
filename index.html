@@ -441,7 +441,7 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
   <div class="l-box">
     <div class="l-logo">
       <div class="l-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
-      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.95 — Entrega de EPI dá baixa certa no estoque, Aniversariantes/Tempo de Empresa (1 folha, incluir/excluir), Visitas por mês/ano, Estoque EPI, contador da Brass (Correia Contábil), O.S. Rebarbador B, Acidentes 2026, Indicadores com histórico mensal (turnover, engajamento por setor, T&D), Visitas do TST, Planejamento Anual, Desconto com histórico</div></div>
+      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.96 — Nova tela Demissão com checklist de desligamento; anexar PDFs dos históricos (Cesta & Vegas, Convênio Médico e Farmácia), Fechar mês e Histórico mensal em Benefícios e Férias, colunas do Desconto em Folha mais estreitas</div></div>
     </div>
     <div class="f-row"><label>Usuário</label><input type="text" id="l-user" value="jakeline@acmetalurgica.com.br"></div>
     <div class="f-row"><label>Senha</label><input type="password" id="l-pass" value="••••••••"></div>
@@ -482,6 +482,9 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
     </div>
     <div class="nav-item" data-go="admissao" onclick="go('admissao',this,'Admissão','Controle')">
       <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>Admissão
+    </div>
+    <div class="nav-item" data-go="demissao" onclick="go('demissao',this,'Demissão','Controle')">
+      <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="17" y1="11" x2="23" y2="11"/></svg>Demissão
     </div>
     <div class="nav-item" data-go="colaboradores" onclick="go('colaboradores',this,'Colaboradores','Core RH')">
       <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Colaboradores
@@ -851,6 +854,8 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
           <option value="9" selected>Setembro</option><option value="10">Outubro</option><option value="11">Novembro</option><option value="12">Dezembro</option>
         </select>
         <span class="chip" style="font-size:10px;color:var(--g500)">Competência dos inscritos nos benefícios</span>
+        <button class="btn btn-s btn-sm" onclick="bhFecharMes()" title="Salva uma cópia do mês para consulta futura">🔒 Fechar mês (salvar histórico)</button>
+        <button class="btn btn-s btn-sm" onclick="bhHistAbrir()">📜 Histórico mensal</button>
       </div>
       <div id="ben-tipos-lista" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;margin-bottom:16px"></div>
     </div>
@@ -863,6 +868,7 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
         <button class="btn btn-p" onclick="openCrudModal(MOD_CESTAVEGAS,null)">+ Novo Registro</button>
         <button class="btn btn-s" onclick="cvGerarRecibos('AC')">🖨 Gerar Recibos AC</button>
         <button class="btn btn-s" onclick="cvGerarRecibos('BRASS')">🖨 Gerar Recibos BRASS</button>
+        <button class="btn btn-s" onclick="phBotaoCesta()">📎 Anexar Históricos (PDF)</button>
       </div>
       <div class="filters" style="margin-bottom:10px;flex-wrap:wrap">
         <select class="fsel" id="cv-mes-sel" onchange="renderCestaVegas();buildCestaVegasHistorico()" title="Mês"><option value="1">Janeiro</option><option value="2">Fevereiro</option><option value="3">Março</option><option value="4">Abril</option><option value="5">Maio</option><option value="6">Junho</option><option value="7">Julho</option><option value="8">Agosto</option><option value="9">Setembro</option><option value="10">Outubro</option><option value="11">Novembro</option><option value="12">Dezembro</option></select>
@@ -1086,8 +1092,8 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
       </div>
       <div class="card" style="padding:0;margin-bottom:14px;overflow-x:auto">
         <div class="card-hdr">Descontos do Mês — enviar ao escritório contábil</div>
-        <table style="min-width:1000px;table-layout:fixed"><thead><tr>
-          <th style="width:200px">Colaborador</th><th style="width:125px">Farmácia</th><th style="width:125px">Sindicato</th><th style="width:125px">Samaritano</th><th style="width:75px">Transp.</th><th style="width:125px">Termo Acordo</th><th>Observação</th><th style="width:50px">Ações</th>
+        <table style="min-width:820px;table-layout:fixed"><thead><tr>
+          <th style="width:200px">Colaborador</th><th style="width:88px">Farmácia</th><th style="width:88px">Sindicato</th><th style="width:88px">Samaritano</th><th style="width:70px">Transp.</th><th style="width:88px">Termo Acordo</th><th>Observação</th><th style="width:50px">Ações</th>
         </tr></thead>
         <tbody id="fd-tbody"></tbody></table>
       </div>
@@ -1103,6 +1109,40 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
     </div>
 
     <!-- ══ ADMISSÃO ══ -->
+    <div id="page-demissao" class="page">
+      <div class="layer-badge lb-op">● Operacional</div>
+      <div class="section-hdr">
+        <div class="sec-title"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="17" y1="11" x2="23" y2="11"/></svg>Controle de Demissão</div>
+        <button class="btn btn-p" onclick="openCrudModal(MOD_DEMISSAO,null)">+ Nova Demissão</button>
+        <button class="btn btn-s" onclick="demToggleTemplateConfig()">⚙ Configurar Modelo Padrão</button>
+      </div>
+      <div id="dem-template-config" style="display:none;margin-bottom:14px"></div>
+      <div class="kpi-grid">
+        <div class="kpi-card"><div class="kpi-lbl">Total de Demitidos</div><div class="kpi-val" id="dem-total-crud">—</div></div>
+        <div class="kpi-card"><div class="kpi-lbl">Em Andamento</div><div class="kpi-val" style="color:var(--blue)" id="dem-andamento-crud">—</div></div>
+        <div class="kpi-card"><div class="kpi-lbl">Concluídas</div><div class="kpi-val dg" id="dem-concluidas-crud">—</div></div>
+        <div class="kpi-card"><div class="kpi-lbl">Progresso Médio (em andamento)</div><div class="kpi-val" id="dem-media-crud">—</div></div>
+      </div>
+      <div style="background:#fff;border:1px solid var(--g200);border-radius:9px;padding:12px;margin-bottom:10px">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+          <div class="srch-wrap" style="flex:2;min-width:180px"><input class="finp" style="width:100%" id="dem-search" placeholder="🔎 Buscar nome, cargo ou setor..." oninput="demCtrl.filter()"></div>
+          <select class="fsel" style="min-width:160px" onchange="demCtrl.setFilter('situacao',this.value)"><option value="">🟢 Todas as situações</option><option>Em andamento</option><option>Concluída</option><option>Histórico</option><option>Cancelada</option></select>
+          <select class="fsel" style="min-width:110px" onchange="demCtrl.setFilter('empresa',this.value)"><option value="">🏭 Empresa</option><option>AC</option><option>BRASS</option></select>
+          <select class="fsel" style="min-width:130px" onchange="demCtrl.setFilter('setor',this.value)"><option value="">📌 Setor</option><option value="Produção">Produção</option><option value="Manutenção">Manutenção</option><option value="Qualidade">Qualidade</option><option value="Administrativo">Administrativo</option><option value="Fundição">Fundição</option><option value="Usinagem">Usinagem</option></select>
+          <span class="chip" id="dem-count">— registros</span>
+          <button class="btn btn-s btn-xs" id="dem-toggle-inativos-btn" onclick="demToggleVerInativos()">👁 Ver Inativos</button>
+          <button class="btn btn-s btn-xs" onclick="demCtrl.clearAll();demCtrl.setFilter('status','Ativo');document.getElementById('dem-toggle-inativos-btn').textContent='👁 Ver Inativos'" title="Limpar">🔄 Limpar</button>
+          <button class="btn btn-s btn-xs" onclick="demSync();demCtrl.load();showToast('🔃 Atualizado')" title="Atualizar">🔃</button>
+          <select class="fsel" style="width:72px" onchange="demCtrl._pageSize=+this.value;demCtrl._page=1;demCtrl.render()">
+            <option value="10" selected>10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option>
+          </select>
+          <button class="btn btn-s btn-xs" onclick="exportTableToExcel('demissoes',[{field:'nome',label:'Nome',width:35},{field:'cargo',label:'Cargo',width:28},{field:'setor',label:'Setor',width:16},{field:'empresa',label:'Empresa',width:10},{field:'inicio',label:'Admissão',width:12},{field:'dataDemissao',label:'Demissão',width:12},{field:'tipo',label:'Tipo',width:28},{field:'situacao',label:'Situação',width:14}],'Demissoes')">⬇ Excel</button>
+        </div>
+      </div>
+      <div id="demissao-cards-crud"></div>
+      <div style="display:flex;align-items:center;justify-content:flex-end;gap:4px;margin-top:8px" id="dem-pag"></div>
+    </div>
+
     <div id="page-admissao" class="page">
       <div class="layer-badge lb-op">● Operacional</div>
       <div class="section-hdr">
@@ -1199,7 +1239,7 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
       <div class="layer-badge lb-op">● Operacional</div>
       <div class="section-hdr">
         <div class="sec-title"><svg viewBox="0 0 24 24"><path d="M8 3v3m8-3v3M3 8h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/></svg>Gestão de Férias</div>
-        <div style="display:flex;gap:8px"><button class="btn btn-s" onclick="if(confirm('Atualizar as férias com o relatório da contabilidade (AC 03/09 e Brass 16/09)? Só colaboradores ativos entram.'))feriasAtualizarProg()">📥 Atualizar com relatório da contabilidade</button><button class="btn btn-p" onclick="openCrudModal(MOD_FERIAS,null)">+ Novo Registro</button></div>
+        <div style="display:flex;gap:8px"><button class="btn btn-s" onclick="if(confirm('Atualizar as férias com o relatório da contabilidade (AC 03/09 e Brass 16/09)? Só colaboradores ativos entram.'))feriasAtualizarProg()">📥 Atualizar com relatório da contabilidade</button><button class="btn btn-s" onclick="fhFecharMes()" title="Salva uma cópia do mês para consulta futura">🔒 Fechar mês (salvar histórico)</button><button class="btn btn-s" onclick="fhHistAbrir()">📜 Histórico mensal</button><button class="btn btn-p" onclick="openCrudModal(MOD_FERIAS,null)">+ Novo Registro</button></div>
       </div>
       <div class="kpi-grid">
         <div class="kpi-card"><div class="kpi-lbl">Total</div><div class="kpi-val" id="f-total-crud">21</div></div>
@@ -2399,9 +2439,12 @@ function go(id,el,title,bread){
   if(id==='ind-rh'){setTimeout(()=>{try{initIndRH();}catch(e){console.warn('indRH:',e);}},150);}
   if(id==='planejamento'){setTimeout(()=>{try{initPlanejamento();}catch(e){console.warn('plano:',e);}},150);}
   if(id==='epi'){setTimeout(()=>{try{initEPITable();atualizarKPIsEPI();}catch(e){}},150);}
+  if(id==='ferias'){setTimeout(()=>{try{fhAutoArquivar();}catch(e){console.warn('fh:',e);}},300);}
+  if(id==='beneficios'){setTimeout(()=>{try{bhAutoArquivar();}catch(e){console.warn('bh:',e);}},400);}
+  if(id==='demissao'){setTimeout(()=>{try{initDemissao();}catch(e){console.warn('dem:',e);}},100);}
   if(id==='sst'){setTimeout(()=>{try{atualizarKPIsSST();}catch(e){}},150);}
   const advMap={'ferias':'feriasCtrl','treinamentos':'treinoCtrl','avaliacoes':'avalCtrl','clima':'climaCtrl','sucessao':'sucCtrl',
-    'sst':'sstAdvCtrl','admissao':'admCtrl','recrutamento':'vagaCtrl',
+    'sst':'sstAdvCtrl','admissao':'admCtrl','demissao':'demCtrl','recrutamento':'vagaCtrl',
     'beneficios':'benefCtrl','cargos':'cargoAdvCtrl','ponto':'pontoCtrl',
     'holerite':'holeCtrl','comunicados':'comCtrl'};
   if(advMap[id]){setTimeout(()=>{try{window[advMap[id]]&&window[advMap[id]].load();}catch(e){}},150);}
@@ -2450,6 +2493,7 @@ async function buildAll(){
   try{buildBeneficiosTiposSeed();}catch(e){console.warn('buildBeneficiosTiposSeed:',e);}
   try{buildConvenioMedicoSeed();}catch(e){console.warn('buildConvenioMedicoSeed:',e);}
   try{migracaoLimparBeneficiosFake();}catch(e){console.warn('migracaoLimparBeneficiosFake:',e);}
+  try{buildDemissaoTemplateSeed();}catch(e){console.warn('buildDemissaoTemplateSeed:',e);}
   try{buildAdmissaoTemplateSeed();}catch(e){console.warn('buildAdmissaoTemplateSeed:',e);}
   try{buildAdmissaoTemplateIntegracaoSeed();}catch(e){console.warn('buildAdmissaoTemplateIntegracaoSeed:',e);}
   try{migracaoAdmissaoChecklists();}catch(e){console.warn('migracaoAdmissaoChecklists:',e);}
@@ -3591,6 +3635,7 @@ const MOD_COLAB = {
     {field:'observacoes', label:'Observações', type:'textarea', full:true},
   ],
   onSave: () => {
+    try { demSync(); } catch(e) {}
     tcColab.refresh();
     try{ colabDetailRender(colabDetailAtual); }catch(e){}
     // Gera na hora os registros estimados derivados (Férias, Treinamentos, Avaliações, SST) para quem ainda não tem
@@ -4385,7 +4430,7 @@ async function colabAtualizar() {
   try {
     if (DB_MODE === 'supabase' && supabaseClient) {
       await pullColaboradoresMerge();
-      for (const t of ['colab_excluidos','feedback90','cesta_vegas','ferias','sst','admissoes','beneficios_inscritos','beneficios_anexos','colab_documentos','historico_cargo_salario']) {
+      for (const t of ['demissoes','hist_pdfs','colab_excluidos','feedback90','cesta_vegas','ferias','sst','admissoes','beneficios_inscritos','beneficios_anexos','colab_documentos','historico_cargo_salario']) {
         try { await pullTableFromCloud(t); } catch(e) {}
       }
     }
@@ -4402,6 +4447,7 @@ async function colabAtualizar() {
 }
 
 function colabRefreshTelas(idSelecionado) {
+  try { demSync(); } catch(e) {}
   try { colabFiltrado = loadData('colaboradores'); colabFiltrar(); } catch(e) {}
   try { if (typeof tcColab !== 'undefined' && tcColab) tcColab.refresh(); } catch(e) {}
   try { colabFichaRenderList(); } catch(e) {}
@@ -4834,7 +4880,8 @@ function colabFichaAcao(acao) {
   else if (acao === 'bloquear') {
     const novoStatus = c.status === 'Inativo' ? 'Ativo' : 'Inativo';
     crudUpdate('colaboradores', c.id, {status: novoStatus}, {modulo:'Colaboradores', label: c.nome});
-    showToast(novoStatus === 'Inativo' ? '🔒 Colaborador inativado' : '🔓 Colaborador reativado');
+    showToast(novoStatus === 'Inativo' ? '🔒 Colaborador inativado — enviado para Operacional › Demissão' : '🔓 Colaborador reativado');
+    try { demSync(); } catch(e) {}
     colabFichaRenderList();
     colabDetailRender(c.id);
   }
@@ -7370,6 +7417,8 @@ function renderBeneficiosTipos() {
           <div style="font-size:11px;color:var(--g500);margin:2px 0 6px">${t.descricao||'—'}</div>
           <span class="badge bgy">${qtd} inscrito(s)</span>
           ${podeExpandir?` <span class="badge bb" style="cursor:pointer" onclick="benefToggleInscritos('${escAttr(t.nome)}')">${aberto?'▲ Fechar inscritos':'▼ Ver inscritos'}</span>`:''}
+          ${t.nome==='Convênio Médico'?` <button class="btn btn-s btn-xs" style="margin-top:6px" onclick="phBotaoBenef('conv-medico','Convênio Médico — Históricos (PDF)')">📎 Anexar Históricos (PDF)</button>`:''}
+          ${t.nome==='Convênio Farmácia'?` <button class="btn btn-s btn-xs" style="margin-top:6px" onclick="phBotaoBenef('conv-farmacia','Convênio Farmácia — Históricos (PDF)')">📎 Anexar Históricos (PDF)</button>`:''}
         </div>
         <div style="white-space:nowrap">
           <button class="btn btn-s btn-xs" onclick="openCrudModal(MOD_BENEFTIPO,${t.id})">✏</button>
@@ -11256,7 +11305,7 @@ async function pullColaboradoresMerge() {
 // tem dado local, não mexe — evita sobrescrever algo em uso.
 async function pullOutrasTabelasAntesDoBoot() {
   if (DB_MODE !== 'supabase' || !supabaseClient) return;
-  const TABELAS = ['endo_extra','endo_oculto','ind_turnover','ind_eng','ind_td','ind_hist','plano_cfg','plano_hist','plano_acoes','colab_excluidos','beneficios_anexos','colab_documentos','ferias','treinamentos','avaliacoes','sst','admissoes',
+  const TABELAS = ['beneficios_hist','ferias_hist','demissoes','demissao_templates','hist_pdfs','endo_extra','endo_oculto','ind_turnover','ind_eng','ind_td','ind_hist','plano_cfg','plano_hist','plano_acoes','colab_excluidos','beneficios_anexos','colab_documentos','ferias','treinamentos','avaliacoes','sst','admissoes',
     'vagas','beneficios_mov','beneficios_inscritos','beneficios_tipos','cargos','ponto',
     'clima_pesquisas','clima_acoes','sucessao','terceiros','documentos','usuarios','holerites',
     'comunicados','cesta_vegas','folha_descontos','feedback90','tempo_empresa_ctrl','desccargos','sstfin','pcmso',
@@ -12348,6 +12397,505 @@ function initSSTAdv() {
   });
   window.sstAdvCtrl = sstAdvCtrl;
   sstAdvCtrl.load();
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   DEMISSÃO — checklist de desligamento (modelo: planilha 05 - CHECK LIST DE ATIVIDADES, aba DEMISSÃO)
+   ═══════════════════════════════════════════════════════════════ */
+const DEM_ETAPAS = [
+  {id:'principal',  label:'Principal',                    campo:'chkPrincipal'},
+  {id:'escritorio', label:'Encaminhar p/ Escritório',     campo:'chkEscritorio'},
+  {id:'mediclass',  label:'Encaminhar p/ Mediclass',      campo:'chkMediclass'},
+  {id:'rescisao',   label:'Após Relatório do Escritório', campo:'chkRescisao'},
+  {id:'pos',        label:'Pós Demissão',                 campo:'chkPos'},
+  {id:'docs',       label:'Docs Rescisão / Homologação',  campo:'chkDocs'},
+];
+const DEM_TIPOS = ['Sem justa causa (pela empresa)','Pedido de demissão','Término de contrato de experiência','Justa causa','Acordo (art. 484-A)','Aposentadoria','Falecimento','Outro'];
+const DEM_SEED = {
+  principal:[
+    ['Solicitar / fazer o aviso prévio','Indenizado: esvaziar o armário no ato do aviso. Cumprido: esvaziar no último dia.','Pasta da empresa → Demissão → Aviso Prévio'],
+    ['Entregar para a diretoria assinar','AC → Cabrera / Brass → Jakeline',''],
+    ['Scanear e salvar o aviso prévio na pasta do funcionário','','Pasta da empresa → Demissão → Funcionários → pasta do funcionário → "DOCS DEMISSIONAIS"'],
+    ['Agendar exame demissional – Med Class','Até 3 meses da admissão não precisa de exame demissional; apenas enviar e-mail ao financeiro avisando.',''],
+    ['Informar ao funcionário data, horário e local do exame','',''],
+    ['Imprimir relatório do fechamento do cartão ponto','','Aponta Fácil → Relatório → Novo → Portaria 1510 → preencher dados'],
+    ['Salvar relatório do fechamento do cartão ponto na pasta do funcionário','',''],
+    ['Solicitar exclusão e fechamento da farmácia','Passo a passo na aba EXCLUSÃO','Site da farmácia'],
+    ['Solicitar exclusão e fechamento de co-participação Samaritano','',''],
+  ],
+  escritorio:[
+    ['Encaminhar ao escritório: aviso prévio e fechamento do cartão ponto','AC → Servcont / Brass → Correia Contábil',''],
+    ['Encaminhar acordos de férias','Se houver, anexar ao e-mail','Pasta da empresa → Controles DP'],
+    ['Verificar se possui desconto de farmácia','Se houver, anexar ao e-mail','Benefícios → Convênio Farmácia'],
+    ['Verificar desconto do convênio e co-participação do Samaritano','Se houver, anexar ao e-mail','Benefícios → Convênio Médico'],
+  ],
+  mediclass:[
+    ['Separar e scanear a ficha de EPI','Verificar no arquivo se não possui fichas arquivadas','Controle de EPI'],
+    ['Preencher formulário de dados para elaboração do PPP','','Pasta da empresa → Demissão → PPP atualizado'],
+    ['Enviar para a Mediclass: ficha de EPI + formulário do PPP + adendo','E-mail: cadastro2@mediclass.com.br',''],
+  ],
+  rescisao:[
+    ['Imprimir e conferir o relatório do escritório','',''],
+    ['Entregar ao financeiro a rescisão e as guias de FGTS','Verificar com o escritório competências em aberto (se houver, encaminhar para Fran). Informar a data limite de pagamento.',''],
+    ['Verificar se recebemos todas as documentações','',''],
+    ['Solicitar à direção a assinatura dos documentos','AC → Cabrera / Brass → Jakeline',''],
+    ['Agendar com o funcionário data para assinatura da rescisão / homologação','Em caso de homologação em sindicato, sempre levar uma cópia a mais.',''],
+    ['Pedir para o funcionário trazer uniformes e cartão ponto','',''],
+    ['Verificar se não há relatório do cartão ponto arquivado na sala de arquivos','','Pastas azuis identificadas com nome'],
+    ['Arquivar documentos','',''],
+  ],
+  pos:[
+    ['Excluir funcionário da lista e transmissão do WhatsApp','',''],
+    ['Mudar local da pasta do funcionário para pasta Demissão','',''],
+    ['Alterar de admitido para demitido na planilha Exames','','Pasta da empresa → Controles DP'],
+    ['Alterar de admitido para demitido na planilha Férias','',''],
+    ['Incluir na planilha de turnover','','Monitoramento e Indicadores → Indicadores RH'],
+    ['Excluir da pasta e-mail','','Pasta da empresa → Listagem de e-mail'],
+    ['Colocar data da demissão na planilha de envio ao e-Social','',''],
+    ['Excluir da planilha de aniversariantes','','Aniversariantes – Comemorações'],
+    ['Excluir da planilha de tempo de empresa','','Tempo de Empresa'],
+    ['Excluir da cesta básica','','Cesta & Vegas'],
+    ['Colocar data da demissão no Aponta Fácil','','Site Aponta Fácil'],
+    ['Esvaziar pastas físicas de documentos','',''],
+    ['Arquivar documentos no arquivo morto','Tirar das pastas e colocar tudo em um saquinho transparente.','Última gaveta do ficheiro'],
+  ],
+  docs:[
+    ['Aviso prévio','2 vias',''],
+    ['Comprovante de pagamento','2 vias',''],
+    ['TCRT','3 vias',''],
+    ['Folha ponto do mês em questão','',''],
+    ['Relatório analítico de cálculos','1 via',''],
+    ['FGTS rescisório e comprovante de pagamento','2 vias',''],
+    ['Extrato do FGTS analítico','2 vias',''],
+    ['Protocolo de seguro desemprego','Somente se foi demitido — 2 vias',''],
+    ['Carta de referência','2 vias',''],
+    ['Exame demissional','2 vias',''],
+    ['PPP','2 vias',''],
+  ],
+};
+const DEM_STATUS_OPCOES = ADM_STATUS_OPCOES, DEM_STATUS_ICON = ADM_STATUS_ICON;
+let demCtrl, demDetalheAberto=null, demTabAtiva='principal';
+
+const MOD_DEM_TEMPLATE = {
+  table:'demissao_templates', label:'Item de Checklist de Demissão',
+  onSave:()=>{ demRenderTemplateConfig(); },
+  fields:[
+    {field:'etapa', label:'Etapa', type:'select', required:true, options:DEM_ETAPAS.map(e=>({value:e.id,label:e.label}))},
+    {field:'desc', label:'Descrição da Atividade', required:true, full:true},
+    {field:'observacaoPadrao', label:'Observação Padrão', full:true},
+    {field:'ondeEncontro', label:'Onde Encontro?', full:true},
+    {field:'ordem', label:'Ordem', type:'number', placeholder:'1'},
+    {field:'status', label:'Status', type:'select', options:['Ativo','Inativo']},
+  ]
+};
+
+function buildDemissaoTemplateSeed(){
+  if(localStorage.getItem('ac_demtemplate_v1')) return;
+  const now=nowStr(); let id=0; const out=[];
+  DEM_ETAPAS.forEach(e=>{ (DEM_SEED[e.id]||[]).forEach((it,i)=>{ out.push({id:++id,etapa:e.id,desc:it[0],observacaoPadrao:it[1],ondeEncontro:it[2],ordem:i+1,obrigatorio:'Sim',status:'Ativo',criadoEm:now,atualizadoEm:now}); }); });
+  saveData('demissao_templates',out);
+  out.forEach(r=>syncRecordToCloud('demissao_templates',r));
+  logAudit('Demissão','Inclusão',0,'Modelo padrão do Checklist de Desligamento — '+out.length+' atividades');
+  localStorage.setItem('ac_demtemplate_v1','1');
+}
+function demGerarChecklist(etapa){
+  return loadData('demissao_templates').filter(t=>t.status!=='Inativo'&&t.etapa===etapa).sort((a,b)=>(a.ordem||0)-(b.ordem||0))
+    .map(t=>({desc:t.desc,ondeEncontro:t.ondeEncontro||'',status:'Pendente',observacao:t.observacaoPadrao||'',dataConclusao:'',usuarioConclusao:''}));
+}
+function demChecklistsNovos(){ const o={}; DEM_ETAPAS.forEach(e=>{o[e.campo]=demGerarChecklist(e.id);}); return o; }
+
+function demToggleTemplateConfig(){
+  const box=document.getElementById('dem-template-config'); if(!box) return;
+  const ab=box.style.display!=='none'; box.style.display=ab?'none':'block'; if(!ab) demRenderTemplateConfig();
+}
+function demRenderTemplateConfig(){
+  const box=document.getElementById('dem-template-config'); if(!box||box.style.display==='none') return;
+  let h='<div class="card" style="padding:12px"><div style="font-size:12px;font-weight:700;margin-bottom:8px">⚙ Modelo Padrão do Checklist de Desligamento — vale para NOVAS demissões (não altera as já iniciadas)</div>';
+  DEM_ETAPAS.forEach(e=>{
+    const itens=loadData('demissao_templates').filter(t=>t.status!=='Inativo'&&t.etapa===e.id).sort((a,b)=>(a.ordem||0)-(b.ordem||0));
+    h+=`<div style="margin-bottom:14px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><span style="font-size:11px;font-weight:600">${e.label} (${itens.length})</span><button class="btn btn-s btn-xs" onclick="demAdicionarItemTemplate('${e.id}')">+ Adicionar</button></div>
+    <table style="width:100%;font-size:11px"><tbody>${itens.map(t=>`<tr style="border-bottom:1px solid var(--g100)"><td style="padding:4px;width:30px">${t.ordem||'—'}</td><td style="padding:4px">${gpEsc(t.desc)}</td><td style="padding:4px;font-size:10px;color:var(--g500)">${gpEsc(t.observacaoPadrao||'—')}</td><td style="padding:4px;font-size:10px;color:var(--g500)">${gpEsc(t.ondeEncontro||'—')}</td><td style="padding:4px;white-space:nowrap"><button class="btn btn-s btn-xs" onclick="openCrudModal(MOD_DEM_TEMPLATE,${t.id})">✏</button> <button class="btn btn-s btn-xs" onclick="crudDeleteAction(MOD_DEM_TEMPLATE,${t.id},'${escAttr(t.desc)}')">🗑</button></td></tr>`).join('')||'<tr><td class="muted" style="padding:6px">Nenhuma atividade.</td></tr>'}</tbody></table></div>`;
+  });
+  box.innerHTML=h+'</div>';
+}
+function demAdicionarItemTemplate(etapa){ openCrudModal(MOD_DEM_TEMPLATE,null); setTimeout(()=>{const el=document.querySelector('[data-field="etapa"]'); if(el) el.value=etapa;},30); }
+
+const MOD_DEMISSAO = {
+  table:'demissoes', label:'Demissão',
+  fields:[
+    {field:'nome', label:'Nome do Colaborador', required:true, full:true},
+    {field:'cargo', label:'Cargo'},
+    {field:'setor', label:'Setor', type:'select', options:SETORES},
+    {field:'empresa', label:'Empresa', type:'select', options:['AC','BRASS']},
+    {field:'inicio', label:'Data de Admissão', placeholder:'dd/mm/aaaa'},
+    {field:'dataDemissao', label:'Data da Demissão', placeholder:'dd/mm/aaaa'},
+    {field:'tipo', label:'Tipo de Desligamento', type:'select', options:DEM_TIPOS},
+    {field:'avisoPrevio', label:'Aviso Prévio', type:'select', options:['Indenizado','Cumprido','Não se aplica']},
+    {field:'responsavelProcesso', label:'Responsável pelo Processo'},
+    {field:'situacao', label:'Situação Geral', type:'select', options:['Em andamento','Concluída','Histórico','Cancelada']},
+    {field:'observacao', label:'Observação', type:'textarea', full:true},
+    {field:'status', label:'Registro', type:'select', options:['Ativo','Inativo']},
+  ],
+  beforeSave:(obj,record,isEdit)=>{
+    const base = isEdit ? record : demChecklistsNovos();
+    DEM_ETAPAS.forEach(e=>{ obj[e.campo] = (isEdit&&record[e.campo]) ? record[e.campo] : (base[e.campo]||demGerarChecklist(e.id)); });
+    if(!isEdit){ obj.situacao=obj.situacao||'Em andamento'; obj.origem='Manual'; }
+    else { obj.colabId=record.colabId; obj.origem=record.origem; }
+  },
+  onSave:()=>{ demRefresh(); }
+};
+
+function demRefresh(){ try{ if(demCtrl) demCtrl.load(); }catch(e){} try{ demKPIs(); }catch(e){} }
+
+/* Todo colaborador marcado como Inativo (desligado) entra aqui automaticamente */
+function demSync(){
+  try{
+    buildDemissaoTemplateSeed();
+    const primeira = !localStorage.getItem('ac_dem_sync_v1');
+    const colabs = loadData('colaboradores').filter(c=>c.status==='Inativo');
+    const existentes = loadData('demissoes');
+    const chaves = new Set(existentes.map(d=>normSemAcento(d.nome||'')));
+    const ids = new Set(existentes.filter(d=>d.colabId!=null).map(d=>d.colabId));
+    let n=0;
+    colabs.forEach(c=>{
+      if(ids.has(c.id) || chaves.has(normSemAcento(c.nome||''))) return;
+      const emp = COLAB_CNPJ_EMPRESA[c.cnpj] || '';
+      crudCreate('demissoes', Object.assign({
+        nome:c.nome, cargo:c.cargo||'', setor:c.setor||'', empresa:(emp==='PJ'?'AC':emp), inicio:c.adm||'',
+        dataDemissao: primeira ? (c.dataDemissao||'') : todayStr(), tipo:'', avisoPrevio:'', responsavelProcesso:'',
+        situacao: primeira ? 'Histórico' : 'Em andamento', observacao: primeira ? 'Importado do cadastro de colaboradores (desligado antes do módulo Demissão).' : '',
+        colabId:c.id, origem:'Cadastro de colaboradores'
+      }, demChecklistsNovos()), {modulo:'Demissão', label:c.nome});
+      n++;
+    });
+    if(primeira) localStorage.setItem('ac_dem_sync_v1','1');
+    return n;
+  }catch(e){ console.warn('demSync',e); return 0; }
+}
+
+function initDemissao(){
+  demSync();
+  if(!demCtrl){
+    demCtrl = makeAdvCtrl({ id:'dem', table:'demissoes', tbodyId:'demissao-cards-crud', countId:'dem-count', paginationId:'dem-pag',
+      searchFields:['nome','cargo','setor'], pageSize:10, sortField:'dataDemissao', render: rows=>demCardRender(rows) });
+    window.demCtrl = demCtrl;
+    demCtrl.setFilter('status','Ativo');
+  }
+  demCtrl.load(); demKPIs();
+}
+function demToggleVerInativos(){
+  const btn=document.getElementById('dem-toggle-inativos-btn');
+  if(demCtrl._filters.status==='Inativo'){ demCtrl.setFilter('status','Ativo'); if(btn) btn.textContent='👁 Ver Inativos'; }
+  else { demCtrl.setFilter('status','Inativo'); if(btn) btn.textContent='👁 Ver Ativos'; }
+}
+function demProg(lista){ return admCalcProgresso(lista); }
+function demProgGeral(d){
+  let todos=[]; DEM_ETAPAS.forEach(e=>{todos=todos.concat(d[e.campo]||[]);}); return admCalcProgresso(todos);
+}
+function demKPIs(){
+  const l=loadData('demissoes').filter(d=>d.status!=='Inativo');
+  const and=l.filter(d=>d.situacao==='Em andamento');
+  let t=0; and.forEach(d=>{t+=demProgGeral(d).pct;});
+  setText('dem-total-crud',l.length);
+  setText('dem-andamento-crud',and.length);
+  setText('dem-concluidas-crud',l.filter(d=>d.situacao==='Concluída').length);
+  setText('dem-media-crud',(and.length?Math.round(t/and.length):0)+'%');
+}
+function demToggleDetalhe(id){ demDetalheAberto = demDetalheAberto===id?null:id; demTabAtiva='principal'; demCtrl.render(); }
+function demSwitchTab(id,et){ demTabAtiva=et; demCtrl.render(); }
+function demItemUpdate(id,etapa,idx,campo,valor){
+  const data=loadData('demissoes'); const rec=data.find(d=>d.id===id); if(!rec) return;
+  const cfg=DEM_ETAPAS.find(e=>e.id===etapa); const item=(rec[cfg.campo]||[])[idx]; if(!item) return;
+  item[campo]=valor;
+  if(campo==='status'){
+    if(valor==='Concluído'){ item.dataConclusao=todayStr(); item.usuarioConclusao=(window.CURRENT_USER&&window.CURRENT_USER.name)||'Sistema'; }
+    else { item.dataConclusao=''; item.usuarioConclusao=''; }
+  }
+  rec.atualizadoEm=nowStr(); saveData('demissoes',data);
+  logAudit('Demissão','Atualização',id,`${rec.nome} — ${cfg.label}: ${item.desc} → ${item.status}`);
+  syncRecordToCloud('demissoes',rec);
+  demRefresh();
+}
+function demItemAdicionar(id,etapa){
+  const desc=window.prompt('Descrição da nova atividade:'); if(!desc||!desc.trim()) return;
+  const data=loadData('demissoes'); const rec=data.find(d=>d.id===id); if(!rec) return;
+  const cfg=DEM_ETAPAS.find(e=>e.id===etapa); if(!rec[cfg.campo]) rec[cfg.campo]=[];
+  rec[cfg.campo].push({desc:desc.trim(),ondeEncontro:'',status:'Pendente',observacao:'',dataConclusao:'',usuarioConclusao:''});
+  rec.atualizadoEm=nowStr(); saveData('demissoes',data); syncRecordToCloud('demissoes',rec); demRefresh();
+}
+function demItemRemover(id,etapa,idx){
+  const data=loadData('demissoes'); const rec=data.find(d=>d.id===id); if(!rec) return;
+  const cfg=DEM_ETAPAS.find(e=>e.id===etapa); const item=(rec[cfg.campo]||[])[idx]; if(!item) return;
+  confirmAction(`Remover a atividade "${item.desc}"?`,()=>{
+    rec[cfg.campo].splice(idx,1); rec.atualizadoEm=nowStr(); saveData('demissoes',data); syncRecordToCloud('demissoes',rec); demRefresh();
+  });
+}
+function demChecklistTabelaHtml(id,etapa,lista){
+  const linhas=(lista||[]).map((it,idx)=>`<tr>
+    <td style="white-space:nowrap"><select style="width:100%;background:transparent" onchange="demItemUpdate(${id},'${etapa}',${idx},'status',this.value)">${DEM_STATUS_OPCOES.map(s=>`<option value="${s}" ${it.status===s?'selected':''}>${DEM_STATUS_ICON[s]} ${s}</option>`).join('')}</select></td>
+    <td style="font-size:11px">${gpEsc(it.desc)}</td>
+    <td><input type="text" style="width:100%" value="${escAttr(it.observacao||'')}" onchange="demItemUpdate(${id},'${etapa}',${idx},'observacao',this.value)"></td>
+    <td><input type="text" style="width:100%" value="${escAttr(it.ondeEncontro||'')}" onchange="demItemUpdate(${id},'${etapa}',${idx},'ondeEncontro',this.value)"></td>
+    <td style="font-size:9px;color:var(--g400);white-space:nowrap">${it.status==='Concluído'?`${it.dataConclusao||''}<br>${it.usuarioConclusao||''}`:''}</td>
+    <td><button class="btn btn-s btn-xs" onclick="demItemRemover(${id},'${etapa}',${idx})">🗑</button></td></tr>`).join('');
+  return `<div><div style="display:flex;justify-content:flex-end;margin-bottom:6px"><button class="btn btn-s btn-xs" onclick="demItemAdicionar(${id},'${etapa}')">+ Adicionar Atividade</button></div>
+  <table style="width:100%;font-size:11px"><thead><tr style="color:var(--g500)"><th style="text-align:left;padding:3px;width:130px">Status</th><th style="text-align:left;padding:3px">Descrição</th><th style="text-align:left;padding:3px;width:170px">Observação</th><th style="text-align:left;padding:3px;width:170px">Onde Encontro?</th><th style="text-align:left;padding:3px;width:90px">Conclusão</th><th style="width:30px"></th></tr></thead>
+  <tbody>${linhas||'<tr><td colspan="6" class="muted" style="padding:10px">Nenhuma atividade nesta etapa.</td></tr>'}</tbody></table></div>`;
+}
+function demDetalheHtml(d){
+  const cfg=DEM_ETAPAS.find(e=>e.id===demTabAtiva)||DEM_ETAPAS[0];
+  return `<div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--g100)">
+    <div class="tabs" style="margin-bottom:8px;flex-wrap:wrap">${DEM_ETAPAS.map(e=>{const p=demProg(d[e.campo]);return `<div class="tab ${demTabAtiva===e.id?'active':''}" onclick="demSwitchTab(${d.id},'${e.id}')">${e.label} <span class="muted" style="font-size:9px">${p.concluidas}/${p.total}</span></div>`;}).join('')}</div>
+    ${demChecklistTabelaHtml(d.id,cfg.id,d[cfg.campo])}
+    <div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;border-top:1px solid var(--g100);padding-top:8px">
+      <button class="btn btn-s btn-xs" onclick="demImprimir(${d.id},'${cfg.id}')">🖨 Esta etapa</button>
+      <button class="btn btn-p btn-xs" onclick="demImprimir(${d.id},'todos')">🖨 Checklist completo</button>
+    </div></div>`;
+}
+function demMarcarConcluida(id){ const d=loadData('demissoes').find(x=>x.id===id); if(!d) return; crudUpdate('demissoes',id,{situacao:'Concluída'},{modulo:'Demissão',label:d.nome}); showToast('✔ Demissão de '+d.nome+' concluída'); demRefresh(); }
+function demAlternarAtivo(id){ const d=loadData('demissoes').find(x=>x.id===id); if(!d) return; const n=d.status==='Inativo'?'Ativo':'Inativo'; crudUpdate('demissoes',id,{status:n},{modulo:'Demissão',label:d.nome}); showToast(n==='Inativo'?'🔒 Registro inativado':'🔓 Registro ativado'); demRefresh(); }
+function demExcluirDefinitivo(id){
+  const d=loadData('demissoes').find(x=>x.id===id); if(!d) return;
+  confirmAction(`Excluir DEFINITIVAMENTE a demissão de "${d.nome}"?\n\nO registro e o checklist serão apagados. Para apenas tirar da lista, use "Inativar".\n(Se o colaborador continuar como Desligado no cadastro, ele volta a aparecer aqui.)`,()=>{
+    crudDeleteFisico('demissoes',id,{modulo:'Demissão',label:d.nome}); showToast('🗑 Demissão excluída'); demRefresh();
+  });
+}
+function demCardRender(rows){
+  if(!rows.length) return '<div class="muted" style="text-align:center;padding:24px">Nenhum colaborador demitido encontrado</div>';
+  return rows.map(d=>{
+    const inativo=d.status==='Inativo', pg=demProgGeral(d), aberto=demDetalheAberto===d.id;
+    const sb={'Em andamento':'bb','Concluída':'bg','Cancelada':'br','Histórico':'bgy'}[d.situacao]||'bgy';
+    const cor=pg.pct>=100?'var(--green)':pg.pct>=50?'var(--blue)':pg.pct>0?'var(--yellow)':'var(--red)';
+    return `<div class="card" style="margin-bottom:12px;${inativo?'opacity:.5':''}">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
+        <div><div style="font-size:13px;font-weight:700">${gpEsc(d.nome)} <span class="badge ${sb}" style="margin-left:6px">${d.situacao||'Em andamento'}</span></div>
+          <div class="muted">${gpEsc(d.cargo||'—')} — ${gpEsc(d.setor||'—')} · ${d.empresa||'—'} · Admissão: ${d.inicio||'—'} · <b>Demissão: ${d.dataDemissao||'—'}</b>${d.tipo?' · '+gpEsc(d.tipo):''}${d.avisoPrevio?' · Aviso: '+d.avisoPrevio:''}${d.responsavelProcesso?' · Resp.: '+gpEsc(d.responsavelProcesso):''}</div>
+          ${d.observacao?`<div class="muted" style="font-size:10px;margin-top:2px">${gpEsc(d.observacao)}</div>`:''}</div>
+        <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end">
+          <button class="btn btn-s btn-xs" onclick="openCrudModal(MOD_DEMISSAO,${d.id})">✏ Editar</button>
+          ${d.situacao==='Concluída'?'<span class="badge bg" style="text-align:center">✔ Concluída</span>':`<button class="btn btn-s btn-xs" style="color:#166534" onclick="demMarcarConcluida(${d.id})">✔ Concluído</button>`}
+          <button class="btn btn-s btn-xs" onclick="demAlternarAtivo(${d.id})">${inativo?'🔓 Ativar':'🔒 Inativar'}</button>
+          <button class="btn btn-s btn-xs" style="color:#b91c1c" onclick="demExcluirDefinitivo(${d.id})">🗑 Excluir</button>
+        </div></div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:8px">
+        ${DEM_ETAPAS.map(e=>admBarraProgresso(e.label,demProg(d[e.campo]))).join('')}</div>
+      <div style="font-size:10px;margin-bottom:6px" class="muted">Progresso geral: <b>${pg.concluidas} de ${pg.total} — ${pg.pct}%</b></div>
+      <span class="badge bb" style="cursor:pointer" onclick="demToggleDetalhe(${d.id})">${aberto?'▲ Fechar checklist':'▼ Ver checklist de desligamento'}</span>
+      ${aberto?demDetalheHtml(d):''}</div>`;
+  }).join('');
+}
+function demBlocoImpresso(d,etapa,ultimo){
+  const cfg=DEM_ETAPAS.find(e=>e.id===etapa); const lista=d[cfg.campo]||[]; const pr=demProg(lista);
+  const linhas=lista.map(it=>`<tr style="border-bottom:1px solid #ccc"><td style="padding:5px 4px;white-space:nowrap">${it.status==='Concluído'?'☑':'☐'} ${it.status.toUpperCase()}</td><td style="padding:5px 4px">${gpEsc(it.desc)}</td><td style="padding:5px 4px;font-size:10px">${gpEsc(it.observacao||'')}</td><td style="padding:5px 4px;font-size:10px">${gpEsc(it.ondeEncontro||'')}</td></tr>`).join('');
+  return `<div style="padding:16px 4px;${ultimo?'':'page-break-after:always'}">
+    <h2 style="text-align:center;margin-bottom:2px">${d.empresa==='BRASS'?'BRASSMETAL':'AC METALÚRGICA'}</h2>
+    <h3 style="text-align:center;margin-bottom:14px">CHECK LIST DE DESLIGAMENTO — ${cfg.label.toUpperCase()}</h3>
+    <table style="width:100%;font-size:12px;margin-bottom:14px">
+      <tr><td style="padding:3px;font-weight:700;width:170px">Colaborador:</td><td>${gpEsc(d.nome)}</td></tr>
+      <tr><td style="padding:3px;font-weight:700">Cargo / Setor:</td><td>${gpEsc(d.cargo||'—')} / ${gpEsc(d.setor||'—')}</td></tr>
+      <tr><td style="padding:3px;font-weight:700">Admissão / Demissão:</td><td>${d.inicio||'—'} / ${d.dataDemissao||'—'}</td></tr>
+      <tr><td style="padding:3px;font-weight:700">Tipo / Aviso prévio:</td><td>${gpEsc(d.tipo||'—')} / ${d.avisoPrevio||'—'}</td></tr>
+      <tr><td style="padding:3px;font-weight:700">Conclusão desta etapa:</td><td>${pr.concluidas} de ${pr.total} — ${pr.pct}%</td></tr></table>
+    <table style="width:100%;border-collapse:collapse;font-size:11px"><thead><tr style="border-bottom:1.5px solid #000"><th style="text-align:left;padding:5px 4px;width:130px">Status</th><th style="text-align:left;padding:5px 4px">Descrição</th><th style="text-align:left;padding:5px 4px;width:150px">Observação</th><th style="text-align:left;padding:5px 4px;width:140px">Onde encontro?</th></tr></thead><tbody>${linhas||'<tr><td colspan="4" style="padding:10px">Nenhuma atividade.</td></tr>'}</tbody></table>
+    <div style="margin-top:26px;font-size:11px"><p style="margin-bottom:24px">Responsável: ______________________________________ Data: ____/____/________</p><p>Observações:</p><div style="border-bottom:1px solid #000;height:22px;margin-bottom:8px"></div><div style="border-bottom:1px solid #000;height:22px"></div></div></div>`;
+}
+function demImprimir(id,alvo){
+  const d=loadData('demissoes').find(x=>x.id===id); if(!d) return;
+  const lista = alvo==='todos' ? DEM_ETAPAS.map(e=>e.id) : [alvo];
+  const html = lista.map((e,i)=>demBlocoImpresso(d,e,i===lista.length-1)).join('');
+  abrirReciboModal('🖨 Checklist de Desligamento — '+d.nome, html, false);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   HISTÓRICOS EM PDF (Cesta & Vegas, Convênio Médico, Convênio Farmácia)
+   Guardados por empresa → ano → mês na nuvem (bucket documentos-rh)
+   ═══════════════════════════════════════════════════════════════ */
+const PH_MESES=['','Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+let phCtx=null;
+function phAbrir(ref,titulo,empresa,ano,mes){
+  const hoje=new Date();
+  phCtx={ref,titulo,empresa:empresa||'AC',ano:Number(ano)||hoje.getFullYear(),mes:Number(mes)||(hoje.getMonth()+1)};
+  phRender();
+}
+function phSet(campo,v){ phCtx[campo]=(campo==='empresa')?v:Number(v); phRender(); }
+function phRender(){
+  const c=phCtx; if(!c) return;
+  const arqs=loadData('hist_pdfs').filter(a=>a.status!=='Inativo'&&a.ref===c.ref&&a.empresa===c.empresa&&Number(a.ano)===c.ano);
+  const anoAtual=new Date().getFullYear(); const anos=[]; for(let y=anoAtual+1;y>=anoAtual-6;y--) anos.push(y);
+  const linhas=[]; for(let m=1;m<=12;m++){
+    const f=arqs.filter(a=>Number(a.mes)===m).sort((a,b)=>(a.id||0)-(b.id||0));
+    linhas.push(`<tr style="border-bottom:1px solid var(--g100);${m===c.mes?'background:#eff6ff':''}"><td style="padding:5px 6px;width:100px;font-weight:600;font-size:11px">${PH_MESES[m]}</td><td style="padding:5px 6px">${f.length?f.map(a=>`<div style="display:flex;align-items:center;gap:6px;margin:2px 0"><span>📄</span><a href="${a.url}" target="_blank" rel="noopener" style="flex:1;font-size:11px;word-break:break-all">${gpEsc(a.nomeArquivo)}</a><span class="muted" style="font-size:9px">${a.dataUpload||''}</span><button class="btn btn-s btn-xs" title="Remover" onclick="phExcluir(${a.id})">🗑</button></div>`).join(''):'<span class="muted" style="font-size:10px">—</span>'}</td></tr>`);
+  }
+  abrirModalSimples('📎 '+c.titulo,`
+    <div class="filters" style="margin-bottom:10px;flex-wrap:wrap">
+      <select class="fsel" onchange="phSet('empresa',this.value)"><option value="AC" ${c.empresa==='AC'?'selected':''}>AC METAL</option><option value="BRASS" ${c.empresa==='BRASS'?'selected':''}>BRASS METAL</option></select>
+      <select class="fsel" onchange="phSet('ano',this.value)">${anos.map(y=>`<option ${y===c.ano?'selected':''}>${y}</option>`).join('')}</select>
+      <select class="fsel" onchange="phSet('mes',this.value)" title="Mês em que o PDF será salvo">${PH_MESES.slice(1).map((n,i)=>`<option value="${i+1}" ${i+1===c.mes?'selected':''}>${n}</option>`).join('')}</select>
+      <input type="file" id="ph-input" accept="application/pdf,.pdf" multiple style="display:none" onchange="phUpload(this.files)">
+      <button class="btn btn-p btn-sm" onclick="document.getElementById('ph-input').click()">📎 Anexar PDF em ${PH_MESES[c.mes]}/${c.ano}</button>
+    </div>
+    <div class="muted" style="font-size:10px;margin-bottom:6px">${c.empresa==='AC'?'AC METAL':'BRASS METAL'} · ${c.ano} — o mês selecionado fica destacado; o PDF vai para esse mês.</div>
+    <table style="width:100%;border-collapse:collapse"><tbody>${linhas.join('')}</tbody></table>`,720);
+}
+async function phUpload(files){
+  const c=phCtx; if(!c||!files||!files.length) return;
+  if(!supabaseClient){ showToast('Conecte a nuvem primeiro (veja o Dashboard)','error'); return; }
+  showToast('📤 Enviando PDF...'); let ok=0;
+  for(const file of Array.from(files)){
+    if(!/\.pdf$/i.test(file.name)&&file.type!=='application/pdf'){ showToast('"'+file.name+'" não é PDF','error'); continue; }
+    const path=`historicos/${c.ref}/${c.empresa}/${c.ano}-${String(c.mes).padStart(2,'0')}/${Date.now()}_${sanitizeStorageKey(file.name)}`;
+    try{
+      const {error}=await supabaseClient.storage.from('documentos-rh').upload(path,file); if(error) throw error;
+      const {data}=supabaseClient.storage.from('documentos-rh').getPublicUrl(path);
+      crudCreate('hist_pdfs',{ref:c.ref,empresa:c.empresa,ano:c.ano,mes:c.mes,nomeArquivo:file.name,caminho:path,url:data.publicUrl,dataUpload:nowStr().split(' ')[0]},{modulo:c.titulo,label:`${c.empresa} ${PH_MESES[c.mes]}/${c.ano} — ${file.name}`});
+      ok++;
+    }catch(e){ showToast('Erro ao enviar "'+file.name+'": '+e.message,'error'); }
+  }
+  if(ok) showToast(`✅ ${ok} PDF(s) anexado(s)`); phRender();
+}
+function phExcluir(id){
+  const a=loadData('hist_pdfs').find(x=>x.id===id); if(!a) return;
+  confirmAction(`Remover o arquivo "${a.nomeArquivo}"?`,()=>{
+    try{ if(supabaseClient&&a.caminho) supabaseClient.storage.from('documentos-rh').remove([a.caminho]); }catch(e){}
+    crudDeleteFisico('hist_pdfs',id,{modulo:'Históricos PDF',label:a.nomeArquivo}); showToast('🗑 Arquivo removido'); phRender();
+  });
+}
+function phBotaoCesta(){ const m=document.getElementById('cv-mes-sel'),a=document.getElementById('cv-ano-sel'),e=document.getElementById('cv-empresa-sel');
+  phAbrir('cestavegas','Cesta Básica & Vegas — Históricos de Pedidos de Crédito',e&&e.value,a&&a.value,m&&m.value); }
+function phBotaoBenef(ref,titulo){ const c=benefComp(); phAbrir(ref,titulo,c.empresa,c.ano,c.mes); }
+
+
+/* ═══════════════════════════════════════════════════════════════
+   HISTÓRICO MENSAL — BENEFÍCIOS (por empresa) e FÉRIAS
+   ═══════════════════════════════════════════════════════════════ */
+function bhValor(i,colabs){
+  if(i.tipoBeneficio==='Vale-Transporte'){
+    const c=colabs.find(x=>(x.nome||'').trim().toUpperCase()===(i.colaborador||'').trim().toUpperCase());
+    const sal=c?moedaNum(c.sal):0; return sal?Math.round(sal*0.06*100)/100:0;
+  }
+  return +i.valorDesconto||0;
+}
+function bhLinhas(emp,ano,mes){
+  const colabs=loadData('colaboradores');
+  return loadData('beneficios_inscritos').filter(i=>i.status!=='Inativo'&&i.empresa===emp&&Number(i.ano)===Number(ano)&&Number(i.mes)===Number(mes))
+    .map(i=>({tipo:i.tipoBeneficio,colaborador:i.colaborador,valor:bhValor(i,colabs)}))
+    .sort((a,b)=>a.tipo.localeCompare(b.tipo)||a.colaborador.localeCompare(b.colaborador));
+}
+function bhTotais(l){ const t={}; l.forEach(x=>{ const o=t[x.tipo]||(t[x.tipo]={n:0,v:0}); o.n++; o.v+=x.valor; }); t.__total=l.reduce((a,x)=>a+x.valor,0); return t; }
+function bhReg(emp,ano,mes){ return loadData('beneficios_hist').find(h=>h.status!=='Inativo'&&h.empresa===emp&&Number(h.ano)===Number(ano)&&Number(h.mes)===Number(mes)); }
+function bhSalvar(emp,ano,mes,silencioso){
+  const linhas=bhLinhas(emp,ano,mes); if(!linhas.length){ if(!silencioso) showToast('Nenhum inscrito nesta competência','warn'); return false; }
+  const dados={empresa:emp,ano:Number(ano),mes:Number(mes),mesNome:CV_MESES[mes],linhas,tot:bhTotais(linhas),fechadoEm:nowStr()}, ex=bhReg(emp,ano,mes);
+  if(ex) crudUpdate('beneficios_hist',ex.id,dados,{modulo:'Benefícios'}); else crudCreate('beneficios_hist',dados,{modulo:'Benefícios',label:emp+' '+CV_MESES[mes]+'/'+ano});
+  if(!silencioso) showToast('🔒 Histórico de Benefícios — '+emp+' '+CV_MESES[mes]+'/'+ano+' salvo');
+  return true;
+}
+function bhFecharMes(){
+  const c=benefComp(), ex=bhReg(c.empresa,c.ano,c.mes);
+  if(ex&&!confirm('O histórico de '+c.empresa+' '+CV_MESES[c.mes]+'/'+c.ano+' já foi salvo em '+ex.fechadoEm+'. Substituir pelo estado atual?')) return;
+  bhSalvar(c.empresa,c.ano,c.mes,false);
+}
+function bhAutoArquivar(){
+  const h=new Date(), ma=h.getFullYear()*12+h.getMonth(), ch=new Set(loadData('beneficios_inscritos').filter(r=>r.status!=='Inativo').map(r=>r.empresa+'|'+r.ano+'|'+r.mes));
+  ch.forEach(k=>{ const [e,a,m]=k.split('|'); if(+a*12+(+m-1)>=ma) return; if(!bhReg(e,a,m)) bhSalvar(e,a,m,true); });
+}
+function bhHistAbrir(emp,ano){
+  const c=benefComp(); emp=emp||c.empresa; ano=Number(ano)||c.ano;
+  const anos=[]; for(let a=2026;a<=2050;a++) anos.push(`<option value="${a}"${a===ano?' selected':''}>${a}</option>`);
+  const tipos=[...new Set(loadData('beneficios_tipos').filter(t=>t.status!=='Inativo').map(t=>t.nome).concat(loadData('beneficios_inscritos').map(i=>i.tipoBeneficio)))].filter(Boolean);
+  const rows=[]; const TT={}; let tot=0;
+  for(let m=1;m<=12;m++){
+    const h=bhReg(emp,ano,m), live=bhLinhas(emp,ano,m), t=h?h.tot:(live.length?bhTotais(live):null);
+    if(!t){ rows.push(`<tr style="color:var(--g400)"><td>${CV_MESES[m]}</td><td colspan="${tipos.length+2}" style="text-align:center">— sem inscritos —</td></tr>`); continue; }
+    tot+=t.__total;
+    rows.push(`<tr><td><b>${CV_MESES[m]}</b></td>${tipos.map(n=>{const o=t[n]; if(o){const q=TT[n]||(TT[n]={n:0,v:0}); q.n=Math.max(q.n,o.n); q.v+=o.v;} return `<td style="text-align:right">${o?o.n+' · R$ '+fmtBRL(o.v):'—'}</td>`;}).join('')}<td style="text-align:right"><b>R$ ${fmtBRL(t.__total)}</b></td>
+      <td style="font-size:10.5px">${h?'🔒 salvo em '+gpEsc(h.fechadoEm):'<span style="color:var(--orange)">em aberto</span>'} <button class="btn btn-s btn-xs" onclick="bhHistVer('${emp}',${ano},${m})">Ver</button></td></tr>`);
+  }
+  abrirModalSimples('📜 Histórico mensal — Benefícios',`<div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap">
+    <select class="fsel" onchange="bhHistAbrir(this.value,${ano})"><option${emp==='AC'?' selected':''}>AC</option><option${emp==='BRASS'?' selected':''}>BRASS</option></select>
+    <select class="fsel" onchange="bhHistAbrir('${emp}',this.value)">${anos.join('')}</select>
+    <button class="btn btn-s btn-sm" onclick="bhHistExportar('${emp}',${ano})">⬇ Exportar ano (Excel)</button><span class="muted" style="font-size:11px">Cada célula: inscritos · valor. Meses passados são arquivados automaticamente; use “🔒 Fechar mês” para o mês atual.</span></div>
+    <div style="overflow-x:auto"><table><thead><tr><th>Mês</th>${tipos.map(n=>`<th>${gpEsc(n)}</th>`).join('')}<th>Total R$</th><th>Situação</th></tr></thead><tbody>${rows.join('')}
+    <tr style="font-weight:700;background:var(--g50,#f8fafc)"><td>TOTAL ${ano}</td>${tipos.map(n=>`<td style="text-align:right">${TT[n]?'R$ '+fmtBRL(TT[n].v):'—'}</td>`).join('')}<td style="text-align:right">R$ ${fmtBRL(tot)}</td><td></td></tr></tbody></table></div>`,1000);
+}
+function bhHistVer(emp,ano,mes){
+  const h=bhReg(emp,ano,mes), l=h?h.linhas:bhLinhas(emp,ano,mes), T=bhTotais(l);
+  const rows=l.map(x=>`<tr><td>${gpEsc(x.tipo)}</td><td>${gpEsc(x.colaborador)}</td><td style="text-align:right">R$ ${fmtBRL(x.valor)}</td></tr>`).join('');
+  abrirModalSimples(emp+' — '+CV_MESES[mes]+'/'+ano+' — '+(h?'🔒 salvo em '+h.fechadoEm:'em aberto'),`<button class="btn btn-s btn-sm" style="margin-bottom:8px" onclick="bhHistAbrir('${emp}',${ano})">← Voltar ao histórico</button>
+    <div style="overflow-x:auto"><table><thead><tr><th>Benefício</th><th>Colaborador</th><th>Valor</th></tr></thead><tbody>${rows||'<tr><td colspan="3" class="muted">Sem inscritos</td></tr>'}<tr style="font-weight:700"><td colspan="2">TOTAL (${l.length} inscrições)</td><td style="text-align:right">R$ ${fmtBRL(T.__total)}</td></tr></tbody></table></div>`,760);
+}
+function bhHistExportar(emp,ano){
+  if(typeof XLSX==='undefined'){ showToast('Biblioteca de Excel indisponível','warn'); return; }
+  const wb=XLSX.utils.book_new(), res=[['Mês','Benefício','Inscritos','Valor','Situação']];
+  for(let m=1;m<=12;m++){
+    const h=bhReg(emp,ano,m), l=h?h.linhas:bhLinhas(emp,ano,m); if(!l.length) continue; const T=h?h.tot:bhTotais(l);
+    Object.keys(T).filter(k=>k!=='__total').forEach(k=>res.push([CV_MESES[m],k,T[k].n,T[k].v,h?'Salvo em '+h.fechadoEm:'Em aberto']));
+    const ws=XLSX.utils.aoa_to_sheet([['BENEFÍCIO','COLABORADOR','VALOR'],...l.map(x=>[x.tipo,x.colaborador,x.valor]),[],['TOTAL','',T.__total]]);
+    ws['!cols']=[{wch:24},{wch:36},{wch:14}]; Object.keys(ws).forEach(a=>{ if(a[0]!=='!'&&/^C\d+$/.test(a)&&ws[a].t==='n') ws[a].z='"R$" #,##0.00'; });
+    XLSX.utils.book_append_sheet(wb,ws,CV_MESES[m]);
+  }
+  if(res.length===1){ showToast('Nenhum dado neste ano','warn'); return; }
+  const wr=XLSX.utils.aoa_to_sheet(res); wr['!cols']=[{wch:12},{wch:26},{wch:10},{wch:14},{wch:26}];
+  Object.keys(wr).forEach(a=>{ if(a[0]!=='!'&&/^D\d+$/.test(a)&&wr[a].t==='n') wr[a].z='"R$" #,##0.00'; });
+  wb.SheetNames.unshift('Resumo'); wb.Sheets['Resumo']=wr; XLSX.writeFile(wb,'Beneficios_Historico_'+emp+'_'+ano+'.xlsx');
+}
+
+/* ── Férias ── */
+function fhMesSel(){ const h=new Date(); return {ano:h.getFullYear(),mes:h.getMonth()+1}; }
+function fhLinhas(){
+  return loadData('ferias').filter(f=>f.status!=='Inativo').map(f=>({colaborador:f.colaborador||'',cargo:f.cargo||'',setor:f.setor||'',cnpj:f.cnpj||'',periodoInicio:f.periodoInicio||'',periodoFim:f.periodoFim||'',inicioGozo:f.inicioGozo||'',fimGozo:f.fimGozo||'',dias:f.dias||'',diasGozados:f.diasGozados||0,limiteGozo:f.limiteGozo||'',situacao:f.situacao||''}))
+    .sort((a,b)=>a.colaborador.localeCompare(b.colaborador));
+}
+function fhTotais(l){ const c=x=>l.filter(r=>r.situacao===x).length; return {total:l.length,vencidas:c('Vencida'),elegiveis:c('Elegível'),programadas:c('Programada'),gozo:c('Em gozo'),gozadas:c('Gozada'),aquisicao:c('Em aquisição')}; }
+function fhReg(ano,mes){ return loadData('ferias_hist').find(h=>h.status!=='Inativo'&&Number(h.ano)===Number(ano)&&Number(h.mes)===Number(mes)); }
+function fhSalvar(ano,mes,silencioso){
+  const linhas=fhLinhas(); if(!linhas.length){ if(!silencioso) showToast('Nenhum registro de férias','warn'); return false; }
+  const dados={ano:Number(ano),mes:Number(mes),mesNome:CV_MESES[mes],linhas,tot:fhTotais(linhas),fechadoEm:nowStr()}, ex=fhReg(ano,mes);
+  if(ex) crudUpdate('ferias_hist',ex.id,dados,{modulo:'Férias'}); else crudCreate('ferias_hist',dados,{modulo:'Férias',label:CV_MESES[mes]+'/'+ano});
+  if(!silencioso) showToast('🔒 Histórico de Férias — '+CV_MESES[mes]+'/'+ano+' salvo');
+  return true;
+}
+function fhFecharMes(){
+  const c=fhMesSel(), ex=fhReg(c.ano,c.mes);
+  if(ex&&!confirm('O histórico de '+CV_MESES[c.mes]+'/'+c.ano+' já foi salvo em '+ex.fechadoEm+'. Substituir pelo estado atual?')) return;
+  fhSalvar(c.ano,c.mes,false);
+}
+/* No primeiro acesso de um novo mês, guarda o fechamento do mês anterior (estado de férias naquele momento) */
+function fhAutoArquivar(){
+  const h=new Date(); let m=h.getMonth(), a=h.getFullYear(); if(m<1){ m=12; a--; }
+  if(!fhReg(a,m) && loadData('ferias_hist').length) fhSalvar(a,m,true);
+}
+function fhHistAbrir(ano){
+  ano=Number(ano)||fhMesSel().ano;
+  const anos=[]; for(let a=2026;a<=2050;a++) anos.push(`<option value="${a}"${a===ano?' selected':''}>${a}</option>`);
+  const rows=[]; for(let m=1;m<=12;m++){
+    const h=fhReg(ano,m); const t=h?h.tot:null;
+    if(!t){ rows.push(`<tr style="color:var(--g400)"><td>${CV_MESES[m]}</td><td colspan="7" style="text-align:center">— não fechado —</td></tr>`); continue; }
+    rows.push(`<tr><td><b>${CV_MESES[m]}</b></td><td style="text-align:center">${t.total}</td><td style="text-align:center;color:var(--red)">${t.vencidas}</td><td style="text-align:center">${t.elegiveis}</td><td style="text-align:center">${t.programadas}</td><td style="text-align:center">${t.gozo}</td><td style="font-size:10.5px">🔒 salvo em ${gpEsc(h.fechadoEm)}</td><td><button class="btn btn-s btn-xs" onclick="fhHistVer(${ano},${m})">Ver</button></td></tr>`);
+  }
+  abrirModalSimples('📜 Histórico mensal — Férias',`<div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap">
+    <select class="fsel" onchange="fhHistAbrir(this.value)">${anos.join('')}</select>
+    <button class="btn btn-s btn-sm" onclick="fhHistExportar(${ano})">⬇ Exportar ano (Excel)</button><span class="muted" style="font-size:11px">Cada fechamento guarda a situação de férias de todos os colaboradores naquele mês. Use “🔒 Fechar mês” para salvar o mês atual.</span></div>
+    <div style="overflow-x:auto"><table><thead><tr><th>Mês</th><th>Total</th><th>Vencidas</th><th>Elegíveis</th><th>Programadas</th><th>Em gozo</th><th>Situação</th><th></th></tr></thead><tbody>${rows.join('')}</tbody></table></div>`,900);
+}
+function fhHistVer(ano,mes){
+  const h=fhReg(ano,mes); if(!h) return;
+  const rows=h.linhas.map(x=>`<tr><td>${gpEsc(x.colaborador)}</td><td>${x.cnpj}</td><td>${x.periodoInicio} a ${x.periodoFim}</td><td>${x.inicioGozo||'—'} a ${x.fimGozo||'—'}</td><td style="text-align:center">${x.dias}</td><td>${x.limiteGozo||'—'}</td><td>${x.situacao}</td></tr>`).join('');
+  abrirModalSimples('Férias — '+CV_MESES[mes]+'/'+ano+' — 🔒 salvo em '+h.fechadoEm,`<button class="btn btn-s btn-sm" style="margin-bottom:8px" onclick="fhHistAbrir(${ano})">← Voltar ao histórico</button>
+    <div style="overflow-x:auto"><table><thead><tr><th>Colaborador</th><th>Empresa</th><th>Período aquisitivo</th><th>Gozo</th><th>Dias</th><th>Limite p/ gozo</th><th>Situação</th></tr></thead><tbody>${rows}</tbody></table></div>`,1000);
+}
+function fhHistExportar(ano){
+  if(typeof XLSX==='undefined'){ showToast('Biblioteca de Excel indisponível','warn'); return; }
+  const wb=XLSX.utils.book_new(), res=[['Mês','Total','Vencidas','Elegíveis','Programadas','Em gozo','Salvo em']];
+  for(let m=1;m<=12;m++){
+    const h=fhReg(ano,m); if(!h) continue; const t=h.tot; res.push([CV_MESES[m],t.total,t.vencidas,t.elegiveis,t.programadas,t.gozo,h.fechadoEm]);
+    const ws=XLSX.utils.aoa_to_sheet([['COLABORADOR','EMPRESA','CARGO','SETOR','INÍCIO PERÍODO','FIM PERÍODO','INÍCIO GOZO','FIM GOZO','DIAS','LIMITE P/ GOZO','SITUAÇÃO'],...h.linhas.map(x=>[x.colaborador,x.cnpj,x.cargo,x.setor,x.periodoInicio,x.periodoFim,x.inicioGozo,x.fimGozo,x.dias,x.limiteGozo,x.situacao])]);
+    ws['!cols']=[{wch:34},{wch:8},{wch:26},{wch:16},{wch:14},{wch:14},{wch:12},{wch:12},{wch:6},{wch:14},{wch:14}]; XLSX.utils.book_append_sheet(wb,ws,CV_MESES[m]);
+  }
+  if(res.length===1){ showToast('Nenhum mês fechado neste ano','warn'); return; }
+  const wr=XLSX.utils.aoa_to_sheet(res); wr['!cols']=[{wch:12},{wch:8},{wch:10},{wch:10},{wch:12},{wch:10},{wch:20}];
+  wb.SheetNames.unshift('Resumo'); wb.Sheets['Resumo']=wr; XLSX.writeFile(wb,'Ferias_Historico_'+ano+'.xlsx');
 }
 
 /* ═══════════ ADMISSÃO ═══════════ */
