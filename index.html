@@ -441,7 +441,7 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
   <div class="l-box">
     <div class="l-logo">
       <div class="l-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
-      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 4.99 — Lista de Treinamento (FR-008): 90 dias de experiência pelo cargo e modelo padrão em Treinamentos; Descrição de Cargo; Demissão; anexos PDF; histórico mensal de Benefícios e Férias</div></div>
+      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 5.00 — Férias: controle exato com colunas do relatório da contabilidade e histórico de gozo editável por colaborador; Lista de Treinamento; Ordens de Serviço no SST</div></div>
     </div>
     <div class="f-row"><label>Usuário</label><input type="text" id="l-user" value="jakeline@acmetalurgica.com.br"></div>
     <div class="f-row"><label>Senha</label><input type="password" id="l-pass" value="••••••••"></div>
@@ -1239,7 +1239,7 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
       <div class="layer-badge lb-op">● Operacional</div>
       <div class="section-hdr">
         <div class="sec-title"><svg viewBox="0 0 24 24"><path d="M8 3v3m8-3v3M3 8h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/></svg>Gestão de Férias</div>
-        <div style="display:flex;gap:8px"><button class="btn btn-s" onclick="if(confirm('Atualizar as férias com o relatório da contabilidade (AC 03/09 e Brass 16/09)? Só colaboradores ativos entram.'))feriasAtualizarProg()">📥 Atualizar com relatório da contabilidade</button><button class="btn btn-s" onclick="fhFecharMes()" title="Salva uma cópia do mês para consulta futura">🔒 Fechar mês (salvar histórico)</button><button class="btn btn-s" onclick="fhHistAbrir()">📜 Histórico mensal</button><button class="btn btn-p" onclick="openCrudModal(MOD_FERIAS,null)">+ Novo Registro</button></div>
+        <div style="display:flex;gap:8px"><button class="btn btn-s" onclick="if(confirm('Atualizar as férias com o relatório da contabilidade (AC 03/09 e Brass 16/09)? Só colaboradores ativos entram.'))feriasAtualizarProg()">📥 Atualizar com relatório da contabilidade</button><button class="btn btn-s" onclick="fhFecharMes()" title="Salva uma cópia do mês para consulta futura">🔒 Fechar mês (salvar histórico)</button><button class="btn btn-s" onclick="fhHistAbrir()">📜 Histórico mensal</button><button class="btn btn-s" onclick="fgAbrir(null)" title="Todos os períodos de gozo lançados">🏖 Gozos lançados</button><button class="btn btn-p" onclick="openCrudModal(MOD_FERIAS,null)">+ Novo Registro</button></div>
       </div>
       <div class="kpi-grid">
         <div class="kpi-card"><div class="kpi-lbl">Total</div><div class="kpi-val" id="f-total-crud">21</div></div>
@@ -1255,15 +1255,15 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
           <button class="btn btn-s btn-xs" onclick="feriasCtrl.clearAll()" title="Limpar">🔄 Limpar</button>
           <button class="btn btn-s btn-xs" onclick="feriasCtrl.load();showToast('🔃 Atualizado')" title="Atualizar">🔃</button>
           <select class="fsel" style="width:72px" onchange="feriasCtrl._pageSize=+this.value;feriasCtrl._page=1;feriasCtrl.render()">
-            <option value="10" selected>10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option>
+            <option value="10">10</option><option value="25" selected>25</option><option value="50">50</option><option value="100">100</option>
           </select>
-          <button class="btn btn-s btn-xs" onclick="exportTableToExcel('ferias',[{field:'colaborador',label:'Colaborador',width:35},{field:'cargo',label:'Cargo',width:28},{field:'setor',label:'Setor',width:16},{field:'situacao',label:'Situação',width:14}],'Ferias')">⬇ Excel</button>
+          <button class="btn btn-s btn-xs" onclick="feriasExportar()">⬇ Excel</button>
         </div>
       </div>
       <div class="card" style="padding:0">
-        <div class="card-hdr">Controle de Férias por Colaborador</div>
-        <table><thead><tr><th>Colaborador</th><th>Cargo</th><th>Período Aquisitivo</th><th>Início Gozo</th><th>Dias</th><th>Situação</th><th>Ações</th></tr></thead>
-        <tbody id="ferias-tbody"></tbody></table>
+        <div class="card-hdr">Controle de Férias por Colaborador <span class="muted" style="font-weight:400;font-size:11px">— base dos relatórios da contabilidade: AC 03/09/2026 · Brass 16/09/2026</span></div>
+        <style>#ferias-wrap th,#ferias-wrap td{padding:6px 7px!important;font-size:10.5px}#ferias-wrap th:last-child,#ferias-wrap td:last-child{position:sticky;right:0;background:#fff;box-shadow:-3px 0 4px -3px rgba(0,0,0,.18)}#ferias-wrap th:last-child{background:var(--g100,#eee)}</style><div id="ferias-wrap" style="overflow-x:auto"><table style="min-width:1150px"><thead><tr><th>Colaborador</th><th>Admissão</th><th>Vencto. férias</th><th>Fér. vencidas</th><th>Fér. proporc.</th><th>Início aquisitivo</th><th>Fim aquisitivo</th><th>Dias direito</th><th>Dias de gozo</th><th>Dias restantes</th><th>Limite p/ gozo</th><th>Observações</th><th>Ações</th></tr></thead>
+        <tbody id="ferias-tbody"></tbody></table></div>
         <div style="padding:10px 14px;display:flex;align-items:center;justify-content:flex-end;gap:4px;border-top:1px solid var(--g100)" id="ferias-pag"></div>
       </div>
     </div>
@@ -2439,7 +2439,7 @@ function go(id,el,title,bread){
   if(id==='ind-rh'){setTimeout(()=>{try{initIndRH();}catch(e){console.warn('indRH:',e);}},150);}
   if(id==='planejamento'){setTimeout(()=>{try{initPlanejamento();}catch(e){console.warn('plano:',e);}},150);}
   if(id==='epi'){setTimeout(()=>{try{initEPITable();atualizarKPIsEPI();}catch(e){}},150);}
-  if(id==='ferias'){setTimeout(()=>{try{fhAutoArquivar();}catch(e){console.warn('fh:',e);}},300);}
+  if(id==='ferias'){setTimeout(()=>{try{fhAutoArquivar();}catch(e){console.warn('fh:',e);} try{feriasMigrarV3();if(window.feriasCtrl)feriasCtrl.load();atualizarKPIsFerias();}catch(e){}},300);}
   if(id==='beneficios'){setTimeout(()=>{try{bhAutoArquivar();}catch(e){console.warn('bh:',e);}},400);}
   if(id==='demissao'){setTimeout(()=>{try{initDemissao();}catch(e){console.warn('dem:',e);}},100);}
   if(id==='sst'){setTimeout(()=>{try{atualizarKPIsSST();}catch(e){}},150);}
@@ -2480,6 +2480,7 @@ async function buildAll(){
   try{initLote6Modules();}catch(e){console.warn('initLote6Modules:',e);}
   try{buildCestaVegasSeed();}catch(e){console.warn('buildCestaVegasSeed:',e);}
   try{buildFeriasRealSeed();}catch(e){console.warn('buildFeriasRealSeed:',e);}
+  try{feriasMigrarV3();}catch(e){console.warn('feriasMigrarV3:',e);}
   try{buildFeedback90Seed();}catch(e){console.warn('buildFeedback90Seed:',e);}
   try{buildDescCargosSeed();}catch(e){console.warn('buildDescCargosSeed:',e);}
   try{buildDescCargosSeedV2();}catch(e){console.warn('buildDescCargosSeedV2:',e);}
@@ -5587,20 +5588,28 @@ const MOD_FERIAS = {
     {field:'colaborador', label:'Colaborador', required:true, full:true},
     {field:'cargo', label:'Cargo'},
     {field:'setor', label:'Setor', type:'select', options:SETORES},
-    {field:'cnpj', label:'CNPJ', type:'select', options:['AC','BRASS','PJ']},
-    {field:'periodoInicio', label:'Início Período Aquisitivo', placeholder:'dd/mm/aaaa'},
-    {field:'periodoFim', label:'Fim Período Aquisitivo', placeholder:'dd/mm/aaaa'},
-    {field:'inicioGozo', label:'Início Gozo (Programado)', placeholder:'dd/mm/aaaa'},
-    {field:'fimGozo', label:'Fim Gozo (Programado)', placeholder:'dd/mm/aaaa'},
-    {field:'dias', label:'Dias de direito (período)', type:'number', placeholder:'30'},
-    {field:'diasGozados', label:'Dias já gozados', type:'number', placeholder:'0'},
-    {field:'afastDias', label:'Dias de afastamento', type:'number', placeholder:'0'},
-    {field:'faltas', label:'Faltas', type:'number', placeholder:'0'},
-    {field:'limiteGozo', label:'Limite Legal p/ Gozo', placeholder:'dd/mm/aaaa'},
+    {field:'cnpj', label:'Empresa', type:'select', options:['AC','BRASS','PJ']},
+    {field:'codigo', label:'Código (folha)'},
+    {field:'admissao', label:'Admissão', placeholder:'dd/mm/aaaa'},
+    {field:'periodoInicio', label:'Início aquisitivo', placeholder:'dd/mm/aaaa'},
+    {field:'periodoFim', label:'Fim aquisitivo', placeholder:'dd/mm/aaaa'},
+    {field:'venctoFerias', label:'Vencimento das férias', placeholder:'dd/mm/aaaa'},
+    {field:'limiteGozo', label:'Limite p/ gozo', placeholder:'dd/mm/aaaa'},
+    {field:'ferVenc', label:'Férias vencidas (qtd.)', type:'number', step:'1', placeholder:'0'},
+    {field:'ferPro', label:'Férias proporcionais', placeholder:'08/12'},
+    {field:'dias', label:'Dias de direito', type:'number', step:'0.5', placeholder:'30'},
+    {field:'diasGozados', label:'Dias de gozo', type:'number', step:'0.5', placeholder:'0'},
+    {field:'diasAbono', label:'Dias de abono (vendidos)', type:'number', step:'0.5', placeholder:'0'},
+    {field:'diasRest', label:'Dias restantes', type:'number', step:'0.5', placeholder:'30'},
+    {field:'afastDias', label:'Dias de afastamento', type:'number', step:'1', placeholder:'0'},
+    {field:'faltas', label:'Faltas', type:'number', step:'1', placeholder:'0'},
+    {field:'inicioGozo', label:'Gozo programado — início', placeholder:'dd/mm/aaaa'},
+    {field:'fimGozo', label:'Gozo programado — fim', placeholder:'dd/mm/aaaa'},
     {field:'situacao', label:'Situação', type:'select', options:['Em aquisição','Elegível','Programada','Em gozo','Vencida','Gozada']},
     {field:'status', label:'Status', type:'select', options:['Ativo','Inativo']},
+    {field:'obs', label:'Observações', type:'textarea', full:true},
   ],
-  onSave: () => { if(tcFerias) tcFerias.refresh(); buildFeriasFromColabs(); }
+  onSave: () => { if(tcFerias) tcFerias.refresh(); buildFeriasFromColabs(); try{ if(window.feriasCtrl) feriasCtrl.load(); fgRefrescar(); }catch(e){} }
 };
 
 const FERIAS_SEED_REAL = [
@@ -5701,6 +5710,215 @@ function feriasRowRender(rows) {
       </td>
     </tr>`;
   }).join('');
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   FÉRIAS — controle exato (colunas do relatório da contabilidade)
+   + HISTÓRICO DE GOZO por colaborador (tudo editável)
+   ═══════════════════════════════════════════════════════════════ */
+const MOD_FERIAS_GOZO = {
+  table: 'ferias_gozos',
+  label: 'Período de gozo',
+  fields: [
+    {field:'colaborador', label:'Colaborador', required:true, full:true},
+    {field:'periodoInicio', label:'Período aquisitivo', type:'select', options:[{value:'',label:'—'}]},
+    {field:'tipo', label:'Tipo', type:'select', options:['Gozo','Abono pecuniário (venda)']},
+    {field:'inicioGozo', label:'Início do gozo', placeholder:'dd/mm/aaaa'},
+    {field:'fimGozo', label:'Fim do gozo', placeholder:'dd/mm/aaaa'},
+    {field:'dias', label:'Dias (se vazio, conta pelas datas)', type:'number', step:'0.5', placeholder:'ex.: 15'},
+    {field:'obs', label:'Observações', type:'textarea', full:true},
+    {field:'status', label:'Status', type:'select', options:['Ativo','Inativo']},
+  ],
+  beforeSave: (obj) => {
+    if(!obj.dias && obj.inicioGozo && obj.fimGozo){
+      const a=parseDate(obj.inicioGozo), b=parseDate(obj.fimGozo);
+      if(a&&b&&b>=a) obj.dias = Math.round((b-a)/86400000)+1;
+    }
+    if(!obj.tipo) obj.tipo='Gozo';
+    if(!obj.status) obj.status='Ativo';
+    const per = loadData('ferias').find(f=>feriasNorm(f.colaborador)===feriasNorm(obj.colaborador)&&f.periodoInicio===obj.periodoInicio);
+    if(per) obj.periodoFim = per.periodoFim;
+  },
+  onSave: () => {
+    try{ const n=(document.querySelector('#m-crud [data-field=colaborador]')||{}).value; }catch(e){}
+    fgRecalcTodos(); try{ if(window.feriasCtrl) feriasCtrl.load(); atualizarKPIsFerias(); }catch(e){}
+    fgRefrescar();
+  }
+};
+function fgFmt(n){ return (n===undefined||n===null||n==='')?'—':String(n).replace('.',','); }
+function fgPeriodos(nome){
+  return loadData('ferias').filter(f=>f.status!=='Inativo'&&feriasNorm(f.colaborador)===feriasNorm(nome))
+    .sort((a,b)=>(parseDate(a.periodoInicio)||0)-(parseDate(b.periodoInicio)||0));
+}
+function fgEntradas(nome){
+  return loadData('ferias_gozos').filter(g=>g.status!=='Inativo'&&(!nome||feriasNorm(g.colaborador)===feriasNorm(nome)))
+    .sort((a,b)=>(parseDate(a.inicioGozo)||parseDate(a.periodoInicio)||0)-(parseDate(b.inicioGozo)||parseDate(b.periodoInicio)||0));
+}
+/* Soma o que foi lançado no histórico e atualiza o período (dias de gozo / abono / restantes) */
+function fgRecalcTodos(){
+  const ent = loadData('ferias_gozos').filter(g=>g.status!=='Inativo');
+  loadData('ferias').forEach(f=>{
+    if(f.status==='Inativo') return;
+    const e = ent.filter(g=>feriasNorm(g.colaborador)===feriasNorm(f.colaborador)&&g.periodoInicio===f.periodoInicio);
+    const dir = Number(f.dias)||0;
+    if(!e.length){
+      // sem lançamentos: volta ao valor do relatório da contabilidade (se houver)
+      if(f.diasGozadosRel!==undefined && (f.lancAuto)){
+        const goz=Number(f.diasGozadosRel)||0, rest=(f.diasRestRel!==undefined?f.diasRestRel:Math.max(30-goz,0)), saldo=Math.max(dir-goz,0);
+        crudUpdate('ferias',f.id,{diasGozados:goz,diasAbono:0,diasRest:rest,saldoDias:saldo,lancAuto:false,situacao:feriasSituacaoProg(f.periodoFim,saldo,f.limiteGozo,f.situacao)},{modulo:'Férias'});
+      }
+      return;
+    }
+    const goz = e.filter(g=>g.tipo!=='Abono pecuniário (venda)').reduce((t,g)=>t+(Number(g.dias)||0),0);
+    const ab  = e.filter(g=>g.tipo==='Abono pecuniário (venda)').reduce((t,g)=>t+(Number(g.dias)||0),0);
+    const rest = Math.max(30-goz-ab,0), saldo=Math.max(dir-goz-ab,0);
+    if(f.diasGozados===goz && f.diasAbono===ab && f.diasRest===rest && f.lancAuto) return;
+    crudUpdate('ferias',f.id,{diasGozados:goz,diasAbono:ab,diasRest:rest,saldoDias:saldo,lancAuto:true,
+      situacao:feriasSituacaoProg(f.periodoFim,saldo,f.limiteGozo,f.situacao)},{modulo:'Férias'});
+  });
+}
+/* Preenche campos novos nos registros já existentes (sem apagar nada) e cria os lançamentos iniciais */
+function feriasMigrarV3(){
+  try{
+    const colabs=loadData('colaboradores'); const fer=loadData('ferias'); let mudou=false;
+    fer.forEach(f=>{
+      const ix=FERIAS_PROG.findIndex(r=>feriasNorm(r[0])===feriasNorm(f.colaborador)&&r[3]===f.periodoInicio);
+      const xt = ix>=0?FERIAS_PROG_EXTRA[ix]:null;
+      const set=(k,v)=>{ if(f[k]===undefined||f[k]===null||f[k]===''){ if(v!==undefined&&v!==null&&v!==''){ f[k]=v; mudou=true; } } };
+      if(ix>=0){
+        set('admissao',FERIAS_PROG[ix][2]); set('codigo',xt[0]); set('venctoFerias',xt[1]); if(xt[2]!=='') set('ferVenc',xt[2]); set('ferPro',xt[3]);
+        if(f.diasRest===undefined){ f.diasRest=xt[4]; f.diasRestRel=xt[4]; mudou=true; }
+        if(f.diasGozadosRel===undefined){ f.diasGozadosRel=FERIAS_PROG[ix][6]; mudou=true; }
+        if(f.diasGozados===undefined){ f.diasGozados=FERIAS_PROG[ix][6]; mudou=true; }
+      } else {
+        const c=colabs.find(x=>feriasNorm(x.nome)===feriasNorm(f.colaborador));
+        if(c&&c.adm) set('admissao',c.adm);
+        if(f.diasRest===undefined){ f.diasRest=Math.max(30-(Number(f.diasGozados)||0),0); mudou=true; }
+      }
+    });
+    if(mudou){ saveData('ferias',fer); fer.forEach(r=>syncRecordToCloud('ferias',r)); }
+    if(!localStorage.getItem('ac_ferias_gozos_v1')){
+      const now=nowStr(); const ex=loadData('ferias_gozos'); let id=ex.reduce((m,g)=>Math.max(m,g.id||0),0);
+      fer.filter(f=>f.status!=='Inativo'&&(Number(f.diasGozados)||0)>0).forEach(f=>{
+        const rec={id:++id,colaborador:f.colaborador,colaboradorId:f.colaboradorId||null,periodoInicio:f.periodoInicio,periodoFim:f.periodoFim,tipo:'Gozo',inicioGozo:'',fimGozo:'',dias:Number(f.diasGozados),
+          obs:'Importado do relatório da contabilidade — informe as datas reais do gozo',status:'Ativo',criadoEm:now,atualizadoEm:now};
+        ex.push(rec); syncRecordToCloud('ferias_gozos',rec);
+      });
+      saveData('ferias_gozos',ex); localStorage.setItem('ac_ferias_gozos_v1','1');
+    }
+  }catch(e){ console.warn('feriasMigrarV3',e); }
+}
+
+/* ── Linha da tabela principal ── */
+let FG_ADM_CACHE = null;
+function feriasAdmDe(f){ if(f.admissao) return f.admissao; if(!FG_ADM_CACHE){ FG_ADM_CACHE={}; loadData('colaboradores').forEach(c=>{ FG_ADM_CACHE[feriasNorm(c.nome)]=c.adm; }); } return FG_ADM_CACHE[feriasNorm(f.colaborador)]||''; }
+function feriasLinhas(rows){
+  FG_ADM_CACHE=null;
+  const sbMap={'Em aquisição':'bb','Elegível':'by','Programada':'bg','Em gozo':'bp','Vencida':'br','Gozada':'bgy'};
+  return rows.map(f=>{
+    const inativo=f.status==='Inativo';
+    const venc=Number(f.ferVenc)||0;
+    const goz=f.diasGozados, rest=f.diasRest!==undefined&&f.diasRest!==''?f.diasRest:(f.dias!==undefined?Math.max(30-(Number(goz)||0),0):'');
+    const obsAuto=[]; if(Number(f.afastDias)>0) obsAuto.push('Afastamento: '+fgFmt(f.afastDias)+' dias'); if(Number(f.faltas)>0) obsAuto.push('Faltas: '+fgFmt(f.faltas));
+    if(f.inicioGozo) obsAuto.push('Programada: '+f.inicioGozo+(f.fimGozo?' a '+f.fimGozo:''));
+    const obs=[f.obs?gpEsc(f.obs):'',...obsAuto.map(x=>`<span class="badge bgy" style="font-size:9px">${gpEsc(x)}</span>`)].filter(Boolean).join(' ');
+    const nEnt=loadData('ferias_gozos').filter(g=>g.status!=='Inativo'&&feriasNorm(g.colaborador)===feriasNorm(f.colaborador)&&g.periodoInicio===f.periodoInicio).length;
+    const nomeJs=escAttr(f.colaborador);
+    return `<tr style="${inativo?'opacity:.5':''}">
+      <td style="min-width:165px"><div style="font-size:11px;font-weight:700">${gpEsc(f.colaborador)}</div><div style="font-size:9.5px;color:var(--g400)">${gpEsc(f.cnpj||'')}${f.cargo?' · '+gpEsc(f.cargo):''}</div><span class="badge ${sbMap[f.situacao]||'bgy'}" style="font-size:9px;margin-top:2px">${f.situacao||'—'}</span></td>
+      <td style="white-space:nowrap">${feriasAdmDe(f)||'—'}</td>
+      <td style="white-space:nowrap">${f.venctoFerias||'—'}</td>
+      <td style="text-align:center;${venc>0?'color:var(--red);font-weight:700':''}">${f.ferVenc===''||f.ferVenc===undefined?'—':venc}</td>
+      <td style="text-align:center">${f.ferPro||'—'}</td>
+      <td style="white-space:nowrap">${f.periodoInicio||'—'}</td>
+      <td style="white-space:nowrap">${f.periodoFim||'—'}</td>
+      <td style="text-align:center;font-weight:700">${fgFmt(f.dias)}</td>
+      <td style="text-align:center">${fgFmt(goz)}${Number(f.diasAbono)>0?`<div style="font-size:9px;color:var(--g400)">+${fgFmt(f.diasAbono)} abono</div>`:''}</td>
+      <td style="text-align:center">${fgFmt(rest)}</td>
+      <td style="white-space:nowrap">${f.limiteGozo||'—'}</td>
+      <td style="font-size:10px;min-width:150px">${obs||'—'}</td>
+      <td style="white-space:nowrap">
+        <button class="btn btn-s btn-xs" title="Histórico de gozo deste colaborador" onclick="fgAbrir('${nomeJs}')">📜${nEnt?' '+nEnt:''}</button>
+        <button class="btn btn-s btn-xs" title="Editar período" onclick="openCrudModal(MOD_FERIAS,${f.id})">✏</button>
+        ${inativo?`<button class="btn btn-s btn-xs" onclick="crudRestoreAction(MOD_FERIAS,${f.id},'${nomeJs}')">↩</button>`
+                 :`<button class="btn btn-s btn-xs" onclick="crudDeleteAction(MOD_FERIAS,${f.id},'${nomeJs}')">🗑</button>`}
+      </td></tr>`;
+  }).join('');
+}
+function feriasExportar(){
+  if(typeof XLSX==='undefined'){ showToast('Biblioteca XLSX não carregada','error'); return; }
+  const rows=loadData('ferias').filter(f=>f.status!=='Inativo').sort((a,b)=>String(a.colaborador).localeCompare(String(b.colaborador))||(parseDate(a.periodoInicio)||0)-(parseDate(b.periodoInicio)||0));
+  const H=['Colaborador','Empresa','Admissão','Vencimento férias','Férias vencidas','Férias proporcionais','Início aquisitivo','Fim aquisitivo','Dias direito','Dias de gozo','Dias de abono','Dias restantes','Limite p/ gozo','Situação','Afastamento (dias)','Faltas','Observações'];
+  const aoa=[H,...rows.map(f=>[f.colaborador,f.cnpj||'',feriasAdmDe(f),f.venctoFerias||'',f.ferVenc??'',f.ferPro||'',f.periodoInicio||'',f.periodoFim||'',f.dias??'',f.diasGozados??'',f.diasAbono??'',f.diasRest??'',f.limiteGozo||'',f.situacao||'',f.afastDias||'',f.faltas||'',f.obs||''])];
+  const ws=XLSX.utils.aoa_to_sheet(aoa); ws['!cols']=H.map((h,i)=>({wch:i===0?38:14}));
+  const wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,'Ferias'); XLSX.writeFile(wb,'Controle_Ferias_'+todayStr().replace(/\//g,'-')+'.xlsx');
+  showToast('📥 '+rows.length+' períodos exportados');
+}
+
+/* ── Histórico de gozo ── */
+let FG_NOME = null;           // colaborador aberto (null = todos)
+function fgRefrescar(){ const r=document.getElementById('fg-root'); if(r&&r.offsetParent!==null) fgAbrir(FG_NOME,true); }
+function fgAbrir(nome,silencioso){
+  FG_NOME = nome||null;
+  const todos=!nome;
+  const per = todos?[]:fgPeriodos(nome);
+  const ent = fgEntradas(nome);
+  const c = nome?loadData('colaboradores').find(x=>feriasNorm(x.nome)===feriasNorm(nome)):null;
+  const perSet=new Set(per.map(p=>p.periodoInicio));
+  const sit={'Em aquisição':'bb','Elegível':'by','Programada':'bg','Em gozo':'bp','Vencida':'br','Gozada':'bgy'};
+  const perRows=per.map(p=>`<tr><td style="white-space:nowrap">${p.periodoInicio||'—'} a ${p.periodoFim||'—'}</td><td style="text-align:center">${fgFmt(p.dias)}</td><td style="text-align:center">${fgFmt(p.diasGozados)}</td><td style="text-align:center">${fgFmt(p.diasAbono||0)}</td><td style="text-align:center"><b>${fgFmt(p.diasRest)}</b></td><td style="white-space:nowrap">${p.limiteGozo||'—'}</td><td><span class="badge ${sit[p.situacao]||'bgy'}">${p.situacao||'—'}</span></td>
+    <td style="white-space:nowrap"><button class="btn btn-p btn-xs" onclick="fgNovo('${escAttr(nome)}','${escAttr(p.periodoInicio)}')">+ Lançar gozo</button> <button class="btn btn-s btn-xs" onclick="openCrudModal(MOD_FERIAS,${p.id})">✏ Período</button></td></tr>`).join('');
+  const entRows=ent.map(g=>{
+    const orfao = !todos && !perSet.has(g.periodoInicio);
+    return `<tr style="border-bottom:1px solid var(--g100)">
+      ${todos?`<td style="font-size:11px;font-weight:600">${gpEsc(g.colaborador)}</td>`:''}
+      <td style="white-space:nowrap;font-size:11px">${g.periodoInicio?g.periodoInicio+' a '+(g.periodoFim||'—'):'<span style="color:var(--red)">— sem período —</span>'}${orfao&&g.periodoInicio?' <span style="color:var(--red);font-size:10px">(período não encontrado)</span>':''}</td>
+      <td style="font-size:11px">${g.tipo==='Abono pecuniário (venda)'?'Abono':'Gozo'}</td>
+      <td style="white-space:nowrap">${g.inicioGozo||'<span class="muted">informar</span>'}</td><td style="white-space:nowrap">${g.fimGozo||'<span class="muted">informar</span>'}</td>
+      <td style="text-align:center"><b>${fgFmt(g.dias)}</b></td><td style="font-size:10.5px">${gpEsc(g.obs||'')}</td>
+      <td style="white-space:nowrap"><button class="btn btn-s btn-xs" onclick="fgEditar(${g.id})">✏</button> <button class="btn btn-s btn-xs" onclick="fgExcluir(${g.id})">🗑</button></td></tr>`; }).join('');
+  const tot = ent.filter(g=>g.tipo!=='Abono pecuniário (venda)').reduce((t,g)=>t+(Number(g.dias)||0),0);
+  abrirModalSimples(todos?'📜 Histórico de gozo de férias — todos os colaboradores':'📜 Histórico de férias — '+nome,
+   `<div id="fg-root">
+    ${todos?`<div style="display:flex;gap:8px;margin-bottom:10px;align-items:center"><input class="finp" id="fg-busca" placeholder="🔎 Buscar colaborador..." oninput="fgFiltrar(this.value)" style="flex:1"><button class="btn btn-s btn-sm" onclick="fgExportar(null)">⬇ Excel</button></div>`
+    :`<div style="font-size:12px;margin-bottom:10px;display:flex;gap:14px;flex-wrap:wrap;align-items:center"><span><b>${gpEsc(nome)}</b></span>${c?`<span class="muted">Admissão: ${c.adm||'—'} · ${gpEsc(c.cargo||'')}</span>`:''}<button class="btn btn-s btn-sm" style="margin-left:auto" onclick="fgExportar('${escAttr(nome)}')">⬇ Excel</button></div>
+    <div style="font-weight:700;font-size:11px;text-transform:uppercase;color:var(--g500);margin:4px 0">Períodos aquisitivos</div>
+    <div style="overflow-x:auto"><table style="width:100%"><thead><tr><th>Período aquisitivo</th><th>Direito</th><th>Gozados</th><th>Abono</th><th>Restantes</th><th>Limite p/ gozo</th><th>Situação</th><th></th></tr></thead><tbody>${perRows||'<tr><td colspan="8" class="muted" style="padding:10px">Nenhum período cadastrado para este colaborador.</td></tr>'}</tbody></table></div>`}
+    <div style="font-weight:700;font-size:11px;text-transform:uppercase;color:var(--g500);margin:14px 0 4px">Períodos de gozo lançados ${todos?'':'· total gozado: <b>'+fgFmt(tot)+' dias</b>'}</div>
+    <div style="overflow-x:auto"><table style="width:100%" id="fg-tab"><thead><tr>${todos?'<th>Colaborador</th>':''}<th>Período aquisitivo</th><th>Tipo</th><th>Início</th><th>Fim</th><th>Dias</th><th>Observações</th><th></th></tr></thead><tbody>${entRows||`<tr><td colspan="9" class="muted" style="padding:10px">Nenhum gozo lançado ainda.</td></tr>`}</tbody></table></div>
+    <div class="muted" style="font-size:10.5px;margin-top:8px">Os dias de gozo e restantes de cada período são calculados a partir destes lançamentos. Tudo pode ser editado ou excluído.</div></div>`, 980);
+}
+function fgFiltrar(v){ const b=feriasNorm(v); document.querySelectorAll('#fg-tab tbody tr').forEach(tr=>{ tr.style.display=feriasNorm(tr.innerText).includes(b)?'':'none'; }); }
+function fgOpcoesPeriodo(nome){
+  const per=fgPeriodos(nome);
+  const f=MOD_FERIAS_GOZO.fields.find(x=>x.field==='periodoInicio');
+  f.options=per.length?per.map(p=>({value:p.periodoInicio,label:p.periodoInicio+' a '+p.periodoFim})):[{value:'',label:'— cadastre o período primeiro —'}];
+}
+function fgNovo(nome,perIni){
+  fgOpcoesPeriodo(nome); openCrudModal(MOD_FERIAS_GOZO,null);
+  const fm=document.getElementById('crud-form'), set=(k,v)=>{ const e=fm.querySelector('[data-field="'+k+'"]'); if(e) e.value=v; };
+  set('colaborador',nome); set('periodoInicio',perIni||''); set('tipo','Gozo'); set('status','Ativo');
+}
+function fgEditar(id){
+  const g=loadData('ferias_gozos').find(x=>x.id===id); if(!g) return;
+  fgOpcoesPeriodo(g.colaborador);
+  const f=MOD_FERIAS_GOZO.fields.find(x=>x.field==='periodoInicio');
+  if(g.periodoInicio&&!f.options.some(o=>o.value===g.periodoInicio)) f.options.push({value:g.periodoInicio,label:g.periodoInicio+' a '+(g.periodoFim||'—')});
+  openCrudModal(MOD_FERIAS_GOZO,id);
+}
+function fgExcluir(id){
+  const g=loadData('ferias_gozos').find(x=>x.id===id); if(!g) return;
+  confirmAction('Excluir este lançamento de gozo ('+(g.dias||'?')+' dias de '+g.colaborador+')?',()=>{
+    crudDeleteFisico('ferias_gozos',id,{modulo:'Férias',label:g.colaborador}); fgRecalcTodos();
+    try{ if(window.feriasCtrl) feriasCtrl.load(); atualizarKPIsFerias(); }catch(e){} fgRefrescar(); });
+}
+function fgExportar(nome){
+  if(typeof XLSX==='undefined'){ showToast('Biblioteca XLSX não carregada','error'); return; }
+  const H=['Colaborador','Período aquisitivo (início)','Período aquisitivo (fim)','Tipo','Início do gozo','Fim do gozo','Dias','Observações'];
+  const aoa=[H,...fgEntradas(nome).map(g=>[g.colaborador,g.periodoInicio||'',g.periodoFim||'',g.tipo==='Abono pecuniário (venda)'?'Abono':'Gozo',g.inicioGozo||'',g.fimGozo||'',g.dias??'',g.obs||''])];
+  const ws=XLSX.utils.aoa_to_sheet(aoa); ws['!cols']=[{wch:38},{wch:16},{wch:16},{wch:10},{wch:14},{wch:14},{wch:8},{wch:40}];
+  const wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,'Gozos'); XLSX.writeFile(wb,'Historico_Ferias_'+(nome?nome.split(' ')[0]+'_':'')+todayStr().replace(/\//g,'-')+'.xlsx');
 }
 
 let tcFerias;
@@ -5817,6 +6035,8 @@ const FERIAS_PROG=[["AROLDO JOSE ISAIAS DE MORAES JUNIOR", "BRASS", "11/01/2021"
 ["JOAO GABRIEL ROBIS DE ALMEIDA", "AC", "22/07/2026", "22/07/2026", "21/07/2027", 2.5, 0.0, 30, "22/06/2028", 0, 0, "03/09/2026"],
 ["EDIELSON FERNANDO BRITO CEZA", "AC", "12/08/2026", "12/08/2026", "11/08/2027", 2.5, 0.0, 30, "13/07/2028", 0, 0, "03/09/2026"],
 ["PATRICIA APARECIDA MARTINS DE SOUZA", "AC", "01/09/2026", "01/09/2026", "31/08/2027", 0.0, 0.0, 30, "02/08/2028", 0, 0, "03/09/2026"]];
+const FERIAS_PROG_EXTRA=[["12", "22/12/2026", 0, "09/12", 30.0], ["38", "06/03/2026", 1, "06/12", 15.0], ["38", "", "", "", 30.0], ["41", "23/03/2026", 1, "06/12", 30.0], ["41", "", "", "", 30.0], ["49", "15/05/2026", 1, "04/12", 30.0], ["49", "", "", "", 30.0], ["71", "19/12/2026", 0, "09/12", 30.0], ["81", "19/12/2026", 0, "09/12", 30.0], ["86", "22/01/2026", 1, "08/12", 15.0], ["86", "", "", "", 30.0], ["92", "19/03/2026", 1, "06/12", 30.0], ["92", "", "", "", 30.0], ["97", "27/04/2026", 1, "05/12", 30.0], ["97", "", "", "", 30.0], ["104", "11/08/2027", 0, "01/12", 30.0], ["107", "07/09/2026", 1, "00/12", 30.0], ["107", "", "", "", 30.0], ["108", "08/09/2026", 1, "00/12", 30.0], ["108", "", "", "", 30.0], ["110", "14/09/2026", 1, "00/12", 30.0], ["110", "", "", "", 30.0], ["112", "23/09/2026", 1, "00/12", 30.0], ["122", "22/12/2025", 1, "08/12", 10.0], ["122", "", "", "", 30.0], ["212", "09/01/2026", 1, "08/12", 30.0], ["212", "", "", "", 30.0], ["214", "19/01/2026", 1, "08/12", 30.0], ["214", "", "", "", 30.0], ["217", "04/02/2026", 1, "07/12", 30.0], ["217", "", "", "", 30.0], ["148", "10/04/2026", 1, "05/12", 30.0], ["148", "", "", "", 30.0], ["175", "28/04/2026", 1, "04/12", 30.0], ["175", "", "", "", 30.0], ["4", "12/05/2026", 1, "04/12", 30.0], ["4", "", "", "", 30.0], ["228", "29/06/2026", 1, "02/12", 30.0], ["228", "", "", "", 30.0], ["230", "27/07/2026", 1, "01/12", 30.0], ["230", "", "", "", 30.0], ["190", "04/08/2026", 1, "01/12", 30.0], ["190", "", "", "", 30.0], ["198", "04/09/2026", 1, "00/12", 30.0], ["56", "30/09/2026", 0, "11/12", 30.0], ["206", "13/10/2026", 0, "11/12", 30.0], ["166", "19/12/2026", 0, "09/12", 30.0], ["162", "19/12/2026", 0, "09/12", 30.0], ["121", "22/12/2026", 0, "08/12", 30.0], ["140", "22/12/2026", 0, "08/12", 30.0], ["234", "12/03/2027", 0, "06/12", 30.0], ["238", "03/05/2027", 0, "04/12", 30.0], ["237", "03/05/2027", 0, "04/12", 30.0], ["239", "06/05/2027", 0, "04/12", 30.0], ["241", "21/06/2027", 0, "02/12", 30.0], ["242", "28/06/2027", 0, "02/12", 30.0], ["246", "30/06/2027", 0, "02/12", 30.0], ["244", "30/06/2027", 0, "02/12", 30.0], ["247", "21/07/2027", 0, "01/12", 30.0], ["248", "11/08/2027", 0, "01/12", 30.0], ["250", "31/08/2027", 0, "00/12", 30.0]];
+
 
 /* ── v4.87: Programação de férias da contabilidade (AC 03/09/2026 · Brass 16/09/2026) ──
    [nome, empresa, admissão, início aquisitivo, fim aquisitivo, dias de direito, dias gozados, dias restantes, limite p/ gozo, dias afastado, faltas, data-base] */
@@ -5837,15 +6057,15 @@ function feriasAtualizarProg(){
   const colabs=loadData('colaboradores').filter(c=>c.status!=='Inativo');
   const ferias=loadData('ferias');
   let atu=0, novo=0, dup=0; const ignorados={}, pessoas=new Set(), idsUsados=new Set(), per={}, cob={};
-  FERIAS_PROG.forEach(r=>{
-    const [nome,emp,adm,ini,fim,dir,goz,rest,lim,afast,faltas,db]=r;
+  FERIAS_PROG.forEach((r,ix)=>{
+    const [nome,emp,adm,ini,fim,dir,goz,rest,lim,afast,faltas,db]=r; const xt=FERIAS_PROG_EXTRA[ix]||[];
     const c=feriasAchaColab(nome,adm,colabs);
     if(!c){ ignorados[nome]=emp; return; }
     pessoas.add(c.nome); (per[c.id]=per[c.id]||new Set()).add(ini); cob[c.id]=c;
     const saldo=Math.max(dir-goz,0);
     const ex=ferias.find(f=>f.periodoInicio===ini&&(feriasNorm(f.colaborador)===feriasNorm(nome)||feriasNorm(f.colaborador)===feriasNorm(c.nome)));
     const campos={colaborador:ex?ex.colaborador:c.nome,colaboradorId:c.id,cnpj:emp,cargo:c.cargo||(ex&&ex.cargo)||'',setor:c.setor||(ex&&ex.setor)||'',periodoInicio:ini,periodoFim:fim,
-      dias:dir,diasGozados:goz,saldoDias:saldo,limiteGozo:lim,afastDias:afast,faltas:faltas,baseProg:db,status:'Ativo',
+      dias:dir,diasGozados:goz,diasGozadosRel:goz,diasRest:rest,diasRestRel:rest,saldoDias:saldo,limiteGozo:lim,afastDias:afast,faltas:faltas,baseProg:db,status:'Ativo',codigo:xt[0]||'',admissao:adm,venctoFerias:xt[1]||'',ferVenc:(xt[2]===''||xt[2]==null)?'':xt[2],ferPro:xt[3]||'',
       situacao:feriasSituacaoProg(fim,saldo,lim,ex&&ex.situacao)};
     if(ex){ crudUpdate('ferias',ex.id,campos,{modulo:'Férias'}); idsUsados.add(ex.id); atu++; }
     else{ const n=crudCreate('ferias',Object.assign({inicioGozo:'',fimGozo:''},campos),{modulo:'Férias',label:c.nome}); if(n&&n.id) idsUsados.add(n.id); novo++; }
@@ -5863,6 +6083,7 @@ function feriasAtualizarProg(){
     const ativo=!!feriasAchaColab(f.colaborador,(FERIAS_PROG.find(r=>feriasNorm(r[0])===feriasNorm(f.colaborador))||[])[2],colabs);
     if(!ativo){ crudDelete('ferias',f.id,{modulo:'Férias',label:f.colaborador}); desat++; desatNomes.add(f.colaborador); }
   });
+  try{ fgRecalcTodos(); }catch(e){console.warn('fgRecalcTodos',e);}
   if(typeof tcFerias!=='undefined'&&tcFerias) tcFerias.refresh();
   try{ atualizarKPIsFerias(); }catch(e){}
   localStorage.setItem('ac_ferias_prog_v2','1');
@@ -11467,7 +11688,7 @@ async function pullColaboradoresMerge() {
 // tem dado local, não mexe — evita sobrescrever algo em uso.
 async function pullOutrasTabelasAntesDoBoot() {
   if (DB_MODE !== 'supabase' || !supabaseClient) return;
-  const TABELAS = ['treino_listas','beneficios_hist','ferias_hist','demissoes','demissao_templates','hist_pdfs','endo_extra','endo_oculto','ind_turnover','ind_eng','ind_td','ind_hist','plano_cfg','plano_hist','plano_acoes','colab_excluidos','beneficios_anexos','colab_documentos','ferias','treinamentos','avaliacoes','sst','admissoes',
+  const TABELAS = ['ferias_gozos','treino_listas','beneficios_hist','ferias_hist','demissoes','demissao_templates','hist_pdfs','endo_extra','endo_oculto','ind_turnover','ind_eng','ind_td','ind_hist','plano_cfg','plano_hist','plano_acoes','colab_excluidos','beneficios_anexos','colab_documentos','ferias','treinamentos','avaliacoes','sst','admissoes',
     'vagas','beneficios_mov','beneficios_inscritos','beneficios_tipos','cargos','ponto',
     'clima_pesquisas','clima_acoes','sucessao','terceiros','documentos','usuarios','holerites',
     'comunicados','cesta_vegas','folha_descontos','feedback90','tempo_empresa_ctrl','desccargos','sstfin','pcmso',
@@ -12345,7 +12566,8 @@ function makeAdvCtrl(cfg) {
         const sf = this._sortField, sd = this._sortDir;
         rows.sort((a,b)=>{
           const av=a[sf]||'', bv=b[sf]||'';
-          return av<bv?-sd:av>bv?sd:0;
+          if(av<bv) return -sd; if(av>bv) return sd;
+          return cfg.tieSort?cfg.tieSort(a,b):0;
         });
       }
 
@@ -12449,25 +12671,8 @@ function initFeriasAdv() {
   feriasCtrl = makeAdvCtrl({
     id:'ferias', table:'ferias', tbodyId:'ferias-tbody', countId:'ferias-count',
     paginationId:'ferias-pag', searchFields:['colaborador','setor','cargo'],
-    pageSize:10, sortField:'colaborador',
-    render: rows => rows.map(f => {
-      const sb = {'Em aquisição':'bb','Elegível':'by','Programada':'bg','Em gozo':'bp','Vencida':'br'}[f.situacao]||'bgy';
-      const inativo = f.status==='Inativo';
-      return `<tr style="${inativo?'opacity:.5':''}">
-        <td style="font-size:11px;font-weight:600">${f.colaborador}</td>
-        <td style="font-size:10px">${f.cargo||'—'}</td>
-        <td>${f.setor||'—'}</td>
-        <td>${f.inicioAquisitivo||'—'}</td>
-        <td>${f.fimAquisitivo||'—'}</td>
-        <td>${f.inicioGozo||'—'}</td>
-        <td>${f.diasGozar||30}</td>
-        <td><span class="badge ${sb}">${f.situacao||'—'}</span></td>
-        <td style="white-space:nowrap">
-          <button class="btn btn-s btn-xs" onclick="openCrudModal(MOD_FERIAS,${f.id})">✏</button>
-          ${inativo?`<button class="btn btn-s btn-xs" onclick="crudRestoreAction(MOD_FERIAS,${f.id},'${escAttr(f.colaborador)}')">↩</button>`
-                  :`<button class="btn btn-s btn-xs" onclick="crudDeleteAction(MOD_FERIAS,${f.id},'${escAttr(f.colaborador)}')">🗑</button>`}
-        </td></tr>`;
-    }).join(''),
+    pageSize:25, sortField:'colaborador', tieSort:(a,b)=>(parseDate(a.periodoInicio)||0)-(parseDate(b.periodoInicio)||0),
+    render: rows => feriasLinhas(rows),
   });
   window.feriasCtrl = feriasCtrl;
   feriasCtrl.load();
