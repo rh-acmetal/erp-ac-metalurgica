@@ -424,14 +424,28 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
 <body>
 
 <!-- ═══════════ BARRA DE TÍTULO ESTILO JANELA (visual) ═══════════ -->
+<style id="ad-compact">
+body.ad-minimizado #app,body.ad-minimizado #login-screen{display:none!important}
+body.ad-minimizado #ad-titlebar-text{cursor:pointer}
+.sidebar{width:205px!important}
+.sb-logo{padding:8px 12px 6px!important}
+.sb-name{font-size:13px!important}
+.sb-tag{font-size:8px!important;letter-spacing:1.5px!important;margin-top:0!important}
+.sb-version{font-size:8px!important}
+.sb-body{padding:2px 0!important}
+.sb-layer{padding:6px 12px 2px!important;font-size:7.5px!important}
+.nav-item{padding:4px 12px!important;gap:7px!important;font-size:11px!important}
+.nav-item svg{width:13px!important;height:13px!important}
+.sb-footer{padding:6px 12px!important}
+</style>
 <div id="ad-titlebar">
   <div style="display:flex;align-items:center;gap:6px">
     <span style="font-size:13px">🏢</span>
     <span id="ad-titlebar-text">AC Metalúrgica — Sistema de Gestão de Pessoas</span>
   </div>
   <div class="ad-buttons">
-    <div class="ad-btn" title="Minimizar">─</div>
-    <div class="ad-btn" title="Maximizar">☐</div>
+    <div class="ad-btn" id="ad-min" title="Minimizar (recolhe a janela; clique de novo para restaurar)" onclick="adMinimizar()">─</div>
+    <div class="ad-btn" id="ad-max" title="Maximizar (tela cheia)" onclick="adMaximizar()">☐</div>
     <div class="ad-btn close" title="Sair" onclick="if(typeof doLogout==='function')doLogout();">✕</div>
   </div>
 </div>
@@ -441,7 +455,7 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
   <div class="l-box">
     <div class="l-logo">
       <div class="l-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
-      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 5.02 — Férias separadas por empresa, nome e segundo nome; colunas abreviadas; inativos separados; histórico de gozo editável; Lista de Treinamento</div></div>
+      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 5.03 — Histórico de férias: incluir/excluir período e gozo; Férias: botão ✔ Resolvido (guarda o período no histórico), coluna do colaborador mais estreita; menu lateral compacto; botões minimizar/maximizar; Férias por empresa</div></div>
     </div>
     <div class="f-row"><label>Usuário</label><input type="text" id="l-user" value="jakeline@acmetalurgica.com.br"></div>
     <div class="f-row"><label>Senha</label><input type="password" id="l-pass" value="••••••••"></div>
@@ -1250,7 +1264,7 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
            <div style="background:#fff;border:1px solid var(--g200);border-radius:9px;padding:12px;margin-bottom:10px">
         <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
           <div class="srch-wrap" style="flex:2;min-width:180px"><input class="finp" style="width:100%" id="ferias-search" placeholder="🔎 Buscar colaborador, cargo ou setor..." oninput="feriasCtrl.filter()"></div>
-          <select class="fsel" data-fid="ferias" style="min-width:130px" onchange="feriasCtrl.setFilter('cnpj',this.value)"><option value="">🏭 Todas as empresas</option><option value="AC">AC Metal</option><option value="BRASS">Brass Metal</option></select><select class="fsel" id="ferias-fstatus" data-fid="ferias" style="min-width:110px" onchange="feriasCtrl.setFilter('status',this.value)"><option value="Ativo" selected>✅ Ativos</option><option value="Inativo">⛔ Inativos</option><option value="">Todos</option></select><select class="fsel" data-fid="ferias" style="min-width:160px" onchange="feriasCtrl.setFilter('situacao',this.value)"><option value="">🟢 Todas as situações</option><option value="Em aquisição">Em aquisição</option><option value="Elegível">🟡 Elegível</option><option value="Programada">📅 Programada</option><option value="Em gozo">🔵 Em gozo</option><option value="Vencida">🔴 Vencida</option></select><select class="fsel" data-fid="ferias" style="min-width:145px" onchange="feriasCtrl.setFilter('setor',this.value)"><option value="">📌 Todos os setores</option><option value="Produção">Produção</option><option value="Manutenção">Manutenção</option><option value="Qualidade">Qualidade</option><option value="Administrativo">Administrativo</option><option value="Fundição">Fundição</option><option value="Usinagem">Usinagem</option></select>
+          <select class="fsel" data-fid="ferias" style="min-width:130px" onchange="feriasCtrl.setFilter('cnpj',this.value)"><option value="">🏭 Todas as empresas</option><option value="AC">AC Metal</option><option value="BRASS">Brass Metal</option></select><select class="fsel" id="ferias-fstatus" data-fid="ferias" style="min-width:120px" onchange="feriasCtrl.setFilter('vis',this.value)"><option value="Ativo" selected>✅ Em andamento</option><option value="Arquivada">✔ Resolvidas (histórico)</option><option value="Inativo">⛔ Inativos</option><option value="">Todos</option></select><select class="fsel" data-fid="ferias" style="min-width:160px" onchange="feriasCtrl.setFilter('situacao',this.value)"><option value="">🟢 Todas as situações</option><option value="Em aquisição">Em aquisição</option><option value="Elegível">🟡 Elegível</option><option value="Programada">📅 Programada</option><option value="Em gozo">🔵 Em gozo</option><option value="Vencida">🔴 Vencida</option></select><select class="fsel" data-fid="ferias" style="min-width:145px" onchange="feriasCtrl.setFilter('setor',this.value)"><option value="">📌 Todos os setores</option><option value="Produção">Produção</option><option value="Manutenção">Manutenção</option><option value="Qualidade">Qualidade</option><option value="Administrativo">Administrativo</option><option value="Fundição">Fundição</option><option value="Usinagem">Usinagem</option></select>
           <span class="chip" id="ferias-count">— registros</span>
           <button class="btn btn-s btn-xs" onclick="feriasCtrl.clearAll()" title="Limpar">🔄 Limpar</button>
           <button class="btn btn-s btn-xs" onclick="feriasCtrl.load();showToast('🔃 Atualizado')" title="Atualizar">🔃</button>
@@ -2738,7 +2752,7 @@ function atualizarAlertasCriticos() {
   const show = id => { const el = document.getElementById(id); if (el) el.style.display = 'flex'; };
   let algum = false;
 
-  const feriasV = loadData('ferias').filter(f => f.status !== 'Inativo' && f.situacao === 'Vencida');
+  const feriasV = loadData('ferias').filter(f => f.status !== 'Inativo' && !f.arquivado && f.situacao === 'Vencida');
   if (feriasV.length) {
     algum = true;
     const setores = [...new Set(feriasV.map(f => f.setor).filter(Boolean))];
@@ -2812,7 +2826,7 @@ function atualizarKPIsDash(){
   const cnpj02El=document.getElementById('colab-kpi-cnpj02');if(cnpj02El)cnpj02El.textContent=colabs.filter(c=>c.cnpj==='02').length;
   const inativosEl=document.getElementById('colab-kpi-inativos');if(inativosEl)inativosEl.textContent=loadData('colaboradores').filter(c=>c.status==='Inativo'||c.status==='Afastado').length;
   // Cross-module dashboard KPIs
-  const feriasV=loadData('ferias').filter(f=>f.status!=='Inativo'&&f.situacao==='Vencida').length;
+  const feriasV=loadData('ferias').filter(f=>f.status!=='Inativo'&&!f.arquivado&&f.situacao==='Vencida').length;
   const treinoP=loadData('treinamentos').filter(t=>t.status!=='Inativo'&&t.situacao==='Pendente').length;
   const avalP=loadData('avaliacoes').filter(a=>a.status!=='Inativo'&&a.situacao!=='Concluída').length;
   const sstA=loadData('sst').filter(s=>s.status!=='Inativo'&&(s.situacao==='Agendar'||s.situacao==='Vencido')).length;
@@ -2837,7 +2851,7 @@ function buildCentralAlertas(){
 
   const grupos = [];
 
-  const feriasV = loadData('ferias').filter(f=>f.status!=='Inativo'&&f.situacao==='Vencida');
+  const feriasV = loadData('ferias').filter(f=>f.status!=='Inativo'&&!f.arquivado&&f.situacao==='Vencida');
   if (feriasV.length) grupos.push({icone:'🏖️', titulo:'Férias vencidas', cor:'var(--red)', itens: feriasV.map(f=>f.colaborador||'—')});
 
   const sstCrit = loadData('sst').filter(s=>s.status!=='Inativo'&&(s.situacao==='Vencido'||s.situacao==='Vence em breve'));
@@ -5607,8 +5621,10 @@ const MOD_FERIAS = {
     {field:'fimGozo', label:'Gozo programado — fim', placeholder:'dd/mm/aaaa'},
     {field:'situacao', label:'Situação', type:'select', options:['Em aquisição','Elegível','Programada','Em gozo','Vencida','Gozada']},
     {field:'status', label:'Status', type:'select', options:['Ativo','Inativo']},
+    {field:'arqSel', label:'Guardar direto no histórico? (só ao incluir)', type:'select', options:['Não','Sim']},
     {field:'obs', label:'Observações', type:'textarea', full:true},
   ],
+  beforeSave: (obj, rec, isEdit) => { if(!isEdit && obj.arqSel==='Sim'){ obj.arquivado=true; obj.arquivadoEm=todayStr(); } delete obj.arqSel; if(!isEdit){ if(obj.diasGozados==null||obj.diasGozados==='') obj.diasGozados=0; if(obj.diasRest==null||obj.diasRest==='') obj.diasRest=Math.max(30-(Number(obj.diasGozados)||0),0); } },
   onSave: () => { if(tcFerias) tcFerias.refresh(); buildFeriasFromColabs(); try{ if(window.feriasCtrl) feriasCtrl.load(); fgRefrescar(); }catch(e){} }
 };
 
@@ -5818,6 +5834,20 @@ function feriasMigrarV3(){
 /* ── Linha da tabela principal ── */
 let FG_ADM_CACHE = null;
 function feriasAdmDe(f){ if(f.admissao) return f.admissao; if(!FG_ADM_CACHE){ FG_ADM_CACHE={}; loadData('colaboradores').forEach(c=>{ FG_ADM_CACHE[feriasNorm(c.nome)]=c.adm; }); } return FG_ADM_CACHE[feriasNorm(f.colaborador)]||''; }
+
+/* Botões da barra de título */
+function adMaximizar(){
+  try{
+    if(!document.fullscreenElement){ (document.documentElement.requestFullscreen||document.documentElement.webkitRequestFullscreen).call(document.documentElement); }
+    else { (document.exitFullscreen||document.webkitExitFullscreen).call(document); }
+  }catch(e){ showToast('Seu navegador não permitiu tela cheia — use a tecla F11.','warn'); }
+}
+document.addEventListener('fullscreenchange',()=>{ const b=document.getElementById('ad-max'); if(b){ b.textContent=document.fullscreenElement?'❐':'☐'; b.title=document.fullscreenElement?'Restaurar':'Maximizar (tela cheia)'; } });
+function adMinimizar(){
+  const on=document.body.classList.toggle('ad-minimizado');
+  const t=document.getElementById('ad-titlebar-text'); if(t) t.textContent=on?'AC Metalúrgica — janela minimizada (clique em ─ ou aqui para restaurar)':'AC Metalúrgica — Sistema de Gestão de Pessoas';
+}
+document.addEventListener('DOMContentLoaded',()=>{ const t=document.getElementById('ad-titlebar-text'); if(t) t.onclick=()=>{ if(document.body.classList.contains('ad-minimizado')) adMinimizar(); }; });
 function feriasNomeCurto(n){ const w=String(n||'').trim().split(/\s+/).filter(Boolean); let k=2; if(w[1]&&/^(DE|DA|DO|DAS|DOS|E)$/i.test(w[1])) k=3; return w.slice(0,k).join(' '); }
 function feriasLinhas(rows){
   FG_ADM_CACHE=null;
@@ -5836,7 +5866,7 @@ function feriasLinhas(rows){
     const nEnt=loadData('ferias_gozos').filter(g=>g.status!=='Inativo'&&feriasNorm(g.colaborador)===feriasNorm(f.colaborador)&&g.periodoInicio===f.periodoInicio).length;
     const nomeJs=escAttr(f.colaborador);
     return cab+`<tr style="${inativo?'opacity:.5':''}">
-      <td style="min-width:135px" title="${escAttr(f.colaborador+(f.cargo?' — '+f.cargo:''))}"><div style="font-size:11px;font-weight:700">${gpEsc(feriasNomeCurto(f.colaborador))}</div><div style="font-size:9.5px;color:var(--g400)">${gpEsc(f.cnpj||'')} <span class="badge ${sbMap[f.situacao]||'bgy'}" style="font-size:8.5px">${f.situacao||'—'}</span></div></td>
+      <td style="width:1%;white-space:nowrap" title="${escAttr(f.colaborador+(f.cargo?' — '+f.cargo:''))}"><div style="font-size:11px;font-weight:700">${gpEsc(feriasNomeCurto(f.colaborador))}</div><div style="font-size:9.5px;color:var(--g400)">${gpEsc(f.cnpj||'')} <span class="badge ${sbMap[f.situacao]||'bgy'}" style="font-size:8.5px">${f.situacao||'—'}</span></div></td>
       <td style="white-space:nowrap">${feriasAdmDe(f)||'—'}</td>
       <td style="white-space:nowrap">${f.venctoFerias||'—'}</td>
       <td style="text-align:center;${venc>0?'color:var(--red);font-weight:700':''}">${f.ferVenc===''||f.ferVenc===undefined?'—':venc}</td>
@@ -5851,10 +5881,21 @@ function feriasLinhas(rows){
       <td style="white-space:nowrap">
         <button class="btn btn-s btn-xs" title="Histórico de gozo deste colaborador" onclick="fgAbrir('${nomeJs}')">📜${nEnt?' '+nEnt:''}</button>
         <button class="btn btn-s btn-xs" title="Editar período" onclick="openCrudModal(MOD_FERIAS,${f.id})">✏</button>
+        ${f.arquivado?`<button class="btn btn-s btn-xs" title="Reabrir (voltar para a tela principal)" onclick="feriasArquivar(${f.id},false)">↩ Reabrir</button>`:`<button class="btn btn-s btn-xs" title="Período resolvido: tirar da tela principal e guardar no histórico" onclick="feriasArquivar(${f.id},true)">✔</button>`}
         ${inativo?`<button class="btn btn-s btn-xs" onclick="crudRestoreAction(MOD_FERIAS,${f.id},'${nomeJs}')">↩</button>`
                  :`<button class="btn btn-s btn-xs" onclick="crudDeleteAction(MOD_FERIAS,${f.id},'${nomeJs}')">🗑</button>`}
       </td></tr>`;
   }).join('');
+}
+function feriasArquivar(id,arq){
+  const f=loadData('ferias').find(x=>x.id===id); if(!f) return;
+  const msg=arq?'Marcar o período '+f.periodoInicio+' a '+f.periodoFim+' de '+f.colaborador+' como RESOLVIDO?\n\nEle sai da tela principal e fica guardado no histórico do colaborador (📜), onde pode ser reaberto.'
+               :'Reabrir este período de '+f.colaborador+'? Ele volta para a tela principal.';
+  confirmAction(msg,()=>{
+    crudUpdate('ferias',id,{arquivado:!!arq,arquivadoEm:arq?todayStr():''},{modulo:'Férias',label:f.colaborador});
+    try{ feriasCtrl.load(); atualizarKPIsFerias(); }catch(e){}
+    showToast(arq?'✔ Período guardado no histórico de '+feriasNomeCurto(f.colaborador):'↩ Período reaberto'); fgRefrescar();
+  });
 }
 function feriasExportar(){
   if(typeof XLSX==='undefined'){ showToast('Biblioteca XLSX não carregada','error'); return; }
@@ -5877,8 +5918,8 @@ function fgAbrir(nome,silencioso){
   const c = nome?loadData('colaboradores').find(x=>feriasNorm(x.nome)===feriasNorm(nome)):null;
   const perSet=new Set(per.map(p=>p.periodoInicio));
   const sit={'Em aquisição':'bb','Elegível':'by','Programada':'bg','Em gozo':'bp','Vencida':'br','Gozada':'bgy'};
-  const perRows=per.map(p=>`<tr><td style="white-space:nowrap">${p.periodoInicio||'—'} a ${p.periodoFim||'—'}</td><td style="text-align:center">${fgFmt(p.dias)}</td><td style="text-align:center">${fgFmt(p.diasGozados)}</td><td style="text-align:center">${fgFmt(p.diasAbono||0)}</td><td style="text-align:center"><b>${fgFmt(p.diasRest)}</b></td><td style="white-space:nowrap">${p.limiteGozo||'—'}</td><td><span class="badge ${sit[p.situacao]||'bgy'}">${p.situacao||'—'}</span></td>
-    <td style="white-space:nowrap"><button class="btn btn-p btn-xs" onclick="fgNovo('${escAttr(nome)}','${escAttr(p.periodoInicio)}')">+ Lançar gozo</button> <button class="btn btn-s btn-xs" onclick="openCrudModal(MOD_FERIAS,${p.id})">✏ Período</button></td></tr>`).join('');
+  const perRows=per.map(p=>`<tr><td style="white-space:nowrap">${p.periodoInicio||'—'} a ${p.periodoFim||'—'}</td><td style="text-align:center">${fgFmt(p.dias)}</td><td style="text-align:center">${fgFmt(p.diasGozados)}</td><td style="text-align:center">${fgFmt(p.diasAbono||0)}</td><td style="text-align:center"><b>${fgFmt(p.diasRest)}</b></td><td style="white-space:nowrap">${p.limiteGozo||'—'}</td><td><span class="badge ${sit[p.situacao]||'bgy'}">${p.situacao||'—'}</span>${p.arquivado?`<div style="font-size:9px;color:var(--g400)">✔ resolvido em ${p.arquivadoEm||''}</div>`:''}</td>
+    <td style="white-space:nowrap"><button class="btn btn-p btn-xs" onclick="fgNovo('${escAttr(nome)}','${escAttr(p.periodoInicio)}')">+ Lançar gozo</button> <button class="btn btn-s btn-xs" onclick="openCrudModal(MOD_FERIAS,${p.id})">✏ Período</button> ${p.arquivado?`<button class="btn btn-s btn-xs" onclick="feriasArquivar(${p.id},false)">↩ Reabrir</button>`:`<button class="btn btn-s btn-xs" title="Período resolvido" onclick="feriasArquivar(${p.id},true)">✔ Resolvido</button>`} <button class="btn btn-s btn-xs" title="Excluir período" onclick="fgExcluirPeriodo(${p.id})">🗑</button></td></tr>`).join('');
   const entRows=ent.map(g=>{
     const orfao = !todos && !perSet.has(g.periodoInicio);
     return `<tr style="border-bottom:1px solid var(--g100)">
@@ -5893,11 +5934,28 @@ function fgAbrir(nome,silencioso){
    `<div id="fg-root">
     ${todos?`<div style="display:flex;gap:8px;margin-bottom:10px;align-items:center"><input class="finp" id="fg-busca" placeholder="🔎 Buscar colaborador..." oninput="fgFiltrar(this.value)" style="flex:1"><button class="btn btn-s btn-sm" onclick="fgExportar(null)">⬇ Excel</button></div>`
     :`<div style="font-size:12px;margin-bottom:10px;display:flex;gap:14px;flex-wrap:wrap;align-items:center"><span><b>${gpEsc(nome)}</b></span>${c?`<span class="muted">Admissão: ${c.adm||'—'} · ${gpEsc(c.cargo||'')}</span>`:''}<button class="btn btn-s btn-sm" style="margin-left:auto" onclick="fgExportar('${escAttr(nome)}')">⬇ Excel</button></div>
-    <div style="font-weight:700;font-size:11px;text-transform:uppercase;color:var(--g500);margin:4px 0">Períodos aquisitivos</div>
+    <div style="font-weight:700;font-size:11px;text-transform:uppercase;color:var(--g500);margin:4px 0;display:flex;align-items:center;gap:10px">Períodos aquisitivos <button class="btn btn-p btn-xs" style="text-transform:none" onclick="fgNovoPeriodo('${escAttr(nome)}')">+ Incluir período</button></div>
     <div style="overflow-x:auto"><table style="width:100%"><thead><tr><th>Período aquisitivo</th><th>Direito</th><th>Gozados</th><th>Abono</th><th>Restantes</th><th>Limite p/ gozo</th><th>Situação</th><th></th></tr></thead><tbody>${perRows||'<tr><td colspan="8" class="muted" style="padding:10px">Nenhum período cadastrado para este colaborador.</td></tr>'}</tbody></table></div>`}
-    <div style="font-weight:700;font-size:11px;text-transform:uppercase;color:var(--g500);margin:14px 0 4px">Períodos de gozo lançados ${todos?'':'· total gozado: <b>'+fgFmt(tot)+' dias</b>'}</div>
+    <div style="font-weight:700;font-size:11px;text-transform:uppercase;color:var(--g500);margin:14px 0 4px;display:flex;align-items:center;gap:10px">Períodos de gozo lançados ${todos?'':'· total gozado: <b>'+fgFmt(tot)+' dias</b> <button class="btn btn-p btn-xs" style="text-transform:none" onclick="fgNovo(\''+escAttr(nome)+'\',\'\')">+ Incluir gozo</button>'}</div>
     <div style="overflow-x:auto"><table style="width:100%" id="fg-tab"><thead><tr>${todos?'<th>Colaborador</th>':''}<th>Período aquisitivo</th><th>Tipo</th><th>Início</th><th>Fim</th><th>Dias</th><th>Observações</th><th></th></tr></thead><tbody>${entRows||`<tr><td colspan="9" class="muted" style="padding:10px">Nenhum gozo lançado ainda.</td></tr>`}</tbody></table></div>
     <div class="muted" style="font-size:10.5px;margin-top:8px">Os dias de gozo e restantes de cada período são calculados a partir destes lançamentos. Tudo pode ser editado ou excluído.</div></div>`, 980);
+}
+function fgNovoPeriodo(nome){
+  openCrudModal(MOD_FERIAS,null);
+  const c=loadData('colaboradores').find(x=>feriasNorm(x.nome)===feriasNorm(nome));
+  const ult=fgPeriodos(nome).slice(-1)[0]||{};
+  const fm=document.getElementById('crud-form'), set=(k,v)=>{ const e=fm.querySelector('[data-field="'+k+'"]'); if(e&&v!==undefined&&v!==null) e.value=v; };
+  set('colaborador',nome); set('cnpj',ult.cnpj||(c&&COLAB_CNPJ_EMPRESA[c.cnpj])||'AC'); set('cargo',ult.cargo||(c&&c.cargo)||''); set('setor',ult.setor||(c&&c.setor)||'');
+  set('admissao',ult.admissao||(c&&c.adm)||''); set('codigo',ult.codigo||''); set('dias',30); set('diasGozados',0); set('situacao','Gozada'); set('status','Ativo'); set('arqSel','Sim');
+}
+function fgExcluirPeriodo(id){
+  const f=loadData('ferias').find(x=>x.id===id); if(!f) return;
+  const g=loadData('ferias_gozos').filter(x=>feriasNorm(x.colaborador)===feriasNorm(f.colaborador)&&x.periodoInicio===f.periodoInicio);
+  confirmAction('Excluir DEFINITIVAMENTE o período aquisitivo '+f.periodoInicio+' a '+f.periodoFim+' de '+f.colaborador+(g.length?' e os '+g.length+' gozo(s) lançado(s) nele':'')+'?\n\nNão poderá ser recuperado. (Para apenas tirar da tela principal, use ✔ Resolvido.)',()=>{
+    g.forEach(x=>crudDeleteFisico('ferias_gozos',x.id,{modulo:'Férias',label:x.colaborador}));
+    crudDeleteFisico('ferias',id,{modulo:'Férias',label:f.colaborador});
+    try{ feriasCtrl.load(); atualizarKPIsFerias(); }catch(e){} showToast('🗑 Período excluído'); fgRefrescar();
+  });
 }
 function fgFiltrar(v){ const b=feriasNorm(v); document.querySelectorAll('#fg-tab tbody tr').forEach(tr=>{ tr.style.display=feriasNorm(tr.innerText).includes(b)?'':'none'; }); }
 function fgOpcoesPeriodo(nome){
@@ -6114,7 +6172,7 @@ function fmtDate(d) {
 }
 
 function atualizarKPIsFerias() {
-  const ferias = loadData('ferias').filter(f=>f.status!=='Inativo');
+  const ferias = loadData('ferias').filter(f=>f.status!=='Inativo'&&!f.arquivado);
   const total = ferias.length;
   const vencidas = ferias.filter(f=>f.situacao==='Vencida').length;
   const elegiveis = ferias.filter(f=>f.situacao==='Elegível').length;
@@ -11308,7 +11366,7 @@ function initLote4Modules() {
 
 function buildPeopleAnalyticsBase() {
   const colabs  = loadData('colaboradores').filter(c => c.status !== 'Inativo');
-  const ferias  = loadData('ferias').filter(f => f.status !== 'Inativo');
+  const ferias  = loadData('ferias').filter(f => f.status !== 'Inativo' && !f.arquivado);
   const treinos = loadData('treinamentos').filter(t => t.status !== 'Inativo');
   const avals   = loadData('avaliacoes').filter(a => a.status !== 'Inativo');
   const sst     = loadData('sst').filter(s => s.status !== 'Inativo');
@@ -12686,9 +12744,10 @@ function initFeriasAdv() {
     render: rows => feriasLinhas(rows),
   });
   window.feriasCtrl = feriasCtrl;
-  feriasCtrl._filters.status='Ativo';
+  feriasCtrl._filters.vis='Ativo';
+  feriasCtrl.load=function(){ this._data=loadData('ferias').map(r=>Object.assign({},r,{vis:r.status==='Inativo'?'Inativo':(r.arquivado?'Arquivada':'Ativo')})); this.filter(); };
   const _ca=feriasCtrl.clearAll.bind(feriasCtrl);
-  feriasCtrl.clearAll=function(){ _ca(); const e=document.getElementById('ferias-fstatus'); if(e) e.value='Ativo'; this._filters.status='Ativo'; this.filter(); };
+  feriasCtrl.clearAll=function(){ _ca(); const e=document.getElementById('ferias-fstatus'); if(e) e.value='Ativo'; this._filters.vis='Ativo'; this.filter(); };
   feriasCtrl.load();
 }
 
@@ -15462,7 +15521,7 @@ function dashEnxuto(){
   setText('dk-exp',loadData('feedback90').filter(f=>f.status!=='Inativo'&&(f.situacao||'Em acompanhamento')==='Em acompanhamento').length);
   setText('dk-afast',loadData('afastamentos').filter(a=>a.status!=='Inativo'&&a.situacao!=='Retornou').length);
   setText('dk-aso',gpRows(GP.exameaso).filter(r=>r.sit==='Vencido'||r.sit==='Vence em breve').length);
-  setText('dk-fer',loadData('ferias').filter(f=>f.status!=='Inativo'&&f.situacao==='Vencida').length);
+  setText('dk-fer',loadData('ferias').filter(f=>f.status!=='Inativo'&&!f.arquivado&&f.situacao==='Vencida').length);
   setText('dk-ctr',dashCtrPendencias().length);
   // campanha do mês
   const m=new Date().getMonth()+1, a=new Date().getFullYear(), c=campMes(m);
