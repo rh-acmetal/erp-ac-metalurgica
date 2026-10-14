@@ -441,7 +441,7 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
   <div class="l-box">
     <div class="l-logo">
       <div class="l-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
-      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 5.00 — Férias: controle exato com colunas do relatório da contabilidade e histórico de gozo editável por colaborador; Lista de Treinamento; Ordens de Serviço no SST</div></div>
+      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 5.01 — Férias: colunas abreviadas, nome e sobrenome, inativos separados; histórico de gozo editável; Lista de Treinamento; Ordens de Serviço no SST</div></div>
     </div>
     <div class="f-row"><label>Usuário</label><input type="text" id="l-user" value="jakeline@acmetalurgica.com.br"></div>
     <div class="f-row"><label>Senha</label><input type="password" id="l-pass" value="••••••••"></div>
@@ -1250,7 +1250,7 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
            <div style="background:#fff;border:1px solid var(--g200);border-radius:9px;padding:12px;margin-bottom:10px">
         <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
           <div class="srch-wrap" style="flex:2;min-width:180px"><input class="finp" style="width:100%" id="ferias-search" placeholder="🔎 Buscar colaborador, cargo ou setor..." oninput="feriasCtrl.filter()"></div>
-          <select class="fsel" data-fid="ferias" style="min-width:160px" onchange="feriasCtrl.setFilter('situacao',this.value)"><option value="">🟢 Todas as situações</option><option value="Em aquisição">Em aquisição</option><option value="Elegível">🟡 Elegível</option><option value="Programada">📅 Programada</option><option value="Em gozo">🔵 Em gozo</option><option value="Vencida">🔴 Vencida</option></select><select class="fsel" data-fid="ferias" style="min-width:145px" onchange="feriasCtrl.setFilter('setor',this.value)"><option value="">📌 Todos os setores</option><option value="Produção">Produção</option><option value="Manutenção">Manutenção</option><option value="Qualidade">Qualidade</option><option value="Administrativo">Administrativo</option><option value="Fundição">Fundição</option><option value="Usinagem">Usinagem</option></select>
+          <select class="fsel" id="ferias-fstatus" data-fid="ferias" style="min-width:110px" onchange="feriasCtrl.setFilter('status',this.value)"><option value="Ativo" selected>✅ Ativos</option><option value="Inativo">⛔ Inativos</option><option value="">Todos</option></select><select class="fsel" data-fid="ferias" style="min-width:160px" onchange="feriasCtrl.setFilter('situacao',this.value)"><option value="">🟢 Todas as situações</option><option value="Em aquisição">Em aquisição</option><option value="Elegível">🟡 Elegível</option><option value="Programada">📅 Programada</option><option value="Em gozo">🔵 Em gozo</option><option value="Vencida">🔴 Vencida</option></select><select class="fsel" data-fid="ferias" style="min-width:145px" onchange="feriasCtrl.setFilter('setor',this.value)"><option value="">📌 Todos os setores</option><option value="Produção">Produção</option><option value="Manutenção">Manutenção</option><option value="Qualidade">Qualidade</option><option value="Administrativo">Administrativo</option><option value="Fundição">Fundição</option><option value="Usinagem">Usinagem</option></select>
           <span class="chip" id="ferias-count">— registros</span>
           <button class="btn btn-s btn-xs" onclick="feriasCtrl.clearAll()" title="Limpar">🔄 Limpar</button>
           <button class="btn btn-s btn-xs" onclick="feriasCtrl.load();showToast('🔃 Atualizado')" title="Atualizar">🔃</button>
@@ -1262,7 +1262,7 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
       </div>
       <div class="card" style="padding:0">
         <div class="card-hdr">Controle de Férias por Colaborador <span class="muted" style="font-weight:400;font-size:11px">— base dos relatórios da contabilidade: AC 03/09/2026 · Brass 16/09/2026</span></div>
-        <style>#ferias-wrap th,#ferias-wrap td{padding:6px 7px!important;font-size:10.5px}#ferias-wrap th:last-child,#ferias-wrap td:last-child{position:sticky;right:0;background:#fff;box-shadow:-3px 0 4px -3px rgba(0,0,0,.18)}#ferias-wrap th:last-child{background:var(--g100,#eee)}</style><div id="ferias-wrap" style="overflow-x:auto"><table style="min-width:1150px"><thead><tr><th>Colaborador</th><th>Admissão</th><th>Vencto. férias</th><th>Fér. vencidas</th><th>Fér. proporc.</th><th>Início aquisitivo</th><th>Fim aquisitivo</th><th>Dias direito</th><th>Dias de gozo</th><th>Dias restantes</th><th>Limite p/ gozo</th><th>Observações</th><th>Ações</th></tr></thead>
+        <style>#ferias-wrap th,#ferias-wrap td{padding:4px 4px!important;font-size:9.5px!important}#ferias-wrap td>div:first-child{font-size:10px!important}#ferias-wrap th{font-size:8.5px!important;letter-spacing:0!important;white-space:nowrap}#ferias-wrap th:last-child,#ferias-wrap td:last-child{position:sticky;right:0;background:#fff;box-shadow:-3px 0 4px -3px rgba(0,0,0,.18)}#ferias-wrap th:last-child{background:var(--g100,#eee)}</style><div id="ferias-wrap" style="overflow-x:auto"><table style="min-width:1000px;width:100%"><thead><tr><th>Colaborador</th><th>Admissão</th><th>Vcto. Férias</th><th>Fér. Venc.</th><th>Fér. Prop.</th><th>Início Aquis.</th><th>Fim Aquis.</th><th>Dias Dir.</th><th>Dias Gozo</th><th>Dias Rest.</th><th>Limite Gozo</th><th>Obs.</th><th>Ações</th></tr></thead>
         <tbody id="ferias-tbody"></tbody></table></div>
         <div style="padding:10px 14px;display:flex;align-items:center;justify-content:flex-end;gap:4px;border-top:1px solid var(--g100)" id="ferias-pag"></div>
       </div>
@@ -5797,6 +5797,11 @@ function feriasMigrarV3(){
         if(f.diasRest===undefined){ f.diasRest=Math.max(30-(Number(f.diasGozados)||0),0); mudou=true; }
       }
     });
+    if(!localStorage.getItem('ac_ferias_inativar_v1')){
+      const nomes=new Set(FERIAS_PROG.map(r=>feriasNorm(r[0])));
+      fer.forEach(f=>{ if(f.status!=='Inativo'&&!nomes.has(feriasNorm(f.colaborador))){ f.status='Inativo'; f.atualizadoEm=nowStr(); mudou=true; } });
+      localStorage.setItem('ac_ferias_inativar_v1','1');
+    }
     if(mudou){ saveData('ferias',fer); fer.forEach(r=>syncRecordToCloud('ferias',r)); }
     if(!localStorage.getItem('ac_ferias_gozos_v1')){
       const now=nowStr(); const ex=loadData('ferias_gozos'); let id=ex.reduce((m,g)=>Math.max(m,g.id||0),0);
@@ -5813,6 +5818,11 @@ function feriasMigrarV3(){
 /* ── Linha da tabela principal ── */
 let FG_ADM_CACHE = null;
 function feriasAdmDe(f){ if(f.admissao) return f.admissao; if(!FG_ADM_CACHE){ FG_ADM_CACHE={}; loadData('colaboradores').forEach(c=>{ FG_ADM_CACHE[feriasNorm(c.nome)]=c.adm; }); } return FG_ADM_CACHE[feriasNorm(f.colaborador)]||''; }
+function feriasNomeCurto(n){
+  const w=String(n||'').trim().split(/\s+/).filter(Boolean); if(w.length<=2) return w.join(' ');
+  const lig=/^(DE|DA|DO|DAS|DOS|E)$/i; let u=w.length-1; while(u>1&&lig.test(w[u])) u--;
+  return w[0]+' '+w[u];
+}
 function feriasLinhas(rows){
   FG_ADM_CACHE=null;
   const sbMap={'Em aquisição':'bb','Elegível':'by','Programada':'bg','Em gozo':'bp','Vencida':'br','Gozada':'bgy'};
@@ -5826,7 +5836,7 @@ function feriasLinhas(rows){
     const nEnt=loadData('ferias_gozos').filter(g=>g.status!=='Inativo'&&feriasNorm(g.colaborador)===feriasNorm(f.colaborador)&&g.periodoInicio===f.periodoInicio).length;
     const nomeJs=escAttr(f.colaborador);
     return `<tr style="${inativo?'opacity:.5':''}">
-      <td style="min-width:165px"><div style="font-size:11px;font-weight:700">${gpEsc(f.colaborador)}</div><div style="font-size:9.5px;color:var(--g400)">${gpEsc(f.cnpj||'')}${f.cargo?' · '+gpEsc(f.cargo):''}</div><span class="badge ${sbMap[f.situacao]||'bgy'}" style="font-size:9px;margin-top:2px">${f.situacao||'—'}</span></td>
+      <td style="min-width:105px" title="${escAttr(f.colaborador+(f.cargo?' — '+f.cargo:''))}"><div style="font-size:11px;font-weight:700">${gpEsc(feriasNomeCurto(f.colaborador))}</div><div style="font-size:9.5px;color:var(--g400)">${gpEsc(f.cnpj||'')} <span class="badge ${sbMap[f.situacao]||'bgy'}" style="font-size:8.5px">${f.situacao||'—'}</span></div></td>
       <td style="white-space:nowrap">${feriasAdmDe(f)||'—'}</td>
       <td style="white-space:nowrap">${f.venctoFerias||'—'}</td>
       <td style="text-align:center;${venc>0?'color:var(--red);font-weight:700':''}">${f.ferVenc===''||f.ferVenc===undefined?'—':venc}</td>
@@ -5837,7 +5847,7 @@ function feriasLinhas(rows){
       <td style="text-align:center">${fgFmt(goz)}${Number(f.diasAbono)>0?`<div style="font-size:9px;color:var(--g400)">+${fgFmt(f.diasAbono)} abono</div>`:''}</td>
       <td style="text-align:center">${fgFmt(rest)}</td>
       <td style="white-space:nowrap">${f.limiteGozo||'—'}</td>
-      <td style="font-size:10px;min-width:150px">${obs||'—'}</td>
+      <td style="font-size:9.5px;min-width:220px;width:30%">${obs||'—'}</td>
       <td style="white-space:nowrap">
         <button class="btn btn-s btn-xs" title="Histórico de gozo deste colaborador" onclick="fgAbrir('${nomeJs}')">📜${nEnt?' '+nEnt:''}</button>
         <button class="btn btn-s btn-xs" title="Editar período" onclick="openCrudModal(MOD_FERIAS,${f.id})">✏</button>
@@ -6080,7 +6090,8 @@ function feriasAtualizarProg(){
   let desat=0; const desatNomes=new Set();
   loadData('ferias').forEach(f=>{
     if(f.status==='Inativo') return;
-    const ativo=!!feriasAchaColab(f.colaborador,(FERIAS_PROG.find(r=>feriasNorm(r[0])===feriasNorm(f.colaborador))||[])[2],colabs);
+    const noRel=FERIAS_PROG.some(r=>feriasNorm(r[0])===feriasNorm(f.colaborador));
+    const ativo=noRel&&!!feriasAchaColab(f.colaborador,(FERIAS_PROG.find(r=>feriasNorm(r[0])===feriasNorm(f.colaborador))||[])[2],colabs);
     if(!ativo){ crudDelete('ferias',f.id,{modulo:'Férias',label:f.colaborador}); desat++; desatNomes.add(f.colaborador); }
   });
   try{ fgRecalcTodos(); }catch(e){console.warn('fgRecalcTodos',e);}
@@ -12675,6 +12686,9 @@ function initFeriasAdv() {
     render: rows => feriasLinhas(rows),
   });
   window.feriasCtrl = feriasCtrl;
+  feriasCtrl._filters.status='Ativo';
+  const _ca=feriasCtrl.clearAll.bind(feriasCtrl);
+  feriasCtrl.clearAll=function(){ _ca(); const e=document.getElementById('ferias-fstatus'); if(e) e.value='Ativo'; this._filters.status='Ativo'; this.filter(); };
   feriasCtrl.load();
 }
 
