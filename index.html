@@ -441,7 +441,7 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
   <div class="l-box">
     <div class="l-logo">
       <div class="l-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
-      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 5.01 — Férias: colunas abreviadas, nome e sobrenome, inativos separados; histórico de gozo editável; Lista de Treinamento; Ordens de Serviço no SST</div></div>
+      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 5.02 — Férias separadas por empresa, nome e segundo nome; colunas abreviadas; inativos separados; histórico de gozo editável; Lista de Treinamento</div></div>
     </div>
     <div class="f-row"><label>Usuário</label><input type="text" id="l-user" value="jakeline@acmetalurgica.com.br"></div>
     <div class="f-row"><label>Senha</label><input type="password" id="l-pass" value="••••••••"></div>
@@ -1250,7 +1250,7 @@ td{border:1px solid var(--ad-border)!important;font-size:11px!important;font-fam
            <div style="background:#fff;border:1px solid var(--g200);border-radius:9px;padding:12px;margin-bottom:10px">
         <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
           <div class="srch-wrap" style="flex:2;min-width:180px"><input class="finp" style="width:100%" id="ferias-search" placeholder="🔎 Buscar colaborador, cargo ou setor..." oninput="feriasCtrl.filter()"></div>
-          <select class="fsel" id="ferias-fstatus" data-fid="ferias" style="min-width:110px" onchange="feriasCtrl.setFilter('status',this.value)"><option value="Ativo" selected>✅ Ativos</option><option value="Inativo">⛔ Inativos</option><option value="">Todos</option></select><select class="fsel" data-fid="ferias" style="min-width:160px" onchange="feriasCtrl.setFilter('situacao',this.value)"><option value="">🟢 Todas as situações</option><option value="Em aquisição">Em aquisição</option><option value="Elegível">🟡 Elegível</option><option value="Programada">📅 Programada</option><option value="Em gozo">🔵 Em gozo</option><option value="Vencida">🔴 Vencida</option></select><select class="fsel" data-fid="ferias" style="min-width:145px" onchange="feriasCtrl.setFilter('setor',this.value)"><option value="">📌 Todos os setores</option><option value="Produção">Produção</option><option value="Manutenção">Manutenção</option><option value="Qualidade">Qualidade</option><option value="Administrativo">Administrativo</option><option value="Fundição">Fundição</option><option value="Usinagem">Usinagem</option></select>
+          <select class="fsel" data-fid="ferias" style="min-width:130px" onchange="feriasCtrl.setFilter('cnpj',this.value)"><option value="">🏭 Todas as empresas</option><option value="AC">AC Metal</option><option value="BRASS">Brass Metal</option></select><select class="fsel" id="ferias-fstatus" data-fid="ferias" style="min-width:110px" onchange="feriasCtrl.setFilter('status',this.value)"><option value="Ativo" selected>✅ Ativos</option><option value="Inativo">⛔ Inativos</option><option value="">Todos</option></select><select class="fsel" data-fid="ferias" style="min-width:160px" onchange="feriasCtrl.setFilter('situacao',this.value)"><option value="">🟢 Todas as situações</option><option value="Em aquisição">Em aquisição</option><option value="Elegível">🟡 Elegível</option><option value="Programada">📅 Programada</option><option value="Em gozo">🔵 Em gozo</option><option value="Vencida">🔴 Vencida</option></select><select class="fsel" data-fid="ferias" style="min-width:145px" onchange="feriasCtrl.setFilter('setor',this.value)"><option value="">📌 Todos os setores</option><option value="Produção">Produção</option><option value="Manutenção">Manutenção</option><option value="Qualidade">Qualidade</option><option value="Administrativo">Administrativo</option><option value="Fundição">Fundição</option><option value="Usinagem">Usinagem</option></select>
           <span class="chip" id="ferias-count">— registros</span>
           <button class="btn btn-s btn-xs" onclick="feriasCtrl.clearAll()" title="Limpar">🔄 Limpar</button>
           <button class="btn btn-s btn-xs" onclick="feriasCtrl.load();showToast('🔃 Atualizado')" title="Atualizar">🔃</button>
@@ -5818,15 +5818,15 @@ function feriasMigrarV3(){
 /* ── Linha da tabela principal ── */
 let FG_ADM_CACHE = null;
 function feriasAdmDe(f){ if(f.admissao) return f.admissao; if(!FG_ADM_CACHE){ FG_ADM_CACHE={}; loadData('colaboradores').forEach(c=>{ FG_ADM_CACHE[feriasNorm(c.nome)]=c.adm; }); } return FG_ADM_CACHE[feriasNorm(f.colaborador)]||''; }
-function feriasNomeCurto(n){
-  const w=String(n||'').trim().split(/\s+/).filter(Boolean); if(w.length<=2) return w.join(' ');
-  const lig=/^(DE|DA|DO|DAS|DOS|E)$/i; let u=w.length-1; while(u>1&&lig.test(w[u])) u--;
-  return w[0]+' '+w[u];
-}
+function feriasNomeCurto(n){ const w=String(n||'').trim().split(/\s+/).filter(Boolean); let k=2; if(w[1]&&/^(DE|DA|DO|DAS|DOS|E)$/i.test(w[1])) k=3; return w.slice(0,k).join(' '); }
 function feriasLinhas(rows){
   FG_ADM_CACHE=null;
   const sbMap={'Em aquisição':'bb','Elegível':'by','Programada':'bg','Em gozo':'bp','Vencida':'br','Gozada':'bgy'};
+  let _emp=null;
+  const EMPN={AC:'AC METAL FUNDIÇÃO EIRELI',PJ:'AC METAL FUNDIÇÃO EIRELI',BRASS:'BRASSMETAL LTDA'};
   return rows.map(f=>{
+    const ek=(f.cnpj==='PJ'?'AC':f.cnpj)||'AC'; let cab='';
+    if(ek!==_emp){ _emp=ek; cab=`<tr><td colspan="13" style="background:${ek==='BRASS'?'#fdebd3':'#dbe8f7'}!important;font-weight:700;font-size:10.5px!important;letter-spacing:.3px;padding:5px 8px!important">🏭 ${EMPN[ek]||ek}</td></tr>`; }
     const inativo=f.status==='Inativo';
     const venc=Number(f.ferVenc)||0;
     const goz=f.diasGozados, rest=f.diasRest!==undefined&&f.diasRest!==''?f.diasRest:(f.dias!==undefined?Math.max(30-(Number(goz)||0),0):'');
@@ -5835,8 +5835,8 @@ function feriasLinhas(rows){
     const obs=[f.obs?gpEsc(f.obs):'',...obsAuto.map(x=>`<span class="badge bgy" style="font-size:9px">${gpEsc(x)}</span>`)].filter(Boolean).join(' ');
     const nEnt=loadData('ferias_gozos').filter(g=>g.status!=='Inativo'&&feriasNorm(g.colaborador)===feriasNorm(f.colaborador)&&g.periodoInicio===f.periodoInicio).length;
     const nomeJs=escAttr(f.colaborador);
-    return `<tr style="${inativo?'opacity:.5':''}">
-      <td style="min-width:105px" title="${escAttr(f.colaborador+(f.cargo?' — '+f.cargo:''))}"><div style="font-size:11px;font-weight:700">${gpEsc(feriasNomeCurto(f.colaborador))}</div><div style="font-size:9.5px;color:var(--g400)">${gpEsc(f.cnpj||'')} <span class="badge ${sbMap[f.situacao]||'bgy'}" style="font-size:8.5px">${f.situacao||'—'}</span></div></td>
+    return cab+`<tr style="${inativo?'opacity:.5':''}">
+      <td style="min-width:135px" title="${escAttr(f.colaborador+(f.cargo?' — '+f.cargo:''))}"><div style="font-size:11px;font-weight:700">${gpEsc(feriasNomeCurto(f.colaborador))}</div><div style="font-size:9.5px;color:var(--g400)">${gpEsc(f.cnpj||'')} <span class="badge ${sbMap[f.situacao]||'bgy'}" style="font-size:8.5px">${f.situacao||'—'}</span></div></td>
       <td style="white-space:nowrap">${feriasAdmDe(f)||'—'}</td>
       <td style="white-space:nowrap">${f.venctoFerias||'—'}</td>
       <td style="text-align:center;${venc>0?'color:var(--red);font-weight:700':''}">${f.ferVenc===''||f.ferVenc===undefined?'—':venc}</td>
@@ -5858,7 +5858,7 @@ function feriasLinhas(rows){
 }
 function feriasExportar(){
   if(typeof XLSX==='undefined'){ showToast('Biblioteca XLSX não carregada','error'); return; }
-  const rows=loadData('ferias').filter(f=>f.status!=='Inativo').sort((a,b)=>String(a.colaborador).localeCompare(String(b.colaborador))||(parseDate(a.periodoInicio)||0)-(parseDate(b.periodoInicio)||0));
+  const rows=loadData('ferias').filter(f=>f.status!=='Inativo').sort((a,b)=>String(a.cnpj==='PJ'?'AC':a.cnpj).localeCompare(String(b.cnpj==='PJ'?'AC':b.cnpj))||String(a.colaborador).localeCompare(String(b.colaborador))||(parseDate(a.periodoInicio)||0)-(parseDate(b.periodoInicio)||0));
   const H=['Colaborador','Empresa','Admissão','Vencimento férias','Férias vencidas','Férias proporcionais','Início aquisitivo','Fim aquisitivo','Dias direito','Dias de gozo','Dias de abono','Dias restantes','Limite p/ gozo','Situação','Afastamento (dias)','Faltas','Observações'];
   const aoa=[H,...rows.map(f=>[f.colaborador,f.cnpj||'',feriasAdmDe(f),f.venctoFerias||'',f.ferVenc??'',f.ferPro||'',f.periodoInicio||'',f.periodoFim||'',f.dias??'',f.diasGozados??'',f.diasAbono??'',f.diasRest??'',f.limiteGozo||'',f.situacao||'',f.afastDias||'',f.faltas||'',f.obs||''])];
   const ws=XLSX.utils.aoa_to_sheet(aoa); ws['!cols']=H.map((h,i)=>({wch:i===0?38:14}));
@@ -12682,7 +12682,7 @@ function initFeriasAdv() {
   feriasCtrl = makeAdvCtrl({
     id:'ferias', table:'ferias', tbodyId:'ferias-tbody', countId:'ferias-count',
     paginationId:'ferias-pag', searchFields:['colaborador','setor','cargo'],
-    pageSize:25, sortField:'colaborador', tieSort:(a,b)=>(parseDate(a.periodoInicio)||0)-(parseDate(b.periodoInicio)||0),
+    pageSize:25, sortField:'cnpj', tieSort:(a,b)=>String(a.colaborador||'').localeCompare(String(b.colaborador||''))||(parseDate(a.periodoInicio)||0)-(parseDate(b.periodoInicio)||0),
     render: rows => feriasLinhas(rows),
   });
   window.feriasCtrl = feriasCtrl;
