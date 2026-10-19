@@ -455,7 +455,7 @@ body.ad-minimizado #ad-titlebar-text{cursor:pointer}
   <div class="l-box">
     <div class="l-logo">
       <div class="l-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
-      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 5.08 — Fichas da AC Metal (ADM, Liderança e Produção) importadas e novos colaboradores cadastrados; impressão dos históricos de férias e salário/cargo; Histórico de férias: incluir/excluir período e gozo; Férias: botão ✔ Resolvido (guarda o período no histórico), coluna do colaborador mais estreita; menu lateral compacto; botões minimizar/maximizar; Férias por empresa</div></div>
+      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 5.09 — CNH (nº de registro, validade e cat. hab.) no cadastro e no termo de veículo; impressão dos históricos de férias e salário/cargo; Histórico de férias: incluir/excluir período e gozo; Férias: botão ✔ Resolvido (guarda o período no histórico), coluna do colaborador mais estreita; menu lateral compacto; botões minimizar/maximizar; Férias por empresa</div></div>
     </div>
     <div class="f-row"><label>Usuário</label><input type="text" id="l-user" value="jakeline@acmetalurgica.com.br"></div>
     <div class="f-row"><label>Senha</label><input type="password" id="l-pass" value="••••••••"></div>
@@ -3662,8 +3662,9 @@ const MOD_COLAB = {
     {field:'ctpsSerie', label:'CTPS — Série'},
     {field:'ctpsUF', label:'CTPS — UF'},
     {field:'ctpsData', label:'CTPS — Data de expedição', placeholder:'dd/mm/aaaa'},
-    {field:'cnh', label:'CNH — Número'},
-    {field:'cnhCategoria', label:'CNH — Categoria'},
+    {field:'cnh', label:'CNH — Nº de registro'},
+    {field:'cnhCategoria', label:'CNH — Cat. Hab.', placeholder:'Ex.: B, AB, C, D'},
+    {field:'cnhValidade', label:'CNH — Validade', placeholder:'dd/mm/aaaa'},
     {field:'docMilitar', label:'Documento militar'},
     {field:'pisCadastro', label:'PIS — Cadastrado em', placeholder:'dd/mm/aaaa'},
     {field:'fgtsOpcao', label:'FGTS — Opção em', placeholder:'dd/mm/aaaa'},
@@ -3781,7 +3782,7 @@ function colabFichaSwitchTab(tab) {
       cfField('Local de Nascimento', c.localNascimento) + cfField('Nacionalidade', c.nacionalidade) + cfField('RG — Emissão', [c.rgEmissao,c.rgOrgao].filter(Boolean).join(' · ')) +
       cfField('Título de Eleitor', [c.tituloEleitor, c.tituloZona?'Zona '+c.tituloZona:'', c.tituloSecao?'Seção '+c.tituloSecao:''].filter(Boolean).join(' · ')) +
       cfField('CTPS', [c.ctps, c.ctpsSerie?'Série '+c.ctpsSerie:'', c.ctpsUF, c.ctpsData?'exp. '+c.ctpsData:''].filter(Boolean).join(' · ')) +
-      cfField('CNH', [c.cnh, c.cnhCategoria?'Cat. '+c.cnhCategoria:''].filter(Boolean).join(' · ')) +
+      cfField('CNH — Nº de registro', c.cnh) + cfField('CNH — Cat. Hab.', c.cnhCategoria) + cfField('CNH — Validade', c.cnhValidade) +
       cfField('Documento militar', c.docMilitar) +
       `<div style="grid-column:span 3">${cfField('Beneficiários / Dependentes', c.beneficiarios)}</div>`
     );
@@ -4493,7 +4494,7 @@ function termoVeiculoDoc(colabId, veis) {
       .doc-vei table.plan th{text-align:center}
     </style><div class="doc-print doc-vei" style="padding:6px 12px;font-size:13.5px;line-height:1.6;text-align:justify">
     <h3 style="text-align:center;margin:0 0 14px">TERMO DE RESPONSABILIDADE POR UTILIZAÇÃO DE VEÍCULO DA EMPRESA.</h3>
-    <p>Pelo presente instrumento, de um lado <strong>${emp.nome.toUpperCase()}</strong>, empresa de direito privado, inscrita no CNPJ sob n° ${emp.cnpj}, estabelecida à ${emp.endereco}, doravante denominada “EMPRESA” e de outro lado, <strong>${c.nome||'_____________________________________'}</strong> com admissão em <strong>${_docAdm(c)}</strong>, exercendo a função <strong>${c.cargo||'_____________________________________'}</strong>, portador (a) do R.G <strong>${_docRg(c)}</strong>, inscrito(a) no CPF sob n° <strong>${_docCpf(c)}</strong> e CNH ______________________, Categoria ____, com validade até ____/____/_______, doravante denominado (a) “FUNCIONÁRIO(A)” tem entre si, justo e contratado o que a seguir especificam:</p>
+    <p>Pelo presente instrumento, de um lado <strong>${emp.nome.toUpperCase()}</strong>, empresa de direito privado, inscrita no CNPJ sob n° ${emp.cnpj}, estabelecida à ${emp.endereco}, doravante denominada “EMPRESA” e de outro lado, <strong>${c.nome||'_____________________________________'}</strong> com admissão em <strong>${_docAdm(c)}</strong>, exercendo a função <strong>${c.cargo||'_____________________________________'}</strong>, portador (a) do R.G <strong>${_docRg(c)}</strong>, inscrito(a) no CPF sob n° <strong>${_docCpf(c)}</strong> e CNH ${c.cnh&&c.cnh!=='—'?'<strong>'+gpEsc(c.cnh)+'</strong>':'______________________'}, Categoria ${c.cnhCategoria&&c.cnhCategoria!=='—'?'<strong>'+gpEsc(c.cnhCategoria)+'</strong>':'____'}, com validade até ${c.cnhValidade&&c.cnhValidade!=='—'?'<strong>'+gpEsc(c.cnhValidade)+'</strong>':'____/____/_______'}, doravante denominado (a) “FUNCIONÁRIO(A)” tem entre si, justo e contratado o que a seguir especificam:</p>
     <h4>I – Do Objeto</h4>
     <p><strong>Cláusula Primeira</strong><br>O presente Termo tem como objetivo regular o uso ${plural?'dos veículos abaixo':'do veículo'}<br>${veic}<br>que o FUNCIONÁRIO acima qualificado poderá utilizar${plural?'-los':'-lo'} para o exercício de suas funções.</p>
     <h4>II – Das formas de utilização</h4>
