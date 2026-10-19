@@ -455,7 +455,7 @@ body.ad-minimizado #ad-titlebar-text{cursor:pointer}
   <div class="l-box">
     <div class="l-logo">
       <div class="l-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
-      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 5.09 — CNH (nº de registro, validade e cat. hab.) no cadastro e no termo de veículo; impressão dos históricos de férias e salário/cargo; Histórico de férias: incluir/excluir período e gozo; Férias: botão ✔ Resolvido (guarda o período no histórico), coluna do colaborador mais estreita; menu lateral compacto; botões minimizar/maximizar; Férias por empresa</div></div>
+      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 5.13 — Convênio médico: mensalidade, desconto do colaborador (50%), dependentes, coparticipação e quadro Nota/Empresa/Repasse; Carta PHS e Prêmio por Assiduidade com a data do dia da impressão; impressão dos históricos de férias e salário/cargo; Histórico de férias: incluir/excluir período e gozo; Férias: botão ✔ Resolvido (guarda o período no histórico), coluna do colaborador mais estreita; menu lateral compacto; botões minimizar/maximizar; Férias por empresa</div></div>
     </div>
     <div class="f-row"><label>Usuário</label><input type="text" id="l-user" value="jakeline@acmetalurgica.com.br"></div>
     <div class="f-row"><label>Senha</label><input type="password" id="l-pass" value="••••••••"></div>
@@ -2516,6 +2516,7 @@ async function buildAll(){
   try{buildAdmissaoTemplateTreino90Seed();}catch(e){console.warn('treino90Seed:',e);}
   try{migracaoAdmissaoChecklists();}catch(e){console.warn('migracaoAdmissaoChecklists:',e);}
   try{migracaoRealocacoes2026();}catch(e){console.warn('migracaoRealocacoes2026:',e);}
+  try{ aroldoReativar(); }catch(e){console.warn('aroldoReativar:',e);}
   try{tryRestoreSupabase();}catch(e){console.warn('tryRestoreSupabase:',e); updateDBStatusBadge('error');}
   try{initAllAdvFilters();}catch(e){console.warn('initAllAdvFilters:',e);}
   try{initLote7();}catch(e){console.warn('initLote7:',e);}
@@ -4390,6 +4391,47 @@ function colabGerarTermoParticipacaoIntegracao(colabId) {
   abrirReciboModal('🖨 Termo de Participação na Integração — ' + c.nome, html, false);
 }
 
+
+/* Carta de Inclusão PHS (plano de saúde) e Comunicado Prêmio por Assiduidade — documentos de integração */
+function colabGerarCartaPHS(colabId){
+  const c=loadData('colaboradores').find(x=>x.id===colabId); if(!c) return;
+  const emp=empresaInfoDoColaborador(c); const h=docHoje(); const d={dia:String(parseInt(h.dia,10)),mes:MESES_EXTENSO[parseInt(h.mes,10)-1],ano:h.ano};
+  const html=`${docPageCSS(emp)}<div class="doc-print" style="padding:10px 18px;font-size:13.5px;line-height:1.65;text-align:justify">
+    <p style="margin:0 0 26px"><strong>Funcionário:</strong> ${gpEsc(c.nome||'')}</p>
+    <p style="margin:0 0 12px">A empresa oferece o plano de saúde <strong>SAMARITANO SAÚDE</strong> com as seguintes condições:</p>
+    <ul style="margin:0 0 18px 22px;padding:0">
+      <li>O plano é co-participativo em consultas, exames, internações e etc;</li>
+      <li>O valor das mensalidades será assumido em 50% (cinquenta por cento) pelo funcionário vindo a ser descontado mensalmente em holerite;</li>
+      <li>O plano é pré-pago, ou seja, pago e depois utilizado;</li>
+      <li>O valor da co-participação é enviado à empresa pelo convênio o que será assumido integralmente pelo funcionário sendo feito desconto no holerite seguinte à data de fechamento conforme relatório recebido do convênio;</li>
+      <li>É facultado a inclusão de dependentes (filhos, esposa, companheira (o)), sendo assumido integralmente (100%) pelo funcionário;</li>
+      <li>Em tendo interesse pelo cancelamento do convênio ou exclusão de dependentes, deverá comunicar ao Rh por escrito.</li>
+    </ul>
+    <p style="margin:0 0 14px">Assinale a sua opção:</p>
+    <p style="margin:0 0 16px">(&nbsp;&nbsp;&nbsp;) Não tenho interesse no plano de saúde.</p>
+    <p style="margin:0 0 28px;padding-left:26px;text-indent:-26px">(&nbsp;&nbsp;) Opto pelo plano de saúde individual na modalidade informada e autorizo o desconto mensal de 50% do valor das parcelas (plano mensal conforme tabela do convênio), com a inclusão de dependentes na modalidade também informada com o desconto mensal integral (100%) das parcelas mensais destes e, das respectivas coparticipações da minha utilização e de meu (s) dependente (s) em meu holerite.</p>
+    <p style="text-align:center;margin:30px 0 70px">Santa Bárbara D'Oeste, ${d.dia} de ${d.mes} de ${d.ano}.</p>
+    <p style="margin:0">_______________________________________<br>Assinatura do Funcionário(a)<br><span style="font-size:12px">${gpEsc(c.nome||'')}</span></p>
+  </div>`;
+  abrirReciboModal('🖨 Carta de Inclusão PHS — '+c.nome, html, false);
+}
+function colabGerarPremioAssiduidade(colabId){
+  const c=loadData('colaboradores').find(x=>x.id===colabId); if(!c) return;
+  const emp=empresaInfoDoColaborador(c); const h=docHoje(); const d={dia:String(parseInt(h.dia,10)),mes:MESES_EXTENSO[parseInt(h.mes,10)-1],ano:h.ano}; const nomeEmp=emp.nome.toUpperCase();
+  const html=`${docPageCSS(emp)}<div class="doc-print" style="padding:10px 18px;font-size:13.5px;line-height:1.65;text-align:justify">
+    <h3 style="text-align:center;margin:0 0 22px">COMUNICADO PRÊMIO POR ASSIDUIDADE</h3>
+    <p style="text-indent:60px;margin:0 0 12px">A empresa <strong>${nomeEmp}</strong>, inscrita no CNPJ sob n.º ${emp.cnpj}, estabelecida na ${emp.endereco}, comunica a todos os colaboradores, que concederá prêmio mensal por assiduidade, prêmio este representado por uma cesta básica e um vale refeição, desde que observadas as condições conjuntamente abaixo dispostas:</p>
+    <p style="text-indent:60px;margin:0 0 12px">1 - O empregado que no decorrer do mês inteiro não tiver nenhuma falta, observando-se uma tolerância de 5 (cinco) minutos de atraso, sendo 5 minutos na entrada e 5 minutos no retorno do almoço, terá direito ao prêmio (uma cesta básica e um vale refeição). Fica ciente o empregado que ultrapassar a tolerância acima perderá o direito do prêmio do referido mês;</p>
+    <p style="text-indent:60px;margin:0 0 12px">2 - Também perde o direito ao prêmio aquele que não registrar corretamente seu cartão ponto na máquina registradora em qualquer um dos horários de entradas e saídas; será reconsiderado este item, caso ocorra algum problema técnico na máquina registradora;</p>
+    <p style="text-indent:60px;margin:0 0 12px">3 - A cesta básica e o vale refeição/alimentação serão entregues todo dia 20 de cada mês imediatamente posterior ao mês cuja assiduidade efetivamente se verificou e ou ocorreu, devendo o funcionário retirá-los no prazo máximo de 2 dias úteis, assinando o respectivo recibo.</p>
+    <p style="text-indent:60px;margin:0 0 14px">4 - O prêmio em questão não será concedido quando de eventual afastamento do funcionário pelo INSS, por qualquer hipótese e ou motivo.</p>
+    <p style="margin:0 0 10px">Cordialmente,</p>
+    <p style="text-align:right;margin:0 0 30px">Santa Bárbara D'Oeste, ${d.dia} de ${d.mes} de ${d.ano}.</p>
+    <p style="margin:0 0 70px"><strong>${nomeEmp}</strong></p>
+    <p style="margin:0">__________________________________<br><strong>Colaborador:</strong> ${gpEsc(c.nome||'')}</p>
+  </div>`;
+  abrirReciboModal('🖨 Comunicado Prêmio por Assiduidade — '+c.nome, html, false);
+}
 function colabGerarTermoEntregaCelular(colabId) {
   const c = loadData('colaboradores').find(x => x.id === colabId);
   if (!c) return;
@@ -4924,6 +4966,8 @@ function colabDocumentosHtml(c) {
       <button class="btn btn-s btn-sm" onclick="colabGerarTermoParticipacaoIntegracao(${c.id})">🖨 Termo de Participação na Integração</button>
       <button class="btn btn-s btn-sm" onclick="colabGerarTermoEntregaCelular(${c.id})">🖨 Termo de Entrega de Celular</button>
       <button class="btn btn-s btn-sm" onclick="colabGerarTermoVeiculo(${c.id})">🖨 Termo de Responsabilidade de Veículo</button>
+      <button class="btn btn-s btn-sm" onclick="colabGerarCartaPHS(${c.id})">🖨 Carta de Inclusão PHS</button>
+      <button class="btn btn-s btn-sm" onclick="colabGerarPremioAssiduidade(${c.id})">🖨 Comunicado Prêmio por Assiduidade</button>
     </div>
     <div class="muted" style="margin-top:6px">Nome, CPF, cargo, setor e empresa (${c.cnpj||'—'}) preenchidos automaticamente — só a assinatura fica em branco. O Manual do Colaborador já inclui os termos de imagem, uniforme e cadastro de e-mail.</div>
   </div>`;
@@ -5504,6 +5548,18 @@ function histSalImprimir() {
     </div>`, false);
 }
 
+/* Aroldo estava Inativo só por um teste no módulo Demissão — volta a Ativo (1x) e some da Demissão */
+function aroldoReativar(){
+  if(localStorage.getItem('ac_aroldo_ativo_v1')) return;
+  try{
+    const a=loadData('colaboradores').find(c=>normSemAcento(c.nome).includes('AROLDO JOSE ISAIAS'));
+    if(!a){ return; }
+    if(a.status==='Inativo') crudUpdate('colaboradores',a.id,{status:'Ativo'},{modulo:'Colaboradores',label:a.nome});
+    loadData('demissoes').filter(d=>d.colabId===a.id||normSemAcento(d.nome||'')===normSemAcento(a.nome)).forEach(d=>crudDeleteFisico('demissoes',d.id,{modulo:'Demissão',label:d.nome}));
+    logAudit('Colaboradores','Atualização',a.id,a.nome+' → Ativo (desligamento era apenas um teste)');
+    localStorage.setItem('ac_aroldo_ativo_v1','1');
+  }catch(e){ console.warn('aroldoReativar',e); }
+}
 function migracaoRealocacoes2026() {
   if (localStorage.getItem('ac_realoc_v1')) return;
   const colabs = loadData('colaboradores');
@@ -5511,9 +5567,7 @@ function migracaoRealocacoes2026() {
   if (ademir) crudUpdate('colaboradores', ademir.id, {cnpj:'PJ'}, {modulo:'Colaboradores', label: ademir.nome});
   const joao = colabs.find(c => normSemAcento(c.nome).includes('JOAO ANTONIO DE OLIVEIRA'));
   if (joao) crudUpdate('colaboradores', joao.id, {cnpj:'PJ'}, {modulo:'Colaboradores', label: joao.nome});
-  const aroldo = colabs.find(c => normSemAcento(c.nome).includes('AROLDO'));
-  if (aroldo) crudUpdate('colaboradores', aroldo.id, {status:'Inativo'}, {modulo:'Colaboradores', label: aroldo.nome});
-  logAudit('Colaboradores', 'Atualização', 0, `Correção de cadastro: ${ademir?ademir.nome+' → PJ; ':''}${joao?joao.nome+' → PJ; ':''}${aroldo?aroldo.nome+' → Inativo':''}`);
+  logAudit('Colaboradores', 'Atualização', 0, `Correção de cadastro: ${ademir?ademir.nome+' → PJ; ':''}${joao?joao.nome+' → PJ; ':''}`);
   localStorage.setItem('ac_realoc_v1', '1');
 }
 
@@ -7736,13 +7790,25 @@ const MOD_BENEF_INSCRITO = {
   table: 'beneficios_inscritos',
   label: 'Inscrito em Benefício',
   onSave: () => { renderBeneficiosTipos(); },
+  beforeSave: (obj) => {
+    if (obj.tipoBeneficio === 'Convênio Médico') {
+      const nz = v => v === undefined || v === null || v === '';
+      if (!(nz(obj.mensalidade) && nz(obj.descDep) && nz(obj.descCopart))) {
+        const c = convCalc({mensalidade: obj.mensalidade, descDep: obj.descDep, descCopart: obj.descCopart});
+        obj.mensalidade = c.mens; obj.descColab = c.colab; obj.descDep = c.dep; obj.descCopart = c.copart; obj.valorDesconto = c.total;
+      }
+    }
+  },
   fields: [
     {field:'colaborador', label:'Colaborador', required:true, full:true},
     {field:'tipoBeneficio', label:'Benefício', required:true},
     {field:'empresa', label:'Empresa', type:'select', options:['AC','BRASS']},
     {field:'ano', label:'Ano', type:'number', placeholder:'2026'},
     {field:'mes', label:'Mês (número)', type:'number', placeholder:'9'},
-    {field:'valorDesconto', label:'Valor do Desconto (R$)', type:'number', step:'0.01'},
+    {field:'valorDesconto', label:'Valor do Desconto (R$) — demais benefícios', type:'number', step:'0.01'},
+    {field:'mensalidade', label:'Convênio Médico: Valor da Mensalidade (R$)', type:'number', step:'0.01'},
+    {field:'descDep', label:'Convênio Médico: Desc. Dependentes (R$)', type:'number', step:'0.01'},
+    {field:'descCopart', label:'Convênio Médico: Desc. Coparticipação (R$)', type:'number', step:'0.01'},
     {field:'status', label:'Status', type:'select', options:['Ativo','Inativo']},
   ]
 };
@@ -7801,6 +7867,108 @@ function benefRemoverInscrito(id, nome) {
   crudDeleteAction({table:'beneficios_inscritos', label:'Benefícios', onSave: renderBeneficiosTipos}, id, nome);
 }
 
+/* ═══════════════ CONVÊNIO MÉDICO — mensalidade, descontos, nota/empresa/repasse ═══════════════ */
+function convNum(v){ if(v===undefined||v===null||v==='') return 0; const n=(typeof v==='number')?v:moedaNum(v); return isNaN(n)?0:n; }
+function convR2(n){ return Math.round(n*100)/100; }
+function convLegado(i){ const nz=v=>v===undefined||v===null||v===''; return nz(i.mensalidade)&&nz(i.descDep)&&nz(i.descCopart); }
+/* Desc. Colaborador = 50% da mensalidade (empresa paga a outra metade); dependentes e coparticipação = integral */
+function convCalc(i){
+  if(convLegado(i)) return {legado:true, mens:null, colab:null, dep:0, copart:0, total:convNum(i.valorDesconto)};
+  const mens=convNum(i.mensalidade), colab=convR2(mens/2), dep=convNum(i.descDep), copart=convNum(i.descCopart);
+  return {legado:false, mens, colab, dep, copart, total:convR2(colab+dep+copart)};
+}
+function convInscritos(comp){
+  comp = comp || benefComp();
+  return loadData('beneficios_inscritos').filter(i => i.status !== 'Inativo' && i.tipoBeneficio === 'Convênio Médico'
+    && i.empresa === comp.empresa && Number(i.ano) === comp.ano && Number(i.mes) === comp.mes)
+    .sort((a,b) => (a.colaborador||'').localeCompare(b.colaborador||''));
+}
+function convNotaReg(comp){ comp = comp || benefComp(); return loadData('convenio_notas').find(n => n.status !== 'Inativo' && n.empresa === comp.empresa && Number(n.ano) === comp.ano && Number(n.mes) === comp.mes); }
+function convResumo(comp){
+  comp = comp || benefComp();
+  const lista = convInscritos(comp).map(convCalc);
+  const repasse = convR2(lista.reduce((a,c) => a + c.total, 0));
+  const reg = convNotaReg(comp), nota = reg ? convNum(reg.valorNota) : 0;
+  return {nota, repasse, empresa: convR2(nota - repasse), temNota: nota > 0, qtd: lista.length,
+    mens: convR2(lista.reduce((a,c)=>a+(c.mens||0),0)), colab: convR2(lista.reduce((a,c)=>a+(c.colab||0),0)),
+    dep: convR2(lista.reduce((a,c)=>a+c.dep,0)), copart: convR2(lista.reduce((a,c)=>a+c.copart,0))};
+}
+function convNotaSalvar(valor){
+  const comp = benefComp(); const num = Math.max(0, convR2(convNum(valor)));
+  const reg = convNotaReg(comp);
+  if (reg) crudUpdate('convenio_notas', reg.id, {valorNota: num}, {modulo:'Benefícios', label:`Nota Convênio Médico ${comp.empresa} ${comp.mes}/${comp.ano}`});
+  else crudCreate('convenio_notas', {empresa:comp.empresa, ano:comp.ano, mes:comp.mes, valorNota:num}, {modulo:'Benefícios', label:`Nota Convênio Médico ${comp.empresa} ${comp.mes}/${comp.ano}`});
+  convResumoRefresh();
+}
+function convResumoRefresh(){
+  const r = convResumo();
+  const set = (id,t) => { const e=document.getElementById(id); if(e) e.textContent=t; };
+  set('cv-empresa', r.temNota ? 'R$ ' + fmtBRL(r.empresa) : '—');
+  set('cv-repasse', 'R$ ' + fmtBRL(r.repasse));
+  const av = document.getElementById('cv-aviso');
+  if (av) av.textContent = (r.temNota && r.empresa < 0) ? '⚠ A nota está menor que o total descontado dos colaboradores — confira os valores.' : '';
+  const t = convResumoTotais(r); Object.keys(t).forEach(k => set(k, t[k]));
+}
+function convResumoTotais(r){ return {'cv-tot-mens':'R$ '+fmtBRL(r.mens),'cv-tot-colab':'R$ '+fmtBRL(r.colab),'cv-tot-dep':'R$ '+fmtBRL(r.dep),'cv-tot-copart':'R$ '+fmtBRL(r.copart),'cv-tot-total':'R$ '+fmtBRL(r.repasse)}; }
+function convAtualizar(id, campo, valor){
+  const data = loadData('beneficios_inscritos'); const rec = data.find(x => x.id === id); if (!rec) return;
+  const num = Math.max(0, convR2(convNum(valor)));
+  ['mensalidade','descDep','descCopart'].forEach(k => { if (rec[k]===undefined||rec[k]===null||rec[k]==='') rec[k] = 0; });
+  rec[campo] = num;
+  const c = convCalc(rec);
+  rec.descColab = c.colab; rec.valorDesconto = c.total; rec.atualizadoEm = nowStr();
+  saveData('beneficios_inscritos', data);
+  logAudit('Benefícios', 'Atualização', id, `${rec.colaborador} — convênio: mensalidade R$ ${fmtBRL(c.mens)}, colab. R$ ${fmtBRL(c.colab)}, dep. R$ ${fmtBRL(c.dep)}, copart. R$ ${fmtBRL(c.copart)}`);
+  syncRecordToCloud('beneficios_inscritos', rec);
+  const set = (eid,t) => { const e=document.getElementById(eid); if(e) e.textContent=t; };
+  set('cv-c-'+id, 'R$ ' + fmtBRL(c.colab)); set('cv-t-'+id, 'R$ ' + fmtBRL(c.total));
+  const tt = document.getElementById('cv-t-'+id); if (tt) tt.title = '';
+  [['m',c.mens],['d',c.dep],['p',c.copart]].forEach(([k,v]) => { const el=document.getElementById('cv-'+k+'-'+id); if(el && document.activeElement!==el) el.value = moedaFmt(v); });
+  convResumoRefresh();
+}
+function convInscritosHtml(){
+  const comp = benefComp(); const inscritos = convInscritos(comp); const r = convResumo(comp);
+  const empInfo = CV_EMPRESA_INFO[comp.empresa] || {nome: comp.empresa};
+  const inp = (pref,id,campo,v) => `<input type="text" inputmode="decimal" id="cv-${pref}-${id}" style="width:84px" value="${moedaFmt(v||0)}" oninput="maskMoedaInput(this)" onchange="convAtualizar(${id},'${campo}',this.value)">`;
+  const linhas = inscritos.map(i => {
+    const c = convCalc(i);
+    const nAnex = loadData('beneficios_anexos').filter(x => x.inscritoId === i.id && x.status !== 'Inativo').length;
+    return `<tr>
+      <td style="font-size:11px">${i.colaborador}</td>
+      <td>${c.legado ? `<input type="text" inputmode="decimal" id="cv-m-${i.id}" style="width:84px" value="" placeholder="preencher" oninput="maskMoedaInput(this)" onchange="convAtualizar(${i.id},'mensalidade',this.value)">` : inp('m',i.id,'mensalidade',c.mens)}</td>
+      <td style="font-size:11px;white-space:nowrap"><span id="cv-c-${i.id}">${c.legado ? '—' : 'R$ ' + fmtBRL(c.colab)}</span></td>
+      <td>${inp('d',i.id,'descDep',c.dep)}</td>
+      <td>${inp('p',i.id,'descCopart',c.copart)}</td>
+      <td style="font-size:11px;font-weight:700;white-space:nowrap"><span id="cv-t-${i.id}" ${c.legado?'title="Valor anterior à nova tabela — preencha a mensalidade para recalcular" style="color:#b45309"':''}>R$ ${fmtBRL(c.total)}</span>${c.legado?' <span class="muted" style="font-size:9px">(valor anterior)</span>':''}</td>
+      <td style="white-space:nowrap"><button class="btn btn-s btn-xs" title="Anexar documentos do desconto" onclick="benefAbrirAnexos(${i.id})">📎${nAnex?' ('+nAnex+')':''}</button>
+      <button class="btn btn-s btn-xs" onclick="crudUpdate('beneficios_inscritos',${i.id},{status:'Inativo'},{modulo:'Benefícios',label:'${escAttr(i.colaborador)}'});renderBeneficiosTipos();showToast('🔒 Marcado como desligado/inativo')">🔒</button>
+      <button class="btn btn-s btn-xs" onclick="benefRemoverInscrito(${i.id},'${escAttr(i.colaborador)}')">🗑</button></td>
+    </tr>`;
+  }).join('');
+  const reg = convNotaReg(comp);
+  return `<div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--g100)">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+      <span style="font-size:11px;font-weight:600">👥 Colaboradores Inscritos — Samaritano · ${empInfo.nome}</span>
+      <div style="white-space:nowrap">
+        <button class="btn btn-s btn-xs" onclick="benefGerarRelatorio('Convênio Médico')">🖨 Relatório</button>
+        <button class="btn btn-s btn-xs" onclick="benefExportarInscritos('Convênio Médico')">⬇ Exportar</button>
+        <button class="btn btn-s btn-xs" onclick="benefAdicionarInscrito('Convênio Médico')">+ Adicionar</button>
+      </div>
+    </div>
+    <div style="font-size:10px;color:var(--g500);margin-bottom:6px">Desc. Colaborador = 50% da mensalidade (a empresa paga a outra metade). Dependentes e coparticipação são descontados integralmente. Preencha mensalidade, dependentes e coparticipação todo mês.</div>
+    <table style="width:100%;font-size:11px"><thead><tr style="color:var(--g500)">
+      <th style="text-align:left;padding:3px">Colaborador</th><th style="text-align:left;padding:3px">Valor Mensalidade</th><th style="text-align:left;padding:3px">Desc. Colaborador (50%)</th><th style="text-align:left;padding:3px">Desc. Dependentes</th><th style="text-align:left;padding:3px">Desc. Coparticipação</th><th style="text-align:left;padding:3px">Total Descontado</th><th style="text-align:left;padding:3px">Ações</th></tr></thead>
+    <tbody>${linhas || '<tr><td colspan="7" class="muted" style="padding:8px">Nenhum colaborador inscrito ainda.</td></tr>'}</tbody>
+    <tfoot><tr style="border-top:1.5px solid var(--g300,#bbb);font-weight:700"><td style="padding:5px 3px">TOTAL</td><td id="cv-tot-mens">R$ ${fmtBRL(r.mens)}</td><td id="cv-tot-colab">R$ ${fmtBRL(r.colab)}</td><td id="cv-tot-dep">R$ ${fmtBRL(r.dep)}</td><td id="cv-tot-copart">R$ ${fmtBRL(r.copart)}</td><td id="cv-tot-total">R$ ${fmtBRL(r.repasse)}</td><td></td></tr></tfoot></table>
+    <div style="margin-top:10px;padding:10px 12px;border:1px solid var(--g100);border-radius:8px;background:var(--g50,#f8fafc);display:flex;gap:22px;flex-wrap:wrap;align-items:flex-end">
+      <div><div style="font-size:10px;color:var(--g500)">VALOR DA NOTA (preencher)</div><input type="text" inputmode="decimal" id="cv-nota" style="width:120px;font-weight:700" value="${moedaFmt(reg?convNum(reg.valorNota):0)}" oninput="maskMoedaInput(this)" onchange="convNotaSalvar(this.value)"></div>
+      <div><div style="font-size:10px;color:var(--g500)">VALOR DA EMPRESA (nota − repasse)</div><div style="font-size:15px;font-weight:700" id="cv-empresa">${r.temNota?'R$ '+fmtBRL(r.empresa):'—'}</div></div>
+      <div><div style="font-size:10px;color:var(--g500)">REPASSE (total descontado dos colaboradores)</div><div style="font-size:15px;font-weight:700" id="cv-repasse">R$ ${fmtBRL(r.repasse)}</div></div>
+      <div id="cv-aviso" style="font-size:11px;color:#b45309;flex-basis:100%">${(r.temNota&&r.empresa<0)?'⚠ A nota está menor que o total descontado dos colaboradores — confira os valores.':''}</div>
+    </div>
+  </div>`;
+}
+
 function benefAtualizarDesconto(id, valor) {
   let num = moedaNum(valor);
   if (isNaN(num) || num < 0) num = 0;
@@ -7822,9 +7990,21 @@ function benefExportarInscritos(tipoNome) {
   const inscritos = loadData('beneficios_inscritos').filter(i => i.status !== 'Inativo' && i.tipoBeneficio === tipoNome
     && i.empresa === comp.empresa && Number(i.ano) === comp.ano && Number(i.mes) === comp.mes)
     .sort((a,b) => a.colaborador.localeCompare(b.colaborador));
+  const meses = ['','Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  if (tipoNome === 'Convênio Médico') {
+    const r = convResumo(comp);
+    const aoa = [[`Convênio Médico (Samaritano) — ${comp.empresa} — ${meses[comp.mes]}/${comp.ano}`],
+      ['Colaborador','Valor Mensalidade','Desc. Colaborador (50%)','Desc. Dependentes','Desc. Coparticipação','Total Descontado']];
+    inscritos.forEach(i => { const c = convCalc(i); aoa.push([i.colaborador, c.mens==null?'':c.mens, c.colab==null?'':c.colab, c.dep, c.copart, c.total]); });
+    aoa.push([]); aoa.push(['TOTAL', r.mens, r.colab, r.dep, r.copart, r.repasse]);
+    aoa.push([]); aoa.push(['TOTAL NOTA', r.nota]); aoa.push(['EMPRESA', r.temNota ? r.empresa : '']); aoa.push(['REPASSE', r.repasse]);
+    const ws2 = XLSX.utils.aoa_to_sheet(aoa); ws2['!cols'] = [{wch:38},{wch:18},{wch:22},{wch:18},{wch:20},{wch:18}];
+    const wb2 = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb2, ws2, 'Convenio Medico');
+    XLSX.writeFile(wb2, `Convenio_Medico_${comp.empresa}_${String(comp.mes).padStart(2,'0')}-${comp.ano}.xlsx`);
+    showToast(`📥 ${inscritos.length} inscritos exportados`); return;
+  }
   const isVT = tipoNome === 'Vale-Transporte';
   const colabs = loadData('colaboradores');
-  const meses = ['','Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
   const header = ['Colaborador','Valor Desconto (R$)','Status'];
   const rows = inscritos.map(i => {
     let valor = i.valorDesconto || 0;
@@ -7857,6 +8037,27 @@ function benefGerarRelatorio(tipoNome) {
   if (!inscritos.length) { showToast('Nenhum inscrito nesta competência', 'warn'); return; }
 
   const empInfo = CV_EMPRESA_INFO[comp.empresa] || {nome: comp.empresa, cnpj:''};
+  if (tipoNome === 'Convênio Médico') {
+    const r = convResumo(comp); const f = v => v==null ? '—' : 'R$ ' + fmtBRL(v);
+    const td = 'padding:5px 4px;text-align:right';
+    const lin = inscritos.map((i,idx) => { const c = convCalc(i);
+      return `<tr style="border-bottom:1px solid #ccc"><td style="padding:5px 4px">${idx+1}</td><td style="padding:5px 4px">${i.colaborador}</td><td style="${td}">${f(c.mens)}</td><td style="${td}">${f(c.colab)}</td><td style="${td}">${f(c.dep)}</td><td style="${td}">${f(c.copart)}</td><td style="${td};font-weight:700">${f(c.total)}</td></tr>`; }).join('');
+    abrirReciboModal('🖨 Relatório — Convênio Médico', `<div style="padding:16px 4px">
+      <h3 style="text-align:center;margin-bottom:4px">RELATÓRIO — CONVÊNIO MÉDICO (SAMARITANO)</h3>
+      <p style="text-align:center;font-size:11px;color:#666;margin-bottom:14px">${empInfo.nome}${empInfo.cnpj?' — CNPJ '+empInfo.cnpj:''} · Competência: ${meses[comp.mes]}/${comp.ano}</p>
+      <table style="width:100%;border-collapse:collapse;font-size:10.5px">
+        <thead><tr style="border-bottom:1.5px solid #000"><th style="text-align:left;padding:5px 4px;width:26px">Nº</th><th style="text-align:left;padding:5px 4px">Colaborador</th><th style="text-align:right;padding:5px 4px">Mensalidade</th><th style="text-align:right;padding:5px 4px">Desc. Colaborador (50%)</th><th style="text-align:right;padding:5px 4px">Desc. Dependentes</th><th style="text-align:right;padding:5px 4px">Desc. Coparticipação</th><th style="text-align:right;padding:5px 4px">Total Descontado</th></tr></thead>
+        <tbody>${lin}</tbody>
+        <tfoot><tr style="border-top:1.5px solid #000;font-weight:700"><td colspan="2" style="padding:6px 4px;text-align:right">TOTAL</td><td style="${td}">${f(r.mens)}</td><td style="${td}">${f(r.colab)}</td><td style="${td}">${f(r.dep)}</td><td style="${td}">${f(r.copart)}</td><td style="${td}">${f(r.repasse)}</td></tr></tfoot>
+      </table>
+      <table style="margin:18px 0 0 auto;border-collapse:collapse;font-size:12px;min-width:280px">
+        <tr><td style="padding:4px 10px;border:1px solid #000;font-weight:700">TOTAL NOTA</td><td style="padding:4px 10px;border:1px solid #000;text-align:right">${r.temNota?f(r.nota):'—'}</td></tr>
+        <tr><td style="padding:4px 10px;border:1px solid #000;font-weight:700">EMPRESA</td><td style="padding:4px 10px;border:1px solid #000;text-align:right">${r.temNota?f(r.empresa):'—'}</td></tr>
+        <tr><td style="padding:4px 10px;border:1px solid #000;font-weight:700">REPASSE</td><td style="padding:4px 10px;border:1px solid #000;text-align:right">${f(r.repasse)}</td></tr>
+      </table>
+    </div>`, false);
+    return;
+  }
   let total = 0;
   const linhas = inscritos.map((i,idx) => {
     let valor = i.valorDesconto || 0;
@@ -7960,6 +8161,7 @@ function benefInscritosHtml(tipoNome) {
   const comp = benefComp();
   const inscritos = loadData('beneficios_inscritos').filter(i => i.status !== 'Inativo' && i.tipoBeneficio === tipoNome
     && i.empresa === comp.empresa && Number(i.ano) === comp.ano && Number(i.mes) === comp.mes);
+  if (tipoNome === 'Convênio Médico') return convInscritosHtml();
   const isVT = tipoNome === 'Vale-Transporte';
   const colabs = loadData('colaboradores');
   const linhas = inscritos.map(i => {
@@ -12063,7 +12265,7 @@ async function pullColaboradoresMerge() {
 // tem dado local, não mexe — evita sobrescrever algo em uso.
 async function pullOutrasTabelasAntesDoBoot() {
   if (DB_MODE !== 'supabase' || !supabaseClient) return;
-  const TABELAS = ['colab_hist','veiculos','ferias_gozos','treino_listas','beneficios_hist','ferias_hist','demissoes','demissao_templates','hist_pdfs','endo_extra','endo_oculto','ind_turnover','ind_eng','ind_td','ind_hist','plano_cfg','plano_hist','plano_acoes','colab_excluidos','beneficios_anexos','colab_documentos','ferias','treinamentos','avaliacoes','sst','admissoes',
+  const TABELAS = ['colab_hist','convenio_notas','veiculos','ferias_gozos','treino_listas','beneficios_hist','ferias_hist','demissoes','demissao_templates','hist_pdfs','endo_extra','endo_oculto','ind_turnover','ind_eng','ind_td','ind_hist','plano_cfg','plano_hist','plano_acoes','colab_excluidos','beneficios_anexos','colab_documentos','ferias','treinamentos','avaliacoes','sst','admissoes',
     'vagas','beneficios_mov','beneficios_inscritos','beneficios_tipos','cargos','ponto',
     'clima_pesquisas','clima_acoes','sucessao','terceiros','documentos','usuarios','holerites',
     'comunicados','cesta_vegas','folha_descontos','feedback90','tempo_empresa_ctrl','desccargos','sstfin','pcmso',
