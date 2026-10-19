@@ -455,7 +455,7 @@ body.ad-minimizado #ad-titlebar-text{cursor:pointer}
   <div class="l-box">
     <div class="l-logo">
       <div class="l-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
-      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 5.04 — Termo de Veículo com dados do veículo (Saveiro UET3H34) e cadastro de veículos; Histórico de férias: incluir/excluir período e gozo; Férias: botão ✔ Resolvido (guarda o período no histórico), coluna do colaborador mais estreita; menu lateral compacto; botões minimizar/maximizar; Férias por empresa</div></div>
+      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 5.06 — Fichas de registro da Brass importadas (cadastro, histórico de salário/cargo e férias); Histórico de férias: incluir/excluir período e gozo; Férias: botão ✔ Resolvido (guarda o período no histórico), coluna do colaborador mais estreita; menu lateral compacto; botões minimizar/maximizar; Férias por empresa</div></div>
     </div>
     <div class="f-row"><label>Usuário</label><input type="text" id="l-user" value="jakeline@acmetalurgica.com.br"></div>
     <div class="f-row"><label>Senha</label><input type="password" id="l-pass" value="••••••••"></div>
@@ -2496,6 +2496,7 @@ async function buildAll(){
   try{buildFeriasRealSeed();}catch(e){console.warn('buildFeriasRealSeed:',e);}
   try{buildVeiculosSeed();}catch(e){console.warn('buildVeiculosSeed:',e);}
   try{feriasMigrarV3();}catch(e){console.warn('feriasMigrarV3:',e);}
+  try{ const _r=importarFichasBrass(); if(_r) setTimeout(()=>{ try{ fichaRelatorioAbrir(_r); if(window.feriasCtrl) feriasCtrl.load(); }catch(e){} },1500); }catch(e){console.warn('importarFichasBrass:',e);}
   try{buildFeedback90Seed();}catch(e){console.warn('buildFeedback90Seed:',e);}
   try{buildDescCargosSeed();}catch(e){console.warn('buildDescCargosSeed:',e);}
   try{buildDescCargosSeedV2();}catch(e){console.warn('buildDescCargosSeedV2:',e);}
@@ -3650,6 +3651,28 @@ const MOD_COLAB = {
     {field:'sindicato', label:'Sindicato'},
     {field:'horarioTrabalho', label:'Horário de Trabalho', placeholder:'Ex: 07:00–17:00 (Seg–Sex)'},
     {field:'matriculaEsocial', label:'Matrícula eSocial'},
+    {field:'funcao', label:'Função'},
+    {field:'localNascimento', label:'Local de Nascimento'},
+    {field:'nacionalidade', label:'Nacionalidade'},
+    {field:'rgEmissao', label:'RG — Data de emissão', placeholder:'dd/mm/aaaa'},
+    {field:'rgOrgao', label:'RG — Órgão/UF emissor'},
+    {field:'tituloEleitor', label:'Título de Eleitor'},
+    {field:'tituloZona', label:'Título — Zona'},
+    {field:'tituloSecao', label:'Título — Seção'},
+    {field:'ctps', label:'CTPS — Número'},
+    {field:'ctpsSerie', label:'CTPS — Série'},
+    {field:'ctpsUF', label:'CTPS — UF'},
+    {field:'ctpsData', label:'CTPS — Data de expedição', placeholder:'dd/mm/aaaa'},
+    {field:'cnh', label:'CNH — Número'},
+    {field:'cnhCategoria', label:'CNH — Categoria'},
+    {field:'docMilitar', label:'Documento militar'},
+    {field:'pisCadastro', label:'PIS — Cadastrado em', placeholder:'dd/mm/aaaa'},
+    {field:'fgtsOpcao', label:'FGTS — Opção em', placeholder:'dd/mm/aaaa'},
+    {field:'expIni', label:'Contrato de experiência — início', placeholder:'dd/mm/aaaa'},
+    {field:'expFim', label:'Contrato de experiência — fim', placeholder:'dd/mm/aaaa'},
+    {field:'expProrrogDias', label:'Experiência — dias de prorrogação'},
+    {field:'expFimProrrog', label:'Experiência — fim da prorrogação', placeholder:'dd/mm/aaaa'},
+    {field:'beneficiarios', label:'Beneficiários / Dependentes', type:'textarea', full:true},
     {field:'observacoes', label:'Observações', type:'textarea', full:true},
   ],
   onSave: () => {
@@ -3755,7 +3778,13 @@ function colabFichaSwitchTab(tab) {
       cfField('Grau de Instrução', c.grauInstrucao) + cfField('Cor/Raça', c.corRaca) + cfField('Deficiência (PCD)', c.deficiencia) +
       cfField('Telefone', c.telefone) + cfField('Celular', c.celular) + cfField('E-mail', c.email) +
       cfField('Nome do Pai', c.pai) + cfField('Nome da Mãe', c.mae) + cfField('RG', c.rg) +
-      cfField('CPF', c.cpf) + cfField('PIS/PASEP', c.pis) + ''
+      cfField('CPF', c.cpf) + cfField('PIS/PASEP', c.pis) + cfField('PIS — Cadastrado em', c.pisCadastro) +
+      cfField('Local de Nascimento', c.localNascimento) + cfField('Nacionalidade', c.nacionalidade) + cfField('RG — Emissão', [c.rgEmissao,c.rgOrgao].filter(Boolean).join(' · ')) +
+      cfField('Título de Eleitor', [c.tituloEleitor, c.tituloZona?'Zona '+c.tituloZona:'', c.tituloSecao?'Seção '+c.tituloSecao:''].filter(Boolean).join(' · ')) +
+      cfField('CTPS', [c.ctps, c.ctpsSerie?'Série '+c.ctpsSerie:'', c.ctpsUF, c.ctpsData?'exp. '+c.ctpsData:''].filter(Boolean).join(' · ')) +
+      cfField('CNH', [c.cnh, c.cnhCategoria?'Cat. '+c.cnhCategoria:''].filter(Boolean).join(' · ')) +
+      cfField('Documento militar', c.docMilitar) +
+      `<div style="grid-column:span 3">${cfField('Beneficiários / Dependentes', c.beneficiarios)}</div>`
     );
   } else if (tab === 'endereco') {
     box.innerHTML = grid(
@@ -3767,12 +3796,14 @@ function colabFichaSwitchTab(tab) {
     box.innerHTML = grid(
       cfField('Cargo', c.cargo) + cfField('Setor', c.setor) + cfField('CNPJ', c.cnpj) +
       cfField('Data de Admissão', c.adm) + cfField('CBO', c.cbo) + cfField('Sindicato', c.sindicato) +
-      cfField('Matrícula eSocial', c.matriculaEsocial) + cfField('Status', c.status) + ''
-    );
+      cfField('Matrícula eSocial', c.matriculaEsocial) + cfField('Status', c.status) + cfField('Função', c.funcao) +
+      cfField('FGTS — Opção em', c.fgtsOpcao) +
+      cfField('Contrato de experiência', c.expIni ? c.expIni+' a '+(c.expFim||'—')+(c.expFimProrrog?' (prorrogado até '+c.expFimProrrog+')':'') : '') + ''
+    ) + `<div style="margin-top:8px"><button class="btn btn-s btn-sm" onclick="fgAbrir('${escAttr(c.nome)}')">📜 Histórico de férias</button></div>`;
   } else if (tab === 'folha') {
     box.innerHTML = grid(
       cfField('Salário', c.sal ? 'R$ '+moedaFmt(c.sal) : '') + cfField('Horário de Trabalho', c.horarioTrabalho) + ''
-    );
+    ) + chHtml(c);
   } else if (tab === 'gestao') {
     box.innerHTML = grid(cfField('Status', c.status) + '') + `<div style="margin-top:10px">${cfField('Observações', c.observacoes)}</div>`;
   } else if (tab === 'documentos') {
@@ -4395,13 +4426,15 @@ const MOD_VEICULO = {
   onSave: () => { try{ if(document.getElementById('tv-lista')) tvAbrir(tvCtx); }catch(e){} }
 };
 function buildVeiculosSeed(){
-  if(localStorage.getItem('ac_veiculos_v1')) return;
-  const ex=loadData('veiculos');
-  if(!ex.some(v=>String(v.placa).toUpperCase()==='UET3H34')){
-    const now=nowStr(); const rec={id:ex.reduce((m,v)=>Math.max(m,v.id||0),0)+1,modelo:'VW SAVEIRO CS TL MF',tipo:'CARGA CAMINHONETE',cor:'BRANCA',combustivel:'ALCOOL/GASOLINA',placa:'UET3H34',ano:'2026/2027',chassi:'9BWKL45U0VP028839',empresa:'AC',status:'Ativo',criadoEm:now,atualizadoEm:now};
-    ex.push(rec); saveData('veiculos',ex); syncRecordToCloud('veiculos',rec);
-  }
-  localStorage.setItem('ac_veiculos_v1','1');
+  const lista=[
+    {modelo:'VW SAVEIRO CS TL MF',tipo:'CARGA CAMINHONETE',cor:'BRANCA',combustivel:'ALCOOL/GASOLINA',placa:'UET3H34',ano:'2026/2027',chassi:'9BWKL45U0VP028839'},
+    {modelo:'VOLKSWAGEN EXPRESS PRIME',tipo:'CAMINHONETA',cor:'BRANCO GEADA',combustivel:'DIESEL',placa:'GIH4G65',ano:'2022/2023',chassi:''}
+  ];
+  const chave='ac_veiculos_v2'; if(localStorage.getItem(chave)) return;
+  const ex=loadData('veiculos'); const now=nowStr(); let id=ex.reduce((m,v)=>Math.max(m,v.id||0),0);
+  lista.forEach(v=>{ if(ex.some(x=>String(x.placa).toUpperCase()===v.placa)) return;
+    const rec=Object.assign({id:++id,empresa:'AC',status:'Ativo',criadoEm:now,atualizadoEm:now},v); ex.push(rec); syncRecordToCloud('veiculos',rec); });
+  saveData('veiculos',ex); localStorage.setItem(chave,'1'); localStorage.setItem('ac_veiculos_v1','1');
 }
 function veiculoTexto(v){
   if(!v) return `marca __________________________________________________________ ano de fabricação/modelo _____/______/_______, placas __________________, tipo _______________, cor __________________`;
@@ -6042,6 +6075,134 @@ function fgExportar(nome){
   const wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,'Gozos'); XLSX.writeFile(wb,'Historico_Ferias_'+(nome?nome.split(' ')[0]+'_':'')+todayStr().replace(/\//g,'-')+'.xlsx');
 }
 
+
+/* ═══════════════════════════════════════════════════════════════
+   FICHAS DE REGISTRO DE EMPREGADO — BRASS METAL (emissão 19/10/2026)
+   Preenche cadastro (só campos vazios), histórico de salário/cargo e férias
+   ═══════════════════════════════════════════════════════════════ */
+const FICHA_BRASS=[{"nome":"AROLDO JOSE ISAIAS DE MORAES JUNIOR","adm":"11/01/2021","matriculaEsocial":"000012","nascimento":"10/10/2004","localNascimento":"RIO CLARO - SP","nacionalidade":"Brasil","estadoCivil":"Solteiro(a)","pai":"AROLDO JOSE ISAIAS DE MORAS","mae":"MARCIA RANGEL ISAIAS DE MORAES","rg":"577293187","rgEmissao":"22/07/2013","rgOrgao":"SSP/SP","tituloEleitor":"","tituloZona":"","tituloSecao":"","ctps":"48719998","ctpsSerie":"88","ctpsData":"08/01/2021","ctpsUF":"SP","cpf":"487.199.968-88","cnh":"","cnhCategoria":"","docMilitar":"","corRaca":"Branca","sexo":"Masculino","grauInstrucao":"Médio Completo","deficiencia":"Não","telefone":"","celular":"","cbo":"721215","funcao":"","pis":"140.47173.48-3","pisCadastro":"08/01/2021","fgtsOpcao":"11/01/2021","horarioTrabalho":"07:00–17:00 (intervalo 12:00–13:00)","beneficiarios":"","expIni":"11/01/2021","expFim":"09/02/2021","expProrrogDias":"30","expFimProrrog":"11/03/2021","cargoAdmissao":"TORNEIRO PRODUÇÃO C","salarioAdmissao":1694.79,"enderecoTipo":"Rua","endereco":"10","numero":"330","complemento":"","bairro":"CONSOLAÇÃO","cidade":"RIO CLARO","uf":"SP","cep":"13500-090","salarios":[["01/11/2025",2221.54,"DISSIDIO"],["01/11/2024",2100.94,"DISSIDIO"],["01/01/2024",1984.83,"ALTERAÇÃO SALARIAL"],["01/12/2022",1943.38,"ALTERAÇÃO SALARIAL"],["01/11/2021",1696.82,"ALTERAÇÃO SALARIAL"]],"cargos":[],"ferias":[["23/12/2024","22/12/2025","02/02/2026","03/03/2026","",""],["23/12/2023","22/12/2024","03/11/2025","02/12/2025","",""],["23/12/2022","22/12/2023","04/11/2024","21/11/2024","",""],["23/12/2022","22/12/2023","20/12/2023","02/01/2024","",""],["23/12/2021","22/12/2022","14/08/2023","12/09/2023","",""],["11/01/2021","22/12/2021","17/01/2023","04/02/2023","",""],["11/01/2021","22/12/2021","23/12/2021","02/01/2022","",""]],"afast":[]},{"nome":"BRUNO DA SILVA NASCIMENTO VICHESI","adm":"11/04/2023","matriculaEsocial":"000071","nascimento":"30/03/2005","localNascimento":"SANTA BARBARA D'OESTE","nacionalidade":"Brasil","estadoCivil":"Solteiro(a)","pai":"ROGERIO FABIANO NASCIMENTO","mae":"SUELI RODRIGUES DA SILVA","rg":"570895467","rgEmissao":"31/05/2022","rgOrgao":"SSP/SP","tituloEleitor":"473153390141","tituloZona":"186","tituloSecao":"0379","ctps":"50727009","ctpsSerie":"842","ctpsData":"10/04/2023","ctpsUF":"SP","cpf":"507.270.098-42","cnh":"","cnhCategoria":"","docMilitar":"320008725668","corRaca":"Branca","sexo":"Masculino","grauInstrucao":"Médio Completo","deficiencia":"Não","telefone":"19-991139443","celular":"","cbo":"721215","funcao":"","pis":"212.30134.08-7","pisCadastro":"","fgtsOpcao":"11/04/2023","horarioTrabalho":"07:00–17:00 (intervalo 12:00–13:00)","beneficiarios":"","expIni":"11/04/2023","expFim":"10/05/2023","expProrrogDias":"30","expFimProrrog":"09/06/2023","cargoAdmissao":"TORNEIRO PRODUÇÃO C","salarioAdmissao":1943.38,"enderecoTipo":"Rua","endereco":"VITORIO PADOVESE","numero":"397","complemento":"FD","bairro":"PARQUE RESIDENCIAL DO LAGO","cidade":"SANTA BARBARA D'OESTE","uf":"SP","cep":"13458-628","salarios":[["01/08/2026",3618.65,"MERITO"],["01/02/2026",3446.34,"MERITO"],["01/11/2025",3282.22,"DISSIDIO"],["01/09/2025",3104.06,"MERITO"],["01/01/2025",2815.47,"MERITO"],["01/11/2024",2720.43,"DISSIDIO"],["01/10/2024",2570.08,"MERITO"],["01/07/2024",2331.14,"REAJUSTE SALARIAL"],["01/01/2024",2220.13,"ALTERAÇÃO SALARIAL"]],"cargos":[["01/10/2024","TORNEIRO PRODUÇÃO C","TORNEIRO PRODUÇÃO B"]],"ferias":[["20/12/2024","19/12/2025","14/10/2026","31/10/2026","",""],["20/12/2024","19/12/2025","22/12/2025","02/01/2026","",""],["20/12/2023","19/12/2024","16/07/2025","27/07/2025","",""],["20/12/2023","19/12/2024","19/12/2024","05/01/2025","",""],["11/04/2023","19/12/2023","26/06/2024","03/07/2024","",""],["11/04/2023","19/12/2023","20/12/2023","02/01/2024","",""]],"afast":[["27/10/2025","01/11/2025"]]},{"nome":"CLEYTON SANTOS DE SOUZA","adm":"16/05/2022","matriculaEsocial":"000049","nascimento":"28/06/1991","localNascimento":"AMERICANA - SP","nacionalidade":"Brasil","estadoCivil":"Casado(a)","pai":"MARIO ALMEIDA DE SOUZA","mae":"LURDINEIA DOS SANTOS DE ALMEIDA DE SOUZA","rg":"475959486","rgEmissao":"30/06/2018","rgOrgao":"SSP/SP","tituloEleitor":"","tituloZona":"","tituloSecao":"","ctps":"30077","ctpsSerie":"0345","ctpsData":"11/01/2008","ctpsUF":"SP","cpf":"371.831.278-69","cnh":"","cnhCategoria":"","docMilitar":"","corRaca":"Branca","sexo":"Masculino","grauInstrucao":"Médio Completo","deficiencia":"Não","telefone":"19-981107485","celular":"","cbo":"721215","funcao":"","pis":"164.24518.99-2","pisCadastro":"","fgtsOpcao":"16/05/2022","horarioTrabalho":"07:00–17:00 (intervalo 12:00–13:00)","beneficiarios":"TYLER RODRIGUES SANTOS, GEOVANA RODRIGUES MARGARIDO","expIni":"16/05/2022","expFim":"14/06/2022","expProrrogDias":"30","expFimProrrog":"14/07/2022","cargoAdmissao":"TORNEIRO PRODUÇÃO B","salarioAdmissao":1882.57,"enderecoTipo":"Rua","endereco":"PORTUGAL","numero":"1138","complemento":"","bairro":"JARDIM EUROPA I","cidade":"SANTA BARBARA D'OESTE","uf":"SP","cep":"13455-425","salarios":[["01/02/2026",3618.65,"MERITO"],["01/11/2025",3446.34,"DISSIDIO"],["01/08/2025",3259.26,"MERITO"],["01/01/2025",3104.06,"PROMOÇÃO DE CARGO"],["01/11/2024",2999.27,"DISSIDIO"],["01/10/2024",2833.51,"MERITO"],["01/01/2024",2570.08,"ALTERAÇÃO SALARIAL"],["01/09/2023",2436.1,"ALTERAÇÃO SALARIAL"],["01/01/2023",2209.61,"ALTERAÇÃO SALARIAL"],["01/12/2022",2104.39,"ALTERAÇÃO SALARIAL"],["01/07/2022",1976.7,"ALTERAÇÃO SALARIAL"]],"cargos":[["30/11/2025","TORNEIRO PRODUÇÃO A","TORNEIRO FERRAMENTEIRO B"],["02/01/2025","TORNEIRO PRODUÇÃO B","TORNEIRO PRODUÇÃO A"]],"ferias":[["16/05/2024","15/05/2025","22/12/2025","05/01/2026","",""],["16/05/2024","15/05/2025","30/06/2025","14/07/2025","",""],["16/05/2023","15/05/2024","24/06/2024","23/07/2024","",""],["16/05/2022","15/05/2023","20/12/2023","30/12/2023","",""],["16/05/2022","15/05/2023","14/06/2023","03/07/2023","",""]],"afast":[["07/01/2025","10/01/2025"],["23/03/2023","28/03/2023"],["09/08/2022","16/08/2022"]]},{"nome":"EDUARDO RODRIGUES LIMA","adm":"24/09/2025","matriculaEsocial":"112","nascimento":"01/04/1979","localNascimento":"SAO PAULO - SP","nacionalidade":"Brasil","estadoCivil":"Casado(a)","pai":"ORIDIO FERREIRA LIMA","mae":"ALZIRA RODRIGUES LIMA","rg":"298262770","rgEmissao":"11/11/2014","rgOrgao":"SSP/SP","tituloEleitor":"220152060108","tituloZona":"186","tituloSecao":"0369","ctps":"031119","ctpsSerie":"00170","ctpsData":"09/02/1994","ctpsUF":"SP","cpf":"282.956.818-42","cnh":"00672700560","cnhCategoria":"B","docMilitar":"040073259497","corRaca":"Branca","sexo":"Masculino","grauInstrucao":"Médio Completo","deficiencia":"Não","telefone":"","celular":"19-982863193","cbo":"721215","funcao":"","pis":"127.10356.17-3","pisCadastro":"12/07/2000","fgtsOpcao":"24/09/2025","horarioTrabalho":"06:00–14:36 (intervalo 11:00–12:00)","beneficiarios":"LETICIA DE OLIVEIRA LIMA, GUILHERME DE OLIVEIRA LIMA","expIni":"24/09/2025","expFim":"07/11/2025","expProrrogDias":"45","expFimProrrog":"22/12/2025","cargoAdmissao":"TORNEIRO PRODUÇÃO A","salarioAdmissao":3104.06,"enderecoTipo":"Rua","endereco":"DOUTOR CLOVIS HADDAD","numero":"209","complemento":"CS 2","bairro":"JARDIM SOUZA QUEIROZ","cidade":"SANTA BARBARA D'OESTE","uf":"SP","cep":"13456-649","salarios":[["18/11/2025",3282.23,"DISSIDIO"]],"cargos":[],"ferias":[],"afast":[]},{"nome":"GABRIEL ANTONIO FERREIRA GARCIA DOS ANJOS","adm":"24/03/2022","matriculaEsocial":"000041","nascimento":"26/06/2000","localNascimento":"PRESIDENTE PRUDENTE - SP","nacionalidade":"Brasil","estadoCivil":"Casado(a)","pai":"CLAUDEMIR ANTONIO DOS ANJOS","mae":"RUTE FERREIRA DOS ANJOS","rg":"555689645","rgEmissao":"19/06/2019","rgOrgao":"SSP/SP","tituloEleitor":"","tituloZona":"","tituloSecao":"","ctps":"029232","ctpsSerie":"00440","ctpsData":"18/11/2015","ctpsUF":"SP","cpf":"437.471.988-13","cnh":"","cnhCategoria":"","docMilitar":"","corRaca":"Branca","sexo":"Masculino","grauInstrucao":"Médio Completo","deficiencia":"Não","telefone":"19-996156897","celular":"","cbo":"721215","funcao":"","pis":"203.67732.35-6","pisCadastro":"","fgtsOpcao":"24/03/2022","horarioTrabalho":"06:00–14:36 (intervalo 11:00–12:00)","beneficiarios":"MARIA RODRIGUES SILVA DOS ANJO","expIni":"24/03/2022","expFim":"22/04/2022","expProrrogDias":"30","expFimProrrog":"22/05/2022","cargoAdmissao":"TORNEIRO PRODUÇÃO B","salarioAdmissao":1882.57,"enderecoTipo":"Rua","endereco":"ALBERTO NOVAES","numero":"311","complemento":"","bairro":"RESIDENCIAL FURLAN","cidade":"SANTA BARBARA D'OESTE","uf":"SP","cep":"13451-192","salarios":[["01/01/2026",4189.1,"MERITO"],["01/11/2025",3799.58,"DISSIDIO"],["01/08/2025",3593.33,"MERITO"],["01/01/2025",3259.25,"PROMOÇÃO DE CARGO"],["01/11/2024",3149.24,"DISSIDIO"],["11/10/2024",2975.19,"MERITO"],["01/03/2024",2698.58,"EFETIVAÇÃO"],["01/01/2024",2570.08,"ALTERAÇÃO SALARIAL"],["01/05/2023",2209.61,"ALTERAÇÃO SALARIAL"],["01/12/2022",2104.39,"ALTERAÇÃO SALARIAL"],["01/06/2022",1976.7,"ALTERAÇÃO SALARIAL"]],"cargos":[["30/11/2025","TORNEIRO PROGRAMADOR C","TORNEIRO PROGRAMADOR B"],["02/01/2025","TORNEIRO PRODUÇÃO A","TORNEIRO PROGRAMADOR C"],["10/10/2024","TORNEIRO PRODUÇÃO B","TORNEIRO PRODUÇÃO A"]],"ferias":[["24/03/2024","23/03/2025","02/03/2026","19/03/2026","",""],["24/03/2024","23/03/2025","22/12/2025","02/01/2026","",""],["24/03/2023","23/03/2024","05/03/2025","16/03/2025","",""],["24/03/2023","23/03/2024","19/12/2024","05/01/2025","",""],["24/03/2023","23/03/2024","01/01/2024","03/01/2024","",""],["24/03/2022","23/03/2023","20/12/2023","31/12/2023","",""],["24/03/2022","23/03/2023","12/06/2023","01/07/2023","",""]],"afast":[]},{"nome":"GUSTAVO BISPO DOS SANTOS","adm":"09/09/2025","matriculaEsocial":"108","nascimento":"26/12/2004","localNascimento":"SANTA BARBARA D'OESTE - SP","nacionalidade":"Brasil","estadoCivil":"Solteiro(a)","pai":"ADAILTON BISPO DOS SANTOS","mae":"THAIS MARTINS DOS SANTOS","rg":"58.217.048-5","rgEmissao":"24/02/2022","rgOrgao":"SSP/SP","tituloEleitor":"466829650159","tituloZona":"186","tituloSecao":"0391","ctps":"","ctpsSerie":"","ctpsData":"","ctpsUF":"","cpf":"478.461.378-16","cnh":"08222960998","cnhCategoria":"AB","docMilitar":"320007444469","corRaca":"Parda","sexo":"Masculino","grauInstrucao":"Médio Incompleto","deficiencia":"Não","telefone":"","celular":"","cbo":"784205","funcao":"","pis":"162.80931.07-3","pisCadastro":"","fgtsOpcao":"09/09/2025","horarioTrabalho":"07:00–17:00 (intervalo 12:00–13:00)","beneficiarios":"HEYTOR HENRIQUE DA SILVA DE ALENCAR BISPO","expIni":"09/09/2025","expFim":"23/10/2025","expProrrogDias":"45","expFimProrrog":"07/12/2025","cargoAdmissao":"AUXILIAR DE PRODUÇÃO","salarioAdmissao":2100.94,"enderecoTipo":"Avenida","endereco":"RUTH GARRIDO ROQUE","numero":"1190","complemento":"BL L AP 402","bairro":"PARQUE RESIDENCIAL DO LAGO","cidade":"SANTA BARBARA D'OESTE","uf":"SP","cep":"13458-620","salarios":[["01/03/2026",2332.62,"MERITO"],["01/11/2025",2221.54,"DISSIDIO"]],"cargos":[],"ferias":[],"afast":[]},{"nome":"LEONARDO GOMES LANDIM DOS SANTOS","adm":"20/03/2025","matriculaEsocial":"92","nascimento":"22/02/2005","localNascimento":"SANTA BARBARA D'OESTE - SP","nacionalidade":"Brasil","estadoCivil":"Solteiro(a)","pai":"EDINILSON PAES LANDIM DOS SANTOS","mae":"SIMONE ALBANEZ GOMES","rg":"62675810-5","rgEmissao":"06/10/2016","rgOrgao":"SSP/SP","tituloEleitor":"488627750132","tituloZona":"186","tituloSecao":"0358","ctps":"57872567","ctpsSerie":"865","ctpsData":"20/04/2022","ctpsUF":"SP","cpf":"578.725.678-65","cnh":"","cnhCategoria":"","docMilitar":"","corRaca":"Branca","sexo":"Masculino","grauInstrucao":"Médio Completo","deficiencia":"Não","telefone":"","celular":"19-982520668","cbo":"721405","funcao":"","pis":"165.17741.38-1","pisCadastro":"","fgtsOpcao":"20/03/2025","horarioTrabalho":"14:00–23:34 (intervalo 19:00–20:00)","beneficiarios":"","expIni":"20/03/2025","expFim":"18/04/2025","expProrrogDias":"30","expFimProrrog":"18/05/2025","cargoAdmissao":"AUXILIAR DE USINAGEM","salarioAdmissao":2100.94,"enderecoTipo":"Rua","endereco":"PADRE VICTORIO FREGUGLIA","numero":"1020","complemento":"AP 14 A","bairro":"CONJUNTO HABITACIONAL ROBERTO ROMANO","cidade":"SANTA BARBARA D'OESTE","uf":"SP","cep":"13458-190","salarios":[["01/01/2026",2449.24,"MERITO"],["01/11/2025",2332.61,"DISSIDIO"],["19/05/2025",2205.99,"EFETIVAÇÃO"]],"cargos":[["30/11/2025","AUXILIAR DE USINAGEM","TORNEIRO PRODUÇÃO C"]],"ferias":[],"afast":[]},{"nome":"MATHEUS HENRIQUE GOMES","adm":"08/09/2025","matriculaEsocial":"107","nascimento":"02/05/2001","localNascimento":"SANTA BARBARA D'OESTE - SP","nacionalidade":"Brasil","estadoCivil":"Solteiro(a)","pai":"CRISTIANO APARECIDO GOMES","mae":"FABIANA CRISTINA ROCHA DA ROZA DE OLIVEIRA GOMES","rg":"57497207-9","rgEmissao":"09/01/2018","rgOrgao":"SSP/SP","tituloEleitor":"452708420175","tituloZona":"186","tituloSecao":"0370","ctps":"","ctpsSerie":"","ctpsData":"","ctpsUF":"","cpf":"483.996.108-52","cnh":"0754992692","cnhCategoria":"AB","docMilitar":"320002736523","corRaca":"Branca","sexo":"Masculino","grauInstrucao":"Médio Completo","deficiencia":"Não","telefone":"","celular":"","cbo":"721215","funcao":"","pis":"207.73951.31-2","pisCadastro":"24/07/2019","fgtsOpcao":"08/09/2025","horarioTrabalho":"06:00–14:36 (intervalo 11:00–12:00)","beneficiarios":"","expIni":"08/09/2025","expFim":"06/11/2025","expProrrogDias":"30","expFimProrrog":"06/12/2025","cargoAdmissao":"TORNEIRO PRODUÇÃO B","salarioAdmissao":2681.4,"enderecoTipo":"Avenida","endereco":"BRIGADEIRO EDUARDO GOMES","numero":"32","complemento":"FD","bairro":"CONJUNTO HABITACIONAL 31 DE MARCO","cidade":"SANTA BARBARA D'OESTE","uf":"SP","cep":"13453-192","salarios":[["01/03/2026",3125.93,"MERITO"],["10/11/2025",2977.07,"DISSIDIO"],["01/11/2025",2815.47,"EFETIVAÇÃO"]],"cargos":[["30/11/2025","TORNEIRO PRODUÇÃO B","TORNEIRO PROGRAMADOR C"]],"ferias":[],"afast":[]},{"nome":"SERGIO HENRIQUE BUSINARI","adm":"02/10/2023","matriculaEsocial":"000081","nascimento":"02/02/1972","localNascimento":"SANTA BARBARA D'OESTE - SP","nacionalidade":"Brasil","estadoCivil":"Casado(a)","pai":"JOSE ANTONIO BUSINARI","mae":"SONIA REGINA BUENO BUSINARI","rg":"22320753","rgEmissao":"24/04/1987","rgOrgao":"SSP/SP","tituloEleitor":"","tituloZona":"","tituloSecao":"","ctps":"68668","ctpsSerie":"123","ctpsData":"03/07/1989","ctpsUF":"SP","cpf":"143.181.268-46","cnh":"02099611565","cnhCategoria":"AC","docMilitar":"","corRaca":"Branca","sexo":"Masculino","grauInstrucao":"Médio Completo","deficiencia":"Não","telefone":"19-992627896","celular":"","cbo":"911305","funcao":"","pis":"123.93148.90-8","pisCadastro":"","fgtsOpcao":"02/10/2023","horarioTrabalho":"07:00–17:00 (intervalo 12:00–13:00)","beneficiarios":"PEDRO CARDOSO BUSINARI","expIni":"","expFim":"","expProrrogDias":"","expFimProrrog":"","cargoAdmissao":"MECANICO DE MANUTENÇÃO","salarioAdmissao":2781.41,"enderecoTipo":"Rua","endereco":"PARA","numero":"32","complemento":"BL INGA AP 13","bairro":"VILA BRASIL","cidade":"SANTA BARBARA D'OESTE","uf":"SP","cep":"13451-086","salarios":[["01/11/2025",3618.65,"DISSIDIO"],["01/01/2025",3422.22,"MERITO"],["01/11/2024",3306.7,"DISSIDIO"],["01/08/2024",3123.95,"REAJUSTE SALARIAL"],["01/01/2024",2975.19,"ALTERAÇÃO SALARIAL"]],"cargos":[],"ferias":[["20/12/2024","19/12/2025","16/03/2026","02/04/2026","",""],["20/12/2024","19/12/2025","22/12/2025","02/01/2026","",""],["20/12/2023","19/12/2024","19/03/2025","30/03/2025","",""],["20/12/2023","19/12/2024","19/12/2024","05/01/2025","",""],["02/10/2023","19/12/2023","20/12/2023","28/12/2023","",""]],"afast":[]},{"nome":"STEFANI MONIZE MONTEIRO","adm":"28/04/2025","matriculaEsocial":"97","nascimento":"05/01/1996","localNascimento":"SANTA BARBARA D'OESTE - SP","nacionalidade":"Brasil","estadoCivil":"Solteiro(a)","pai":"MARCIO JOSE MONTEIRO","mae":"BARBARA FRANCELINA AFONSO","rg":"526279266","rgEmissao":"10/03/2022","rgOrgao":"SSP/SP","tituloEleitor":"481281590124","tituloZona":"186","tituloSecao":"0392","ctps":"49182","ctpsSerie":"0375","ctpsData":"09/01/2012","ctpsUF":"SP","cpf":"411.429.108-30","cnh":"06119732483","cnhCategoria":"AB","docMilitar":"","corRaca":"Preta","sexo":"Feminino","grauInstrucao":"Médio Completo","deficiencia":"Não","telefone":"19991517637","celular":"19988009409","cbo":"721405","funcao":"","pis":"162.66779.35-9","pisCadastro":"","fgtsOpcao":"28/04/2025","horarioTrabalho":"22:00–06:00 (intervalo 03:00–04:00)","beneficiarios":"ARYELLA DOMINIC ADÃO","expIni":"28/04/2025","expFim":"27/05/2025","expProrrogDias":"30","expFimProrrog":"26/06/2025","cargoAdmissao":"AUXILIAR DE USINAGEM","salarioAdmissao":2100.94,"enderecoTipo":"Rua","endereco":"ITAPURA","numero":"34","complemento":"","bairro":"JARDIM ICARAI","cidade":"SANTA BARBARA D'OESTE","uf":"SP","cep":"13453-086","salarios":[["01/08/2026",2571.7,"MERITO"],["01/01/2026",2449.24,"MERITO"],["01/11/2025",2332.61,"DISSIDIO"],["11/07/2025",2205.99,"EFETIVAÇÃO"]],"cargos":[["30/11/2025","AUXILIAR DE USINAGEM","TORNEIRO PRODUÇÃO C"]],"ferias":[],"afast":[]},{"nome":"TOMY OGATA","adm":"07/03/2022","matriculaEsocial":"000038","nascimento":"14/09/1969","localNascimento":"AMERICANA - SP","nacionalidade":"Brasil","estadoCivil":"Casado(a)","pai":"ISAO OGATA","mae":"SACHIKO OGATA","rg":"19373377","rgEmissao":"06/12/1984","rgOrgao":"SSP/SP","tituloEleitor":"","tituloZona":"","tituloSecao":"","ctps":"91278","ctpsSerie":"0057","ctpsData":"04/12/1984","ctpsUF":"SP","cpf":"123.638.148-35","cnh":"","cnhCategoria":"","docMilitar":"","corRaca":"Não informado","sexo":"Masculino","grauInstrucao":"Médio Completo","deficiencia":"Não","telefone":"19-999200214","celular":"","cbo":"782310","funcao":"","pis":"124.42013.67-5","pisCadastro":"","fgtsOpcao":"07/03/2022","horarioTrabalho":"07:00–17:00 (intervalo 12:00–13:00)","beneficiarios":"DENISE BOLLIS OGATA","expIni":"07/03/2022","expFim":"05/04/2022","expProrrogDias":"3","expFimProrrog":"08/04/2022","cargoAdmissao":"MOTORISTA","salarioAdmissao":1882.57,"enderecoTipo":"Rua","endereco":"DO CHUMBO","numero":"165","complemento":"","bairro":"VILA MOLON","cidade":"AMERICANA","uf":"SP","cep":"13468-600","salarios":[["01/11/2025",2835.3,"DISSIDIO"],["01/01/2025",2681.4,"MERITO"],["01/11/2024",2590.9,"DISSIDIO"],["01/01/2024",2447.71,"ALTERAÇÃO SALARIAL"],["01/12/2022",2209.62,"ALTERAÇÃO SALARIAL"],["01/08/2022",2075.54,"ALTERAÇÃO SALARIAL"],["01/05/2022",1976.7,"ALTERAÇÃO SALARIAL"]],"cargos":[],"ferias":[["07/03/2025","06/03/2026","05/10/2026","19/10/2026","",""],["07/03/2024","06/03/2025","22/12/2025","05/01/2026","",""],["07/03/2024","06/03/2025","02/07/2025","16/07/2025","",""],["07/03/2023","06/03/2024","19/12/2024","02/01/2025","",""],["07/03/2023","06/03/2024","07/10/2024","21/10/2024","",""],["07/03/2022","06/03/2023","31/01/2024","17/02/2024","",""],["07/03/2022","06/03/2023","20/12/2023","02/01/2024","",""]],"afast":[]}];
+
+const MOD_COLAB_HIST = {
+  table: 'colab_hist',
+  label: 'Histórico de salário / cargo',
+  fields: [
+    {field:'colaborador', label:'Colaborador', required:true, full:true},
+    {field:'tipo', label:'Tipo', type:'select', options:['Salário','Cargo','Admissão','Afastamento','Outro']},
+    {field:'data', label:'Data', required:true, placeholder:'dd/mm/aaaa'},
+    {field:'salario', label:'Salário (R$)', type:'number', step:'0.01'},
+    {field:'cargoDe', label:'Cargo anterior'},
+    {field:'cargoPara', label:'Cargo (novo)'},
+    {field:'motivo', label:'Motivo', full:true},
+    {field:'obs', label:'Observações', type:'textarea', full:true},
+    {field:'status', label:'Status', type:'select', options:['Ativo','Inativo']},
+  ],
+  beforeSave: (o) => { if(!o.status) o.status='Ativo'; const c=loadData('colaboradores').find(x=>normSemAcento(x.nome)===normSemAcento(o.colaborador)); if(c) o.colaboradorId=c.id; },
+  onSave: () => { try{ colabFichaSwitchTab(window._cfTabAtiva||'folha'); }catch(e){} }
+};
+function chLista(c){
+  return loadData('colaboradores_hist_dummy').length?[]:loadData('colab_hist').filter(h=>h.status!=='Inativo'&&(h.colaboradorId===c.id||normSemAcento(h.colaborador)===normSemAcento(c.nome)))
+    .sort((a,b)=>(parseDate(b.data)||0)-(parseDate(a.data)||0));
+}
+function chHtml(c){
+  const l=chLista(c); const sal=l.filter(h=>h.salario!==undefined&&h.salario!==''&&h.salario!==null).sort((a,b)=>(parseDate(a.data)||0)-(parseDate(b.data)||0));
+  const prev={}; sal.forEach((h,i)=>{ if(i>0&&Number(sal[i-1].salario)>0) prev[h.id]=(Number(h.salario)/Number(sal[i-1].salario)-1)*100; });
+  const rows=l.map(h=>`<tr style="border-bottom:1px solid var(--g100)"><td style="white-space:nowrap">${h.data||'—'}</td><td>${gpEsc(h.tipo||'')}</td>
+    <td style="white-space:nowrap;text-align:right">${h.salario!==undefined&&h.salario!==''&&h.salario!==null?'R$ '+fmtBRL(Number(h.salario)):'—'}${prev[h.id]!==undefined?`<div style="font-size:9px;color:${prev[h.id]>=0?'var(--green,#167a3d)':'var(--red)'}">${prev[h.id]>=0?'+':''}${prev[h.id].toFixed(1).replace('.',',')}%</div>`:''}</td>
+    <td style="font-size:11px">${h.cargoDe||h.cargoPara?gpEsc((h.cargoDe?h.cargoDe+' → ':'')+(h.cargoPara||'')):'—'}</td><td style="font-size:11px">${gpEsc(h.motivo||'')}${h.obs?'<div class="muted" style="font-size:10px">'+gpEsc(h.obs)+'</div>':''}</td>
+    <td style="white-space:nowrap"><button class="btn btn-s btn-xs" onclick="openCrudModal(MOD_COLAB_HIST,${h.id})">✏</button> <button class="btn btn-s btn-xs" onclick="chExcluir(${h.id})">🗑</button></td></tr>`).join('');
+  return `<div style="margin-top:14px"><div style="display:flex;align-items:center;gap:10px;margin-bottom:6px"><b style="font-size:12px;text-transform:uppercase;color:var(--g500)">Histórico de salário e cargo</b><button class="btn btn-p btn-xs" onclick="chNovo(${c.id})">+ Incluir</button></div>
+    <div style="overflow-x:auto"><table style="width:100%"><thead><tr><th>Data</th><th>Tipo</th><th style="text-align:right">Salário</th><th>Cargo</th><th>Motivo</th><th></th></tr></thead><tbody>${rows||'<tr><td colspan="6" class="muted" style="padding:10px">Nenhum registro.</td></tr>'}</tbody></table></div></div>`;
+}
+function chNovo(colabId){
+  const c=loadData('colaboradores').find(x=>x.id===colabId); if(!c) return;
+  openCrudModal(MOD_COLAB_HIST,null);
+  const fm=document.getElementById('crud-form'), set=(k,v)=>{ const e=fm.querySelector('[data-field="'+k+'"]'); if(e) e.value=v; };
+  set('colaborador',c.nome); set('tipo','Salário'); set('status','Ativo'); set('cargoPara',c.cargo||'');
+}
+function chExcluir(id){ const h=loadData('colab_hist').find(x=>x.id===id); if(!h) return; confirmAction('Excluir este registro de '+(h.tipo||'')+' de '+h.data+'?',()=>{ crudDeleteFisico('colab_hist',id,{modulo:'Colaboradores',label:h.colaborador}); try{ colabFichaSwitchTab(window._cfTabAtiva||'folha'); }catch(e){} }); }
+
+function fichaNorm(s){ return normSemAcento(String(s||'')).replace(/\s+/g,' '); }
+function fichaVazio(v){ return v===undefined||v===null||String(v).trim()===''||String(v).trim()==='—'; }
+function fichaData(t){ const m=String(t||'').match(/(\d\d)\/(\d\d)\/(\d{4})/); return m?new Date(+m[3],+m[2]-1,+m[1]):null; }
+function fichaDias(a,b){ const x=fichaData(a),y=fichaData(b); return (x&&y&&y>=x)?Math.round((y-x)/86400000)+1:0; }
+function importarFichasBrass(forcar){
+  if(!forcar && localStorage.getItem('ac_ficha_brass_v1')) return null;
+  const rel={preench:0,pessoas:0,conf:[],semMatch:[],hist:0,gozos:0,perNovos:0,afast:0,avisos:[],campos:{}};
+  const colabs=loadData('colaboradores'); const hoje=new Date(); hoje.setHours(0,0,0,0); const now=nowStr();
+  const CAMPOS=['matriculaEsocial','nascimento','localNascimento','nacionalidade','estadoCivil','pai','mae','rg','rgEmissao','rgOrgao','tituloEleitor','tituloZona','tituloSecao','ctps','ctpsSerie','ctpsData','ctpsUF','cpf','cnh','cnhCategoria','docMilitar','corRaca','sexo','grauInstrucao','deficiencia','telefone','celular','cbo','funcao','pis','pisCadastro','fgtsOpcao','horarioTrabalho','beneficiarios','expIni','expFim','expProrrogDias','expFimProrrog','enderecoTipo','endereco','numero','complemento','bairro','cidade','uf','cep'];
+  const hist=loadData('colab_hist'); let hid=hist.reduce((m,h)=>Math.max(m,h.id||0),0);
+  const gozos=loadData('ferias_gozos'); let gid=gozos.reduce((m,g)=>Math.max(m,g.id||0),0);
+  const fer=loadData('ferias'); let fidn=fer.reduce((m,f)=>Math.max(m,f.id||0),0);
+  FICHA_BRASS.forEach(F=>{
+    const c=colabs.find(x=>fichaNorm(x.nome)===fichaNorm(F.nome)) || colabs.find(x=>x.cnpj==='02'&&fichaNorm(x.nome).split(' ').slice(0,2).join(' ')===fichaNorm(F.nome).split(' ').slice(0,2).join(' '));
+    if(!c){ rel.semMatch.push(F.nome); return; }
+    rel.pessoas++;
+    const mud={};
+    if(fichaNorm(c.nome)!==fichaNorm(F.nome)||c.nome!==F.nome){ rel.conf.push(c.nome+': nome corrigido para "'+F.nome+'" (conforme ficha)'); mud.nome=F.nome; }
+    if(c.adm!==F.adm){ rel.conf.push(F.nome+': admissão '+(c.adm||'—')+' → '+F.adm+' (conforme ficha e relatório da contabilidade)'); mud.adm=F.adm; }
+    CAMPOS.forEach(k=>{
+      const v=F[k]; if(fichaVazio(v)) return;
+      if(fichaVazio(c[k])){ mud[k]=v; rel.preench++; rel.campos[k]=(rel.campos[k]||0)+1; }
+      else if(!['nome','adm'].includes(k) && fichaNorm(c[k]).replace(/\D/g,'')!==fichaNorm(v).replace(/\D/g,'') && fichaNorm(c[k])!==fichaNorm(v)) rel.conf.push(F.nome+': '+k+' no sistema "'+c[k]+'" × ficha "'+v+'" (mantido o do sistema)');
+    });
+    if(c.status==='Inativo') rel.avisos.push(F.nome+' está INATIVO no cadastro, mas a ficha não tem data de saída/rescisão.');
+    // cargo / salário atuais x ficha
+    const cargoAt=(F.cargos.slice().sort((a,b)=>fichaData(b[0])-fichaData(a[0]))[0]||[])[2]||F.cargoAdmissao;
+    if(fichaNorm(c.cargo)!==fichaNorm(cargoAt)) rel.conf.push(F.nome+': cargo no sistema "'+c.cargo+'" × ficha (atual) "'+cargoAt+'" (mantido o do sistema)');
+    const salAt=(F.salarios.slice().sort((a,b)=>fichaData(b[0])-fichaData(a[0]))[0]||[])[1];
+    const salSis=parseFloat(String(c.sal||'').replace(/[^\d,]/g,'').replace(',','.'));
+    if(salAt&&Math.abs((salSis||0)-salAt)>0.005) rel.conf.push(F.nome+': salário no sistema R$ '+(c.sal||'—')+' × ficha (último) R$ '+fmtBRL(salAt)+' (mantido o do sistema)');
+    if(Object.keys(mud).length){ crudUpdate('colaboradores',c.id,mud,{modulo:'Colaboradores',label:F.nome}); Object.assign(c,mud); }
+    // histórico salário/cargo
+    const addH=(r)=>{ if(hist.some(h=>h.colaboradorId===c.id&&h.tipo===r.tipo&&h.data===r.data&&String(h.salario||'')===String(r.salario||'')&&(h.cargoPara||'')===(r.cargoPara||''))) return;
+      const rec=Object.assign({id:++hid,colaborador:c.nome,colaboradorId:c.id,status:'Ativo',origem:'Ficha de Registro de Empregado (19/10/2026)',criadoEm:now,atualizadoEm:now},r); hist.push(rec); syncRecordToCloud('colab_hist',rec); rel.hist++; };
+    addH({tipo:'Admissão',data:F.adm,salario:F.salarioAdmissao,cargoPara:F.cargoAdmissao,motivo:'ADMISSÃO'});
+    F.salarios.forEach(x=>addH({tipo:'Salário',data:x[0],salario:x[1],motivo:x[2]}));
+    F.cargos.forEach(x=>addH({tipo:'Cargo',data:x[0],cargoDe:x[1],cargoPara:x[2],motivo:'ALTERAÇÃO DE CARGO'}));
+    F.afast.forEach(x=>{ addH({tipo:'Afastamento',data:x[0],motivo:'Registrado na ficha em "Acidentes de trabalho, doenças ou doenças profissionais"',obs:'Retornou em '+x[1]}); rel.afast++; });
+    // férias
+    const grupos={};
+    F.ferias.forEach(x=>{ (grupos[x[0]+'|'+x[1]]=grupos[x[0]+'|'+x[1]]||{aqIni:x[0],aqFim:x[1],e:[]}).e.push(x); });
+    Object.values(grupos).forEach(g=>{
+      // remove lançamentos-placeholder do relatório (sem datas) deste período
+      for(let i=gozos.length-1;i>=0;i--){ const z=gozos[i]; if(fichaNorm(z.colaborador)===fichaNorm(c.nome)&&z.periodoInicio===g.aqIni&&!z.inicioGozo&&/Importado do relat/.test(z.obs||'')){ crudDeleteFisico('ferias_gozos',z.id,{modulo:'Férias',label:z.colaborador}); gozos.splice(i,1); } }
+      let soma=0,ab=0,fimMax=null,emGozo=false,futuro=false,iniProx='',fimProx='';
+      g.e.forEach(x=>{
+        [['Gozo',x[2],x[3]],['Abono pecuniário (venda)',x[4],x[5]]].forEach(([tp,i,f])=>{
+          if(!i) return; const dias=fichaDias(i,f);
+          if(!gozos.some(z=>fichaNorm(z.colaborador)===fichaNorm(c.nome)&&z.periodoInicio===g.aqIni&&z.inicioGozo===i&&z.fimGozo===f&&z.tipo===tp)){
+            const rec={id:++gid,colaborador:c.nome,colaboradorId:c.id,periodoInicio:g.aqIni,periodoFim:g.aqFim,tipo:tp,inicioGozo:i,fimGozo:f,dias,obs:'Importado da ficha de registro',status:'Ativo',criadoEm:now,atualizadoEm:now};
+            gozos.push(rec); syncRecordToCloud('ferias_gozos',rec); rel.gozos++; }
+          if(tp==='Gozo') soma+=dias; else ab+=dias;
+          const fd=fichaData(f), id=fichaData(i); if(fd&&(!fimMax||fd>fimMax)) fimMax=fd;
+          if(fd&&fd>=hoje){ if(id<=hoje) emGozo=true; else futuro=true; iniProx=i; fimProx=f; }
+        });
+      });
+      let reg=fer.find(f=>fichaNorm(f.colaborador)===fichaNorm(c.nome)&&f.periodoInicio===g.aqIni);
+      const situ=emGozo?'Em gozo':(futuro?'Programada':'Gozada');
+      if(!reg){
+        reg={id:++fidn,colaborador:c.nome,colaboradorId:c.id,cnpj:'BRASS',cargo:c.cargo||'',setor:c.setor||'',admissao:c.adm,periodoInicio:g.aqIni,periodoFim:g.aqFim,
+          dias:30,diasGozados:soma,diasAbono:ab,diasRest:Math.max(30-soma-ab,0),limiteGozo:'',situacao:situ,inicioGozo:(emGozo||futuro)?iniProx:'',fimGozo:(emGozo||futuro)?fimProx:'',
+          arquivado:!(emGozo||futuro),arquivadoEm:(emGozo||futuro)?'':todayStr(),origem:'ficha',obs:'Período importado da ficha de registro',status:'Ativo',criadoEm:now,atualizadoEm:now};
+        fer.push(reg); syncRecordToCloud('ferias',reg); rel.perNovos++;
+      } else if(emGozo||futuro){ reg.situacao=situ; reg.inicioGozo=iniProx; reg.fimGozo=fimProx; reg.atualizadoEm=now; syncRecordToCloud('ferias',reg); }
+    });
+  });
+  saveData('colab_hist',hist); saveData('ferias_gozos',gozos); saveData('ferias',fer);
+  try{ fgRecalcTodos(); }catch(e){ console.warn(e); }
+  localStorage.setItem('ac_ficha_brass_v1','1'); localStorage.setItem('ac_ficha_brass_rel',JSON.stringify(rel));
+  logAudit('Colaboradores','Atualização',0,'Importação das fichas de registro (Brass): '+rel.pessoas+' colaboradores, '+rel.preench+' campos preenchidos, '+rel.hist+' lançamentos de histórico, '+rel.gozos+' gozos de férias');
+  return rel;
+}
+function fichaRelatorioAbrir(rel){
+  rel=rel||JSON.parse(localStorage.getItem('ac_ficha_brass_rel')||'null'); if(!rel) return;
+  const li=a=>a.length?'<ul style="margin:4px 0 8px 18px">'+a.map(x=>'<li>'+gpEsc(x)+'</li>').join('')+'</ul>':'<p class="muted">—</p>';
+  abrirModalSimples('📥 Fichas de registro (Brass Metal) — atualização feita',`<div style="font-size:12.5px;line-height:1.55">
+    <p><b>${rel.pessoas}</b> colaboradores atualizados · <b>${rel.preench}</b> campos do cadastro preenchidos (só os que estavam vazios) · <b>${rel.hist}</b> registros de salário/cargo · <b>${rel.gozos}</b> períodos de gozo de férias · <b>${rel.perNovos}</b> períodos aquisitivos antigos criados (já no histórico de férias).</p>
+    <p><b>Divergências (mantido o que já estava no sistema, exceto nome e admissão):</b></p>${li(rel.conf)}
+    <p><b>Atenção:</b></p>${li(rel.avisos.concat(rel.semMatch.map(n=>n+' — não encontrado no cadastro'),rel.afast?['Registros de "Acidentes de trabalho/doenças" da ficha ('+rel.afast+') foram guardados no histórico do colaborador como Afastamento — confira o tipo.']:[]))}
+    <p class="muted" style="font-size:11px">Para rever este relatório: Colaboradores → ficha → aba Folha/Contratuais. O histórico de salário e cargo fica na aba <b>Folha</b>; o de férias, em Férias → 📜.</p></div>`,720);
+}
 let tcFerias;
 function initFeriasTable() {
   tcFerias = createTableController({
@@ -6193,7 +6354,7 @@ function feriasAtualizarProg(){
   });
   // registros genéricos duplicados (criados a partir só da data de admissão) de quem já tem programação
   loadData('ferias').forEach(f=>{
-    if(f.status==='Inativo'||f.inicioGozo) return;
+    if(f.status==='Inativo'||f.inicioGozo||f.arquivado||f.origem==='ficha') return;
     const c=Object.values(cob).find(x=>feriasNorm(x.nome)===feriasNorm(f.colaborador));
     if(c&&!per[c.id].has(f.periodoInicio)){ crudDelete('ferias',f.id,{modulo:'Férias',label:f.colaborador}); dup++; }
   });
@@ -11810,7 +11971,7 @@ async function pullColaboradoresMerge() {
 // tem dado local, não mexe — evita sobrescrever algo em uso.
 async function pullOutrasTabelasAntesDoBoot() {
   if (DB_MODE !== 'supabase' || !supabaseClient) return;
-  const TABELAS = ['veiculos','ferias_gozos','treino_listas','beneficios_hist','ferias_hist','demissoes','demissao_templates','hist_pdfs','endo_extra','endo_oculto','ind_turnover','ind_eng','ind_td','ind_hist','plano_cfg','plano_hist','plano_acoes','colab_excluidos','beneficios_anexos','colab_documentos','ferias','treinamentos','avaliacoes','sst','admissoes',
+  const TABELAS = ['colab_hist','veiculos','ferias_gozos','treino_listas','beneficios_hist','ferias_hist','demissoes','demissao_templates','hist_pdfs','endo_extra','endo_oculto','ind_turnover','ind_eng','ind_td','ind_hist','plano_cfg','plano_hist','plano_acoes','colab_excluidos','beneficios_anexos','colab_documentos','ferias','treinamentos','avaliacoes','sst','admissoes',
     'vagas','beneficios_mov','beneficios_inscritos','beneficios_tipos','cargos','ponto',
     'clima_pesquisas','clima_acoes','sucessao','terceiros','documentos','usuarios','holerites',
     'comunicados','cesta_vegas','folha_descontos','feedback90','tempo_empresa_ctrl','desccargos','sstfin','pcmso',
