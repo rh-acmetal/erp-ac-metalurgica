@@ -455,7 +455,7 @@ body.ad-minimizado #ad-titlebar-text{cursor:pointer}
   <div class="l-box">
     <div class="l-logo">
       <div class="l-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
-      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 5.06 — Fichas de registro da Brass importadas (cadastro, histórico de salário/cargo e férias); Histórico de férias: incluir/excluir período e gozo; Férias: botão ✔ Resolvido (guarda o período no histórico), coluna do colaborador mais estreita; menu lateral compacto; botões minimizar/maximizar; Férias por empresa</div></div>
+      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 5.07 — Termo de veículo com 2 veículos e CPF; impressão dos históricos de férias e salário/cargo; Histórico de férias: incluir/excluir período e gozo; Férias: botão ✔ Resolvido (guarda o período no histórico), coluna do colaborador mais estreita; menu lateral compacto; botões minimizar/maximizar; Férias por empresa</div></div>
     </div>
     <div class="f-row"><label>Usuário</label><input type="text" id="l-user" value="jakeline@acmetalurgica.com.br"></div>
     <div class="f-row"><label>Senha</label><input type="password" id="l-pass" value="••••••••"></div>
@@ -696,7 +696,6 @@ body.ad-minimizado #ad-titlebar-text{cursor:pointer}
               <button class="btn btn-s btn-xs" onclick="colabFichaAcao('bloquear')">🔒 Inativar/Ativar</button>
               <button class="btn btn-s btn-xs" onclick="colabFichaAcao('excluir')">🗑 Excluir</button>
               <button class="btn btn-s btn-xs" onclick="colabFichaAcao('ficha')">🖨 Imprimir Ficha</button>
-              <button class="btn btn-s btn-xs" onclick="colabFichaAcao('historico')">📜 Histórico Salário/Cargo</button>
             </div>
             <div style="display:flex;gap:4px;padding:0 10px 8px;border-bottom:1px solid var(--g100);background:var(--g50,#fafbfc)">
               <span style="font-size:10px;color:var(--g500);align-self:center;margin-right:2px">Mostrar:</span>
@@ -4441,6 +4440,11 @@ function veiculoTexto(v){
   return `<strong>${gpEsc(v.modelo||'')}</strong>${v.tipo?', tipo '+gpEsc(v.tipo):''}${v.cor?', cor '+gpEsc(v.cor):''}${v.combustivel?', combustível '+gpEsc(v.combustivel):''}, placa <strong>${gpEsc(v.placa||'')}</strong>${v.ano?', ano de fabricação/modelo '+gpEsc(v.ano):''}${v.chassi?', chassi '+gpEsc(v.chassi):''}`;
 }
 let tvCtx=null;
+function veiculosTexto(vs){
+  if(!vs||!vs.length) return veiculoTexto(null);
+  if(vs.length===1) return veiculoTexto(vs[0]);
+  return vs.map((v,i)=>(i+1)+') '+veiculoTexto(v)).join('<br>');
+}
 function colabGerarTermoVeiculo(colabId){
   const c=loadData('colaboradores').find(x=>x.id===colabId); if(!c) return;
   tvAbrir(colabId);
@@ -4452,35 +4456,46 @@ function tvAbrir(colabId){
     <p style="font-size:12px;margin-bottom:8px">Escolha o veículo que será preenchido no termo:</p>
     ${vs.map(v=>`<div style="border:1px solid var(--g200);padding:8px 10px;margin-bottom:6px;display:flex;align-items:center;gap:10px">
       <div style="flex:1;font-size:12px"><b>${gpEsc(v.modelo)}</b> — placa <b>${gpEsc(v.placa)}</b><br><span class="muted" style="font-size:11px">${gpEsc([v.tipo,v.cor,v.combustivel,v.ano].filter(Boolean).join(' · '))}</span></div>
-      <button class="btn btn-p btn-xs" onclick="tvImprimir(${v.id})">🖨 Usar este</button>
+      <label style="font-size:11px;white-space:nowrap;cursor:pointer"><input type="checkbox" class="tv-chk" value="${v.id}"> incluir no termo</label>
       <button class="btn btn-s btn-xs" onclick="openCrudModal(MOD_VEICULO,${v.id})">✏</button>
       <button class="btn btn-s btn-xs" onclick="tvExcluir(${v.id})">🗑</button></div>`).join('')||'<p class="muted">Nenhum veículo cadastrado.</p>'}
-    <div style="display:flex;gap:8px;margin-top:10px"><button class="btn btn-s btn-sm" onclick="openCrudModal(MOD_VEICULO,null)">+ Cadastrar veículo</button><button class="btn btn-s btn-sm" onclick="tvImprimir(0)">🖨 Imprimir em branco (preencher à mão)</button></div></div>`,640);
+    <div style="display:flex;gap:8px;margin-top:10px"><button class="btn btn-s btn-sm" onclick="openCrudModal(MOD_VEICULO,null)">+ Cadastrar veículo</button><button class="btn btn-s btn-sm" onclick="tvImprimir(0)">🖨 Em branco (à mão)</button></div>
+    <div style="display:flex;gap:8px;margin-top:12px;padding-top:10px;border-top:1px solid var(--g100)"><button class="btn btn-p btn-sm" onclick="tvImprimirSel()">🖨 Gerar termo com os veículos marcados</button><button class="btn btn-s btn-sm" onclick="document.querySelectorAll('.tv-chk').forEach(x=>x.checked=true);tvImprimirSel()">🚗🚗 Usar todos os veículos</button></div>
+    <p class="muted" style="font-size:11px;margin-top:6px">Marque um ou mais veículos. Com mais de um, o termo traz todos na Cláusula Primeira e uma planilha de controle para cada veículo.</p></div>`,700);
 }
 function tvExcluir(id){ const v=loadData('veiculos').find(x=>x.id===id); if(!v) return; confirmAction('Excluir o veículo '+v.modelo+' ('+v.placa+')?',()=>{ crudDeleteFisico('veiculos',id,{modulo:'Veículos',label:v.placa}); tvAbrir(tvCtx); }); }
 function tvImprimir(veicId){
   const v=veicId?loadData('veiculos').find(x=>x.id===veicId):null;
-  fecharModalSimples(); termoVeiculoDoc(tvCtx,v);
+  fecharModalSimples(); termoVeiculoDoc(tvCtx,v?[v]:null);
 }
-function termoVeiculoDoc(colabId, vei) {
+function tvImprimirSel(){
+  const ids=[...document.querySelectorAll('.tv-chk:checked')].map(x=>Number(x.value));
+  if(!ids.length){ showToast('Marque pelo menos um veículo','warn'); return; }
+  const vs=ids.map(i=>loadData('veiculos').find(x=>x.id===i)).filter(Boolean);
+  fecharModalSimples(); termoVeiculoDoc(tvCtx,vs);
+}
+function termoVeiculoDoc(colabId, veis) {
+  const vlist = Array.isArray(veis)?veis:(veis?[veis]:[]);
   const c = loadData('colaboradores').find(x => x.id === colabId);
   if (!c) return;
   const emp = empresaInfoDoColaborador(c);
   const blk = '________________';
-  const veic = veiculoTexto(vei);
-  const linhas = Array.from({length:18}).map(() => '<tr>' + '<td>&nbsp;</td>'.repeat(7) + '</tr>').join('');
+  const veic = veiculosTexto(vlist);
+  const plural = vlist.length>1;
+  const hj = docHoje(); const hojeBR = hj.dia+'/'+hj.mes+'/'+hj.ano; const hojeExt = parseInt(hj.dia,10)+' de '+MESES_EXTENSO[parseInt(hj.mes,10)-1]+' de '+hj.ano;
+  const linhas = Array.from({length:4}).map(() => '<tr>' + '<td>&nbsp;</td>'.repeat(7) + '</tr>').join('');
   const html = `${docPageCSS(emp)}<style>
-      .doc-vei h4{margin:12px 0 4px;font-size:12.5px}
+      .doc-vei h4{margin:14px 0 4px;font-size:14px}
       .doc-vei p{margin:0 0 6px}
       .doc-vei ol{margin:2px 0 6px 20px;padding:0}
-      .doc-vei table.plan{width:100%;border-collapse:collapse;margin:6px 0;font-size:11px}
-      .doc-vei table.plan td,.doc-vei table.plan th{border:1px solid #000;padding:3px 4px;height:16px}
+      .doc-vei table.plan{width:100%;border-collapse:collapse;margin:6px 0;font-size:12.5px}
+      .doc-vei table.plan td,.doc-vei table.plan th{border:1px solid #000;padding:4px 5px;height:24px}
       .doc-vei table.plan th{text-align:center}
-    </style><div class="doc-print doc-vei" style="padding:6px 12px;font-size:12px;line-height:1.55;text-align:justify">
+    </style><div class="doc-print doc-vei" style="padding:6px 12px;font-size:13.5px;line-height:1.6;text-align:justify">
     <h3 style="text-align:center;margin:0 0 14px">TERMO DE RESPONSABILIDADE POR UTILIZAÇÃO DE VEÍCULO DA EMPRESA.</h3>
-    <p>Pelo presente instrumento, de um lado <strong>${emp.nome.toUpperCase()}</strong>, empresa de direito privado, inscrita no CNPJ sob n° ${emp.cnpj}, estabelecida à ${emp.endereco}, doravante denominada “EMPRESA” e de outro lado, <strong>${c.nome||'_____________________________________'}</strong> com admissão em <strong>${_docAdm(c)}</strong>, exercendo a função <strong>${c.cargo||'_____________________________________'}</strong>, portador (a) do R.G <strong>${_docRg(c)}</strong> e CNH ______________________, Categoria ____, com validade até ____/____/_______, doravante denominado (a) “FUNCIONÁRIO(A)” tem entre si, justo e contratado o que a seguir especificam:</p>
+    <p>Pelo presente instrumento, de um lado <strong>${emp.nome.toUpperCase()}</strong>, empresa de direito privado, inscrita no CNPJ sob n° ${emp.cnpj}, estabelecida à ${emp.endereco}, doravante denominada “EMPRESA” e de outro lado, <strong>${c.nome||'_____________________________________'}</strong> com admissão em <strong>${_docAdm(c)}</strong>, exercendo a função <strong>${c.cargo||'_____________________________________'}</strong>, portador (a) do R.G <strong>${_docRg(c)}</strong>, inscrito(a) no CPF sob n° <strong>${_docCpf(c)}</strong> e CNH ______________________, Categoria ____, com validade até ____/____/_______, doravante denominado (a) “FUNCIONÁRIO(A)” tem entre si, justo e contratado o que a seguir especificam:</p>
     <h4>I – Do Objeto</h4>
-    <p><strong>Cláusula Primeira</strong><br>O presente Termo tem como objetivo regular o uso do veículo<br>${veic}, que o FUNCIONÁRIO acima qualificado, poderá utiliza-lo para o exercício de suas funções.</p>
+    <p><strong>Cláusula Primeira</strong><br>O presente Termo tem como objetivo regular o uso ${plural?'dos veículos abaixo':'do veículo'}<br>${veic}<br>que o FUNCIONÁRIO acima qualificado poderá utilizar${plural?'-los':'-lo'} para o exercício de suas funções.</p>
     <h4>II – Das formas de utilização</h4>
     <p><strong>Cláusula Segunda:</strong> A utilização do veículo acima se destina única e exclusivamente para fins de exercício das atividades inerentes à função.</p>
     <p><strong>Cláusula Terceira – São expressamente vedadas:</strong></p>
@@ -4502,24 +4517,24 @@ function termoVeiculoDoc(colabId, vei) {
     <p><strong>Cláusula Nona:</strong> Por não ser permitida a utilização do veículo para fins particulares, o mesmo não integrará salário para qualquer fim, seja ele previdenciário, trabalhista ou tributário.</p>
     <h4>IV – Dos controles</h4>
     <p><strong>Cláusula Décima:</strong> Os controles de quilometragem e deslocamentos serão realizados por meio da PLANILHA DE CONTROLE – MODELO DE CONTROLE, fornecida pela EMPRESA, que constitui parte integrante deste Termo, conforme anexo abaixo:</p>
-    <table class="plan">
+    ${(vlist.length?vlist:[null]).map(vei=>`<table class="plan">
       <tr><td colspan="7"><strong>CNPJ: ${emp.cnpj}</strong></td></tr>
       <tr><td colspan="4"><strong>VEÍCULO:</strong> ${vei?gpEsc(vei.modelo):''}</td><td colspan="3"><strong>PLACA:</strong> ${vei?gpEsc(vei.placa):''}</td></tr>
       <tr><th>DATA</th><th>KM INÍCIO</th><th>HR SAÍDA</th><th>HR CHEGADA</th><th>KM FINAL</th><th>MOTIVO SAÍDA</th><th>ASSIN.</th></tr>
       ${linhas}
-    </table>
+    </table>`).join('<div style="height:8px"></div>')}
     <div style="page-break-inside:avoid"><h4>V – DA CIÊNCIA DA ORIENTAÇÃO</h4><p>O FUNCIONÁRIO declara que recebeu orientação formal da EMPRESA acerca:<br>1. Das regras de utilização do veículo;<br>2. Do correto preenchimento da PLANILHA DE CONTROLE – MODELO DE CONTROLE;<br>3. Das responsabilidades decorrentes do uso do veículo corporativo.</p>
     <p>Declaro que recebi as orientações quanto ao uso do veículo e ao correto preenchimento da PLANILHA DE CONTROLE – MODELO DE CONTROLE (Anexo I).</p>
-    <table style="width:100%;border:none;margin:18px 0"><tr><td style="width:45%;border:none;padding:0">Data da Ciência: ____/____/________</td><td style="border:none;text-align:center;padding:0">_______________________________________<br>Assinatura do Funcionário</td></tr></table></div>
+    <table style="width:100%;border:none;margin:18px 0"><tr style="height:90px"><td style="width:45%;border:none;padding:0;vertical-align:bottom">Data da Ciência: <strong>${hojeBR}</strong></td><td style="border:none;text-align:center;padding:0;vertical-align:bottom">_______________________________________<br>Assinatura do Funcionário</td></tr></table></div>
     <h4>VI – Da Vigência</h4>
     <p>O presente Termo terá início a partir da data de sua assinatura e vigorará por prazo indeterminado, enquanto durar o vínculo empregatício, podendo ser revogado a qualquer tempo.</p>
     <p><strong>Parágrafo Único;</strong> dar-se-á como automaticamente extinto o presente Adendo, na ocorrência das seguintes hipóteses: mudança de função cuja utilização do veículo deixe de ser necessária; determinação ou liberalidade da empresa; e extinção, cessação ou rescisão do contrato de trabalho.</p>
     <p>E por estarem de pleno acordo com todas as cláusulas e condições ora pactuadas, assinam o presente instrumento em três vias da qual teor, sendo uma delas entregue ao FUNCIONÁRIO.</p>
-    <p style="text-align:right;margin:16px 0 34px">Santa Bárbara D’Oeste/SP., _____ de _______________ de _______.</p>
+    <p style="text-align:right;margin:16px 0 40px">Santa Bárbara D’Oeste/SP., ${hojeExt}.</p>
     <div style="page-break-inside:avoid">
-    <p style="margin:0 0 30px">__________________________________<br><strong>Empresa:</strong> ${emp.nome.toUpperCase()}<br><strong>CNPJ:</strong> ${emp.cnpj}</p>
-    <p style="margin:0 0 30px">________________________________________<br><strong>Funcionário:</strong> ${c.nome||''}<br><strong>CPF:</strong> ${_docCpf(c)}</p>
-    <p style="margin:0"><strong>Testemunhas:</strong><br><br>________________________________<br><br>________________________________</p></div>
+    <p style="margin:0 0 56px">__________________________________<br><strong>Empresa:</strong> ${emp.nome.toUpperCase()}<br><strong>CNPJ:</strong> ${emp.cnpj}</p>
+    <p style="margin:0 0 56px">________________________________________<br><strong>Funcionário:</strong> ${c.nome||''}<br><strong>CPF:</strong> ${_docCpf(c)}</p>
+    <p style="margin:0"><strong>Testemunhas:</strong><br><br><br>________________________________<br><br><br>________________________________</p></div>
   </div>`;
   abrirReciboModal('🖨 Termo de Responsabilidade de Veículo — ' + c.nome, html, false);
 }
@@ -6020,9 +6035,9 @@ function fgAbrir(nome,silencioso){
    `<div id="fg-root">
     ${todos?`<div style="display:flex;gap:8px;margin-bottom:10px;align-items:center"><input class="finp" id="fg-busca" placeholder="🔎 Buscar colaborador..." oninput="fgFiltrar(this.value)" style="flex:1"><button class="btn btn-s btn-sm" onclick="fgExportar(null)">⬇ Excel</button></div>`
     :`<div style="font-size:12px;margin-bottom:10px;display:flex;gap:14px;flex-wrap:wrap;align-items:center"><span><b>${gpEsc(nome)}</b></span>${c?`<span class="muted">Admissão: ${c.adm||'—'} · ${gpEsc(c.cargo||'')}</span>`:''}<button class="btn btn-s btn-sm" style="margin-left:auto" onclick="fgExportar('${escAttr(nome)}')">⬇ Excel</button></div>
-    <div style="font-weight:700;font-size:11px;text-transform:uppercase;color:var(--g500);margin:4px 0;display:flex;align-items:center;gap:10px">Períodos aquisitivos <button class="btn btn-p btn-xs" style="text-transform:none" onclick="fgNovoPeriodo('${escAttr(nome)}')">+ Incluir período</button></div>
+    <div style="font-weight:700;font-size:11px;text-transform:uppercase;color:var(--g500);margin:4px 0;display:flex;align-items:center;gap:10px">Períodos aquisitivos <button class="btn btn-p btn-xs" style="text-transform:none" onclick="fgNovoPeriodo('${escAttr(nome)}')">+ Incluir período</button> <button class="btn btn-s btn-xs" style="text-transform:none" onclick="fgImprimir('${escAttr(nome)}')">🖨 Imprimir</button></div>
     <div style="overflow-x:auto"><table style="width:100%"><thead><tr><th>Período aquisitivo</th><th>Direito</th><th>Gozados</th><th>Abono</th><th>Restantes</th><th>Limite p/ gozo</th><th>Situação</th><th></th></tr></thead><tbody>${perRows||'<tr><td colspan="8" class="muted" style="padding:10px">Nenhum período cadastrado para este colaborador.</td></tr>'}</tbody></table></div>`}
-    <div style="font-weight:700;font-size:11px;text-transform:uppercase;color:var(--g500);margin:14px 0 4px;display:flex;align-items:center;gap:10px">Períodos de gozo lançados ${todos?'':'· total gozado: <b>'+fgFmt(tot)+' dias</b> <button class="btn btn-p btn-xs" style="text-transform:none" onclick="fgNovo(\''+escAttr(nome)+'\',\'\')">+ Incluir gozo</button>'}</div>
+    <div style="font-weight:700;font-size:11px;text-transform:uppercase;color:var(--g500);margin:14px 0 4px;display:flex;align-items:center;gap:10px">Períodos de gozo lançados ${todos?'':'· total gozado: <b>'+fgFmt(tot)+' dias</b> <button class="btn btn-p btn-xs" style="text-transform:none" onclick="fgNovo(\''+escAttr(nome)+'\',\'\')">+ Incluir gozo</button> <button class="btn btn-s btn-xs" style="text-transform:none" onclick="fgImprimir(\''+escAttr(nome)+'\')">🖨 Imprimir</button>'}</div>
     <div style="overflow-x:auto"><table style="width:100%" id="fg-tab"><thead><tr>${todos?'<th>Colaborador</th>':''}<th>Período aquisitivo</th><th>Tipo</th><th>Início</th><th>Fim</th><th>Dias</th><th>Observações</th><th></th></tr></thead><tbody>${entRows||`<tr><td colspan="9" class="muted" style="padding:10px">Nenhum gozo lançado ainda.</td></tr>`}</tbody></table></div>
     <div class="muted" style="font-size:10.5px;margin-top:8px">Os dias de gozo e restantes de cada período são calculados a partir destes lançamentos. Tudo pode ser editado ou excluído.</div></div>`, 980);
 }
@@ -6110,8 +6125,38 @@ function chHtml(c){
     <td style="white-space:nowrap;text-align:right">${h.salario!==undefined&&h.salario!==''&&h.salario!==null?'R$ '+fmtBRL(Number(h.salario)):'—'}${prev[h.id]!==undefined?`<div style="font-size:9px;color:${prev[h.id]>=0?'var(--green,#167a3d)':'var(--red)'}">${prev[h.id]>=0?'+':''}${prev[h.id].toFixed(1).replace('.',',')}%</div>`:''}</td>
     <td style="font-size:11px">${h.cargoDe||h.cargoPara?gpEsc((h.cargoDe?h.cargoDe+' → ':'')+(h.cargoPara||'')):'—'}</td><td style="font-size:11px">${gpEsc(h.motivo||'')}${h.obs?'<div class="muted" style="font-size:10px">'+gpEsc(h.obs)+'</div>':''}</td>
     <td style="white-space:nowrap"><button class="btn btn-s btn-xs" onclick="openCrudModal(MOD_COLAB_HIST,${h.id})">✏</button> <button class="btn btn-s btn-xs" onclick="chExcluir(${h.id})">🗑</button></td></tr>`).join('');
-  return `<div style="margin-top:14px"><div style="display:flex;align-items:center;gap:10px;margin-bottom:6px"><b style="font-size:12px;text-transform:uppercase;color:var(--g500)">Histórico de salário e cargo</b><button class="btn btn-p btn-xs" onclick="chNovo(${c.id})">+ Incluir</button></div>
+  return `<div style="margin-top:14px"><div style="display:flex;align-items:center;gap:10px;margin-bottom:6px"><b style="font-size:12px;text-transform:uppercase;color:var(--g500)">Histórico de salário e cargo</b><button class="btn btn-p btn-xs" onclick="chNovo(${c.id})">+ Incluir</button><button class="btn btn-s btn-xs" onclick="chImprimir(${c.id})">🖨 Imprimir</button></div>
     <div style="overflow-x:auto"><table style="width:100%"><thead><tr><th>Data</th><th>Tipo</th><th style="text-align:right">Salário</th><th>Cargo</th><th>Motivo</th><th></th></tr></thead><tbody>${rows||'<tr><td colspan="6" class="muted" style="padding:10px">Nenhum registro.</td></tr>'}</tbody></table></div></div>`;
+}
+
+const HIST_PRINT_CSS=`<style>.hp h2{text-align:center;margin:0 0 4px;font-size:17px}.hp .sub{text-align:center;font-size:12px;margin-bottom:12px;color:#333}
+.hp h4{margin:14px 0 4px;font-size:12px;text-transform:uppercase;border-bottom:1.5px solid #000;padding-bottom:2px}
+.hp table{width:100%;border-collapse:collapse;font-size:11.5px}.hp th,.hp td{border:1px solid #000;padding:4px 6px;text-align:left}.hp th{background:#e8e8e8}
+.hp td.c{text-align:center}.hp td.r{text-align:right;white-space:nowrap}.hp tr{page-break-inside:avoid}</style>`;
+function histCab(c,titulo){
+  const emp=empresaInfoDoColaborador(c);
+  return {emp, cab:`<h2>${titulo}</h2><div class="sub"><b>${gpEsc(c.nome)}</b> · Admissão: ${gpEsc(c.adm||'—')} · ${gpEsc(c.cargo||'')}<br>${gpEsc(emp.nome)} — CNPJ ${gpEsc(emp.cnpj)}<br>Emitido em ${todayStr()}</div>`};
+}
+function fgImprimir(nome){
+  const c=loadData('colaboradores').find(x=>feriasNorm(x.nome)===feriasNorm(nome)); if(!c){ showToast('Colaborador não encontrado','warn'); return; }
+  const per=fgPeriodos(nome), ent=fgEntradas(nome);
+  const {emp,cab}=histCab(c,'HISTÓRICO DE FÉRIAS');
+  const f=fgFmt;
+  const pr=per.map(p=>`<tr><td>${p.periodoInicio||'—'} a ${p.periodoFim||'—'}</td><td class="c">${f(p.dias)}</td><td class="c">${f(p.diasGozados)}</td><td class="c">${f(p.diasAbono||0)}</td><td class="c"><b>${f(p.diasRest)}</b></td><td class="c">${p.limiteGozo||'—'}</td><td>${gpEsc(p.situacao||'')}${p.arquivado?' (resolvido em '+(p.arquivadoEm||'')+')':''}</td></tr>`).join('')||'<tr><td colspan="7">Nenhum período.</td></tr>';
+  const er=ent.map(g=>`<tr><td>${g.periodoInicio?g.periodoInicio+' a '+(g.periodoFim||'—'):'—'}</td><td>${g.tipo==='Abono pecuniário (venda)'?'Abono pecuniário':'Gozo'}</td><td class="c">${g.inicioGozo||'—'}</td><td class="c">${g.fimGozo||'—'}</td><td class="c"><b>${f(g.dias)}</b></td><td>${gpEsc(g.obs||'')}</td></tr>`).join('')||'<tr><td colspan="6">Nenhum gozo lançado.</td></tr>';
+  const tot=ent.filter(g=>g.tipo!=='Abono pecuniário (venda)').reduce((t,g)=>t+(Number(g.dias)||0),0);
+  abrirReciboModal('🖨 Histórico de férias — '+c.nome, docPageCSS(emp)+HIST_PRINT_CSS+`<div class="doc-print hp">${cab}
+    <h4>Períodos aquisitivos</h4><table><thead><tr><th>Período aquisitivo</th><th>Direito</th><th>Gozados</th><th>Abono</th><th>Restantes</th><th>Limite p/ gozo</th><th>Situação</th></tr></thead><tbody>${pr}</tbody></table>
+    <h4>Períodos de gozo lançados — total gozado: ${f(tot)} dias</h4><table><thead><tr><th>Período aquisitivo</th><th>Tipo</th><th>Início</th><th>Fim</th><th>Dias</th><th>Observações</th></tr></thead><tbody>${er}</tbody></table></div>`, false);
+}
+function chImprimir(colabId){
+  const c=loadData('colaboradores').find(x=>x.id===colabId); if(!c) return;
+  const {emp,cab}=histCab(c,'HISTÓRICO DE SALÁRIO E CARGO');
+  const l=chLista(c).slice().sort((a,b)=>(parseDate(a.data)||0)-(parseDate(b.data)||0));
+  let ant=null; const rows=l.map(h=>{ let pct=''; const tem=h.salario!==undefined&&h.salario!==''&&h.salario!==null;
+    if(tem&&ant&&ant>0) pct=((Number(h.salario)/ant-1)*100); if(tem) ant=Number(h.salario);
+    return `<tr><td>${h.data||'—'}</td><td>${gpEsc(h.tipo||'')}</td><td class="r">${tem?'R$ '+fmtBRL(Number(h.salario)):'—'}</td><td class="c">${pct!==''?(pct>=0?'+':'')+pct.toFixed(1).replace('.',',')+'%':''}</td><td>${h.cargoDe||h.cargoPara?gpEsc((h.cargoDe?h.cargoDe+' → ':'')+(h.cargoPara||'')):'—'}</td><td>${gpEsc(h.motivo||'')}${h.obs?' — '+gpEsc(h.obs):''}</td></tr>`; }).join('')||'<tr><td colspan="6">Nenhum registro.</td></tr>';
+  abrirReciboModal('🖨 Histórico de salário e cargo — '+c.nome, docPageCSS(emp)+HIST_PRINT_CSS+`<div class="doc-print hp">${cab}<table><thead><tr><th>Data</th><th>Tipo</th><th>Salário</th><th>Reajuste</th><th>Cargo</th><th>Motivo</th></tr></thead><tbody>${rows}</tbody></table></div>`, false);
 }
 function chNovo(colabId){
   const c=loadData('colaboradores').find(x=>x.id===colabId); if(!c) return;
