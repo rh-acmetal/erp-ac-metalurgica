@@ -455,7 +455,7 @@ body.ad-minimizado #ad-titlebar-text{cursor:pointer}
   <div class="l-box">
     <div class="l-logo">
       <div class="l-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
-      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 5.13 — Convênio médico: mensalidade, desconto do colaborador (50%), dependentes, coparticipação e quadro Nota/Empresa/Repasse; Carta PHS e Prêmio por Assiduidade com a data do dia da impressão; impressão dos históricos de férias e salário/cargo; Histórico de férias: incluir/excluir período e gozo; Férias: botão ✔ Resolvido (guarda o período no histórico), coluna do colaborador mais estreita; menu lateral compacto; botões minimizar/maximizar; Férias por empresa</div></div>
+      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 5.14 — Benefícios sem limite de inscritos (leitura da nuvem em blocos); Convênio médico: mensalidade, desconto do colaborador (50%), dependentes, coparticipação e quadro Nota/Empresa/Repasse; Carta PHS e Prêmio por Assiduidade com a data do dia da impressão; impressão dos históricos de férias e salário/cargo; Histórico de férias: incluir/excluir período e gozo; Férias: botão ✔ Resolvido (guarda o período no histórico), coluna do colaborador mais estreita; menu lateral compacto; botões minimizar/maximizar; Férias por empresa</div></div>
     </div>
     <div class="f-row"><label>Usuário</label><input type="text" id="l-user" value="jakeline@acmetalurgica.com.br"></div>
     <div class="f-row"><label>Senha</label><input type="password" id="l-pass" value="••••••••"></div>
@@ -12337,12 +12337,20 @@ async function refreshDBStatus() {
 async function dbLoadData(table) {
   if (DB_MODE === 'supabase' && supabaseClient) {
     try {
-      const { data, error } = await supabaseClient
-        .from('ac_erp_registros')
-        .select('*')
-        .eq('tabela', table)
-        .order('id', { ascending: true });
-      if (error) throw error;
+      // A nuvem entrega no máximo 1000 linhas por consulta: busca em blocos até acabar (sem limite de inscritos/registros)
+      let data = [], de = 0; const BLOCO = 1000;
+      for (;;) {
+        const { data: bloco, error } = await supabaseClient
+          .from('ac_erp_registros')
+          .select('*')
+          .eq('tabela', table)
+          .order('id', { ascending: true })
+          .range(de, de + BLOCO - 1);
+        if (error) throw error;
+        data = data.concat(bloco || []);
+        if (!bloco || bloco.length < BLOCO) break;
+        de += BLOCO;
+      }
       // Mapeia: row.dados + row.id (usa o id do postgres)
       return (data || []).filter(row => !(row.dados && row.dados.excluido)).map(row => ({ ...row.dados, _rowid: row.id, id: row.dados.id || row.id }));
     } catch(e) {
