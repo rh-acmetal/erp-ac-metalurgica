@@ -455,7 +455,7 @@ body.ad-minimizado #ad-titlebar-text{cursor:pointer}
   <div class="l-box">
     <div class="l-logo">
       <div class="l-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
-      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 5.03 — Histórico de férias: incluir/excluir período e gozo; Férias: botão ✔ Resolvido (guarda o período no histórico), coluna do colaborador mais estreita; menu lateral compacto; botões minimizar/maximizar; Férias por empresa</div></div>
+      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 5.04 — Termo de Veículo com dados do veículo (Saveiro UET3H34) e cadastro de veículos; Histórico de férias: incluir/excluir período e gozo; Férias: botão ✔ Resolvido (guarda o período no histórico), coluna do colaborador mais estreita; menu lateral compacto; botões minimizar/maximizar; Férias por empresa</div></div>
     </div>
     <div class="f-row"><label>Usuário</label><input type="text" id="l-user" value="jakeline@acmetalurgica.com.br"></div>
     <div class="f-row"><label>Senha</label><input type="password" id="l-pass" value="••••••••"></div>
@@ -2494,6 +2494,7 @@ async function buildAll(){
   try{initLote6Modules();}catch(e){console.warn('initLote6Modules:',e);}
   try{buildCestaVegasSeed();}catch(e){console.warn('buildCestaVegasSeed:',e);}
   try{buildFeriasRealSeed();}catch(e){console.warn('buildFeriasRealSeed:',e);}
+  try{buildVeiculosSeed();}catch(e){console.warn('buildVeiculosSeed:',e);}
   try{feriasMigrarV3();}catch(e){console.warn('feriasMigrarV3:',e);}
   try{buildFeedback90Seed();}catch(e){console.warn('buildFeedback90Seed:',e);}
   try{buildDescCargosSeed();}catch(e){console.warn('buildDescCargosSeed:',e);}
@@ -4376,12 +4377,64 @@ function colabGerarTermoEntregaCelular(colabId) {
   abrirReciboModal('🖨 Termo de Entrega de Celular — ' + c.nome, html, false);
 }
 
-function colabGerarTermoVeiculo(colabId) {
+/* ── Veículos da empresa (usados no Termo de Responsabilidade de Veículo) ── */
+const MOD_VEICULO = {
+  table: 'veiculos',
+  label: 'Veículo',
+  fields: [
+    {field:'modelo', label:'Marca / Modelo', required:true, full:true, placeholder:'VW SAVEIRO CS TL MF'},
+    {field:'tipo', label:'Tipo', placeholder:'CARGA CAMINHONETE'},
+    {field:'cor', label:'Cor', placeholder:'BRANCA'},
+    {field:'combustivel', label:'Combustível', placeholder:'ALCOOL/GASOLINA'},
+    {field:'placa', label:'Placa', required:true, placeholder:'UET3H34'},
+    {field:'ano', label:'Ano fabricação/modelo', placeholder:'2026/2027'},
+    {field:'chassi', label:'Chassi', full:true},
+    {field:'empresa', label:'Empresa', type:'select', options:['AC','BRASS']},
+    {field:'status', label:'Status', type:'select', options:['Ativo','Inativo']},
+  ],
+  onSave: () => { try{ if(document.getElementById('tv-lista')) tvAbrir(tvCtx); }catch(e){} }
+};
+function buildVeiculosSeed(){
+  if(localStorage.getItem('ac_veiculos_v1')) return;
+  const ex=loadData('veiculos');
+  if(!ex.some(v=>String(v.placa).toUpperCase()==='UET3H34')){
+    const now=nowStr(); const rec={id:ex.reduce((m,v)=>Math.max(m,v.id||0),0)+1,modelo:'VW SAVEIRO CS TL MF',tipo:'CARGA CAMINHONETE',cor:'BRANCA',combustivel:'ALCOOL/GASOLINA',placa:'UET3H34',ano:'2026/2027',chassi:'9BWKL45U0VP028839',empresa:'AC',status:'Ativo',criadoEm:now,atualizadoEm:now};
+    ex.push(rec); saveData('veiculos',ex); syncRecordToCloud('veiculos',rec);
+  }
+  localStorage.setItem('ac_veiculos_v1','1');
+}
+function veiculoTexto(v){
+  if(!v) return `marca __________________________________________________________ ano de fabricação/modelo _____/______/_______, placas __________________, tipo _______________, cor __________________`;
+  return `<strong>${gpEsc(v.modelo||'')}</strong>${v.tipo?', tipo '+gpEsc(v.tipo):''}${v.cor?', cor '+gpEsc(v.cor):''}${v.combustivel?', combustível '+gpEsc(v.combustivel):''}, placa <strong>${gpEsc(v.placa||'')}</strong>${v.ano?', ano de fabricação/modelo '+gpEsc(v.ano):''}${v.chassi?', chassi '+gpEsc(v.chassi):''}`;
+}
+let tvCtx=null;
+function colabGerarTermoVeiculo(colabId){
+  const c=loadData('colaboradores').find(x=>x.id===colabId); if(!c) return;
+  tvAbrir(colabId);
+}
+function tvAbrir(colabId){
+  tvCtx=colabId;
+  const vs=loadData('veiculos').filter(v=>v.status!=='Inativo');
+  abrirModalSimples('🚗 Termo de Responsabilidade de Veículo — escolher veículo',`<div id="tv-lista">
+    <p style="font-size:12px;margin-bottom:8px">Escolha o veículo que será preenchido no termo:</p>
+    ${vs.map(v=>`<div style="border:1px solid var(--g200);padding:8px 10px;margin-bottom:6px;display:flex;align-items:center;gap:10px">
+      <div style="flex:1;font-size:12px"><b>${gpEsc(v.modelo)}</b> — placa <b>${gpEsc(v.placa)}</b><br><span class="muted" style="font-size:11px">${gpEsc([v.tipo,v.cor,v.combustivel,v.ano].filter(Boolean).join(' · '))}</span></div>
+      <button class="btn btn-p btn-xs" onclick="tvImprimir(${v.id})">🖨 Usar este</button>
+      <button class="btn btn-s btn-xs" onclick="openCrudModal(MOD_VEICULO,${v.id})">✏</button>
+      <button class="btn btn-s btn-xs" onclick="tvExcluir(${v.id})">🗑</button></div>`).join('')||'<p class="muted">Nenhum veículo cadastrado.</p>'}
+    <div style="display:flex;gap:8px;margin-top:10px"><button class="btn btn-s btn-sm" onclick="openCrudModal(MOD_VEICULO,null)">+ Cadastrar veículo</button><button class="btn btn-s btn-sm" onclick="tvImprimir(0)">🖨 Imprimir em branco (preencher à mão)</button></div></div>`,640);
+}
+function tvExcluir(id){ const v=loadData('veiculos').find(x=>x.id===id); if(!v) return; confirmAction('Excluir o veículo '+v.modelo+' ('+v.placa+')?',()=>{ crudDeleteFisico('veiculos',id,{modulo:'Veículos',label:v.placa}); tvAbrir(tvCtx); }); }
+function tvImprimir(veicId){
+  const v=veicId?loadData('veiculos').find(x=>x.id===veicId):null;
+  fecharModalSimples(); termoVeiculoDoc(tvCtx,v);
+}
+function termoVeiculoDoc(colabId, vei) {
   const c = loadData('colaboradores').find(x => x.id === colabId);
   if (!c) return;
   const emp = empresaInfoDoColaborador(c);
   const blk = '________________';
-  const veic = `marca __________________________________________________________ ano de fabricação/modelo _____/______/_______, placas __________________, tipo _______________, cor __________________`;
+  const veic = veiculoTexto(vei);
   const linhas = Array.from({length:18}).map(() => '<tr>' + '<td>&nbsp;</td>'.repeat(7) + '</tr>').join('');
   const html = `${docPageCSS(emp)}<style>
       .doc-vei h4{margin:12px 0 4px;font-size:12.5px}
@@ -4394,7 +4447,7 @@ function colabGerarTermoVeiculo(colabId) {
     <h3 style="text-align:center;margin:0 0 14px">TERMO DE RESPONSABILIDADE POR UTILIZAÇÃO DE VEÍCULO DA EMPRESA.</h3>
     <p>Pelo presente instrumento, de um lado <strong>${emp.nome.toUpperCase()}</strong>, empresa de direito privado, inscrita no CNPJ sob n° ${emp.cnpj}, estabelecida à ${emp.endereco}, doravante denominada “EMPRESA” e de outro lado, <strong>${c.nome||'_____________________________________'}</strong> com admissão em <strong>${_docAdm(c)}</strong>, exercendo a função <strong>${c.cargo||'_____________________________________'}</strong>, portador (a) do R.G <strong>${_docRg(c)}</strong> e CNH ______________________, Categoria ____, com validade até ____/____/_______, doravante denominado (a) “FUNCIONÁRIO(A)” tem entre si, justo e contratado o que a seguir especificam:</p>
     <h4>I – Do Objeto</h4>
-    <p><strong>Cláusula Primeira</strong><br>O presente Termo tem como objetivo regular o uso do(s) veículo(s)<br>${veic} e a utilização veículo<br>${veic} que o FUNCIONÁRIO acima qualificado, poderá utiliza-lo para o exercício de suas funções.</p>
+    <p><strong>Cláusula Primeira</strong><br>O presente Termo tem como objetivo regular o uso do veículo<br>${veic}, que o FUNCIONÁRIO acima qualificado, poderá utiliza-lo para o exercício de suas funções.</p>
     <h4>II – Das formas de utilização</h4>
     <p><strong>Cláusula Segunda:</strong> A utilização do veículo acima se destina única e exclusivamente para fins de exercício das atividades inerentes à função.</p>
     <p><strong>Cláusula Terceira – São expressamente vedadas:</strong></p>
@@ -4418,7 +4471,7 @@ function colabGerarTermoVeiculo(colabId) {
     <p><strong>Cláusula Décima:</strong> Os controles de quilometragem e deslocamentos serão realizados por meio da PLANILHA DE CONTROLE – MODELO DE CONTROLE, fornecida pela EMPRESA, que constitui parte integrante deste Termo, conforme anexo abaixo:</p>
     <table class="plan">
       <tr><td colspan="7"><strong>CNPJ: ${emp.cnpj}</strong></td></tr>
-      <tr><td colspan="4"><strong>VEÍCULO:</strong></td><td colspan="3"><strong>PLACA:</strong></td></tr>
+      <tr><td colspan="4"><strong>VEÍCULO:</strong> ${vei?gpEsc(vei.modelo):''}</td><td colspan="3"><strong>PLACA:</strong> ${vei?gpEsc(vei.placa):''}</td></tr>
       <tr><th>DATA</th><th>KM INÍCIO</th><th>HR SAÍDA</th><th>HR CHEGADA</th><th>KM FINAL</th><th>MOTIVO SAÍDA</th><th>ASSIN.</th></tr>
       ${linhas}
     </table>
@@ -11757,7 +11810,7 @@ async function pullColaboradoresMerge() {
 // tem dado local, não mexe — evita sobrescrever algo em uso.
 async function pullOutrasTabelasAntesDoBoot() {
   if (DB_MODE !== 'supabase' || !supabaseClient) return;
-  const TABELAS = ['ferias_gozos','treino_listas','beneficios_hist','ferias_hist','demissoes','demissao_templates','hist_pdfs','endo_extra','endo_oculto','ind_turnover','ind_eng','ind_td','ind_hist','plano_cfg','plano_hist','plano_acoes','colab_excluidos','beneficios_anexos','colab_documentos','ferias','treinamentos','avaliacoes','sst','admissoes',
+  const TABELAS = ['veiculos','ferias_gozos','treino_listas','beneficios_hist','ferias_hist','demissoes','demissao_templates','hist_pdfs','endo_extra','endo_oculto','ind_turnover','ind_eng','ind_td','ind_hist','plano_cfg','plano_hist','plano_acoes','colab_excluidos','beneficios_anexos','colab_documentos','ferias','treinamentos','avaliacoes','sst','admissoes',
     'vagas','beneficios_mov','beneficios_inscritos','beneficios_tipos','cargos','ponto',
     'clima_pesquisas','clima_acoes','sucessao','terceiros','documentos','usuarios','holerites',
     'comunicados','cesta_vegas','folha_descontos','feedback90','tempo_empresa_ctrl','desccargos','sstfin','pcmso',
