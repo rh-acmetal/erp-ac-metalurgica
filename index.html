@@ -455,7 +455,7 @@ body.ad-minimizado #ad-titlebar-text{cursor:pointer}
   <div class="l-box">
     <div class="l-logo">
       <div class="l-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
-      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 5.18 — Login real por e-mail e senha (Supabase) e script para trancar a base; Convênio: copiar mês anterior e inscrever todos os ativos; Seguro de Vida só em Contratos. Versão 5.15 — Limpeza geral: duplicidades removidas (histórico único de cargo/salário, Folha × Convênio, funções e filtros repetidos), dados de exemplo removidos e tudo editável (Configurações da empresa, cargos, pipeline), verificador de duplicidades; Benefícios sem limite de inscritos (leitura da nuvem em blocos); Convênio médico: mensalidade, desconto do colaborador (50%), dependentes, coparticipação e quadro Nota/Empresa/Repasse; Carta PHS e Prêmio por Assiduidade com a data do dia da impressão; impressão dos históricos de férias e salário/cargo; Histórico de férias: incluir/excluir período e gozo; Férias: botão ✔ Resolvido (guarda o período no histórico), coluna do colaborador mais estreita; menu lateral compacto; botões minimizar/maximizar; Férias por empresa</div></div>
+      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 5.20 — Anexos e fotos com link temporário (privados); Login real por e-mail e senha (Supabase) e script para trancar a base; Convênio: copiar mês anterior e inscrever todos os ativos; Seguro de Vida só em Contratos. Versão 5.15 — Limpeza geral: duplicidades removidas (histórico único de cargo/salário, Folha × Convênio, funções e filtros repetidos), dados de exemplo removidos e tudo editável (Configurações da empresa, cargos, pipeline), verificador de duplicidades; Benefícios sem limite de inscritos (leitura da nuvem em blocos); Convênio médico: mensalidade, desconto do colaborador (50%), dependentes, coparticipação e quadro Nota/Empresa/Repasse; Carta PHS e Prêmio por Assiduidade com a data do dia da impressão; impressão dos históricos de férias e salário/cargo; Histórico de férias: incluir/excluir período e gozo; Férias: botão ✔ Resolvido (guarda o período no histórico), coluna do colaborador mais estreita; menu lateral compacto; botões minimizar/maximizar; Férias por empresa</div></div>
     </div>
     <div class="f-row"><label>E-mail</label><input type="email" id="l-user" autocomplete="username" placeholder="seu.email@acmetalurgica.com.br" onkeydown="if(event.key==='Enter')document.getElementById('l-pass').focus()"></div>
     <div class="f-row"><label>Senha</label><input type="password" id="l-pass" autocomplete="current-password" placeholder="Sua senha" onkeydown="if(event.key==='Enter')entrarSistema()"></div>
@@ -3518,7 +3518,7 @@ function colabDetailRender(id) {
   setText('cf-nome', c.nome);
   setText('cf-sub', `Matrícula ${c.mat||'—'} · ${c.cargo||'—'} · ${c.setor||'—'} · CNPJ ${c.cnpj||'—'}`);
   const fotoImg = document.getElementById('cf-foto'), fotoPh = document.getElementById('cf-foto-placeholder');
-  if (c.fotoUrl) { fotoImg.src = c.fotoUrl; fotoImg.style.display='block'; fotoPh.style.display='none'; }
+  if (c.fotoUrl) { fotoImg.setAttribute('data-sp-url',c.fotoUrl); spSetImg(fotoImg); fotoImg.style.display='block'; fotoPh.style.display='none'; }
   else { fotoImg.style.display='none'; fotoPh.style.display='flex'; }
   colabFichaSwitchTab(window._cfTabAtiva || 'cadastrais');
 }
@@ -3574,6 +3574,40 @@ function colabFichaSwitchTab(tab) {
 }
 
 
+/* ═══ Anexos privados: links temporários (só para quem está logado) ═══ */
+function spCaminho(x){
+  if(!x) return '';
+  if(x.caminho) return x.caminho;
+  const u=x.url||''; const m=u.match(/\/documentos-rh\/([^?#]+)/);
+  try{ return m?decodeURIComponent(m[1]):''; }catch(e){ return m?m[1]:''; }
+}
+const _spCache={};
+async function spUrl(caminho, urlOriginal){
+  if(!caminho) return urlOriginal||'';
+  const c=_spCache[caminho]; if(c&&c.exp>Date.now()) return c.url;
+  try{
+    if(typeof supabaseClient!=='undefined'&&supabaseClient){
+      const {data,error}=await supabaseClient.storage.from('documentos-rh').createSignedUrl(caminho,600);
+      if(!error&&data&&data.signedUrl){ _spCache[caminho]={url:data.signedUrl,exp:Date.now()+8*60000}; return data.signedUrl; }
+    }
+  }catch(e){ console.warn('spUrl',e); }
+  return urlOriginal||'';
+}
+async function abrirAnexo(ev,caminho){
+  if(ev) ev.preventDefault();
+  const w=window.open('','_blank');
+  const u=await spUrl(caminho);
+  if(!u){ if(w) w.close(); showToast('Não foi possível abrir o arquivo. Entre novamente no sistema.','error'); return; }
+  if(w) w.location.href=u; else window.open(u,'_blank');
+}
+function spSetImg(img){
+  const u=img.getAttribute('data-sp-url'); if(!u||img.getAttribute('data-sp-ok')===u) return;
+  img.setAttribute('data-sp-ok',u);
+  spUrl(spCaminho({url:u}),u).then(x=>{ if(x) img.src=x; });
+}
+try{
+  new MutationObserver(ms=>{ ms.forEach(m=>m.addedNodes.forEach(n=>{ if(n.nodeType!==1) return; if(n.matches&&n.matches('img[data-sp-url]')) spSetImg(n); if(n.querySelectorAll) n.querySelectorAll('img[data-sp-url]').forEach(spSetImg); })); }).observe(document.documentElement,{childList:true,subtree:true});
+}catch(e){}
 function sanitizeStorageKey(s) {
   return (s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'') // remove acentos
     .replace(/[^a-zA-Z0-9._\-\/]/g, '_') // troca qualquer caractere não seguro por _
@@ -4704,7 +4738,7 @@ const COLAB_DOC_CATEGORIAS = ['Acordos - Termos','Advertências','ASOs','Atestad
 function colabDocumentosHtml(c) {
   const docs = loadData('colab_documentos').filter(d => d.status !== 'Inativo' && d.colaboradorId === c.id);
   let html = `<div class="card" style="padding:12px;margin-bottom:14px;display:flex;align-items:center;gap:14px">
-    <img id="cf-foto-big" src="${c.fotoUrl||''}" style="width:64px;height:64px;border-radius:50%;object-fit:cover;background:var(--g100);${c.fotoUrl?'':'display:none'}">
+    <img id="cf-foto-big" data-sp-url="${c.fotoUrl||''}" style="width:64px;height:64px;border-radius:50%;object-fit:cover;background:var(--g100);${c.fotoUrl?'':'display:none'}">
     ${!c.fotoUrl?'<div style="width:64px;height:64px;border-radius:50%;background:var(--g100);display:flex;align-items:center;justify-content:center;font-size:24px;color:var(--g400)">👤</div>':''}
     <div>
       <div style="font-size:12px;font-weight:600;margin-bottom:6px">Foto do Colaborador</div>
@@ -4745,7 +4779,7 @@ function colabDocumentosHtml(c) {
       </div>
       ${arquivos.length ? `<div style="margin-top:8px;display:flex;flex-direction:column;gap:4px">${arquivos.map(a => `
         <div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;padding:4px 6px;background:var(--g50,#fafbfc);border-radius:6px">
-          <a href="${a.url}" target="_blank" style="color:var(--blue);text-decoration:none">📄 ${a.nomeArquivo}</a>
+          <a href="#" onclick="abrirAnexo(event,'${spCaminho(a)}')" style="color:var(--blue);text-decoration:none">📄 ${a.nomeArquivo}</a>
           <span style="color:var(--g400)">${a.dataUpload} <button class="btn btn-s btn-xs" onclick="colabExcluirDocumento(${a.id})" style="margin-left:6px">🗑</button></span>
         </div>`).join('')}</div>` : ''}
     </div>`;
@@ -4781,7 +4815,7 @@ async function colabUploadDocumento(file, categoria) {
     const { data } = supabaseClient.storage.from('documentos-rh').getPublicUrl(path);
     crudCreate('colab_documentos', {
       colaboradorId: c.id, colaborador: c.nome, categoria, nomeArquivo: file.name,
-      url: data.publicUrl, dataUpload: nowStr().split(' ')[0]
+      caminho: path, url: data.publicUrl, dataUpload: nowStr().split(' ')[0]
     }, {modulo:'Documentos', label: `${c.nome} — ${categoria} — ${file.name}`});
     showToast('✅ Arquivo anexado');
     colabFichaSwitchTab('documentos');
@@ -7855,7 +7889,7 @@ function benefAbrirAnexos(inscritoId) {
     .sort((a,b) => (b.id||0) - (a.id||0));
   const lista = arqs.length ? arqs.map(a => `<div style="display:flex;align-items:center;gap:8px;padding:6px 8px;border:1px solid var(--g100);border-radius:6px;margin-bottom:6px">
       <span style="font-size:16px">📄</span>
-      <a href="${a.url}" target="_blank" rel="noopener" style="flex:1;font-size:12px;word-break:break-all">${a.nomeArquivo}</a>
+      <a href="#" onclick="abrirAnexo(event,'${spCaminho(a)}')" rel="noopener" style="flex:1;font-size:12px;word-break:break-all">${a.nomeArquivo}</a>
       <span class="muted" style="font-size:10px">${a.dataUpload||''}</span>
       <button class="btn btn-s btn-xs" onclick="benefExcluirAnexo(${a.id})" title="Remover arquivo">🗑</button>
     </div>`).join('') : '<div class="muted" style="padding:10px 0">Nenhum arquivo anexado ainda.</div>';
@@ -8821,7 +8855,7 @@ function cvExportarFiltrado() {
 }
 
 const CV_EMPRESA_INFO = {
-  'AC': {nome:'AC Metal Fundição Eireli', cnpj:'00.292.535/0001-83', endereco:"Rua Tupis, 3149, Parque Industrial de Cillo, Santa Bárbara d'Oeste - SP, CEP. 13.453-050", email:'rh.acmetalurgica@gmail.com'},
+  'AC': {nome:'AC Metal Fundição Eireli', cnpj:'00.292.535/0001-83', endereco:"Rua José Nicolau Lux, 352, Parque Industrial de Cillo, Santa Bárbara d'Oeste - SP, CEP. 13.457-162", email:'rh.acmetalurgica@gmail.com'},
   'BRASS': {nome:'BRASSMETAL LTDA', cnpj:'27.409.417/0001-69', endereco:"Rua Tupis, 3149 (fundos), Parque Industrial de Cillo, Santa Bárbara d'Oeste - SP, CEP. 13.453-050", email:'brassmetal.corporativo@gmail.com'}
 };
 // O cadastro de Colaboradores usa '01'/'02'/'PJ' no campo cnpj; os textos dos
@@ -13344,7 +13378,7 @@ function phRender(){
   const anoAtual=new Date().getFullYear(); const anos=[]; for(let y=anoAtual+1;y>=anoAtual-6;y--) anos.push(y);
   const linhas=[]; for(let m=1;m<=12;m++){
     const f=arqs.filter(a=>Number(a.mes)===m).sort((a,b)=>(a.id||0)-(b.id||0));
-    linhas.push(`<tr style="border-bottom:1px solid var(--g100);${m===c.mes?'background:#eff6ff':''}"><td style="padding:5px 6px;width:100px;font-weight:600;font-size:11px">${PH_MESES[m]}</td><td style="padding:5px 6px">${f.length?f.map(a=>`<div style="display:flex;align-items:center;gap:6px;margin:2px 0"><span>📄</span><a href="${a.url}" target="_blank" rel="noopener" style="flex:1;font-size:11px;word-break:break-all">${gpEsc(a.nomeArquivo)}</a><span class="muted" style="font-size:9px">${a.dataUpload||''}</span><button class="btn btn-s btn-xs" title="Remover" onclick="phExcluir(${a.id})">🗑</button></div>`).join(''):'<span class="muted" style="font-size:10px">—</span>'}</td></tr>`);
+    linhas.push(`<tr style="border-bottom:1px solid var(--g100);${m===c.mes?'background:#eff6ff':''}"><td style="padding:5px 6px;width:100px;font-weight:600;font-size:11px">${PH_MESES[m]}</td><td style="padding:5px 6px">${f.length?f.map(a=>`<div style="display:flex;align-items:center;gap:6px;margin:2px 0"><span>📄</span><a href="#" onclick="abrirAnexo(event,'${spCaminho(a)}')" rel="noopener" style="flex:1;font-size:11px;word-break:break-all">${gpEsc(a.nomeArquivo)}</a><span class="muted" style="font-size:9px">${a.dataUpload||''}</span><button class="btn btn-s btn-xs" title="Remover" onclick="phExcluir(${a.id})">🗑</button></div>`).join(''):'<span class="muted" style="font-size:10px">—</span>'}</td></tr>`);
   }
   abrirModalSimples('📎 '+c.titulo,`
     <div class="filters" style="margin-bottom:10px;flex-wrap:wrap">
@@ -15023,7 +15057,7 @@ function gpAnexos(pid,regId){
   const arqs=loadData('anexos_gerais').filter(a=>a.ref===pid&&a.regId===regId&&a.status!=='Inativo').sort((a,b)=>(b.id||0)-(a.id||0));
   const lista=arqs.length?arqs.map(a=>`<div style="display:flex;align-items:center;gap:8px;padding:6px 8px;border:1px solid var(--g100);border-radius:6px;margin-bottom:6px">
       <span style="font-size:16px">📄</span>
-      <a href="${a.url}" target="_blank" rel="noopener" style="flex:1;font-size:12px;word-break:break-all">${gpEsc(a.nomeArquivo)}</a>
+      <a href="#" onclick="abrirAnexo(event,'${spCaminho(a)}')" rel="noopener" style="flex:1;font-size:12px;word-break:break-all">${gpEsc(a.nomeArquivo)}</a>
       <span class="muted" style="font-size:10px">${a.dataUpload||''}</span>
       <button class="btn btn-s btn-xs" onclick="gpExcluirAnexo(${a.id})" title="Remover arquivo">🗑</button></div>`).join(''):'<div class="muted" style="padding:10px 0">Nenhum arquivo anexado ainda.</div>';
   abrirModalSimples(`📎 Anexos — ${cfg.rowLabel?cfg.rowLabel(r):cfg.title}`,`
@@ -15497,7 +15531,7 @@ function evidImprimir(id){
   const grupos=[]; for(let i=0;i<imgs.length;i+=6) grupos.push(imgs.slice(i,i+6)); if(!grupos.length&&anx.length) grupos.push([]);
   const anexosHtml=grupos.map((g,gi)=>`<div class="ev-pg"><div style="padding-top:2mm">${logo}</div><div style="font-weight:700;text-align:center;margin:8px 0">ANEXOS — EVIDÊNCIAS DA AÇÃO (${gpEsc(e.campanha)} · ${gpEsc(e.dataAcao)})${grupos.length>1?' — '+(gi+1)+'/'+grupos.length:''}</div>
     ${gi===0&&outros.length?`<div style="font-size:10pt;margin-bottom:8px">Arquivos anexados ao registro: ${outros.map(a=>gpEsc(a.nomeArquivo)).join('; ')}</div>`:''}
-    <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center">${g.map(a=>`<div style="width:46%;page-break-inside:avoid;text-align:center"><img src="${a.url}" style="max-width:100%;max-height:300px;border:1px solid #bbb"><div style="font-size:8pt;color:#555">${gpEsc(a.nomeArquivo)}</div></div>`).join('')}</div>${evidRodape(emp)}</div>`).join('');
+    <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center">${g.map(a=>`<div style="width:46%;page-break-inside:avoid;text-align:center"><img data-sp-url="${a.url}" style="max-width:100%;max-height:300px;border:1px solid #bbb"><div style="font-size:8pt;color:#555">${gpEsc(a.nomeArquivo)}</div></div>`).join('')}</div>${evidRodape(emp)}</div>`).join('');
   abrirReciboModal('🖨 Relatório de Evidências',`<style>
       @page{size:A4;margin:0}
       .ev-doc{font-family:Arial,Helvetica,sans-serif;font-size:11pt;line-height:1.18;color:#000}
