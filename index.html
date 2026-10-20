@@ -455,27 +455,15 @@ body.ad-minimizado #ad-titlebar-text{cursor:pointer}
   <div class="l-box">
     <div class="l-logo">
       <div class="l-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
-      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 5.14 — Benefícios sem limite de inscritos (leitura da nuvem em blocos); Convênio médico: mensalidade, desconto do colaborador (50%), dependentes, coparticipação e quadro Nota/Empresa/Repasse; Carta PHS e Prêmio por Assiduidade com a data do dia da impressão; impressão dos históricos de férias e salário/cargo; Histórico de férias: incluir/excluir período e gozo; Férias: botão ✔ Resolvido (guarda o período no histórico), coluna do colaborador mais estreita; menu lateral compacto; botões minimizar/maximizar; Férias por empresa</div></div>
+      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 5.18 — Login real por e-mail e senha (Supabase) e script para trancar a base; Convênio: copiar mês anterior e inscrever todos os ativos; Seguro de Vida só em Contratos. Versão 5.15 — Limpeza geral: duplicidades removidas (histórico único de cargo/salário, Folha × Convênio, funções e filtros repetidos), dados de exemplo removidos e tudo editável (Configurações da empresa, cargos, pipeline), verificador de duplicidades; Benefícios sem limite de inscritos (leitura da nuvem em blocos); Convênio médico: mensalidade, desconto do colaborador (50%), dependentes, coparticipação e quadro Nota/Empresa/Repasse; Carta PHS e Prêmio por Assiduidade com a data do dia da impressão; impressão dos históricos de férias e salário/cargo; Histórico de férias: incluir/excluir período e gozo; Férias: botão ✔ Resolvido (guarda o período no histórico), coluna do colaborador mais estreita; menu lateral compacto; botões minimizar/maximizar; Férias por empresa</div></div>
     </div>
-    <div class="f-row"><label>Usuário</label><input type="text" id="l-user" value="jakeline@acmetalurgica.com.br"></div>
-    <div class="f-row"><label>Senha</label><input type="password" id="l-pass" value="••••••••"></div>
-    <div class="f-row">
-      <label>Perfil de Acesso</label>
-      <select id="l-perfil">
-        <option value="jakeline">Jakeline — Diretoria</option>
-        <option value="patricia">Patrícia — Analista RH</option>
-        <option value="francielle">Francielle — Supervisora Finan/ADM</option>
-      </select>
+    <div class="f-row"><label>E-mail</label><input type="email" id="l-user" autocomplete="username" placeholder="seu.email@acmetalurgica.com.br" onkeydown="if(event.key==='Enter')document.getElementById('l-pass').focus()"></div>
+    <div class="f-row"><label>Senha</label><input type="password" id="l-pass" autocomplete="current-password" placeholder="Sua senha" onkeydown="if(event.key==='Enter')entrarSistema()"></div>
+    <select id="l-perfil" style="display:none"><option value="jakeline">Jakeline</option><option value="patricia">Patrícia</option><option value="francielle">Francielle</option></select>
+    <div id="l-msg" style="display:none;font-size:12px;color:#b91c1c;background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:8px 10px;margin-bottom:8px"></div>
+    <button class="l-btn" id="l-btn" onclick="entrarSistema()">Entrar no Sistema</button>
+    <div class="l-hint">Acesso restrito à equipe autorizada · AC Metalúrgica · Confidencial</div>
     </div>
-    <button class="l-btn" onclick="doLogin()">Entrar no Sistema</button>
-    <div class="l-hint">Protótipo v3.0 — AC Metalúrgica · Confidencial</div>
-    <div class="l-chips">
-      <div class="l-chips-title">Acesso rápido</div>
-      <div class="l-chip" onclick="ql('jakeline')"><div class="l-av" style="background:#1a3f6f">JC</div>Jakeline — Diretoria</div>
-      <div class="l-chip" onclick="ql('patricia')"><div class="l-av" style="background:#7e22ce">PA</div>Patrícia — Analista RH</div>
-      <div class="l-chip" onclick="ql('francielle')"><div class="l-av" style="background:#0d9488">FR</div>Francielle — Sup. Finan/ADM</div>
-    </div>
-  </div>
 </div>
 
 <!-- ═══════════════════════════ APP ═══════════════════════════ -->
@@ -682,12 +670,14 @@ body.ad-minimizado #ad-titlebar-text{cursor:pointer}
 
       <!-- ══ VISÃO FICHA (lista + abas) ══ -->
       <div id="colab-ficha-view" style="display:none;margin-bottom:14px">
-        <div style="display:flex;gap:0;border:1px solid var(--g100);border-radius:10px;overflow:hidden;min-height:560px">
-          <div style="width:270px;border-right:1px solid var(--g100);display:flex;flex-direction:column;background:var(--g50,#fafbfc)">
-            <div style="padding:10px;border-bottom:1px solid var(--g100)">
-              <input class="finp" type="text" id="colab-ficha-search" placeholder="🔎 Buscar por nome ou matrícula..." oninput="colabFichaRenderList()" style="width:100%">
+        <div style="display:flex;gap:0;border:1px solid var(--g100);border-radius:10px;min-height:560px">
+          <div style="width:270px;flex:none;border-right:1px solid var(--g100);background:var(--g50,#fafbfc);border-radius:10px 0 0 10px">
+            <div id="colab-ficha-esq" style="position:sticky;top:0;display:flex;flex-direction:column;height:calc(100vh - 32px);max-height:100%;min-height:360px">
+              <div style="padding:10px;border-bottom:1px solid var(--g100)">
+                <input class="finp" type="text" id="colab-ficha-search" placeholder="🔎 Buscar por nome ou matrícula..." oninput="colabFichaRenderList()" style="width:100%">
+              </div>
+              <div id="colab-ficha-lista" style="flex:1;min-height:0;overflow-y:auto"></div>
             </div>
-            <div id="colab-ficha-lista" style="flex:1;overflow-y:auto;max-height:520px"></div>
           </div>
           <div style="flex:1;display:flex;flex-direction:column">
             <div style="display:flex;gap:4px;padding:8px 10px;border-bottom:1px solid var(--g100);flex-wrap:wrap;background:var(--g50,#fafbfc)">
@@ -1290,23 +1280,8 @@ body.ad-minimizado #ad-titlebar-text{cursor:pointer}
       </div>
       <div class="kpi-grid"><div class="kpi-card"><div class="kpi-lbl">Vagas Abertas</div><div class="kpi-val" id="rec-abertas-crud">—</div></div><div class="kpi-card"><div class="kpi-lbl">Candidatos Total</div><div class="kpi-val" id="rec-candidatos-crud">—</div></div><div class="kpi-card"><div class="kpi-lbl">Em Entrevista</div><div class="kpi-val" id="rec-entrevista-crud">—</div></div><div class="kpi-card"><div class="kpi-lbl">SLA Médio</div><div class="kpi-val" id="rec-sla-crud">—</div><div class="kpi-delta dg">Meta: 21d</div></div></div>
       <div class="card">
-        <div class="chart-ttl" style="margin-bottom:12px">Pipeline — Candidatos em Processo</div>
-        <div class="pipe-wrap" style="grid-template-columns:repeat(6,1fr)">
-          <div class="pipe-col"><div class="pipe-col-hdr"><div class="pipe-col-name">Triagem</div><div class="pipe-cnt" style="color:var(--blue-text)">23</div></div><div class="pipe-card"><div class="pipe-card-name">João Almeida</div><div class="pipe-card-role">Torneiro CNC</div><div class="pipe-card-days">5d na etapa</div></div><div class="pipe-card"><div class="pipe-card-name">Marcos Lima</div><div class="pipe-card-role">Torneiro CNC</div><div class="pipe-card-days">3d na etapa</div></div><div class="pipe-card"><div class="pipe-card-name">+21 candidatos</div><div class="pipe-card-role">Aguardando triagem</div></div></div>
-          <div class="pipe-col"><div class="pipe-col-hdr"><div class="pipe-col-name">Entrev. RH</div><div class="pipe-cnt" style="color:var(--purple)">12</div></div><div class="pipe-card"><div class="pipe-card-name">Paula Souza</div><div class="pipe-card-role">Aux. Administrativo</div><div class="pipe-card-days">Entrev: amanhã</div></div><div class="pipe-card"><div class="pipe-card-name">Renata Dias</div><div class="pipe-card-role">Torneiro CNC</div></div></div>
-          <div class="pipe-col"><div class="pipe-col-hdr"><div class="pipe-col-name">Entrev. Gestor</div><div class="pipe-cnt" style="color:var(--yellow)">8</div></div><div class="pipe-card"><div class="pipe-card-name">Carlos Neto</div><div class="pipe-card-role">Torneiro CNC</div><div class="pipe-card-days">Ag. agendamento</div></div></div>
-          <div class="pipe-col"><div class="pipe-col-hdr"><div class="pipe-col-name">Testes</div><div class="pipe-cnt" style="color:var(--orange)">4</div></div><div class="pipe-card"><div class="pipe-card-name">Luís Andrade</div><div class="pipe-card-role">Torneiro CNC</div><div class="pipe-card-days">Teste técnico</div></div></div>
-          <div class="pipe-col"><div class="pipe-col-hdr"><div class="pipe-col-name">Aprovados</div><div class="pipe-cnt" style="color:var(--green)">2</div></div><div class="pipe-card" style="border-color:var(--green)"><div class="pipe-card-name">Marcos Torres</div><div class="pipe-card-role">✓ Aprovado</div></div></div>
-          <div class="pipe-col"><div class="pipe-col-hdr"><div class="pipe-col-name">Banco Talentos</div><div class="pipe-cnt" style="color:var(--g400)">18</div></div><div class="pipe-card"><div class="pipe-card-name">Fernanda R.</div><div class="pipe-card-role">Operador Produção</div></div><div class="pipe-card"><div class="pipe-card-name">André M.</div><div class="pipe-card-role">Torneiro Jr.</div></div></div>
-        </div>
-      </div>
-      <div class="filters">
-        <div class="srch-wrap"><input class="finp" type="text" placeholder="Buscar vaga, código ou setor..." oninput="tcVaga.setSearch(this.value)"></div>
-        <select class="fsel" onchange="tcVaga.setFilter('situacao', this.value)">
-          <option value="">Todos os status</option><option>Em andamento</option><option>Fechada</option><option>Cancelada</option>
-        </select>
-        <span class="chip" id="vaga-count">— registros</span>
-        <button class="btn btn-s btn-sm" onclick="exportTableToExcel('vagas',[{field:'codigo',label:'Código',width:10},{field:'titulo',label:'Vaga',width:30},{field:'setor',label:'Setor',width:16},{field:'abertura',label:'Abertura',width:12},{field:'candidatos',label:'Candidatos',width:10},{field:'fase',label:'Fase',width:16},{field:'sla',label:'SLA(d)',width:8},{field:'aprovacao',label:'Aprovação',width:16},{field:'situacao',label:'Status',width:14}],'Vagas')">⬇ Exportar</button>
+        <div class="chart-ttl" style="margin-bottom:12px">Pipeline — Vagas por fase do processo seletivo</div>
+        <div class="pipe-wrap" id="rec-pipeline" style="grid-template-columns:repeat(6,1fr)"></div>
       </div>
       <div style="background:#fff;border:1px solid var(--g200);border-radius:9px;padding:12px;margin-bottom:10px">
         <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
@@ -1345,7 +1320,7 @@ body.ad-minimizado #ad-titlebar-text{cursor:pointer}
         <div class="sec-title"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Cargos, Salários & Remuneração</div>
         <button class="btn btn-p" onclick="openCrudModal(MOD_CARGO,null)">+ Novo Cargo</button>
       </div>
-      <div class="kpi-grid"><div class="kpi-card"><div class="kpi-lbl">Cargos Ativos</div><div class="kpi-val" id="cg-total-crud">—</div></div><div class="kpi-card"><div class="kpi-lbl">Abaixo da Faixa</div><div class="kpi-val" style="color:var(--yellow)" id="cg-abaixo-crud">—</div></div><div class="kpi-card"><div class="kpi-lbl">Acima da Faixa</div><div class="kpi-val" style="color:var(--red)" id="cg-acima-crud">—</div></div><div class="kpi-card"><div class="kpi-lbl">Reajuste Médio 26</div><div class="kpi-val">5.2%</div></div></div>
+      <div class="kpi-grid"><div class="kpi-card"><div class="kpi-lbl">Cargos Ativos</div><div class="kpi-val" id="cg-total-crud">—</div></div><div class="kpi-card"><div class="kpi-lbl">Abaixo da Faixa</div><div class="kpi-val" style="color:var(--yellow)" id="cg-abaixo-crud">—</div></div><div class="kpi-card"><div class="kpi-lbl">Acima da Faixa</div><div class="kpi-val" style="color:var(--red)" id="cg-acima-crud">—</div></div><div class="kpi-card"><div class="kpi-lbl">Reajuste Médio 26</div><div class="kpi-val">—</div></div></div>
       <div class="tabs">
         <div class="tab active" onclick="swTab(this,'cg-estrutura')">Estrutura de Cargos</div>
         <div class="tab" onclick="swTab(this,'cg-faixas')">Faixas Salariais</div>
@@ -1373,45 +1348,16 @@ body.ad-minimizado #ad-titlebar-text{cursor:pointer}
         </div>
       </div>
       <div id="cg-faixas" class="tc">
-        <div class="card">
-          <div style="font-size:12px;font-weight:700;margin-bottom:14px">Visualização de Faixas Salariais</div>
-          <div style="margin-bottom:18px">
-            <div style="font-size:12px;font-weight:600;margin-bottom:6px">Torneiro Mecânico Sênior — N4 <span class="badge by" style="margin-left:6px">Abaixo da faixa</span></div>
-            <div class="faixa-bar"><div class="faixa-marker" style="left:calc(38% - 1px)"></div></div>
-            <div class="faixa-labels"><span>Mín R$3.600</span><span>Médio R$4.400</span><span>Máx R$5.200</span></div>
-            <div style="font-size:10px;color:var(--yellow-t);margin-top:4px">⚠ Salário atual médio: R$3.500 — 2,8% abaixo do mínimo da faixa. Recomendado reajuste.</div>
-          </div>
-          <div>
-            <div style="font-size:12px;font-weight:600;margin-bottom:6px">Operador de Produção Pleno — N2</div>
-            <div class="faixa-bar"><div class="faixa-marker" style="left:calc(30% - 1px)"></div></div>
-            <div class="faixa-labels"><span>Mín R$2.600</span><span>Médio R$3.100</span><span>Máx R$3.600</span></div>
-          </div>
-        </div>
+        <div class="card" id="cg-faixas-box"><div class="muted" style="padding:10px">Carregando…</div></div>
       </div>
       <div id="cg-trilhas" class="tc">
-        <div class="card">
-          <div style="font-size:12px;font-weight:700;margin-bottom:14px">Trilha de Carreira — Área de Usinagem</div>
-          <div style="display:flex;align-items:center;gap:0;overflow-x:auto;padding-bottom:8px">
-            <div style="text-align:center;min-width:110px"><div style="background:var(--blue-bg);border-radius:8px;padding:10px;border:2px solid var(--blue3)"><div style="font-size:10px;font-weight:700;color:var(--blue)">N1</div><div style="font-size:11px;font-weight:700;margin-top:4px">Aux. Produção</div><div style="font-size:9px;color:var(--g400);margin-top:2px">R$1.800–2.400</div></div></div>
-            <div style="font-size:18px;color:var(--g300);padding:0 6px">→</div>
-            <div style="text-align:center;min-width:110px"><div style="background:var(--blue-bg);border-radius:8px;padding:10px"><div style="font-size:10px;font-weight:700;color:var(--blue)">N2</div><div style="font-size:11px;font-weight:700;margin-top:4px">Operador CNC Jr.</div><div style="font-size:9px;color:var(--g400);margin-top:2px">R$2.400–3.200</div></div></div>
-            <div style="font-size:18px;color:var(--g300);padding:0 6px">→</div>
-            <div style="text-align:center;min-width:110px"><div style="background:var(--blue-bg);border-radius:8px;padding:10px"><div style="font-size:10px;font-weight:700;color:var(--blue)">N3</div><div style="font-size:11px;font-weight:700;margin-top:4px">Torneiro Mecânico</div><div style="font-size:9px;color:var(--g400);margin-top:2px">R$2.800–4.000</div></div></div>
-            <div style="font-size:18px;color:var(--g300);padding:0 6px">→</div>
-            <div style="text-align:center;min-width:110px"><div style="background:var(--blue-bg);border-radius:8px;padding:10px"><div style="font-size:10px;font-weight:700;color:var(--blue)">N4</div><div style="font-size:11px;font-weight:700;margin-top:4px">Torneiro Sênior</div><div style="font-size:9px;color:var(--g400);margin-top:2px">R$3.600–5.200</div></div></div>
-            <div style="font-size:18px;color:var(--g300);padding:0 6px">→</div>
-            <div style="text-align:center;min-width:110px"><div style="background:var(--purple-bg);border-radius:8px;padding:10px"><div style="font-size:10px;font-weight:700;color:var(--purple)">N5</div><div style="font-size:11px;font-weight:700;margin-top:4px">Supervisor CNC</div><div style="font-size:9px;color:var(--g400);margin-top:2px">R$4.500–6.500</div></div></div>
-          </div>
-        </div>
+        <div class="card" id="cg-trilhas-box"><div class="muted" style="padding:10px">Carregando…</div></div>
       </div>
       <div id="cg-historico" class="tc">
         <div class="card" style="padding:0">
-          <table><thead><tr><th>Colaborador</th><th>Cargo</th><th>Data</th><th>Tipo</th><th>De</th><th>Para</th><th>%</th><th>Motivo</th></tr></thead>
-          <tbody>
-            <tr><td>Carlos Ferreira</td><td>Operador Pl.</td><td>15/01/2026</td><td><span class="badge bg">Promoção</span></td><td>R$2.540</td><td>R$2.850</td><td class="mono dg">+12.2%</td><td>Desempenho</td></tr>
-            <tr><td>Paulo Mendes</td><td>Torneiro</td><td>01/03/2026</td><td><span class="badge bb">Mérito</span></td><td>R$3.050</td><td>R$3.200</td><td class="mono dg">+4.9%</td><td>Reajuste CSAT</td></tr>
-            <tr><td>Juliana Pereira</td><td>Sup. Qualidade</td><td>01/01/2026</td><td><span class="badge bp">Promoção</span></td><td>R$3.800</td><td>R$4.500</td><td class="mono dg">+18.4%</td><td>Nova posição</td></tr>
-          </tbody></table>
+          <div id="cg-hist-info" class="muted" style="padding:8px 12px;font-size:11px"></div>
+          <table><thead><tr><th>Colaborador</th><th>Data</th><th>Tipo</th><th>Cargo</th><th>Salário</th><th>%</th><th>Motivo</th></tr></thead>
+          <tbody id="cg-hist-tbody"></tbody></table>
         </div>
       </div>
     </div>
@@ -1429,8 +1375,7 @@ body.ad-minimizado #ad-titlebar-text{cursor:pointer}
         <div class="kpi-card"><div class="kpi-lbl">Concluídos</div><div class="kpi-val dg" id="tr-concluidos-crud">—</div></div>
         <div class="kpi-card"><div class="kpi-lbl">Pendentes</div><div class="kpi-val" style="color:var(--yellow)" id="tr-pendentes-crud">—</div></div>
       </div>
-      <div class="tabs"><div class="tab active" onclick="swTab(this,'td-matriz')">Matriz de Treinamentos</div><div class="tab" onclick="swTab(this,'td-trilhas')">Trilhas LMS</div><div class="tab" onclick="swTab(this,'td-certs')">Certificados</div><div class="tab" onclick="swTab(this,'td-eficacia')">Eficácia</div></div>
-      <div id="td-matriz" class="tc active">
+            <div id="td-matriz" class="tc active">
              <div style="background:#fff;border:1px solid var(--g200);border-radius:9px;padding:12px;margin-bottom:10px">
         <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
           <div class="srch-wrap" style="flex:2;min-width:180px"><input class="finp" style="width:100%" id="treino-search" placeholder="🔎 Buscar colaborador, cargo ou NR..." oninput="treinoCtrl.filter()"></div>
@@ -1450,26 +1395,6 @@ body.ad-minimizado #ad-titlebar-text{cursor:pointer}
           <div style="padding:10px 14px;display:flex;align-items:center;justify-content:flex-end;gap:4px;border-top:1px solid var(--g100)" id="treino-pag"></div>
         </div>
       </div>
-      <div id="td-trilhas" class="tc">
-        <div class="charts-grid">
-          <div class="card"><div style="font-size:12px;font-weight:700;margin-bottom:12px">🏭 Trilha: Operador de Produção</div><div style="display:flex;flex-direction:column;gap:8px"><div style="background:var(--green-bg);border-radius:6px;padding:8px 10px;font-size:11px"><span class="badge bg" style="margin-right:6px">✓</span>Integração e Segurança Básica · 8h</div><div style="background:var(--green-bg);border-radius:6px;padding:8px 10px;font-size:11px"><span class="badge bg" style="margin-right:6px">✓</span>5S e Organização · 4h</div><div style="background:var(--yellow-bg);border-radius:6px;padding:8px 10px;font-size:11px"><span class="badge by" style="margin-right:6px">!</span>NR-12 Máquinas · 16h</div><div style="background:var(--g50);border-radius:6px;padding:8px 10px;font-size:11px"><span class="badge bgy" style="margin-right:6px">○</span>Qualidade e Rastreabilidade · 8h</div></div></div>
-          <div class="card"><div style="font-size:12px;font-weight:700;margin-bottom:12px">⚙ Trilha: Torneiro Mecânico</div><div style="display:flex;flex-direction:column;gap:8px"><div style="background:var(--green-bg);border-radius:6px;padding:8px 10px;font-size:11px"><span class="badge bg" style="margin-right:6px">✓</span>NR-12 Básico · 16h</div><div style="background:var(--yellow-bg);border-radius:6px;padding:8px 10px;font-size:11px"><span class="badge by" style="margin-right:6px">!</span>NR-12 Avançado · 24h</div><div style="background:var(--g50);border-radius:6px;padding:8px 10px;font-size:11px"><span class="badge bgy" style="margin-right:6px">○</span>Leitura de Projetos Mecânicos · 12h</div><div style="background:var(--g50);border-radius:6px;padding:8px 10px;font-size:11px"><span class="badge bgy" style="margin-right:6px">○</span>Metrologia Industrial · 8h</div></div></div>
-        </div>
-      </div>
-      <div id="td-certs" class="tc">
-        <div class="card" style="padding:0">
-          <table><thead><tr><th>Colaborador</th><th>Treinamento</th><th>Carga H</th><th>Conclusão</th><th>Validade</th><th>Status</th><th></th></tr></thead>
-          <tbody>
-            <tr><td>Carlos Ferreira</td><td>Segurança Básica</td><td>8h</td><td>10/03/2026</td><td>10/03/2027</td><td><span class="badge bg">Válido</span></td><td><button class="btn btn-s btn-xs">📄</button></td></tr>
-            <tr><td>Paulo Mendes</td><td>NR-12 Básico</td><td>16h</td><td>05/05/2024</td><td style="color:var(--red)">05/05/2026</td><td><span class="badge br">Vencido</span></td><td><button class="btn btn-s btn-xs">📄</button></td></tr>
-            <tr><td>Ana Lima</td><td>LGPD</td><td>4h</td><td>20/01/2026</td><td>20/01/2027</td><td><span class="badge bg">Válido</span></td><td><button class="btn btn-s btn-xs">📄</button></td></tr>
-          </tbody></table>
-        </div>
-      </div>
-      <div id="td-eficacia" class="tc">
-        <div class="kpi-grid"><div class="kpi-card"><div class="kpi-lbl">Avaliação Média</div><div class="kpi-val">8.2</div></div><div class="kpi-card"><div class="kpi-lbl">Aplicação no Trabalho</div><div class="kpi-val">76%</div></div><div class="kpi-card"><div class="kpi-lbl">NPS do Treinamento</div><div class="kpi-val">+68</div></div><div class="kpi-card"><div class="kpi-lbl">Custo/Hora Treinada</div><div class="kpi-val">R$28</div></div></div>
-        <div class="card"><div style="font-size:12px;font-weight:700;margin-bottom:10px">Avaliação de Eficácia — Últimos Treinamentos</div><div class="pulse-item"><div class="pulse-q">Segurança do Trabalho — 3 meses após</div><div class="pulse-bar-wrap"><div class="pbar" style="flex:1"><div class="pbar-fill pbar-g" style="width:90%"></div></div><div class="pulse-score">9.0</div></div></div><div class="pulse-item"><div class="pulse-q">5S e Organização — 6 meses após</div><div class="pulse-bar-wrap"><div class="pbar" style="flex:1"><div class="pbar-fill" style="width:76%"></div></div><div class="pulse-score">7.6</div></div></div><div class="pulse-item"><div class="pulse-q">LGPD — 2 meses após</div><div class="pulse-bar-wrap"><div class="pbar" style="flex:1"><div class="pbar-fill pbar-g" style="width:82%"></div></div><div class="pulse-score">8.2</div></div></div></div>
-      </div>
     </div>
 
     <!-- ══ AVALIAÇÕES / PDI ══ -->
@@ -1480,7 +1405,7 @@ body.ad-minimizado #ad-titlebar-text{cursor:pointer}
         <div style="display:flex;gap:8px"><button class="btn btn-p" onclick="openCrudModal(MOD_AVAL,null)">+ Nova Avaliação</button></div>
       </div>
       <div class="kpi-grid">
-        <div class="kpi-card"><div class="kpi-lbl">Ciclo Atual</div><div class="kpi-val" style="font-size:15px;margin-top:4px">1º Sem. 2026</div><div class="kpi-delta dn">Encerramento: 30/06</div></div>
+        <div class="kpi-card"><div class="kpi-lbl">Ciclo Atual</div><div class="kpi-val" style="font-size:15px;margin-top:4px" id="av-ciclo-atual">—</div></div>
         <div class="kpi-card"><div class="kpi-lbl">Concluídas</div><div class="kpi-val" style="color:var(--green)" id="av-done-crud">0</div></div>
         <div class="kpi-card"><div class="kpi-lbl">Pendentes</div><div class="kpi-val" style="color:var(--yellow)" id="av-pend-crud">—</div></div>
         <div class="kpi-card"><div class="kpi-lbl">Média Geral</div><div class="kpi-val" id="av-media-crud">—</div></div>
@@ -1520,26 +1445,7 @@ body.ad-minimizado #ad-titlebar-text{cursor:pointer}
         <div class="kpi-card"><div class="kpi-lbl">Planos de Ação</div><div class="kpi-val" id="cl-acoes-crud">—</div></div>
         <div class="kpi-card"><div class="kpi-lbl">Ações Pendentes</div><div class="kpi-val" style="color:var(--yellow)" id="cl-acoes-pend-crud">—</div></div>
       </div>
-      <div class="card">
-        <div class="chart-ttl" style="margin-bottom:10px">Barra eNPS — Distribuição</div>
-        <div class="enps-bar">
-          <div class="enps-seg" style="width:19%;background:var(--red)">19% Detrat.</div>
-          <div class="enps-seg" style="width:20%;background:var(--yellow);color:var(--yellow-t)">20% Neutros</div>
-          <div class="enps-seg" style="width:61%;background:var(--green)">61% Promotores</div>
-        </div>
-        <div style="font-size:10px;color:var(--g400);margin-top:6px">eNPS = % Promotores − % Detratores = 61% − 19% = <strong style="color:var(--green)">+42</strong> (Zona promotora: acima de +30)</div>
-      </div>
-      <div class="charts-grid">
-        <div class="chart-card"><div class="chart-ttl">eNPS por Setor</div><div style="position:relative;height:170px"><canvas id="c-enps"></canvas></div></div>
-        <div class="card" style="margin:0">
-          <div style="font-size:12px;font-weight:700;margin-bottom:12px">Pesquisa Pulse — Junho 2026</div>
-          <div class="pulse-item"><div class="pulse-q">Me sinto valorizado pela empresa</div><div class="pulse-bar-wrap"><div class="pbar" style="flex:1"><div class="pbar-fill" style="width:72%"></div></div><div class="pulse-score">7.2</div></div></div>
-          <div class="pulse-item"><div class="pulse-q">Tenho as ferramentas para fazer meu trabalho</div><div class="pulse-bar-wrap"><div class="pbar" style="flex:1"><div class="pbar-fill pbar-g" style="width:84%"></div></div><div class="pulse-score">8.4</div></div></div>
-          <div class="pulse-item"><div class="pulse-q">Meu líder me dá feedback claro</div><div class="pulse-bar-wrap"><div class="pbar" style="flex:1"><div class="pbar-fill pbar-y" style="width:62%"></div></div><div class="pulse-score">6.2</div></div></div>
-          <div class="pulse-item"><div class="pulse-q">Indicaria a empresa para amigos</div><div class="pulse-bar-wrap"><div class="pbar" style="flex:1"><div class="pbar-fill" style="width:78%"></div></div><div class="pulse-score">7.8</div></div></div>
-          <div class="pulse-item"><div class="pulse-q">Tenho clareza sobre meu crescimento</div><div class="pulse-bar-wrap"><div class="pbar" style="flex:1"><div class="pbar-fill pbar-y" style="width:58%"></div></div><div class="pulse-score">5.8</div></div></div>
-        </div>
-      </div>
+      <div class="card" id="clima-enps-card"><div class="muted" style="padding:10px">Sem pesquisas registradas. Clique em "+ Nova Pesquisa" para começar.</div></div>
       <div style="background:#fff;border:1px solid var(--g200);border-radius:9px;padding:12px;margin-bottom:10px">
         <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
           <div class="srch-wrap" style="flex:2;min-width:180px"><input class="finp" style="width:100%" id="clima-search" placeholder="🔎 Buscar pesquisa ou tipo..." oninput="climaCtrl&&climaCtrl.filter()"></div>
@@ -1607,26 +1513,7 @@ body.ad-minimizado #ad-titlebar-text{cursor:pointer}
         <div class="kpi-card"><div class="kpi-lbl">Não Identificado</div><div class="kpi-val" style="color:var(--red)" id="suc-naoid-crud">—</div></div>
       </div>
       <div class="charts-grid">
-        <div class="card">
-          <div style="font-size:12px;font-weight:700;margin-bottom:12px">Matriz 9-Box — Potencial × Desempenho</div>
-          <div style="display:grid;grid-template-columns:auto 1fr;gap:8px;align-items:center">
-            <div style="writing-mode:vertical-rl;transform:rotate(180deg);font-size:10px;font-weight:700;color:var(--g400);text-align:center">POTENCIAL ▲</div>
-            <div>
-              <div class="matrix-grid">
-                <div class="matrix-cell m-med"><div class="matrix-label">Alto pot. / Baixo desemp.</div><div class="matrix-person">Eduardo R.</div></div>
-                <div class="matrix-cell m-high"><div class="matrix-label">Alto pot. / Médio desemp.</div><div class="matrix-person">Juliana P.</div><div class="matrix-person">Ana Lima</div></div>
-                <div class="matrix-cell m-high" style="background:#bbf7d0"><div class="matrix-label">🌟 Alto pot. / Alto desemp.</div><div class="matrix-person">Juliana P.</div><div class="matrix-person">Carlos F.</div></div>
-                <div class="matrix-cell m-low"><div class="matrix-label">Méd. pot. / Baixo desemp.</div><div class="matrix-person">Roberto A.</div></div>
-                <div class="matrix-cell m-med"><div class="matrix-label">Méd. pot. / Médio desemp.</div><div class="matrix-person">Paulo M.</div><div class="matrix-person">Sandra O.</div></div>
-                <div class="matrix-cell m-high"><div class="matrix-label">Méd. pot. / Alto desemp.</div><div class="matrix-person">Marcelo S.</div></div>
-                <div class="matrix-cell m-low"><div class="matrix-label">Baixo pot. / Baixo desemp.</div></div>
-                <div class="matrix-cell m-low"><div class="matrix-label">Baixo pot. / Médio desemp.</div><div class="matrix-person">3 colabor.</div></div>
-                <div class="matrix-cell m-med"><div class="matrix-label">Baixo pot. / Alto desemp.</div><div class="matrix-person">2 colabor.</div></div>
-              </div>
-              <div style="display:flex;justify-content:space-between;font-size:9px;font-weight:700;color:var(--g400);margin-top:4px;padding:0 2px"><span>Baixo</span><span style="text-align:center">DESEMPENHO ▶</span><span>Alto</span></div>
-            </div>
-          </div>
-        </div>
+        <div class="card" id="suc-9box-card"><div class="muted" style="padding:10px">Cadastre as posições críticas para montar a matriz 9-Box.</div></div>
         <div style="background:#fff;border:1px solid var(--g200);border-radius:9px;padding:12px;margin-bottom:10px">
           <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
             <div class="srch-wrap" style="flex:2;min-width:180px"><input class="finp" style="width:100%" id="suc-search" placeholder="🔎 Buscar posição, titular ou sucessor..." oninput="sucCtrl&&sucCtrl.filter()"></div>
@@ -1658,63 +1545,6 @@ body.ad-minimizado #ad-titlebar-text{cursor:pointer}
       </div>
     </div>
 
-    <!-- ══ PEOPLE ANALYTICS ══ -->
-    <div id="page-indicadores" class="page">
-      <div class="layer-badge lb-st">● Estratégico — BI RH</div>
-      <div class="sec-title" style="margin-bottom:14px"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>People Analytics — Indicadores Estratégicos</div>
-      <div class="kpi-grid">
-        <div class="kpi-card"><div class="kpi-lbl">Headcount Ativo</div><div class="kpi-val" id="pa-total-crud">—</div></div>
-        <div class="kpi-card"><div class="kpi-lbl">Turnover Estimado</div><div class="kpi-val" id="pa-turnover-crud">—</div></div>
-        <div class="kpi-card"><div class="kpi-lbl">Aderência Treinamentos</div><div class="kpi-val" id="pa-trein-crud">—</div></div>
-        <div class="kpi-card"><div class="kpi-lbl">SST em Dia</div><div class="kpi-val" id="pa-sst-crud">—</div></div>
-      </div>
-      <div class="kpi-grid">
-        <div class="kpi-card"><div class="kpi-lbl">Avaliações Concluídas</div><div class="kpi-val" id="pa-aval-crud">—</div></div>
-        <div class="kpi-card"><div class="kpi-lbl">Nota Média Ciclo</div><div class="kpi-val" id="pa-media-crud">—</div></div>
-        <div class="kpi-card"><div class="kpi-lbl">Tempo Médio de Casa</div><div class="kpi-val" style="font-size:18px" id="pa-tmcasa-crud">—</div></div>
-        <div class="kpi-card"><div class="kpi-lbl">Vagas em Aberto</div><div class="kpi-val" id="pa-vagas-crud">—</div></div>
-      </div>
-      <div class="charts-grid">
-        <div class="chart-card"><div class="chart-ttl">Distribuição por Cargo (Dados Reais)</div><div style="position:relative;height:180px"><canvas id="c-sturn"></canvas></div></div>
-        <div class="chart-card"><div class="chart-ttl">Evolução do Quadro por Ano</div><div style="position:relative;height:180px"><canvas id="c-hcline"></canvas></div></div>
-      </div>
-      <div class="card">
-        <div style="font-size:12px;font-weight:700;margin-bottom:10px">🤖 Insights Automáticos — Gerados dos Dados Reais <span class="badge bb" style="font-size:9px">Live</span></div>
-        <div id="pa-insights"><div class="muted" style="text-align:center;padding:20px">Calculando insights...</div></div>
-      </div>
-    </div>
-
-    <!-- ══ TERCEIROS ══ -->
-    <div id="page-terceiros" class="page">
-      <div class="layer-badge lb-st">● Estratégico / Compliance</div>
-      <div class="section-hdr">
-        <div class="sec-title"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>Gestão de Terceiros & Temporários</div>
-        <button class="btn btn-p" onclick="openCrudModal(MOD_TERCEIRO,null)">+ Novo Contrato</button>
-      </div>
-      <div class="kpi-grid">
-        <div class="kpi-card"><div class="kpi-lbl">Contratos Ativos</div><div class="kpi-val" id="ter-ativos-crud">—</div></div>
-        <div class="kpi-card"><div class="kpi-lbl">Temporários</div><div class="kpi-val" id="ter-temporarios-crud">—</div></div>
-        <div class="kpi-card"><div class="kpi-lbl">Vencendo/Vencidos</div><div class="kpi-val" style="color:var(--yellow)" id="ter-vencendo-crud">—</div></div>
-        <div class="kpi-card"><div class="kpi-lbl">Pendência Documental</div><div class="kpi-val" style="color:var(--red)" id="ter-docpend-crud">—</div></div>
-      </div>
-      <div class="filters">
-        <div class="srch-wrap"><input class="finp" type="text" placeholder="Buscar empresa, contrato ou serviço..." oninput="tcTerceiro.setSearch(this.value)"></div>
-        <select class="fsel" onchange="tcTerceiro.setFilter('tipo', this.value)">
-          <option value="">Todos os tipos</option><option>Prestador de Serviço</option><option>Temporário</option><option>Estagiário</option><option>Aprendiz</option><option>Consultoria</option>
-        </select>
-        <select class="fsel" onchange="tcTerceiro.setFilter('situacao', this.value)">
-          <option value="">Todos os status</option><option>Ativo</option><option>Vencendo em 60d</option><option>Vencido</option><option>Encerrado</option>
-        </select>
-        <span class="chip" id="terceiro-count">— contratos</span>
-        <button class="btn btn-s btn-sm" onclick="exportTableToExcel('terceiros',[{field:'empresa',label:'Empresa',width:35},{field:'contrato',label:'Contrato',width:12},{field:'tipo',label:'Tipo',width:18},{field:'servico',label:'Serviço',width:20},{field:'vigenciaFim',label:'Fim Vigência',width:14},{field:'colaboradores',label:'Colabs',width:8},{field:'valor',label:'Valor/mês',width:12},{field:'docs',label:'Docs',width:14},{field:'situacao',label:'Status',width:16}],'Terceiros')">⬇ Exportar</button>
-      </div>
-      <div class="card" style="padding:0">
-        <table><thead><tr><th>Empresa / Prestador</th><th>Contrato</th><th>Tipo</th><th>Serviço</th><th>Fim Vigência</th><th>Colabs</th><th>Valor/mês</th><th>Docs</th><th>Status</th><th>Ações</th></tr></thead>
-        <tbody id="terceiro-tbody-crud"></tbody></table>
-        <div style="padding:10px 14px;display:flex;align-items:center;justify-content:flex-end;gap:4px;border-top:1px solid var(--g100)" id="terceiro-pagination"></div>
-      </div>
-    </div>
-
     <!-- ══ SST ══ -->
     <div id="page-sst" class="page">
       <div class="layer-badge lb-co">● Compliance — SST</div>
@@ -1728,15 +1558,6 @@ body.ad-minimizado #ad-titlebar-text{cursor:pointer}
         <div class="kpi-card"><div class="kpi-lbl">A Agendar</div><div class="kpi-val" style="color:var(--yellow)" id="sst-agendar-crud">—</div></div>
         <div class="kpi-card"><div class="kpi-lbl">Vencidos/Vencendo</div><div class="kpi-val" style="color:var(--red)" id="sst-venceram-crud">—</div></div>
       </div>
-      <div class="nr-grid">
-        <div class="nr-card"><div class="nr-icon" style="background:var(--red-bg)">⚡</div><div><div style="font-size:11px;font-weight:700">NR-10 Eletricidade</div><div class="muted">3 eletricistas · Vencida</div><span class="badge br">Vencida</span></div></div>
-        <div class="nr-card"><div class="nr-icon" style="background:var(--red-bg)">⚙</div><div><div style="font-size:11px;font-weight:700">NR-12 Máquinas</div><div class="muted">8 operadores · Vencida</div><span class="badge br">Vencida</span></div></div>
-        <div class="nr-card"><div class="nr-icon" style="background:var(--red-bg)">🧗</div><div><div style="font-size:11px;font-weight:700">NR-35 Trabalho em Altura</div><div class="muted">2 manutentores · Vencida</div><span class="badge br">Vencida</span></div></div>
-        <div class="nr-card"><div class="nr-icon" style="background:var(--green-bg)">🧪</div><div><div style="font-size:11px;font-weight:700">NR-9 Agentes Químicos</div><div class="muted">Válida até dez/26</div><span class="badge bg">OK</span></div></div>
-        <div class="nr-card"><div class="nr-icon" style="background:var(--green-bg)">🦺</div><div><div style="font-size:11px;font-weight:700">NR-6 EPIs</div><div class="muted">Válida até nov/26</div><span class="badge bg">OK</span></div></div>
-        <div class="nr-card"><div class="nr-icon" style="background:var(--yellow-bg)">🔥</div><div><div style="font-size:11px;font-weight:700">NR-15 Insalubridade</div><div class="muted">Vence em 60 dias</div><span class="badge by">Atenção</span></div></div>
-      </div>
-      <div class="tabs"><div class="tab active" onclick="swTab(this,'sst-aso')">Exames / ASO</div><div class="tab" onclick="swTab(this,'sst-epi')">EPIs</div><div class="tab" onclick="swTab(this,'sst-afastamentos')">Afastamentos</div><div class="tab" onclick="swTab(this,'sst-acidentes')">Acidentes</div></div>
       <div id="sst-aso" class="tc active">
              <div id="sst-alertas-panel" style="margin-bottom:10px"></div>
       <div style="background:#fff;border:1px solid var(--g200);border-radius:9px;padding:12px;margin-bottom:10px">
@@ -1756,61 +1577,6 @@ body.ad-minimizado #ad-titlebar-text{cursor:pointer}
         <div style="padding:10px 14px;display:flex;align-items:center;justify-content:flex-end;gap:4px;border-top:1px solid var(--g100)" id="sst-pag"></div>
         </div>
       </div>
-      <div id="sst-epi" class="tc">
-        <div class="card" style="padding:0"><table><thead><tr><th>EPI</th><th>CA Nº</th><th>Qtd. Estoque</th><th>Entregues Mês</th><th>Válido Até</th><th>Status</th></tr></thead><tbody>
-          <tr><td>Capacete de Proteção</td><td>CA-31469</td><td>42</td><td>8</td><td>jun/2027</td><td><span class="badge bg">OK</span></td></tr>
-          <tr><td>Luva de Proteção Mecânica</td><td>CA-18597</td><td>15</td><td>22</td><td>out/2026</td><td><span class="badge by">Repor estoque</span></td></tr>
-          <tr><td>Óculos de Segurança</td><td>CA-11285</td><td>38</td><td>12</td><td>mar/2027</td><td><span class="badge bg">OK</span></td></tr>
-          <tr><td>Protetor Auricular</td><td>CA-09382</td><td>8</td><td>18</td><td>ago/2026</td><td><span class="badge br">Crítico</span></td></tr>
-        </tbody></table></div>
-      </div>
-      <div id="sst-afastamentos" class="tc">
-        <div class="card" style="padding:0"><table><thead><tr><th>Colaborador</th><th>CID</th><th>Tipo</th><th>Início</th><th>Previsão Retorno</th><th>Dias</th><th>Status</th></tr></thead><tbody>
-          <tr><td>Roberto Alves</td><td>M54 — Dorsalgia</td><td>INSS</td><td>01/04/2026</td><td>01/07/2026</td><td>91</td><td><span class="badge by">Em curso</span></td></tr>
-          <tr><td>Fernanda Lima</td><td>Z35 — Gestação</td><td>Licença Maternidade</td><td>15/05/2026</td><td>15/09/2026</td><td>123</td><td><span class="badge bb">Em curso</span></td></tr>
-          <tr><td>José Ramos</td><td>S62 — Fratura mão</td><td>Acidente Trabalho</td><td>20/05/2026</td><td>20/06/2026</td><td>31</td><td><span class="badge by">Em curso</span></td></tr>
-        </tbody></table></div>
-      </div>
-      <div id="sst-acidentes" class="tc">
-        <div class="card" style="padding:0"><table><thead><tr><th>Data</th><th>Colaborador</th><th>Setor</th><th>Tipo</th><th>CID</th><th>CAT</th><th>Dias Afastado</th><th>Status</th></tr></thead><tbody>
-          <tr><td>20/05/2026</td><td>José Ramos</td><td>Fundição</td><td>Típico</td><td>S62 Fratura mão</td><td><span class="badge bg">Emitida</span></td><td>31</td><td><span class="badge by">Investigação</span></td></tr>
-        </tbody></table>
-        <div class="alert al-b" style="margin:12px"><div>📋</div><div><div class="al-title">NR-1 — Riscos Psicossociais: Avaliação pendente para 2026</div><div class="al-sub">Nova obrigação legal. Prazo de adequação: mai/2026. Responsável: Jakeline + RH + SESMT.</div></div></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══ DOCUMENTOS ══ -->
-    <div id="page-documentos" class="page">
-      <div class="layer-badge lb-co">● Compliance — Dossiê Eletrônico</div>
-      <div class="section-hdr">
-        <div class="sec-title"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Gestão de Documentos — Dossiê Eletrônico</div>
-        <button class="btn btn-p" onclick="openCrudModal(MOD_DOC,null)">+ Novo Documento</button>
-      </div>
-      <div class="kpi-grid">
-        <div class="kpi-card"><div class="kpi-lbl">Total Registrado</div><div class="kpi-val" id="doc-total-crud">—</div></div>
-        <div class="kpi-card"><div class="kpi-lbl">Pendentes</div><div class="kpi-val" style="color:var(--yellow)" id="doc-pendentes-crud">—</div></div>
-        <div class="kpi-card"><div class="kpi-lbl">Vencidos</div><div class="kpi-val" style="color:var(--red)" id="doc-vencidos-crud">—</div></div>
-        <div class="kpi-card"><div class="kpi-lbl">Vigentes</div><div class="kpi-val" style="color:var(--green)" id="doc-vigentes-crud">—</div></div>
-      </div>
-      <div class="filters">
-        <div class="srch-wrap"><input class="finp" type="text" placeholder="Buscar colaborador, tipo ou documento..." oninput="tcDoc.setSearch(this.value)"></div>
-        <select class="fsel" onchange="tcDoc.setFilter('tipo', this.value)">
-          <option value="">Todos os tipos</option>
-          <option>Contrato de Trabalho</option><option>Contrato de Experiência</option><option>Advertência</option><option>Suspensão</option><option>ASO</option><option>Certificado NR</option><option>CTPS</option><option>RG/CPF</option><option>Declaração</option><option>Outros</option>
-        </select>
-        <select class="fsel" onchange="tcDoc.setFilter('situacao', this.value)">
-          <option value="">Todos os status</option><option>Vigente</option><option>Vencido</option><option>Pendente</option><option>Arquivado</option><option>Experiência</option>
-        </select>
-        <span class="chip" id="doc-count">— documentos</span>
-        <button class="btn btn-s btn-sm" onclick="exportTableToExcel('documentos',[{field:'colaborador',label:'Colaborador',width:35},{field:'tipo',label:'Tipo',width:24},{field:'descricao',label:'Documento',width:35},{field:'dataDocumento',label:'Data',width:12},{field:'validade',label:'Validade',width:14},{field:'situacao',label:'Status',width:12}],'Documentos')">⬇ Exportar</button>
-      </div>
-      <div class="card" style="padding:0">
-        <table><thead><tr><th>Colaborador</th><th>Tipo</th><th>Documento</th><th>Data</th><th>Validade</th><th>Status</th><th>Ações</th></tr></thead>
-        <tbody id="doc-tbody-crud"></tbody></table>
-        <div style="padding:10px 14px;display:flex;align-items:center;justify-content:flex-end;gap:4px;border-top:1px solid var(--g100)" id="doc-pagination"></div>
-      </div>
-      <div class="alert al-b" style="margin-top:12px"><div>📁</div><div><div class="al-title">Upload de arquivos físicos — em desenvolvimento</div><div class="al-sub">Por ora registre o documento aqui (tipo, data, validade, status). O armazenamento de arquivos requer um servidor — disponível na versão com backend.</div></div></div>
     </div>
 
     <!-- ══ IMPORTAR EXCEL ══ -->
@@ -1844,7 +1610,7 @@ body.ad-minimizado #ad-titlebar-text{cursor:pointer}
             <div style="font-size:12px;font-weight:700;margin-bottom:10px">📋 Histórico de Importações</div>
             <table><thead><tr><th>Arquivo</th><th>Data</th><th>Registros</th><th>Status</th></tr></thead>
             <tbody id="import-hist">
-              <tr><td>Empregados.xls</td><td>05/06/2026</td><td>21</td><td><span class="badge bg">Ativo</span></td></tr>
+              <tr><td colspan="4" class="muted" style="padding:10px">Nenhuma importação feita ainda.</td></tr>
             </tbody></table>
           </div>
         </div>
@@ -1886,14 +1652,22 @@ body.ad-minimizado #ad-titlebar-text{cursor:pointer}
           <div class="nav-item" style="border-radius:6px;border-left:none;color:var(--g600);font-size:12px" onclick="cfgTab(this,'cfg-lgpd')">🔒 LGPD</div>
         </div>
         <div>
-          <div id="cfg-emp" class="card"><div style="font-size:13px;font-weight:700;margin-bottom:14px">Dados da Empresa</div><div class="fg">
-            <div class="f-grp"><label>Razão Social — CNPJ 01</label><input data-cfg="razao1" value="AC Metalúrgica Ind. Com. Ltda"></div>
-            <div class="f-grp"><label>CNPJ 01</label><input data-cfg="cnpj1" value="XX.XXX.XXX/0001-XX"></div>
-            <div class="f-grp"><label>Razão Social — CNPJ 02</label><input data-cfg="razao2" value="AC Usinagem e Ferramentaria Ltda"></div>
-            <div class="f-grp"><label>CNPJ 02</label><input data-cfg="cnpj2" value="XX.XXX.XXX/0002-XX"></div>
-            <div class="f-grp"><label>Endereço</label><input data-cfg="endereco" value="Rod. Dr. Ernesto de Cillo, 3149 — SBO/SP"></div>
-            <div class="f-grp"><label>E-mail RH</label><input data-cfg="emailrh" value="rh.acmetalurgica@gmail.com"></div>
-          </div><button class="btn btn-p" onclick="salvarEmpresa()">💾 Salvar Empresa</button></div>
+          <div id="cfg-emp" class="card"><div style="font-size:13px;font-weight:700;margin-bottom:4px">Dados da Empresa</div><div class="muted" style="margin-bottom:12px">Estes dados saem em todos os termos, cartas, recibos e relatórios do sistema. Alterou aqui, altera em todos.</div>
+            <div style="font-size:11px;font-weight:700;color:var(--g500);margin:6px 0">CNPJ 01 — AC Metal</div>
+            <div class="fg">
+              <div class="f-grp"><label>Razão Social</label><input data-cfg="AC.nome"></div>
+              <div class="f-grp"><label>CNPJ</label><input data-cfg="AC.cnpj"></div>
+              <div class="f-grp"><label>Endereço</label><input data-cfg="AC.endereco"></div>
+              <div class="f-grp"><label>E-mail</label><input data-cfg="AC.email"></div>
+            </div>
+            <div style="font-size:11px;font-weight:700;color:var(--g500);margin:14px 0 6px">CNPJ 02 — Brass Metal</div>
+            <div class="fg">
+              <div class="f-grp"><label>Razão Social</label><input data-cfg="BRASS.nome"></div>
+              <div class="f-grp"><label>CNPJ</label><input data-cfg="BRASS.cnpj"></div>
+              <div class="f-grp"><label>Endereço</label><input data-cfg="BRASS.endereco"></div>
+              <div class="f-grp"><label>E-mail</label><input data-cfg="BRASS.email"></div>
+            </div>
+            <button class="btn btn-p" style="margin-top:10px" onclick="salvarEmpresa()">💾 Salvar Empresa</button></div>
           <div id="cfg-usr" class="card" style="display:none">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
               <div style="font-size:13px;font-weight:700">Usuários do Sistema</div>
@@ -1901,7 +1675,14 @@ body.ad-minimizado #ad-titlebar-text{cursor:pointer}
             </div>
             <table><thead><tr><th>Nome</th><th>E-mail</th><th>Perfil</th><th>Acesso</th><th>Ações</th></tr></thead>
             <tbody id="usr-tbody-crud"></tbody></table>
-            <div class="alert al-y" style="margin-top:12px"><div>⚠</div><div><div class="al-title">Segurança de acesso</div><div class="al-sub">Os perfis controlam a interface mas não encriptam dados nesta versão local. Para controle de acesso real com senha, é necessário um backend com autenticação.</div></div></div>
+            <div class="alert al-b" style="margin-top:12px"><div>🔐</div><div><div class="al-title">Acesso por e-mail e senha</div><div class="al-sub">O login usa o cadastro de usuários do Supabase (Authentication → Users). Para incluir ou remover alguém da equipe, faça lá. O banco só fica realmente trancado depois de rodar o script de segurança abaixo (uma única vez).</div></div></div>
+            <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end">
+              <div><div class="muted" style="font-size:11px">Nova senha</div><input class="finp" type="password" id="cfg-nova-senha" autocomplete="new-password" style="width:170px"></div>
+              <div><div class="muted" style="font-size:11px">Repita a senha</div><input class="finp" type="password" id="cfg-nova-senha2" autocomplete="new-password" style="width:170px"></div>
+              <button class="btn btn-p btn-sm" onclick="alterarMinhaSenha()">Alterar minha senha</button>
+              <button class="btn btn-s btn-sm" onclick="baixarScriptSeguranca()">⬇ Script de segurança (.sql)</button>
+              <span id="cfg-senha-msg" style="font-size:12px"></span>
+            </div>
           </div>
           <div id="cfg-meta" class="card" style="display:none"><div style="font-size:13px;font-weight:700;margin-bottom:14px">Metas e Parâmetros — Persistidas</div><div class="fg">
             <div class="f-grp"><label>Meta Turnover (%)</label><input type="number" data-meta="turnover" value="3.0"></div>
@@ -1945,7 +1726,7 @@ body.ad-minimizado #ad-titlebar-text{cursor:pointer}
               <div class="muted" style="margin-top:8px;font-size:10px">Após conectar: Jakeline, Patrícia e Francielle veem os mesmos dados em tempo real de qualquer dispositivo. Supabase gratuito até 500MB / 50k requests/mês.</div>
             </div>
           </div>
-          <div id="cfg-lgpd" class="card" style="display:none"><div style="font-size:13px;font-weight:700;margin-bottom:14px">LGPD — Proteção de Dados</div><div class="alert al-g"><div>✅</div><div><div class="al-title">Sistema em conformidade com a LGPD</div><div class="al-sub">Dados pessoais criptografados · Acesso por perfil · Log de auditoria ativo</div></div></div><div style="margin-top:12px"><div class="f-grp"><label>Encarregado de Dados (DPO)</label><input value="Jakeline Cabrera"></div><div class="f-grp"><label>E-mail DPO</label><input value="administracao@acmetalurgica.com.br"></div></div><button class="btn btn-p">Salvar</button></div>
+          <div id="cfg-lgpd" class="card" style="display:none"><div style="font-size:13px;font-weight:700;margin-bottom:14px">LGPD — Proteção de Dados</div><div class="alert al-y"><div>🔐</div><div><div class="al-title">Proteção de acesso</div><div class="al-sub">Ativo: login por e-mail e senha individual e log de auditoria. O bloqueio da base online só vale depois de rodar o script de segurança (Configurações → Usuários → "Script de segurança"); até lá, quem tiver o endereço técnico da base ainda consegue ler. Os dados pessoais (CPF, salário, CNH, endereço) <b>não são criptografados</b> no navegador — em computador compartilhado, use sempre "Sair" e não deixe a sessão aberta.</div></div></div><div style="margin-top:12px"><div class="f-grp"><label>Encarregado de Dados (DPO)</label><input value="Jakeline Cabrera"></div><div class="f-grp"><label>E-mail DPO</label><input value="administracao@acmetalurgica.com.br"></div></div></div>
           <div id="cfg-audit" class="card" style="display:none">
             <div style="font-size:13px;font-weight:700;margin-bottom:4px">📜 Log de Auditoria</div>
             <div class="muted" style="margin-bottom:12px">Registro de todas as inclusões, edições, exclusões e importações realizadas no sistema. <span class="chip" id="auditoria-count">0</span> registros.</div>
@@ -1970,6 +1751,7 @@ body.ad-minimizado #ad-titlebar-text{cursor:pointer}
             </div>
             <div style="display:flex;gap:8px">
               <button class="btn btn-p" onclick="exportFullBackup()">⬇ Exportar Backup Completo (Excel)</button>
+              <button class="btn btn-s" onclick="auditoriaDuplicidades({manual:true})" title="Procura registros repetidos em todos os módulos e remove os 100% idênticos">🔎 Verificar duplicidades</button>
               <button class="btn btn-s" onclick="if(confirm('Isso vai apagar TODOS os dados salvos localmente e restaurar os dados originais da planilha. Confirma?')) limparTodosDados()">🗑 Restaurar Dados Originais</button>
             </div>
           </div>
@@ -2229,62 +2011,6 @@ body.ad-minimizado #ad-titlebar-text{cursor:pointer}
     <div class="m-body" id="m-colab-body"></div>
   </div>
 </div>
-<div id="m-colab" class="modal-overlay" onclick="closeOut(event,'m-colab')">'
-
-  <div class="modal" style="width:600px">
-    <div class="m-hdr"><div class="m-title">Cadastro de Colaborador</div><button class="m-close" onclick="closeM('m-colab')">×</button></div>
-    <div class="m-body">
-      <div class="tabs"><div class="tab active" onclick="swTab(this,'mc-dados')">Dados Pessoais</div><div class="tab" onclick="swTab(this,'mc-contrato')">Contrato</div><div class="tab" onclick="swTab(this,'mc-hist')">Histórico</div><div class="tab" onclick="swTab(this,'mc-docs')">Documentos</div></div>
-      <div id="mc-dados" class="tc active"><div class="fg"><div class="f-grp"><label>Nome Completo</label><input placeholder="Nome completo"></div><div class="f-grp"><label>CPF</label><input placeholder="000.000.000-00"></div><div class="f-grp"><label>RG</label><input placeholder="RG"></div><div class="f-grp"><label>Data de Nascimento</label><input type="date"></div><div class="f-grp"><label>Telefone</label><input placeholder="(19) 99999-0000"></div><div class="f-grp"><label>Escolaridade</label><select><option>Ensino Médio</option><option>Técnico</option><option>Superior</option></select></div></div><div class="f-grp"><label>Endereço</label><input placeholder="Rua, número, bairro, cidade, CEP"></div></div>
-      <div id="mc-contrato" class="tc"><div class="fg"><div class="f-grp"><label>Matrícula</label><input placeholder="AC-0149"></div><div class="f-grp"><label>CNPJ</label><select><option>CNPJ 01 — AC Metalúrgica</option><option>CNPJ 02 — AC Usinagem</option></select></div><div class="f-grp"><label>Cargo</label><input placeholder="Cargo"></div><div class="f-grp"><label>Setor</label><select><option>Produção</option><option>Manutenção</option><option>Qualidade</option><option>Administrativo</option><option>Fundição</option><option>Usinagem</option></select></div><div class="f-grp"><label>Salário (R$)</label><input type="number"></div><div class="f-grp"><label>Data Admissão</label><input type="date"></div><div class="f-grp"><label>Jornada</label><select><option>44h/semana</option><option>40h/semana</option></select></div><div class="f-grp"><label>Turno</label><select><option>Diurno</option><option>Noturno</option></select></div></div></div>
-      <div id="mc-hist" class="tc"><div class="tl-item"><div class="tl-dot">🏆</div><div class="tl-body"><div class="tl-date">15/01/2026</div><div class="tl-text">Promoção: Operador Jr. → Operador Pleno</div><div class="tl-sub">Aumento salarial +12% · Avaliação 8.5</div></div></div><div class="tl-item"><div class="tl-dot">📋</div><div class="tl-body"><div class="tl-date">01/03/2024</div><div class="tl-text">Admissão</div><div class="tl-sub">Operador de Produção Jr.</div></div></div></div>
-      <div id="mc-docs" class="tc"><div class="upload-zone"><div style="font-size:28px;margin-bottom:6px">📁</div><div style="font-size:12px;font-weight:600">Upload de documentos</div><div class="muted" style="margin-top:3px">RG, CPF, Contrato, ASO, Certificados...</div></div></div>
-      <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:16px;padding-top:14px;border-top:1px solid var(--g100)"><button class="btn btn-s" onclick="closeM('m-colab')">Cancelar</button><button class="btn btn-p">✓ Salvar</button></div>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL AVALIAÇÃO -->
-<div id="m-aval" class="modal-overlay" onclick="closeOut(event,'m-aval')">
-  <div class="modal" style="width:660px">
-    <div class="m-hdr"><div class="m-title">Avaliação de Desempenho — 1º Sem. 2026</div><button class="m-close" onclick="closeM('m-aval')">×</button></div>
-    <div class="m-body">
-      <div style="display:flex;align-items:center;gap:10px;background:var(--g50);border-radius:8px;padding:10px 12px;margin-bottom:16px">
-        <div class="avatar" style="background:var(--blue);width:38px;height:38px;font-size:12px">CE</div>
-        <div><div style="font-weight:700;font-size:13px">Carlos Eduardo Ferreira</div><div class="muted">Operador de Produção · Produção · Desde 15/03/2019</div></div>
-        <div style="margin-left:auto;text-align:right"><div class="muted" style="font-size:9px">NOTA PARCIAL</div><div id="nota-p" style="font-size:26px;font-weight:700;font-family:'IBM Plex Mono',monospace;color:var(--blue)">—</div></div>
-      </div>
-      <div class="tabs"><div class="tab active" onclick="swTab(this,'av-comp')">Competências</div><div class="tab" onclick="swTab(this,'av-metas')">Metas</div><div class="tab" onclick="swTab(this,'av-pdi')">PDI</div><div class="tab" onclick="swTab(this,'av-hist')">Histórico</div></div>
-      <div id="av-comp" class="tc active">
-        <div class="muted" style="margin-bottom:10px">Avalie cada competência de 1 (Muito abaixo) a 5 (Muito acima das expectativas)</div>
-        <div id="comp-form"></div>
-        <div class="divider"></div>
-        <div class="f-grp"><label>Comentário do Avaliador</label><textarea placeholder="Pontos fortes, melhorias, observações..."></textarea></div>
-      </div>
-      <div id="av-metas" class="tc">
-        <table><thead><tr><th>Meta</th><th>Peso</th><th>Target</th><th>Realizado</th><th>% Ating.</th><th>Nota</th></tr></thead><tbody>
-          <tr><td>Produtividade peças/hora</td><td>30%</td><td>18 pç/h</td><td>17.2 pç/h</td><td>95%</td><td><span class="badge by">4</span></td></tr>
-          <tr><td>Qualidade — rejeições</td><td>25%</td><td>&lt;2%</td><td>1.8%</td><td>110%</td><td><span class="badge bg">5</span></td></tr>
-          <tr><td>Assiduidade</td><td>20%</td><td>0 faltas</td><td>1 falta</td><td>80%</td><td><span class="badge bb">3</span></td></tr>
-          <tr><td>Treinamentos</td><td>25%</td><td>4 cursos</td><td>3 cursos</td><td>75%</td><td><span class="badge bb">3</span></td></tr>
-        </tbody></table>
-        <div style="text-align:right;margin-top:8px"><span class="muted">Nota ponderada: </span><strong style="font-size:15px">3.9 / 5.0</strong></div>
-      </div>
-      <div id="av-pdi" class="tc">
-        <div style="font-size:12px;font-weight:700;margin-bottom:10px">Plano de Desenvolvimento Individual — 2º Sem. 2026</div>
-        <div class="pdi-action"><div class="pdi-num">1</div><div style="flex:1"><div class="f-grp" style="margin-bottom:6px"><label>Ação</label><input value="Concluir NR-12 Avançado até agosto/2026"></div><div class="fg"><div class="f-grp" style="margin-bottom:0"><label>Prazo</label><input type="date" value="2026-08-31"></div><div class="f-grp" style="margin-bottom:0"><label>Responsável</label><select><option>Próprio colaborador</option><option>RH</option><option>Gestor</option></select></div></div></div></div>
-        <div class="pdi-action"><div class="pdi-num">2</div><div style="flex:1"><div class="f-grp" style="margin-bottom:6px"><label>Ação</label><input value="Programa 5S — Líder de Célula"></div><div class="fg"><div class="f-grp" style="margin-bottom:0"><label>Prazo</label><input type="date" value="2026-09-30"></div><div class="f-grp" style="margin-bottom:0"><label>Responsável</label><select><option>Próprio colaborador</option><option selected>RH</option><option>Gestor</option></select></div></div></div></div>
-        <button class="btn btn-s btn-sm" style="margin-top:6px">+ Adicionar ação</button>
-      </div>
-      <div id="av-hist" class="tc">
-        <div class="tl-item"><div class="tl-dot">⭐</div><div class="tl-body"><div class="tl-date">2º Sem. 2025</div><div class="tl-text">Nota 8.5 — Supera expectativas</div><div class="tl-sub">PDI: 2/3 ações concluídas · Promoção Operador Pleno</div></div></div>
-        <div class="tl-item"><div class="tl-dot">📊</div><div class="tl-body"><div class="tl-date">1º Sem. 2025</div><div class="tl-text">Nota 7.2 — Dentro das expectativas</div><div class="tl-sub">Atingimento de metas: 88%</div></div></div>
-      </div>
-      <div style="display:flex;justify-content:space-between;margin-top:16px;padding-top:14px;border-top:1px solid var(--g100)"><button class="btn btn-s" onclick="closeM('m-aval')">Cancelar</button><div style="display:flex;gap:8px"><button class="btn btn-s">Salvar rascunho</button><button class="btn btn-p">✓ Finalizar Avaliação</button></div></div>
-    </div>
-  </div>
-</div>
-
 <script>
 const USERS={
   jakeline:{name:'Jakeline Cabrera',role:'Diretoria',initials:'JC',color:'#1a3f6f'},
@@ -2372,19 +2098,7 @@ function avatarCor(i){return AV_COLORS[i%AV_COLORS.length];}
 function nrsDoCargo(cargo){const c=cargo.toUpperCase();let nrs=['NR-1','NR-5 CIPA'];if(c.includes('TORNEIRO')||c.includes('USINAGEM')||c.includes('PRODUÇÃO'))nrs.push('NR-12');if(c.includes('MANUTENCAO')||c.includes('MANUTENÇÃO'))nrs.push('NR-10','NR-35');if(c.includes('LIMPEZA'))nrs.push('NR-9');if(c.includes('RH')||c.includes('DP'))nrs.push('LGPD');if(c.includes('QUALIDADE'))nrs.push('ISO 9001');return nrs;}
 
 // (buildColabTable substituído por initColabTable/colabRowRender no módulo CRUD)
-const AVALIACOES=[
-  {nome:'Carlos Eduardo Ferreira',cargo:'Operador de Produção',setor:'Produção',nota:8.5,res:'Supera expectativas',pdi:'Em andamento',st:'Concluída'},
-  {nome:'Ana Paula Lima',cargo:'Analista de Qualidade',setor:'Qualidade',nota:9.1,res:'Supera expectativas',pdi:'Concluído',st:'Concluída'},
-  {nome:'Paulo Mendes',cargo:'Torneiro Mecânico',setor:'Usinagem',nota:7.2,res:'Dentro das expectativas',pdi:'Em andamento',st:'Concluída'},
-  {nome:'Roberto Alves',cargo:'Eletricista',setor:'Manutenção',nota:null,res:'—',pdi:'—',st:'Pendente'},
-  {nome:'Marcelo Santos',cargo:'Fundidor',setor:'Fundição',nota:6.4,res:'Abaixo das expectativas',pdi:'Definir',st:'Concluída'},
-  {nome:'Juliana Pereira',cargo:'Supervisora Qualidade',setor:'Qualidade',nota:9.4,res:'Muito acima',pdi:'Concluído',st:'Concluída'},
-  {nome:'Eduardo Ramos',cargo:'Operador CNC',setor:'Usinagem',nota:null,res:'—',pdi:'—',st:'Pendente'},
-  {nome:'Camila Rodrigues',cargo:'Analista de RH',setor:'Administrativo',nota:8.0,res:'Supera expectativas',pdi:'Em andamento',st:'Concluída'},
-];
 // (ADMISSOES array antigo removido — substituído por localStorage "admissoes")
-const COMPS=['Qualidade do trabalho','Produtividade','Comprometimento','Trabalho em equipe','Comunicação','Segurança e conformidade','Resolução de problemas','Proatividade'];
-let starVals={};
 let chartsBuilt={};
 
 async function doLogin(){
@@ -2410,8 +2124,80 @@ async function doLogin(){
     try{initAllAdvFilters();}catch(e){}
   },300);
 }
+
+/* ═══ Login real (Supabase Auth) ═══ */
+const PERFIL_POR_EMAIL={'rh@acmetal.com.br':'patricia','rh@acmetalurgica.com.br':'patricia','administracao@acmetalurgica.com.br':'jakeline','financeiro@acmetalurgica.com.br':'francielle',administracao:'jakeline',jakeline:'jakeline',patricia:'patricia',francielle:'francielle'};
+function perfilDoUsuario(u){
+  const m=u&&u.user_metadata&&u.user_metadata.perfil; if(m&&USERS[m]) return m;
+  const em=((u&&u.email)||'usuario').toLowerCase(), pre=em.split('@')[0];
+  if(PERFIL_POR_EMAIL[em]) return PERFIL_POR_EMAIL[em];
+  if(PERFIL_POR_EMAIL[pre]) return PERFIL_POR_EMAIL[pre];
+  if(!USERS[pre]) USERS[pre]={name:pre.charAt(0).toUpperCase()+pre.slice(1),role:'Usuário',initials:pre.slice(0,2).toUpperCase(),color:'#475569'};
+  return pre;
+}
+function loginMsg(t){ const e=document.getElementById('l-msg'); if(!e) return; e.textContent=t||''; e.style.display=t?'block':'none'; }
+function loginReiniciarRealtime(){ try{ if(typeof realtimeChannel!=='undefined'&&realtimeChannel&&supabaseClient){ supabaseClient.removeChannel(realtimeChannel); realtimeChannel=null; } startRealtime(); }catch(e){ console.warn('realtime pós-login',e); } }
+async function entrarSistema(){
+  const email=(document.getElementById('l-user').value||'').trim(), senha=document.getElementById('l-pass').value||'';
+  if(!email||!senha){ loginMsg('Informe o e-mail e a senha.'); return; }
+  if(!window.supabase||!supabaseClient){ try{ tryRestoreSupabase(); }catch(e){} }
+  if(!supabaseClient){ loginMsg('Sem conexão com o servidor. Verifique a internet e tente novamente.'); return; }
+  const btn=document.getElementById('l-btn'); btn.disabled=true; btn.textContent='Entrando…'; loginMsg('');
+  try{
+    const {data,error}=await supabaseClient.auth.signInWithPassword({email,password:senha});
+    if(error){ loginMsg(/invalid/i.test(error.message)?'E-mail ou senha incorretos.':'Não foi possível entrar: '+error.message); return; }
+    document.getElementById('l-pass').value='';
+    document.getElementById('l-perfil').value=perfilDoUsuario(data.user);
+    loginReiniciarRealtime();
+    await doLogin();
+  }catch(e){ loginMsg('Falha ao entrar: '+e.message); }
+  finally{ btn.disabled=false; btn.textContent='Entrar no Sistema'; }
+}
+async function restaurarSessao(){
+  try{
+    if(!supabaseClient) return;
+    const {data}=await supabaseClient.auth.getSession();
+    if(data&&data.session&&data.session.user&&document.getElementById('app').style.display!=='block'){
+      document.getElementById('l-perfil').value=perfilDoUsuario(data.session.user);
+      loginReiniciarRealtime(); await doLogin();
+    }
+  }catch(e){ console.warn('restaurarSessao',e); }
+}
+async function alterarMinhaSenha(){
+  const a=document.getElementById('cfg-nova-senha').value, b=document.getElementById('cfg-nova-senha2').value, m=document.getElementById('cfg-senha-msg');
+  const say=(t,ok)=>{ m.textContent=t; m.style.color=ok?'#15803d':'#b91c1c'; };
+  if(a.length<8) return say('A senha precisa ter pelo menos 8 caracteres.');
+  if(a!==b) return say('As duas senhas não são iguais.');
+  if(!supabaseClient) return say('Sem conexão com o servidor.');
+  const {error}=await supabaseClient.auth.updateUser({password:a});
+  if(error) return say('Não foi possível alterar: '+error.message);
+  document.getElementById('cfg-nova-senha').value=document.getElementById('cfg-nova-senha2').value=''; say('✅ Senha alterada.',true);
+}
+function baixarScriptSeguranca(){
+  const blob=new Blob([SUPABASE_SEGURANCA_SQL],{type:'text/plain;charset=utf-8'}); const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob); a.download='ERP_RH_seguranca_supabase.sql'; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+}
+const SUPABASE_SEGURANCA_SQL=`-- ERP RH AC Metalúrgica — TRANCAR O BANCO (só usuários logados acessam)
+-- Execute no Supabase: SQL Editor -> New query -> colar -> Run.
+-- SÓ RODE DEPOIS de criar os usuários (Authentication -> Users) e de testar o login no sistema.
+
+-- 1) Tabela principal: remove o acesso público e libera só quem fez login
+ALTER TABLE ac_erp_registros ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Leitura pública" ON ac_erp_registros;
+DROP POLICY IF EXISTS "Escrita pública" ON ac_erp_registros;
+DROP POLICY IF EXISTS "Equipe autenticada" ON ac_erp_registros;
+CREATE POLICY "Equipe autenticada" ON ac_erp_registros
+  FOR ALL TO authenticated USING (true) WITH CHECK (true);
+
+-- 2) Arquivos (bucket documentos-rh): envio, troca e exclusão só para quem fez login
+DROP POLICY IF EXISTS "Equipe autenticada arquivos" ON storage.objects;
+CREATE POLICY "Equipe autenticada arquivos" ON storage.objects
+  FOR ALL TO authenticated USING (bucket_id = 'documentos-rh') WITH CHECK (bucket_id = 'documentos-rh');
+
+SELECT 'Banco trancado: somente usuários autenticados.' AS status;
+`;
 function ql(p){document.getElementById('l-perfil').value=p;doLogin();}
-function doLogout(){document.getElementById('app').style.display='none';document.getElementById('login-screen').style.display='flex';chartsBuilt={};}
+function doLogout(){try{supabaseClient&&supabaseClient.auth.signOut();}catch(e){} try{document.getElementById('l-pass').value='';}catch(e){} document.getElementById('app').style.display='none';document.getElementById('login-screen').style.display='flex';chartsBuilt={};}
 function applyUser(p){
   const u=USERS[p]||USERS.jakeline;
   window.CURRENT_USER={name:u.name,role:u.role,perfil:p};
@@ -2471,9 +2257,10 @@ function go(id,el,title,bread){
   if (el) el.classList.add('active');
   document.getElementById('pg-title').textContent=title;
   document.getElementById('pg-bread').textContent=bread;
-  if(id==='avaliacoes'&&!chartsBuilt.aval){setTimeout(()=>{buildAvalCharts();chartsBuilt.aval=true},60);}
-  if(id==='indicadores'&&!chartsBuilt.ind){setTimeout(()=>{buildIndCharts();chartsBuilt.ind=true},60);}
-  if(id==='clima'&&!chartsBuilt.clima){setTimeout(()=>{buildClimaCharts();chartsBuilt.clima=true},60);}
+  if(id==='avaliacoes'){setTimeout(()=>{try{buildAvalCharts();}catch(e){console.warn('aval charts:',e);}},200);}
+  if(id==='clima'){setTimeout(()=>{try{climaRenderResumo();}catch(e){console.warn('clima:',e);}},200);}
+  if(id==='sucessao'){setTimeout(()=>{try{sucRender9Box();}catch(e){console.warn('suc:',e);}},200);}
+  if(id==='cargos'){setTimeout(()=>{try{cgRenderExtras();}catch(e){console.warn('cargos:',e);}},250);}
 }
 
 async function buildAll(){
@@ -2483,8 +2270,6 @@ async function buildAll(){
   // gravada no arquivo e perde foto, documentos e qualquer edição feita
   // em outro lugar — que é exatamente o problema relatado.
   try{ await pullNuvemAntesDoBoot(); }catch(e){ console.warn('pullNuvemAntesDoBoot:', e); }
-  try{buildCal();}catch(e){console.warn('buildCal:',e);}
-  try{buildCompForm();}catch(e){console.warn('buildCompForm:',e);}
   try{initCrudModules();}catch(e){console.warn('initCrudModules:',e);}
   try{initLote2Modules();}catch(e){console.warn('initLote2Modules:',e);}
   try{initLote3Modules();}catch(e){console.warn('initLote3Modules:',e);}
@@ -2507,8 +2292,11 @@ async function buildAll(){
   try{buildVisitasTSTSeed();}catch(e){console.warn('buildVisitasTSTSeed:',e);}
   try{ixBuildSeed();}catch(e){console.warn('ixBuildSeed:',e);}
   try{migracaoCompetenciaBeneficiosEPI();}catch(e){console.warn('migracaoCompetenciaBeneficiosEPI:',e);}
+  try{migracaoSeguroVidaUnico();}catch(e){console.warn(e);}
   try{buildBeneficiosTiposSeed();}catch(e){console.warn('buildBeneficiosTiposSeed:',e);}
   try{buildConvenioMedicoSeed();}catch(e){console.warn('buildConvenioMedicoSeed:',e);}
+  try{convNotasMigrar();}catch(e){console.warn('convNotasMigrar:',e);}
+  try{empresaCfgAplicar();}catch(e){}
   try{migracaoLimparBeneficiosFake();}catch(e){console.warn('migracaoLimparBeneficiosFake:',e);}
   try{buildDemissaoTemplateSeed();}catch(e){console.warn('buildDemissaoTemplateSeed:',e);}
   try{buildAdmissaoTemplateSeed();}catch(e){console.warn('buildAdmissaoTemplateSeed:',e);}
@@ -2518,6 +2306,7 @@ async function buildAll(){
   try{migracaoRealocacoes2026();}catch(e){console.warn('migracaoRealocacoes2026:',e);}
   try{ aroldoReativar(); }catch(e){console.warn('aroldoReativar:',e);}
   try{tryRestoreSupabase();}catch(e){console.warn('tryRestoreSupabase:',e); updateDBStatusBadge('error');}
+  setTimeout(restaurarSessao,400);
   try{initAllAdvFilters();}catch(e){console.warn('initAllAdvFilters:',e);}
   try{initLote7();}catch(e){console.warn('initLote7:',e);}
   setTimeout(()=>{atualizarKPIsDash();colabPopularCargos();colabFiltrado=loadData('colaboradores');colabFiltrar();},100);
@@ -2527,54 +2316,22 @@ async function buildAll(){
 
 // (buildAdmissaoCards/togChk substituídos por initAdmissaoTable/toggleAdmissaoCheck no módulo CRUD)
 
-function buildCal(){
-  const el = document.getElementById('cal-ferias');
-  if (!el) return; // elemento não existe nesta tela — nada a fazer
-  const ev={2:'fg2',6:'fp',10:'fp',15:'fv',16:'fg2',17:'fg2',22:'fp',23:'fp',28:'fv'};
-  const nm={2:'M.Silva',6:'A.Costa',10:'P.Rocha',15:'C.Ferreira',16:'M.Silva',17:'M.Silva',22:'J.Santos',23:'L.Mendes',28:'A.Lima'};
-  let h='';
-  for(let i=0;i<6;i++)h+='<div class="cal-d empty"></div>';
-  for(let d=1;d<=30;d++){
-    const e=ev[d],cls=['cal-d',d===5?'today':'',e||''].filter(Boolean).join(' ');
-    const ecl=e==='fp'?'ev-p':e==='fv'?'ev-v':'ev-g';
-    h+=`<div class="${cls}"><strong>${d}</strong>${e?`<div class="cal-ev ${ecl}">${nm[d]}</div>`:''}</div>`;
-  }
-  el.innerHTML=h;
-}
-
 // (buildAvalTable substituído por initAvalTable/avalRowRender no módulo CRUD)
 
-function buildCompForm(){
-  const f=document.getElementById('comp-form');if(!f)return;
-  f.innerHTML=COMPS.map((c,ci)=>`<div class="comp-row"><div class="comp-name">${c}</div><div class="star-row">${[1,2,3,4,5].map(s=>`<div class="star ${(starVals[ci]||0)>=s?'on':''}" onclick="setStar(${ci},${s})">★</div>`).join('')}</div><div class="comp-score" id="cs-${ci}">${starVals[ci]||'—'}</div></div>`).join('');
-}
-function setStar(ci,v){starVals[ci]=v;buildCompForm();const vals=Object.values(starVals);const avg=vals.length?vals.reduce((a,b)=>a+b,0)/vals.length:0;const el=document.getElementById('nota-p');if(el)el.textContent=avg?(avg*2).toFixed(1):'—';}
-
-function buildDashCharts(){
-  atualizarKPIsDash();
-  if(chartsBuilt.dash)return;chartsBuilt.dash=true;
-  mkChart('c-turn','line',{labels:['Jun','Jul','Ago','Set','Out','Nov','Dez','Jan','Fev','Mar','Abr','Mai','Jun'],datasets:[{data:[4.1,3.8,3.2,4.5,3.9,3.1,2.8,3.0,3.5,3.2,2.9,2.6,3.4],borderColor:'#1a3f6f',backgroundColor:'rgba(26,63,111,.1)',tension:.4,fill:true,pointRadius:3,pointBackgroundColor:'#1a3f6f'}]},{y:{min:0,max:6,ticks:{callback:v=>v+'%',font:{size:10}}},x:{ticks:{font:{size:10}}}});
-  (function(){
-    const colabs=loadData('colaboradores').filter(c=>c.status!=='Inativo');
-    const setores={};colabs.forEach(c=>{const s=c.setor||'Outros';setores[s]=(setores[s]||0)+1;});
-    const labels=Object.keys(setores).slice(0,7);const vals=labels.map(l=>setores[l]);
-    mkChart('c-hc','bar',{labels,datasets:[{data:vals,backgroundColor:['#1a3f6f','#2d5d9f','#4a7cc7','#6d9fd8','#94b8e5','#b8cef0','#dbeafe'],borderRadius:4}]},{y:{ticks:{font:{size:10}}},x:{ticks:{font:{size:10}}}});})();
-  mkChart('c-abs','line',{labels:['Jan','Fev','Mar','Abr','Mai','Jun'],datasets:[{data:[2.8,3.1,2.5,2.4,2.2,2.1],borderColor:'#e85d00',tension:.4,pointRadius:3,pointBackgroundColor:'#e85d00'}]},{y:{min:0,max:5,ticks:{callback:v=>v+'%',font:{size:10}}},x:{ticks:{font:{size:10}}}});
-}
+function buildDashCharts(){ atualizarKPIsDash(); }
 function buildAvalCharts(){
-  mkChart('c-perf','bar',{labels:['Muito abaixo','Abaixo','Dentro','Supera','Muito acima'],datasets:[{data:[4,8,55,19,3],backgroundColor:['#dc2626','#f59e0b','#3b82f6','#16a34a','#7e22ce'],borderRadius:4}]},{y:{ticks:{font:{size:10}}},x:{ticks:{font:{size:9}}}});
-  mkChart('c-sperf','bar',{labels:['Produção','Fundição','Usinagem','Manut.','Qualid.','Adm.'],datasets:[{data:[7.4,6.8,7.9,7.1,8.6,8.2],backgroundColor:'#1a3f6f',borderRadius:4}]},{y:{min:0,max:10,ticks:{font:{size:10}}},x:{ticks:{font:{size:10}}}});
+  const av=loadData('avaliacoes').filter(a=>a.status!=='Inativo'&&a.nota!=null&&a.nota!==''&&!isNaN(+a.nota));
+  const cats=['Abaixo das expectativas','Dentro das expectativas','Supera expectativas','Muito acima'];
+  const cont=cats.map(c=>av.filter(a=>a.resultado===c).length);
+  mkChart('c-perf','bar',{labels:['Abaixo','Dentro','Supera','Muito acima'],datasets:[{data:cont,backgroundColor:['#f59e0b','#3b82f6','#16a34a','#7e22ce'],borderRadius:4}]},{y:{beginAtZero:true,ticks:{precision:0,font:{size:10}}},x:{ticks:{font:{size:9}}}});
+  const por={}; av.forEach(a=>{ const k=a.setor||'—'; (por[k]=por[k]||[]).push(+a.nota); });
+  const labs=Object.keys(por);
+  mkChart('c-sperf','bar',{labels:labs,datasets:[{data:labs.map(k=>Math.round(por[k].reduce((x,y)=>x+y,0)/por[k].length*10)/10),backgroundColor:'#1a3f6f',borderRadius:4}]},{y:{min:0,max:10,ticks:{font:{size:10}}},x:{ticks:{font:{size:10}}}});
 }
-function buildIndCharts(){
-  mkChart('c-sturn','bar',{labels:['Produção','Fundição','Usinagem','Manut.','Qualid.','Adm.'],datasets:[{data:[5.2,7.8,3.1,6.4,1.2,2.5],backgroundColor:['#1a3f6f','#dc2626','#1a3f6f','#f59e0b','#16a34a','#1a3f6f'],borderRadius:4}]},{y:{min:0,ticks:{callback:v=>v+'%',font:{size:10}}},x:{ticks:{font:{size:10}}}});
-  mkChart('c-hcline','line',{labels:['Jan','Fev','Mar','Abr','Mai','Jun'],datasets:[{data:[141,143,142,145,146,148],borderColor:'#1a3f6f',backgroundColor:'rgba(26,63,111,.08)',tension:.4,fill:true,pointRadius:4,pointBackgroundColor:'#1a3f6f'}]},{y:{min:130,ticks:{font:{size:10}}},x:{ticks:{font:{size:10}}}});
-}
-function buildClimaCharts(){
-  mkChart('c-enps','bar',{labels:['Produção','Manut.','Qualid.','Adm.','Fundição'],datasets:[{data:[38,28,52,55,22],backgroundColor:['#3b82f6','#f59e0b','#16a34a','#16a34a','#dc2626'],borderRadius:4}]},{y:{min:-100,max:100,ticks:{font:{size:10}}},x:{ticks:{font:{size:10}}}});
-}
-
 function mkChart(id,type,data,scales){
   const el=document.getElementById(id);if(!el)return;
+  if(typeof Chart==='undefined')return;
+  try{ const ex=Chart.getChart&&Chart.getChart(el); if(ex) ex.destroy(); }catch(e){}
   new Chart(el,{type,data,options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales}});
 }
 
@@ -3098,21 +2855,25 @@ function parseSalNumHist(v) {
   return moedaNum(v);
 }
 function registrarHistoricoCargoSalario(antes, depois, motivoForcado) {
+  if (window.__semHistAuto) return; // importações já trazem o histórico próprio
   const salAntes = antes ? parseSalNumHist(antes.sal) : null;
   const salDepois = parseSalNumHist(depois.sal);
   const cargoMudou = !!depois.cargo && (!antes || (antes.cargo||'') !== depois.cargo);
   const salMudou = !!depois.sal && (!antes || salAntes !== salDepois);
   if (!motivoForcado && !cargoMudou && !salMudou) return; // nada relevante mudou
-  let motivo = motivoForcado || (cargoMudou && salMudou ? 'ALTERAÇÃO DE CARGO E SALÁRIO' : cargoMudou ? 'ALTERAÇÃO DE CARGO' : 'ALTERAÇÃO SALARIAL');
-  const pct = (antes && salAntes > 0 && salMudou) ? Math.round(((salDepois - salAntes) / salAntes) * 10000) / 100 : null;
-  crudCreate('historico_cargo_salario', {
+  const motivo = motivoForcado || (cargoMudou && salMudou ? 'ALTERAÇÃO DE CARGO E SALÁRIO' : cargoMudou ? 'ALTERAÇÃO DE CARGO' : 'ALTERAÇÃO SALARIAL');
+  const adm = motivoForcado === 'ADMISSÃO';
+  // Histórico único: vai para a ficha do colaborador (Informações da Folha → Histórico de salário e cargo)
+  crudCreate('colab_hist', {
     colaboradorId: depois.id,
     colaborador: depois.nome,
-    data: dataHojeDDMMAAAA(),
-    salario: salDepois,
+    tipo: adm ? 'Admissão' : (salMudou ? 'Salário' : 'Cargo'),
+    data: (adm && depois.adm) ? depois.adm : dataHojeDDMMAAAA(),
+    salario: salDepois || '',
+    cargoDe: (!adm && cargoMudou && antes) ? (antes.cargo||'') : '',
+    cargoPara: (adm || cargoMudou) ? (depois.cargo||'') : '',
     motivo: motivo,
-    cargo: (motivoForcado === 'ADMISSÃO' || cargoMudou) ? depois.cargo : '',
-    percentual: pct
+    origem: 'Cadastro do colaborador'
   }, {modulo:'Histórico Cargo/Salário', label: depois.nome});
 }
 function dataHojeDDMMAAAA() {
@@ -5094,7 +4855,6 @@ function colabFichaAcao(acao) {
         </div>
       </div>`, false);
   }
-  else if (acao === 'historico') abrirHistoricoCargoSalario(c.id);
 }
 
 /* ─── Histórico de alterações reutilizável — qualquer módulo pode chamar ─── */
@@ -5180,10 +4940,10 @@ function fdRemoverLinha(id, nome) {
 function fdRowRender(r) {
   return `<tr>
     <td style="font-size:11px">${r.colaborador}</td>
-    <td><input type="text" inputmode="decimal" class="fd-moeda" value="R$ ${fmtBRL(r.farmacia||0)}" onfocus="this.select()" onchange="fdInlineUpdate(${r.id},'farmacia',this.value)"></td>
+    <td>${fdBenefInscrito(r,'Convênio Farmácia') ? `<span title="Vem do Convênio Farmácia (Benefícios)" style="display:block;padding:4px 6px;background:var(--g50,#f3f6fa);border-radius:5px;font-size:11px;font-weight:600">R$ ${fmtBRL(fdFarmaciaVal(r))}</span>` : `<input type="text" inputmode="decimal" class="fd-moeda" value="R$ ${fmtBRL(r.farmacia||0)}" onfocus="this.select()" onchange="fdInlineUpdate(${r.id},'farmacia',this.value)">`}</td>
     <td><input type="text" inputmode="decimal" class="fd-moeda" value="R$ ${fmtBRL(r.sindicato||0)}" onfocus="this.select()" onchange="fdInlineUpdate(${r.id},'sindicato',this.value)"></td>
-    <td><input type="text" inputmode="decimal" class="fd-moeda" value="R$ ${fmtBRL(r.samaritano||0)}" onfocus="this.select()" onchange="fdInlineUpdate(${r.id},'samaritano',this.value)"></td>
-    <td><select style="width:100%" onchange="fdInlineUpdate(${r.id},'transporte',this.value)"><option value="NÃO" ${r.transporte==='NÃO'?'selected':''}>NÃO</option><option value="SIM" ${r.transporte==='SIM'?'selected':''}>SIM</option></select></td>
+    <td>${fdSamaritanoAuto(r) ? `<span title="Calculado no Convênio Médico (Benefícios): 50% da mensalidade + dependentes + coparticipação" style="display:block;padding:4px 6px;background:var(--g50,#f3f6fa);border-radius:5px;font-size:11px;font-weight:600">R$ ${fmtBRL(fdSamaritanoVal(r))} <span style="font-size:9px;font-weight:400;color:var(--g500)">🏥 convênio</span></span>` : `<input type="text" inputmode="decimal" class="fd-moeda" value="R$ ${fmtBRL(r.samaritano||0)}" onfocus="this.select()" onchange="fdInlineUpdate(${r.id},'samaritano',this.value)">`}</td>
+    <td>${fdBenefInscrito(r,'Vale-Transporte') ? `<span title="Vem do Vale-Transporte (Benefícios)" style="display:block;padding:4px 6px;background:var(--g50,#f3f6fa);border-radius:5px;font-size:11px;font-weight:600;text-align:center">SIM</span>` : `<select style="width:100%" onchange="fdInlineUpdate(${r.id},'transporte',this.value)"><option value="NÃO" ${r.transporte==='NÃO'?'selected':''}>NÃO</option><option value="SIM" ${r.transporte==='SIM'?'selected':''}>SIM</option></select>`}</td>
     <td><input type="text" inputmode="decimal" class="fd-moeda" value="R$ ${fmtBRL(r.termoAcordo||0)}" onfocus="this.select()" onchange="fdInlineUpdate(${r.id},'termoAcordo',this.value)"></td>
     <td><input type="text" style="width:100%" value="${escAttr(r.observacao||'')}" onchange="fdInlineUpdate(${r.id},'observacao',this.value)"></td>
     <td><button class="btn btn-s btn-xs" onclick="fdRemoverLinha(${r.id},'${escAttr(r.colaborador)}')">🗑</button></td>
@@ -5191,10 +4951,51 @@ function fdRowRender(r) {
 }
 
 function fdContador(c){ return c==='BRASS'?'CORREIA CONTÁBIL':'SERVCONT'; }
+
+/* ── Convênio Médico é a ÚNICA fonte do Samaritano: o desconto de cada colaborador e Nota/Empresa/Repasse vêm de Benefícios ── */
+function fdCompDe(r){ return {empresa:r.cnpj, ano:Number(r.ano), mes:Number(r.mes)}; }
+function fdSamaritanoVal(r){
+  const ins = convInscritos(fdCompDe(r)).find(i => normSemAcento(i.colaborador||'') === normSemAcento(r.colaborador||''));
+  return ins ? convCalc(ins).total : (+r.samaritano||0);
+}
+function fdBenefInscrito(r,tipo){ const c=fdCompDe(r); return loadData('beneficios_inscritos').find(i=>i.status!=='Inativo'&&i.tipoBeneficio===tipo&&i.empresa===c.empresa&&Number(i.ano)===c.ano&&Number(i.mes)===c.mes&&normSemAcento(i.colaborador||'')===normSemAcento(r.colaborador||'')); }
+function fdFarmaciaVal(r){ const i=fdBenefInscrito(r,'Convênio Farmácia'); return i ? (+i.valorDesconto||0) : (+r.farmacia||0); }
+function fdTransporteVal(r){ return fdBenefInscrito(r,'Vale-Transporte') ? 'SIM' : (r.transporte||'NÃO'); }
+function fdSamaritanoAuto(r){ return convInscritos(fdCompDe(r)).some(i => normSemAcento(i.colaborador||'') === normSemAcento(r.colaborador||'')); }
+function fdSincronizarConvenio(ctx){
+  const comp = {empresa:ctx.cnpj, ano:ctx.ano, mes:ctx.mes};
+  const lista = convInscritos(comp); if(!lista.length) return;
+  const rows = loadData('folha_descontos').filter(r => r.status !== 'Inativo' && r.cnpj === ctx.cnpj && r.ano === ctx.ano && r.mes === ctx.mes);
+  const tem = new Set(rows.map(r => normSemAcento(r.colaborador||'')));
+  lista.forEach(i => {
+    if (tem.has(normSemAcento(i.colaborador||''))) return;
+    if (convCalc(i).total <= 0) return;
+    crudCreate('folha_descontos', {colaborador:i.colaborador, cnpj:ctx.cnpj, ano:ctx.ano, mes:ctx.mes, farmacia:0, sindicato:0, samaritano:0, transporte:'NÃO', termoAcordo:0, observacao:''}, {modulo:'Desconto em Folha', label:i.colaborador+' (do Convênio Médico)'});
+  });
+}
+function fdFechamento(cnpj, ano, mes){
+  const comp = {empresa:cnpj, ano:Number(ano), mes:Number(mes)};
+  const tn = loadData('folha_totais').find(x => x.status!=='Inativo' && x.cnpj===cnpj && Number(x.ano)===comp.ano && Number(x.mes)===comp.mes) || {};
+  const r = convResumo(comp);
+  if (r.qtd > 0) return {totalNota:r.nota, valorEmpresa:r.temNota?r.empresa:0, valorRepasse:r.repasse, observacao:tn.observacao||'', auto:true};
+  return {totalNota:r.nota || (+tn.totalNota||0), valorEmpresa:+tn.valorEmpresa||0, valorRepasse:+tn.valorRepasse||0, observacao:tn.observacao||'', auto:false};
+}
+/* Nota que já estava no Desconto em Folha passa a valer também no Convênio Médico (uma vez) */
+function convNotasMigrar(){
+  if (localStorage.getItem('ac_convnota_mig_v1')) return;
+  try{
+    loadData('folha_totais').filter(t => t.status!=='Inativo' && (+t.totalNota||0) > 0).forEach(t => {
+      const comp = {empresa:t.cnpj, ano:Number(t.ano), mes:Number(t.mes)};
+      if (!convNotaReg(comp)) crudCreate('convenio_notas', {empresa:comp.empresa, ano:comp.ano, mes:comp.mes, valorNota:+t.totalNota}, {modulo:'Benefícios', label:'Nota Convênio Médico (migrada do Desconto em Folha)'});
+    });
+    localStorage.setItem('ac_convnota_mig_v1','1');
+  }catch(e){ console.warn('convNotasMigrar',e); }
+}
 function renderFolhaDesc() {
   fdPopularAnos();
   const ctx = fdContexto();
   { const h=document.getElementById('fd-contador-hdr'); if(h) h.textContent='Fechamento com o Contador ('+fdContador(ctx.cnpj)+')'; }
+  try{ fdSincronizarConvenio(ctx); }catch(e){ console.warn('fdSincronizarConvenio',e); }
   const all = loadData('folha_descontos').filter(r => r.status !== 'Inativo' && r.cnpj === ctx.cnpj && r.ano === ctx.ano && r.mes === ctx.mes)
     .sort((a,b) => a.colaborador.localeCompare(b.colaborador));
   const tbody = document.getElementById('fd-tbody');
@@ -5202,24 +5003,30 @@ function renderFolhaDesc() {
     : '<tr><td colspan="8" class="muted" style="text-align:center;padding:16px">Nenhum colaborador lançado neste mês. Clique em "+ Adicionar Colaborador".<br><button class="btn btn-p btn-sm" style="margin-top:8px" onclick="fdCriarMesDoAnterior()">➕ Criar este mês a partir do mês anterior</button></td></tr>';
   { const hh=fdHistReg(ctx.cnpj,ctx.ano,ctx.mes), ch=document.getElementById('fd-hist-chip'); if(ch){ ch.style.display=hh?'inline-block':'none'; ch.textContent=hh?'🔒 Histórico salvo em '+hh.fechadoEm:''; } }
   setText('fd-count', all.length + ' colaboradores');
-  setText('fd-kpi-farmacia', 'R$ ' + fmtBRL(all.reduce((s,r)=>s+(r.farmacia||0),0)));
+  setText('fd-kpi-farmacia', 'R$ ' + fmtBRL(all.reduce((s,r)=>s+fdFarmaciaVal(r),0)));
   setText('fd-kpi-sindicato', 'R$ ' + fmtBRL(all.reduce((s,r)=>s+(r.sindicato||0),0)));
-  setText('fd-kpi-samaritano', 'R$ ' + fmtBRL(all.reduce((s,r)=>s+(r.samaritano||0),0)));
+  setText('fd-kpi-samaritano', 'R$ ' + fmtBRL(all.reduce((s,r)=>s+fdSamaritanoVal(r),0)));
   setText('fd-kpi-termo', 'R$ ' + fmtBRL(all.reduce((s,r)=>s+(r.termoAcordo||0),0)));
 
+  const fe = fdFechamento(ctx.cnpj, ctx.ano, ctx.mes);
   const tot = loadData('folha_totais').find(t => t.status !== 'Inativo' && t.cnpj === ctx.cnpj && t.ano === ctx.ano && t.mes === ctx.mes);
-  document.getElementById('fd-total-nota').value = tot ? 'R$ '+fmtBRL(tot.totalNota||0) : '';
-  document.getElementById('fd-valor-empresa').value = tot ? 'R$ '+fmtBRL(tot.valorEmpresa||0) : '';
-  document.getElementById('fd-valor-repasse').value = tot ? 'R$ '+fmtBRL(tot.valorRepasse||0) : '';
+  const comNota = fe.totalNota > 0 || !!tot;
+  document.getElementById('fd-total-nota').value = fe.totalNota > 0 ? 'R$ '+fmtBRL(fe.totalNota) : '';
+  const ve = document.getElementById('fd-valor-empresa'), vr = document.getElementById('fd-valor-repasse');
+  ve.value = (comNota || fe.auto) ? 'R$ '+fmtBRL(fe.valorEmpresa||0) : ''; vr.value = (comNota || fe.auto) ? 'R$ '+fmtBRL(fe.valorRepasse||0) : '';
+  ve.readOnly = vr.readOnly = fe.auto;
+  ve.style.background = vr.style.background = fe.auto ? 'var(--g50,#f3f6fa)' : '';
+  ve.title = vr.title = fe.auto ? 'Calculado automaticamente a partir do Convênio Médico (Benefícios): Repasse = total descontado dos colaboradores; Empresa = Nota − Repasse' : '';
   document.getElementById('fd-obs-geral').value = tot ? tot.observacao||'' : '';
 }
 
 function fdSalvarTotais() {
   const ctx = fdContexto();
   const totalNota = moedaNum(document.getElementById('fd-total-nota').value) || 0;
-  const valorEmpresa = moedaNum(document.getElementById('fd-valor-empresa').value) || 0;
-  const valorRepasse = moedaNum(document.getElementById('fd-valor-repasse').value) || 0;
-  document.getElementById('fd-total-nota').value = 'R$ '+fmtBRL(totalNota); document.getElementById('fd-valor-empresa').value = 'R$ '+fmtBRL(valorEmpresa); document.getElementById('fd-valor-repasse').value = 'R$ '+fmtBRL(valorRepasse);
+  convNotaSalvar(totalNota, {empresa:ctx.cnpj, ano:ctx.ano, mes:ctx.mes}); // a nota é única: vale aqui e no Convênio Médico
+  const fe = fdFechamento(ctx.cnpj, ctx.ano, ctx.mes);
+  const valorEmpresa = fe.auto ? fe.valorEmpresa : (moedaNum(document.getElementById('fd-valor-empresa').value) || 0);
+  const valorRepasse = fe.auto ? fe.valorRepasse : (moedaNum(document.getElementById('fd-valor-repasse').value) || 0);
   const observacao = document.getElementById('fd-obs-geral').value || '';
   const all = loadData('folha_totais');
   let rec = all.find(t => t.cnpj === ctx.cnpj && t.ano === ctx.ano && t.mes === ctx.mes);
@@ -5231,6 +5038,7 @@ function fdSalvarTotais() {
   } else {
     rec = crudCreate('folha_totais', {cnpj: ctx.cnpj, ano: ctx.ano, mes: ctx.mes, totalNota, valorEmpresa, valorRepasse, observacao}, {modulo:'Desconto em Folha', label:`Fechamento ${ctx.cnpj} ${ctx.mes}/${ctx.ano}`});
   }
+  renderFolhaDesc();
 }
 
 function fdGerarRelatorio() {
@@ -5243,7 +5051,7 @@ function fdGerarRelatorio() {
   const empInfo = CV_EMPRESA_INFO[ctx.cnpj] || {nome: ctx.cnpj, cnpj:''};
   let totFarmacia = 0, totSindicato = 0, totSamaritano = 0, totTermo = 0;
   const linhas = all.map((r,idx) => {
-    const farmacia = r.farmacia||0, sindicato = r.sindicato||0, samaritano = r.samaritano||0, termo = r.termoAcordo||0;
+    const farmacia = fdFarmaciaVal(r), sindicato = r.sindicato||0, samaritano = fdSamaritanoVal(r), termo = r.termoAcordo||0;
     totFarmacia += farmacia; totSindicato += sindicato; totSamaritano += samaritano; totTermo += termo;
     return `<tr style="border-bottom:1px solid #ccc">
       <td style="padding:5px 4px">${idx+1}</td>
@@ -5251,7 +5059,7 @@ function fdGerarRelatorio() {
       <td style="padding:5px 4px;text-align:right">R$ ${fmtBRL(farmacia)}</td>
       <td style="padding:5px 4px;text-align:right">R$ ${fmtBRL(sindicato)}</td>
       <td style="padding:5px 4px;text-align:right">R$ ${fmtBRL(samaritano)}</td>
-      <td style="padding:5px 4px;text-align:center">${r.transporte||'—'}</td>
+      <td style="padding:5px 4px;text-align:center">${fdTransporteVal(r)||'—'}</td>
       <td style="padding:5px 4px;text-align:right">R$ ${fmtBRL(termo)}</td>
     </tr>`;
   }).join('');
@@ -5288,13 +5096,13 @@ function fdGerarRelatorio() {
 function fdLinhas(cnpj,ano,mes){
   return loadData('folha_descontos').filter(r=>r.status!=='Inativo'&&r.cnpj===cnpj&&Number(r.ano)===Number(ano)&&Number(r.mes)===Number(mes))
     .sort((a,b)=>a.colaborador.localeCompare(b.colaborador))
-    .map(r=>({colaborador:r.colaborador,farmacia:+r.farmacia||0,sindicato:+r.sindicato||0,samaritano:+r.samaritano||0,transporte:r.transporte||'NÃO',termoAcordo:+r.termoAcordo||0,observacao:r.observacao||''}));
+    .map(r=>({colaborador:r.colaborador,farmacia:fdFarmaciaVal(r),sindicato:+r.sindicato||0,samaritano:fdSamaritanoVal(r),transporte:fdTransporteVal(r),termoAcordo:+r.termoAcordo||0,observacao:r.observacao||''}));
 }
 function fdTotais(l){ const s=k=>l.reduce((a,x)=>a+(x[k]||0),0); const o={colab:l.length,farmacia:s('farmacia'),sindicato:s('sindicato'),samaritano:s('samaritano'),termo:s('termoAcordo')}; o.total=o.farmacia+o.sindicato+o.samaritano+o.termo; return o; }
 function fdHistReg(cnpj,ano,mes){ return loadData('folha_hist').find(h=>h.status!=='Inativo'&&h.cnpj===cnpj&&Number(h.ano)===Number(ano)&&Number(h.mes)===Number(mes)); }
 function fdSalvarHistorico(cnpj,ano,mes,silencioso){
   const linhas=fdLinhas(cnpj,ano,mes); if(!linhas.length){ if(!silencioso) showToast('Nenhum colaborador lançado neste mês','warn'); return false; }
-  const tn=loadData('folha_totais').find(x=>x.status!=='Inativo'&&x.cnpj===cnpj&&Number(x.ano)===Number(ano)&&Number(x.mes)===Number(mes))||{};
+  const tn=fdFechamento(cnpj,ano,mes);
   const dados={cnpj,ano:Number(ano),mes:Number(mes),mesNome:CV_MESES[mes],linhas,tot:fdTotais(linhas),nota:{totalNota:+tn.totalNota||0,valorEmpresa:+tn.valorEmpresa||0,valorRepasse:+tn.valorRepasse||0,observacao:tn.observacao||''},fechadoEm:nowStr()}, ex=fdHistReg(cnpj,ano,mes);
   if(ex) crudUpdate('folha_hist',ex.id,dados,{modulo:'Desconto em Folha'}); else crudCreate('folha_hist',dados,{modulo:'Desconto em Folha',label:cnpj+' '+CV_MESES[mes]+'/'+ano});
   if(!silencioso){ showToast('🔒 Histórico de '+cnpj+' — '+CV_MESES[mes]+'/'+ano+' salvo'); renderFolhaDesc(); }
@@ -5365,10 +5173,12 @@ function fdExportar() {
   const meses = ['','Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
   const header = ['NOME DO FUNCIONÁRIO','FARMÁCIA','SINDICATO','SAMARITANO','TRANSPORTE','TERMO ACORDO','OBSERVAÇÃO'];
   const S=k=>all.reduce((s,r)=>s+(r[k]||0),0);
-  const rows = all.map(r => [r.colaborador, r.farmacia||0, r.sindicato||0, r.samaritano||0, r.transporte, r.termoAcordo||0, r.observacao||'']);
+  const rows = all.map(r => [r.colaborador, fdFarmaciaVal(r), r.sindicato||0, fdSamaritanoVal(r), fdTransporteVal(r), r.termoAcordo||0, r.observacao||'']);
   rows.push([]);
-  rows.push(['TOTAL', S('farmacia'), S('sindicato'), S('samaritano'), '', S('termoAcordo'), '']);
-  const tot = loadData('folha_totais').find(t => t.cnpj === ctx.cnpj && t.ano === ctx.ano && t.mes === ctx.mes);
+  rows.push(['TOTAL', all.reduce((a,r)=>a+fdFarmaciaVal(r),0), S('sindicato'), all.reduce((a,r)=>a+fdSamaritanoVal(r),0), '', S('termoAcordo'), '']);
+  const _t0 = loadData('folha_totais').find(t => t.cnpj === ctx.cnpj && t.ano === ctx.ano && t.mes === ctx.mes);
+  const _fe = fdFechamento(ctx.cnpj, ctx.ano, ctx.mes);
+  const tot = (_t0 || _fe.totalNota > 0 || _fe.auto) ? {totalNota:_fe.totalNota, valorEmpresa:_fe.valorEmpresa, valorRepasse:_fe.valorRepasse, observacao:_fe.observacao} : null;
   if (tot) {
     rows.push([]);
     rows.push(['TOTAL NOTA', tot.totalNota||0]);
@@ -5403,149 +5213,6 @@ function abrirHistoricoRegistro(modulo, registroLabel) {
         <th style="padding:5px">Data/Hora</th><th style="padding:5px">Usuário</th><th style="padding:5px">Ação</th><th style="padding:5px">Registro</th>
       </tr></thead><tbody>${linhas || '<tr><td colspan="4" class="muted" style="padding:16px;text-align:center">Nenhuma alteração registrada ainda.</td></tr>'}</tbody></table>
     </div>`;
-}
-
-/* ═══════════════ HISTÓRICO DE CARGO & SALÁRIO (por colaborador) ═══════════════ */
-const HIST_SAL_MOTIVOS = ['ADMISSÃO','EFETIVAÇÃO','DISSÍDIO','PROMOÇÃO','MÉRITO','EQUIPARAÇÃO SALARIAL','ALTERAÇÃO DE CARGO','ALTERAÇÃO DE CARGO E SALÁRIO','TRANSFERÊNCIA','OUTRO'];
-let histSalColabAtual = null;
-
-function ensureHistSalModal() {
-  if (document.getElementById('m-histsal')) return;
-  const div = document.createElement('div');
-  div.id = 'm-histsal';
-  div.className = 'modal-overlay';
-  div.onclick = (e) => { if (e.target === div) closeHistSalModal(); };
-  div.innerHTML = `
-    <div class="modal" style="width:760px">
-      <div class="m-hdr">
-        <div class="m-title" id="histsal-titulo">📜 Histórico de Cargo &amp; Salário</div>
-        <button class="m-close" onclick="closeHistSalModal()">×</button>
-      </div>
-      <div class="m-body">
-        <div id="histsal-subtitulo" class="muted" style="font-size:12px;margin-top:-8px;margin-bottom:12px"></div>
-        <div style="overflow-x:auto">
-          <table style="width:100%;border-collapse:collapse;font-size:12px">
-            <thead><tr style="border-bottom:1.5px solid #ccc;text-align:left;color:var(--g500)">
-              <th style="padding:5px">Data</th><th style="padding:5px">Salário</th><th style="padding:5px">Motivo</th><th style="padding:5px">Cargo</th><th style="padding:5px">%</th><th style="padding:5px"></th>
-            </tr></thead>
-            <tbody id="histsal-tbody"></tbody>
-          </table>
-        </div>
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px 10px;align-items:end;margin-top:14px;padding-top:14px;border-top:1px solid var(--g100)">
-          <div><label style="font-size:10px;color:var(--g500)">Data</label><input class="finp" type="date" id="hs-data" style="width:100%"></div>
-          <div><label style="font-size:10px;color:var(--g500)">Salário (R$)</label><input class="finp" type="text" id="hs-salario" placeholder="0,00" style="width:100%"></div>
-          <div><label style="font-size:10px;color:var(--g500)">Motivo</label><input class="finp" type="text" id="hs-motivo" list="hs-motivo-lista" placeholder="Ex: Dissídio" style="width:100%"></div>
-          <div><label style="font-size:10px;color:var(--g500)">Cargo (só se mudou)</label><input class="finp" type="text" id="hs-cargo" placeholder="Deixe em branco se não mudou" style="width:100%"></div>
-          <div><label style="font-size:10px;color:var(--g500)">%</label><input class="finp" type="text" id="hs-percentual" placeholder="Auto" style="width:100%"></div>
-        </div>
-        <datalist id="hs-motivo-lista">${HIST_SAL_MOTIVOS.map(m=>`<option value="${m}">`).join('')}</datalist>
-        <div style="display:flex;justify-content:flex-end;flex-wrap:wrap;gap:8px;margin-top:16px">
-          <button class="btn btn-p" onclick="histSalAdicionar()">+ Adicionar</button>
-          <button class="btn btn-s" onclick="histSalImprimir()">🖨 Imprimir</button>
-          <button class="btn btn-s" onclick="closeHistSalModal()">Fechar</button>
-        </div>
-      </div>
-    </div>`;
-  document.body.appendChild(div);
-}
-
-function closeHistSalModal() {
-  const m = document.getElementById('m-histsal');
-  if (m) m.classList.remove('open');
-}
-
-function abrirHistoricoCargoSalario(colabId) {
-  ensureHistSalModal();
-  histSalColabAtual = colabId;
-  const c = loadData('colaboradores').find(x => x.id === colabId);
-  if (!c) return;
-  document.getElementById('histsal-titulo').textContent = '📜 Histórico de Cargo & Salário — ' + c.nome;
-  document.getElementById('histsal-subtitulo').textContent = 'Cargo atual: ' + (c.cargo||'—') + '  ·  Salário atual: ' + (c.sal ? 'R$ '+moedaFmt(c.sal) : '—');
-  document.getElementById('hs-data').value = new Date().toISOString().slice(0,10);
-  document.getElementById('hs-salario').value = '';
-  document.getElementById('hs-motivo').value = '';
-  document.getElementById('hs-cargo').value = '';
-  document.getElementById('hs-percentual').value = '';
-  histSalRenderTabela();
-  document.getElementById('m-histsal').classList.add('open');
-}
-
-function histSalLinhas() {
-  return loadData('historico_cargo_salario')
-    .filter(h => h.colaboradorId === histSalColabAtual)
-    .sort((a,b) => (parseDate(a.data)||0) - (parseDate(b.data)||0));
-}
-
-function histSalRenderTabela() {
-  const linhas = histSalLinhas();
-  const tb = document.getElementById('histsal-tbody');
-  tb.innerHTML = linhas.map(h => `
-    <tr style="border-bottom:1px solid var(--g100)">
-      <td style="padding:5px;white-space:nowrap">${h.data||'—'}</td>
-      <td style="padding:5px;white-space:nowrap">${h.salario ? 'R$ '+fmtBRL(h.salario) : '—'}</td>
-      <td style="padding:5px">${h.motivo||'—'}</td>
-      <td style="padding:5px">${h.cargo||''}</td>
-      <td style="padding:5px">${h.percentual != null ? String(h.percentual).replace('.',',')+'%' : ''}</td>
-      <td style="padding:5px;text-align:right"><button class="btn btn-s btn-xs" title="Excluir esta linha" onclick="histSalExcluir(${h.id})">🗑</button></td>
-    </tr>`).join('') || '<tr><td colspan="6" class="muted" style="padding:14px;text-align:center">Nenhum registro ainda.</td></tr>';
-}
-
-function histSalAdicionar() {
-  const dataInput = document.getElementById('hs-data').value;
-  const salarioInput = document.getElementById('hs-salario').value;
-  const motivo = document.getElementById('hs-motivo').value.trim();
-  const cargo = document.getElementById('hs-cargo').value.trim();
-  let percentual = document.getElementById('hs-percentual').value.trim();
-  if (!dataInput || !salarioInput) { showToast('Preencha ao menos Data e Salário', 'warn'); return; }
-  const [ano,mes,dia] = dataInput.split('-');
-  const dataFmt = dia+'/'+mes+'/'+ano;
-  const salNum = parseSalNumHist(salarioInput);
-  if (!percentual) {
-    const anteriores = histSalLinhas();
-    const ultimo = anteriores[anteriores.length-1];
-    if (ultimo && ultimo.salario > 0) percentual = String(Math.round(((salNum - ultimo.salario) / ultimo.salario) * 10000) / 100);
-  }
-  crudCreate('historico_cargo_salario', {
-    colaboradorId: histSalColabAtual,
-    colaborador: (loadData('colaboradores').find(x=>x.id===histSalColabAtual)||{}).nome,
-    data: dataFmt, salario: salNum, motivo: motivo, cargo: cargo,
-    percentual: percentual !== '' ? parseFloat(String(percentual).replace(',','.')) : null
-  }, {modulo:'Histórico Cargo/Salário', label: motivo || 'Novo registro'});
-  document.getElementById('hs-salario').value = '';
-  document.getElementById('hs-motivo').value = '';
-  document.getElementById('hs-cargo').value = '';
-  document.getElementById('hs-percentual').value = '';
-  histSalRenderTabela();
-  showToast('✓ Linha adicionada ao histórico');
-}
-
-function histSalExcluir(id) {
-  if (!confirm('Excluir esta linha do histórico?')) return;
-  crudDelete('historico_cargo_salario', id, {modulo:'Histórico Cargo/Salário', fisica:true, label:'Linha #'+id});
-  histSalRenderTabela();
-}
-
-function histSalImprimir() {
-  const c = loadData('colaboradores').find(x => x.id === histSalColabAtual);
-  if (!c) return;
-  closeHistSalModal(); // evita as duas telas ficarem abertas e se sobrepondo
-  const linhas = histSalLinhas();
-  const corpo = linhas.map(h => `<tr>
-    <td style="padding:5px;border:1px solid #ccc">${h.data||'—'}</td>
-    <td style="padding:5px;border:1px solid #ccc">${h.salario ? 'R$ '+fmtBRL(h.salario) : '—'}</td>
-    <td style="padding:5px;border:1px solid #ccc">${h.motivo||''}</td>
-    <td style="padding:5px;border:1px solid #ccc">${h.cargo||''}</td>
-    <td style="padding:5px;border:1px solid #ccc">${h.percentual != null ? String(h.percentual).replace('.',',')+'%' : ''}</td>
-  </tr>`).join('');
-  abrirReciboModal('🖨 Histórico de Cargo & Salário — ' + c.nome, `
-    <div style="padding:16px 4px">
-      <h3 style="margin-bottom:2px">NOME: ${c.nome}</h3>
-      <div class="muted" style="margin-bottom:14px">CARGO: ${c.cargo||'—'}</div>
-      <table style="width:100%;border-collapse:collapse;font-size:11px">
-        <thead><tr style="background:#f2f4f7"><th style="padding:5px;border:1px solid #ccc;text-align:left">DATA</th><th style="padding:5px;border:1px solid #ccc;text-align:left">SALÁRIO</th><th style="padding:5px;border:1px solid #ccc;text-align:left">MOTIVO</th><th style="padding:5px;border:1px solid #ccc;text-align:left">CARGO</th><th style="padding:5px;border:1px solid #ccc;text-align:left">%</th></tr></thead>
-        <tbody>${corpo || '<tr><td colspan="5" style="padding:14px;text-align:center;border:1px solid #ccc" class="muted">Nenhum registro ainda.</td></tr>'}</tbody>
-      </table>
-    </div>`, false);
 }
 
 /* Aroldo estava Inativo só por um teste no módulo Demissão — volta a Ativo (1x) e some da Demissão */
@@ -5720,35 +5387,6 @@ function abrirDetalheColabId(id) {
 }
 
 let tcColab;
-function initColabTable() {
-  tcColab = createTableController({
-    id: 'colab',
-    table: 'colaboradores',
-    tbodyId: 'colab-tbody',
-    searchFields: ['nome','cargo','mat'],
-    pageSize: 10,
-    countId: 'colab-count',
-    paginationId: 'colab-pagination',
-    sortField: 'nome',
-    render: colabRowRender,
-  });
-  tcColab.render();
-  // Se não há dados ainda, tenta novamente após 1s (primeiro acesso)
-  if (loadData('colaboradores').length === 0) {
-    setTimeout(() => {
-      if (typeof COLABS !== 'undefined' && COLABS.length > 0) {
-        const colabs = COLABS.map((c,i) => Object.assign({id:i+1}, c, {
-          criadoEm: nowStr(), atualizadoEm: nowStr(),
-          status: c.status||'Ativo', nascimento: c.nascimento||'—',
-          rg: c.rg||'—', cpf: c.cpf||'—'
-        }));
-        saveData('colaboradores', colabs);
-      }
-      tcColab.refresh();
-      atualizarKPIsDash();
-    }, 1000);
-  }
-}
 
 /* ═══════════════ MÓDULO: FÉRIAS ═══════════════ */
 const MOD_FERIAS = {
@@ -6255,6 +5893,9 @@ function fichaPropagarNome(velho,novo,id){
 }
 function importarFichasLista(cfg){
   if(!cfg.forcar && localStorage.getItem(cfg.flag)) return null;
+  window.__semHistAuto=true; try{ return importarFichasLista_(cfg); } finally { window.__semHistAuto=false; }
+}
+function importarFichasLista_(cfg){
   const rel={rotulo:cfg.rotulo,preench:0,pessoas:0,conf:[],semMatch:[],hist:0,gozos:0,perNovos:0,afast:0,avisos:[],campos:{},criados:[],pend:[]};
   const colabs=loadData('colaboradores'); const hoje=new Date(); hoje.setHours(0,0,0,0); const now=nowStr();
   const CAMPOS=['matriculaEsocial','nascimento','localNascimento','nacionalidade','estadoCivil','pai','mae','rg','rgEmissao','rgOrgao','tituloEleitor','tituloZona','tituloSecao','ctps','ctpsSerie','ctpsData','ctpsUF','cpf','cnh','cnhCategoria','docMilitar','corRaca','sexo','grauInstrucao','deficiencia','telefone','celular','cbo','funcao','pis','pisCadastro','fgtsOpcao','horarioTrabalho','beneficiarios','expIni','expFim','expProrrogDias','expFimProrrog','enderecoTipo','endereco','numero','complemento','bairro','cidade','uf','cep'];
@@ -6755,6 +6396,65 @@ function atualizarKPIsAvaliacoes() {
   setText('av-done-crud', concluidas);
   setText('av-pend-crud', pendentes);
   setText('av-media-crud', media);
+  { const ciclos=[...new Set(avals.map(a=>a.ciclo).filter(Boolean))]; setText('av-ciclo-atual', ciclos.length?ciclos.sort().pop():'—'); }
+}
+
+
+/* ═══ Cargos & Salários — faixas, trilhas e histórico montados dos dados cadastrados (nada fixo na tela) ═══ */
+function cgEsc(x){ return String(x==null?'':x).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function cgRenderExtras(){
+  const cargos=loadData('cargos').filter(c=>c.status!=='Inativo');
+  // Faixas salariais
+  const comFaixa=cargos.filter(c=>+c.faixaMin>0&&+c.faixaMax>0).sort((a,b)=>(a.cargo||'').localeCompare(b.cargo||''));
+  const fb=document.getElementById('cg-faixas-box');
+  if(fb) fb.innerHTML=comFaixa.length?`<div style="font-size:12px;font-weight:700;margin-bottom:14px">Visualização de Faixas Salariais</div>`+comFaixa.map(c=>{
+    const min=+c.faixaMin,max=+c.faixaMax,med=+c.faixaMedia||0,at=+c.mediaAtual||0;
+    const pos=at?Math.max(0,Math.min(100,(at-min)/(max-min)*100)):null;
+    const sit=c.situacao||'';
+    return `<div style="margin-bottom:18px"><div style="font-size:12px;font-weight:600;margin-bottom:6px">${cgEsc(c.cargo)}${c.nivel?' — '+cgEsc(c.nivel):''} ${sit?`<span class="badge ${sit==='Na faixa'?'bg':'by'}" style="margin-left:6px">${cgEsc(sit)}</span>`:''}</div>
+      <div class="faixa-bar">${pos!=null?`<div class="faixa-marker" style="left:calc(${pos}% - 1px)"></div>`:''}</div>
+      <div class="faixa-labels"><span>Mín R$ ${fmtBRL(min)}</span><span>${med?'Médio R$ '+fmtBRL(med):''}</span><span>Máx R$ ${fmtBRL(max)}</span></div>
+      ${at?`<div style="font-size:10px;color:var(--g500);margin-top:4px">Salário atual médio: R$ ${fmtBRL(at)}</div>`:''}</div>`;}).join('')
+    :'<div class="muted" style="padding:14px">Nenhuma faixa salarial preenchida ainda. Edite um cargo na aba "Estrutura de Cargos" (✏) e informe faixa mínima, média e máxima.</div>';
+  // Trilhas por família
+  const comNivel=cargos.filter(c=>c.nivel&&c.familia);
+  const tb=document.getElementById('cg-trilhas-box');
+  if(tb){
+    const fam={}; comNivel.forEach(c=>(fam[c.familia]=fam[c.familia]||[]).push(c));
+    const nk=v=>parseInt(String(v).replace(/\D/g,''),10)||0;
+    tb.innerHTML=Object.keys(fam).length?Object.keys(fam).sort().map(f=>`<div style="font-size:12px;font-weight:700;margin:6px 0 10px">Trilha de Carreira — ${cgEsc(f)}</div>
+      <div style="display:flex;align-items:center;gap:0;overflow-x:auto;padding-bottom:12px">${fam[f].sort((a,b)=>nk(a.nivel)-nk(b.nivel)).map((c,i)=>`${i?'<div style="font-size:18px;color:var(--g300);padding:0 6px">→</div>':''}<div style="text-align:center;min-width:120px"><div style="background:var(--blue-bg);border-radius:8px;padding:10px"><div style="font-size:10px;font-weight:700;color:var(--blue)">${cgEsc(c.nivel)}</div><div style="font-size:11px;font-weight:600">${cgEsc(c.cargo)}</div>${+c.faixaMin>0&&+c.faixaMax>0?`<div style="font-size:9px;color:var(--g500)">R$ ${fmtBRL(+c.faixaMin)} – ${fmtBRL(+c.faixaMax)}</div>`:''}</div></div>`).join('')}</div>`).join('')
+      :'<div class="muted" style="padding:14px">Nenhuma trilha montada ainda. Informe a família e o nível (N1, N2, N3…) de cada cargo na aba "Estrutura de Cargos" e a trilha aparece aqui.</div>';
+  }
+  // Histórico de mérito/promoção = histórico real das fichas dos colaboradores
+  const hist=loadData('colab_hist').filter(h=>h.status!=='Inativo'&&(h.tipo==='Salário'||h.tipo==='Cargo'));
+  const porColab={}; hist.slice().sort((a,b)=>(parseDate(a.data)||0)-(parseDate(b.data)||0)).forEach(h=>{ const k=h.colaboradorId!=null?'i'+h.colaboradorId:'n'+h.colaborador; const pr=porColab[k]; h._pct=(pr&&+pr>0&&+h.salario>0)?((+h.salario/+pr-1)*100):null; if(+h.salario>0) porColab[k]=+h.salario; });
+  const lista=hist.slice().sort((a,b)=>(parseDate(b.data)||0)-(parseDate(a.data)||0)).slice(0,200);
+  const body=document.getElementById('cg-hist-tbody'), info=document.getElementById('cg-hist-info');
+  if(info) info.textContent=hist.length?`Mostrando as ${lista.length} alterações mais recentes de ${hist.length}. Histórico completo e edição: ficha do colaborador → Informações da Folha.`:'';
+  if(body) body.innerHTML=lista.map(h=>`<tr><td>${cgEsc(h.colaborador)}</td><td>${cgEsc(h.data)}</td><td><span class="badge ${h.tipo==='Cargo'?'bp':'bb'}">${cgEsc(h.tipo)}</span></td><td>${cgEsc((h.cargoDe?h.cargoDe+' → ':'')+(h.cargoPara||''))||'—'}</td><td>${+h.salario>0?'R$ '+fmtBRL(+h.salario):'—'}</td><td class="mono ${h._pct>0?'dg':''}">${h._pct!=null?(h._pct>0?'+':'')+h._pct.toFixed(1).replace('.',',')+'%':'—'}</td><td>${cgEsc(h.motivo||'')}</td></tr>`).join('')||'<tr><td colspan="7" class="muted" style="padding:14px;text-align:center">Nenhuma alteração de salário ou cargo registrada ainda.</td></tr>';
+}
+
+/* ═══ Clima — resumo eNPS da pesquisa mais recente (dados cadastrados) ═══ */
+function climaRenderResumo(){
+  const box=document.getElementById('clima-enps-card'); if(!box) return;
+  const ps=loadData('clima_pesquisas').filter(p=>p.status!=='Inativo').sort((a,b)=>(parseDate(b.dataFim)||parseDate(b.dataInicio)||0)-(parseDate(a.dataFim)||parseDate(a.dataInicio)||0));
+  const p=ps[0];
+  if(!p||p.promotores==null||p.promotores===''){ box.innerHTML='<div class="muted" style="padding:10px">Sem pesquisas com resultado registrado. Clique em "+ Nova Pesquisa" e informe % de promotores, neutros e detratores.</div>'; return; }
+  const pr=+p.promotores||0, ne=+p.neutros||0, de=+p.detratores||0, enps=(p.enps!==undefined&&p.enps!=='')?+p.enps:(pr-de);
+  box.innerHTML=`<div class="chart-ttl" style="margin-bottom:10px">Barra eNPS — ${cgEsc(p.titulo||'')}</div>
+    <div class="enps-bar"><div class="enps-seg" style="width:${de}%;background:var(--red)">${de}% Detrat.</div><div class="enps-seg" style="width:${ne}%;background:var(--yellow);color:var(--yellow-t)">${ne}% Neutros</div><div class="enps-seg" style="width:${pr}%;background:var(--green)">${pr}% Promotores</div></div>
+    <div style="font-size:10px;color:var(--g400);margin-top:6px">eNPS = % Promotores − % Detratores = ${pr}% − ${de}% = <strong style="color:${enps>=30?'var(--green)':'var(--yellow-t)'}">${enps>0?'+':''}${enps}</strong></div>`;
+}
+
+/* ═══ Sucessão — matriz 9-Box montada das posições cadastradas ═══ */
+function sucRender9Box(){
+  const box=document.getElementById('suc-9box-card'); if(!box) return;
+  const regs=loadData('sucessao').filter(r=>r.status!=='Inativo'&&r.sucessor);
+  if(!regs.length){ box.innerHTML='<div class="muted" style="padding:10px">Cadastre as posições críticas (com potencial e desempenho do sucessor) para montar a matriz 9-Box.</div>'; return; }
+  const niv=['Alto','Médio','Baixo'], cor={'Alto':'m-high','Médio':'m-med','Baixo':'m-low'};
+  const cel=(pot,des)=>{ const l=regs.filter(r=>r.potencial===pot&&r.desempenho===des); return `<div class="matrix-cell ${pot==='Alto'&&des==='Alto'?'m-high':cor[des]}"><div class="matrix-label">${pot} pot. / ${des} desemp.</div>${l.map(r=>`<div class="matrix-person">${cgEsc(r.sucessor)}</div>`).join('')}</div>`; };
+  box.innerHTML=`<div style="font-size:12px;font-weight:700;margin-bottom:12px">Matriz 9-Box — Potencial × Desempenho (sucessores)</div><div class="matrix-grid">${niv.map(po=>['Baixo','Médio','Alto'].map(de=>cel(po,de)).join('')).join('')}</div>`;
 }
 
 /* ═══════════════ MÓDULO: SST ═══════════════ */
@@ -6912,80 +6612,112 @@ function buildSSTFromColabs() {
   return novos;
 }
 
-function atualizarKPIsSST() {
-  const sst = loadData('sst').filter(s=>s.status!=='Inativo');
-  const total = sst.length;
-  const emDia = sst.filter(s=>s.situacao==='Em dia').length;
-  const agendar = sst.filter(s=>s.situacao==='Agendar').length;
-  const venceBreve = sst.filter(s=>s.situacao==='Vence em breve').length;
-  const vencidos = sst.filter(s=>s.situacao==='Vencido').length;
-  setText('sst-total-crud', total);
-  setText('sst-emdia-crud', emDia);
-  setText('sst-agendar-crud', agendar);
-  setText('sst-venceram-crud', venceBreve+vencidos);
-}
 
 /* ═══════════════ INICIALIZAÇÃO GERAL ═══════════════ */
-// Histórico real informado pelo RH (planilha de controle) — entra tal como
-// está no controle da empresa. Demais colaboradores recebem uma linha "base"
-// com a situação atual; toda mudança futura de cargo/salário já entra sozinha.
-const HISTORICO_REAL_SEED = {
-  'ADEMIR XAVIER PIRES': [
-    {data:'15/08/2019', salario:1567.08, motivo:'ADMISSÃO', cargo:'AUX PRODUÇÃO', percentual:null},
-    {data:'01/11/2019', salario:1614.09, motivo:'EFETIVAÇÃO', cargo:'', percentual:null},
-    {data:'01/11/2020', salario:1868.51, motivo:'DISSÍDIO', cargo:'', percentual:5},
-    {data:'01/04/2021', salario:2060.04, motivo:'', cargo:'', percentual:null},
-    {data:'01/11/2021', salario:2288.28, motivo:'DISSÍDIO', cargo:'', percentual:11.08},
-    {data:'01/01/2022', salario:3000, motivo:'', cargo:'', percentual:null},
-    {data:'28/11/2022', salario:3193.80, motivo:'DISSÍDIO', cargo:'', percentual:6.46},
-    {data:'01/01/2024', salario:3369.45, motivo:'DISSÍDIO', cargo:'', percentual:5.50},
-    {data:'01/11/2024', salario:3500, motivo:'DISSÍDIO', cargo:'MECÂNICO DE MANUTENÇÃO', percentual:3.87},
-    {data:'01/11/2025', salario:3700.90, motivo:'DISSÍDIO', cargo:'', percentual:5.74}
-  ]
-};
-function buildHistoricoCargoSalarioBaseline() {
-  const colabs = loadData('colaboradores');
-  const hist = loadData('historico_cargo_salario');
-  const temHistorico = new Set(hist.map(h => h.colaboradorId));
-  colabs.forEach(c => {
-    if (temHistorico.has(c.id)) return;
-    const real = HISTORICO_REAL_SEED[normSemAcento(c.nome)];
-    if (real) {
-      real.forEach(linha => crudCreate('historico_cargo_salario', Object.assign({
-        colaboradorId: c.id, colaborador: c.nome
-      }, linha), {modulo:'Histórico Cargo/Salário', label: c.nome}));
-    } else {
-      crudCreate('historico_cargo_salario', {
-        colaboradorId: c.id, colaborador: c.nome, data: c.adm || dataHojeDDMMAAAA(),
-        salario: moedaNum(c.sal), motivo: 'ADMISSÃO', cargo: c.cargo || '', percentual: null
-      }, {modulo:'Histórico Cargo/Salário', label: c.nome});
-    }
-  });
-  repararHistoricoSalarioAntigo();
+
+/* ═══ Remove os dados de EXEMPLO que vieram prontos no sistema (nomes/valores inventados).
+   Só apaga registros idênticos aos de exemplo; tudo que a equipe cadastrou ou alterou é preservado. ═══ */
+function purgarDadosExemplo(){
+  if(localStorage.getItem('ac_purge_exemplo_v1')) return;
+  try{
+    const alvo={
+      admissoes:r=>['Marcos Henrique Torres','Beatriz Santos'].includes(r.nome)&&['20/05/2026','26/05/2026'].includes(r.inicio),
+      clima_pesquisas:r=>['Pulse — Junho 2026','eNPS — Q1/2026'].includes(r.titulo),
+      clima_acoes:r=>['Programa de capacitação de líderes','Comunicar trilhas de carreira por setor','Manutenção de investimentos em equipamentos'].includes(r.titulo),
+      comunicados:r=>['Bem-vindos — Novos Colaboradores Jun/2026','NR-12 — Renovação Obrigatória — Usinagem','Aniversariantes de Junho 🎂','Programa de Indicação de Candidatos — Torneiro'].includes(r.titulo),
+      documentos:r=>['Carlos Ferreira','Paulo Mendes','Beatriz Santos'].includes(r.colaborador)&&['Contrato de Trabalho','ASO','Certificado NR','Advertência','Contrato de Experiência'].includes(r.tipo),
+      holerites:r=>r.competencia==='Jun/2026'&&+r.salarioBase===3200&&+r.vt===280&&+r.vr===770,
+      sucessao:r=>['Antonio G.','Juliana P.','Roberto A.','Paulo M.'].includes(r.titular)&&['Carlos F.','Ana Lima','Marcos S.','Eduardo R.'].includes(r.sucessor),
+      vagas:r=>['VAG-031','VAG-032','VAG-033'].includes(r.codigo)&&['20/04/2026','28/04/2026','05/05/2026'].includes(r.abertura),
+      terceiros:r=>['SegurTech — Vigilância Patrimonial','LimpMax — Limpeza & Conservação','TechMaint — Manutenção Equipamentos'].includes(r.empresa)
+    };
+    let tot=0; const det=[];
+    Object.keys(alvo).forEach(t=>{
+      const del=loadData(t).filter(r=>r&&alvo[t](r)); if(!del.length) return;
+      del.forEach(r=>{ try{ crudDelete(t,r.id,{modulo:'Limpeza de dados de exemplo',fisica:true,label:r.nome||r.titulo||r.colaborador||r.codigo||r.empresa||('#'+r.id)}); }catch(e){} });
+      tot+=del.length; det.push(t+': '+del.length);
+    });
+    if(tot) logAudit('Limpeza de dados de exemplo','Exclusão física',0,tot+' registro(s) de exemplo removidos — '+det.join('; '));
+    localStorage.setItem('ac_purge_exemplo_v1','1');
+  }catch(e){ console.warn('purgarDadosExemplo',e); }
 }
 
-// Linhas de histórico geradas ANTES da correção do parser de salário podem ter
-// ficado com o valor errado gravado (ex.: R$ 2.571.700.000,00 em vez de
-// R$ 2.571,70). Aqui a gente conserta sozinho: quando o colaborador tem uma
-// única linha de ADMISSÃO (nunca teve cargo/salário alterado depois) e o
-// valor gravado não bate com o salário atual do cadastro já lido
-// corretamente, corrige a linha — sem mexer em quem já tem histórico real
-// com mais de uma linha (esses ficam como estão, pois o valor daquela data
-// pode legitimamente ser diferente do salário de hoje).
-function repararHistoricoSalarioAntigo() {
-  const colabs = loadData('colaboradores');
-  const hist = loadData('historico_cargo_salario');
-  const porColab = {};
-  hist.forEach(h => { (porColab[h.colaboradorId] = porColab[h.colaboradorId] || []).push(h); });
-  colabs.forEach(c => {
-    const linhas = porColab[c.id];
-    if (!linhas || linhas.length !== 1 || linhas[0].motivo !== 'ADMISSÃO') return;
-    const linha = linhas[0];
-    const salCorreto = moedaNum(c.sal);
-    if (salCorreto > 0 && Math.abs(linha.salario - salCorreto) > 0.01) {
-      crudUpdate('historico_cargo_salario', linha.id, {salario: salCorreto}, {modulo:'Histórico Cargo/Salário', label: c.nome});
+
+/* ═══ Auditoria de duplicidades ═══
+   • Remove sozinho os registros 100% idênticos (mesmos campos, só muda o número interno) — mantém o mais antigo.
+   • Só AVISA (não apaga) quando o mesmo colaborador/mês/período aparece mais de uma vez com valores diferentes. */
+function auditoriaDuplicidades(opt){
+  opt = opt || {};
+  const pref = DB_PREFIX + DB_VERSION + '_';
+  const ign = new Set(['id','_rowid','criadoEm','atualizadoEm']);
+  const pula = new Set(['auditoria','colaboradores','usuarios','config_empresa','config_empresa_v2','colab_excluidos']);
+  const N = v => normSemAcento(String(v||''));
+  const chaves = {
+    beneficios_inscritos: r => [r.tipoBeneficio,r.empresa,r.ano,r.mes,N(r.colaborador)].join('|'),
+    folha_descontos: r => [r.cnpj,r.ano,r.mes,N(r.colaborador)].join('|'),
+    cesta_vegas: r => [r.cnpj,r.ano,r.mes,N(r.colaborador)].join('|'),
+    colab_hist: r => [N(r.colaborador),r.tipo,r.data].join('|'),
+    veiculos: r => N(r.placa),
+    convenio_notas: r => [r.empresa,r.ano,r.mes].join('|'),
+    folha_totais: r => [r.cnpj,r.ano,r.mes].join('|'),
+    avaliacoes: r => [N(r.colaborador),r.ciclo].join('|'),
+    feedback90: r => N(r.colaborador),
+    ferias: r => [N(r.colaborador),r.aqIni||r.aquisitivoIni||'',r.aqFim||r.aquisitivoFim||''].join('|')
+  };
+  let removidos = 0; const porTab = {}, avisos = [];
+  Object.keys(localStorage).filter(k => k.startsWith(pref)).forEach(k => {
+    const t = k.slice(pref.length); if (pula.has(t)) return;
+    let d; try { d = JSON.parse(localStorage.getItem(k)); } catch(e) { return; }
+    if (!Array.isArray(d) || d.length < 2) return;
+    const vistos = {}, dup = [];
+    d.forEach(r => { if (!r || typeof r !== 'object') return; const o = {}; Object.keys(r).sort().forEach(f => { if (!ign.has(f)) o[f] = r[f]; });
+      const c = JSON.stringify(o); if (vistos[c]) dup.push(r); else vistos[c] = r; });
+    if (dup.length && !opt.somenteRelatar) {
+      dup.forEach(r => { try { crudDelete(t, r.id, {modulo:'Auditoria de duplicidades', fisica:true, label:(r.colaborador||r.nome||r.titulo||r.empresa||'#'+r.id)+' (repetido)'}); } catch(e) {} });
+      removidos += dup.length; porTab[t] = dup.length;
+    }
+    if (chaves[t]) {
+      const g = {}; loadData(t).filter(r => r.status !== 'Inativo').forEach(r => { const c = chaves[t](r); if (c.replace(/\|/g,'')) (g[c] = g[c] || []).push(r); });
+      Object.keys(g).filter(c => g[c].length > 1).forEach(c => avisos.push(t + ': ' + (g[c][0].colaborador || g[c][0].placa || c) + ' aparece ' + g[c].length + 'x (' + c.replace(/\|/g,' · ') + ')'));
     }
   });
+  // colaboradores: mesmo nome ou mesmo CPF
+  const cs = loadData('colaboradores').filter(c => c.status !== 'Inativo'), pn = {}, pc = {};
+  cs.forEach(c => { (pn[N(c.nome)] = pn[N(c.nome)] || []).push(c); const cpf = String(c.cpf||'').replace(/\D/g,''); if (cpf.length >= 11) (pc[cpf] = pc[cpf] || []).push(c); });
+  Object.keys(pn).filter(k => k && pn[k].length > 1).forEach(k => avisos.push('colaboradores: "' + pn[k][0].nome + '" cadastrado ' + pn[k].length + 'x'));
+  Object.keys(pc).filter(k => pc[k].length > 1).forEach(k => avisos.push('colaboradores: CPF repetido em ' + pc[k].map(c => c.nome).join(' e ')));
+  if (removidos) logAudit('Auditoria de duplicidades', 'Exclusão física', 0, removidos + ' registro(s) idêntico(s) removido(s): ' + Object.keys(porTab).map(t => t + ' ' + porTab[t]).join('; '));
+  if (opt.manual) {
+    abrirModalSimples('🔎 Verificação de duplicidades',
+      `<div style="font-size:13px;margin-bottom:10px"><b>${removidos}</b> registro(s) 100% idêntico(s) removido(s)${removidos ? ': ' + Object.keys(porTab).map(t => t + ' (' + porTab[t] + ')').join(', ') : '.'}</div>` +
+      (avisos.length ? `<div style="font-size:12px;font-weight:700;margin:8px 0">Para você conferir (mesma pessoa/mês/período mais de uma vez com valores diferentes — não apaguei):</div><ul style="font-size:12px;padding-left:18px;max-height:300px;overflow:auto">${avisos.map(a => '<li>' + String(a).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])) + '</li>').join('')}</ul>` : '<div class="muted">Nenhuma outra repetição encontrada.</div>'), 640);
+  }
+  return {removidos, porTab, avisos};
+}
+
+/* Histórico único de cargo/salário: traz para a ficha (colab_hist) o que ainda estava só no histórico antigo e apaga o antigo */
+function histUnificarLegado(){
+  if(localStorage.getItem('ac_hist_unif_v1')) return;
+  try{
+    const leg=loadData('historico_cargo_salario');
+    if(leg.length){
+      const hist=loadData('colab_hist'); let hid=hist.reduce((m,h)=>Math.max(m,h.id||0),0);
+      const tem=new Set(); hist.filter(h=>h.status!=='Inativo').forEach(h=>{ if(h.colaboradorId!=null) tem.add('i'+h.colaboradorId+'|'+h.data); tem.add('n'+normSemAcento(h.colaborador||'')+'|'+h.data); });
+      const now=nowStr(); let novos=0;
+      leg.filter(l=>l.status!=='Inativo').forEach(l=>{
+        const k1='i'+l.colaboradorId+'|'+l.data, k2='n'+normSemAcento(l.colaborador||'')+'|'+l.data;
+        if(tem.has(k1)||tem.has(k2)) return;
+        const rec={id:++hid,colaboradorId:l.colaboradorId,colaborador:l.colaborador,tipo:(l.motivo==='ADMISSÃO'?'Admissão':'Salário'),data:l.data,
+          salario:(l.salario!=null&&l.salario!=='')?l.salario:'',cargoDe:'',cargoPara:l.cargo||'',motivo:l.motivo||'',status:'Ativo',
+          origem:'Histórico de cargo/salário anterior (planilha do RH)',criadoEm:now,atualizadoEm:now};
+        hist.push(rec); tem.add(k1); tem.add(k2); novos++; syncRecordToCloud('colab_hist',rec);
+      });
+      saveData('colab_hist',hist);
+      leg.forEach(l=>{ try{ crudDelete('historico_cargo_salario',l.id,{modulo:'Histórico Cargo/Salário',fisica:true,label:'Unificação — '+(l.colaborador||'')}); }catch(e){} });
+      logAudit('Histórico Cargo/Salário','Unificação',0,'Histórico antigo unificado ao histórico da ficha: '+novos+' linha(s) trazidas, '+leg.length+' removida(s) da base antiga');
+    }
+    localStorage.setItem('ac_hist_unif_v1','1');
+  }catch(e){ console.warn('histUnificarLegado',e); }
 }
 
 function initCrudModules() {
@@ -7007,7 +6739,9 @@ function initCrudModules() {
   }
 
   initColabTable();
-  buildHistoricoCargoSalarioBaseline();
+  histUnificarLegado();
+  purgarDadosExemplo();
+  setTimeout(()=>{ try{ if(!localStorage.getItem('ac_dup_auto_v1')){ auditoriaDuplicidades({}); localStorage.setItem('ac_dup_auto_v1','1'); } }catch(e){ console.warn('auditoriaDuplicidades',e); } }, 6000);
   buildOrdensServicoSeed();
   buildFeriasFromColabs();
   initFeriasTable();
@@ -7498,17 +7232,6 @@ function initAdmissaoTable() {
   tcAdmissao.render();
 }
 
-function buildAdmissoesSeed() {
-  let admissoes = loadData('admissoes');
-  if (admissoes.length) return;
-  const seed = [
-    {nome:'Marcos Henrique Torres', cargo:'Torneiro CNC', setor:'Usinagem', inicio:'20/05/2026', situacao:'Em andamento',
-      checks:[{l:'Documentação entregue',ok:true},{l:'Exame admissional (ASO)',ok:true},{l:'Contrato assinado',ok:true},{l:'Cadastro interno (sistema)',ok:false},{l:'Integração RH',ok:false},{l:'Entrega EPI/Uniforme',ok:false},{l:'Treinamento de segurança',ok:false}]},
-    {nome:'Beatriz Santos', cargo:'Aux. Administrativo', setor:'Administrativo', inicio:'26/05/2026', situacao:'Em andamento',
-      checks:[{l:'Documentação entregue',ok:true},{l:'Exame admissional (ASO)',ok:true},{l:'Contrato assinado',ok:false},{l:'Cadastro interno (sistema)',ok:false},{l:'Integração RH',ok:false},{l:'Entrega EPI/Uniforme',ok:false},{l:'Treinamento de segurança',ok:false}]},
-  ];
-  seed.forEach(s => crudCreate('admissoes', s, {modulo:'Admissão', label: s.nome}));
-}
 
 function atualizarKPIsAdmissao() {
   const admissoes = loadData('admissoes').filter(a=>a.status!=='Inativo');
@@ -7545,7 +7268,7 @@ const MOD_VAGA = {
     {field:'situacao', label:'Status da Vaga', type:'select', options:['Em andamento','Fechada','Cancelada']},
     {field:'status', label:'Registro', type:'select', options:['Ativo','Inativo']},
   ],
-  onSave: () => { if(tcVaga) tcVaga.refresh(); }
+  onSave: () => { try{ if(vagaCtrl) vagaCtrl.load(); atualizarKPIsRecrutamento(); }catch(e){} }
 };
 
 function vagaRowRender(rows) {
@@ -7574,32 +7297,6 @@ function vagaRowRender(rows) {
   }).join('');
 }
 
-let tcVaga;
-function initVagaTable() {
-  tcVaga = createTableController({
-    id: 'vaga',
-    table: 'vagas',
-    tbodyId: 'vaga-tbody-crud',
-    searchFields: ['codigo','titulo','setor'],
-    pageSize: 10,
-    countId: 'vaga-count',
-    paginationId: 'vaga-pagination',
-    sortField: 'codigo',
-    render: vagaRowRender,
-  });
-  tcVaga.render();
-}
-
-function buildVagasSeed() {
-  let vagas = loadData('vagas');
-  if (vagas.length) return;
-  const seed = [
-    {codigo:'VAG-031', titulo:'Torneiro Mecânico CNC', setor:'Usinagem', abertura:'20/04/2026', candidatos:21, fase:'Entrev. Gestor', sla:15, aprovacao:'Aprovada', situacao:'Em andamento'},
-    {codigo:'VAG-032', titulo:'Aux. Administrativo', setor:'Administrativo', abertura:'28/04/2026', candidatos:18, fase:'Entrev. RH', sla:7, aprovacao:'Aprovada', situacao:'Em andamento'},
-    {codigo:'VAG-033', titulo:'Operador de Produção', setor:'Produção', abertura:'05/05/2026', candidatos:8, fase:'Triagem', sla:2, aprovacao:'Pend. Aprovação', situacao:'Em andamento'},
-  ];
-  seed.forEach(s => crudCreate('vagas', s, {modulo:'Recrutamento', label: s.titulo}));
-}
 
 function atualizarKPIsRecrutamento() {
   const vagas = loadData('vagas').filter(v=>v.status!=='Inativo');
@@ -7611,17 +7308,29 @@ function atualizarKPIsRecrutamento() {
   setText('rec-abertas-crud', abertas);
   setText('rec-candidatos-crud', totalCandidatos);
   setText('rec-entrevista-crud', entrevista);
-  setText('rec-sla-crud', mediaSla+'d');
+  setText('rec-sla-crud', slas.length ? mediaSla+'d' : '—');
+  renderPipelineVagas(vagas);
+}
+/* Pipeline montado só com as vagas cadastradas (nada fixo na tela) */
+function renderPipelineVagas(vagas){
+  const el = document.getElementById('rec-pipeline'); if(!el) return;
+  const E = x => String(x==null?'':x).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  vagas = (vagas || loadData('vagas').filter(v=>v.status!=='Inativo')).filter(v=>v.situacao==='Em andamento' || !v.situacao);
+  const fases = ['Triagem','Entrev. RH','Entrev. Gestor','Testes','Aprovados','Banco de Talentos'];
+  const cor = ['var(--blue-text)','var(--purple)','var(--yellow)','var(--orange)','var(--green)','var(--g400)'];
+  el.innerHTML = fases.map((f,i)=>{
+    const l = vagas.filter(v=>v.fase===f);
+    const cands = l.reduce((a,v)=>a+(+v.candidatos||0),0);
+    const cards = l.map(v=>`<div class="pipe-card" onclick="openCrudModal(MOD_VAGA,${v.id})"><div class="pipe-card-name">${E(v.titulo||'—')}</div><div class="pipe-card-role">${E(v.codigo||'')} · ${E(v.setor||'')}</div><div class="pipe-card-days">${(+v.candidatos||0)} candidato(s)</div></div>`).join('') || '<div class="pipe-card-role" style="padding:4px 2px">Nenhuma vaga nesta fase</div>';
+    return `<div class="pipe-col"><div class="pipe-col-hdr"><div class="pipe-col-name">${f}</div><div class="pipe-cnt" style="color:${cor[i]}">${cands}</div></div>${cards}</div>`;
+  }).join('');
 }
 
 /* ═══════════════ INIT LOTE 2 ═══════════════ */
 function initLote2Modules() {
-  buildAdmissoesSeed();
   initAdmissaoTable();
   atualizarKPIsAdmissao();
 
-  buildVagasSeed();
-  initVagaTable();
   atualizarKPIsRecrutamento();
 }
 
@@ -7678,7 +7387,7 @@ const MOD_BENEFICIO = {
   fields: [
     {field:'colaborador', label:'Colaborador', required:true, full:true},
     {field:'empresa', label:'Empresa', type:'select', options:['AC','BRASS','PJ']},
-    {field:'beneficio', label:'Benefício', type:'select', required:true, options:['Vale-Transporte','Convênio Médico','Convênio Farmácia','Seguro de Vida','Dep. Plano Médico','Outro']},
+    {field:'beneficio', label:'Benefício', type:'select', required:true, options:['Vale-Transporte','Convênio Médico','Convênio Farmácia','Dep. Plano Médico','Outro']},
     {field:'tipo', label:'Tipo de Movimentação', type:'select', required:true, options:['Inclusão','Exclusão','Inclusão dep.','Exclusão dep.','Alteração']},
     {field:'data', label:'Data', required:true, placeholder:'dd/mm/aaaa'},
     {field:'motivo', label:'Motivo', placeholder:'Admissão, afastamento, etc.'},
@@ -7775,7 +7484,6 @@ function buildBeneficiosTiposSeed() {
     {nome:'Vale-Transporte', icone:'🚌', descricao:'Cartão eletrônico'},
     {nome:'Convênio Médico', icone:'🏥', descricao:'Plano empresarial'},
     {nome:'Convênio Farmácia', icone:'💊', descricao:'Desconto em farmácia conveniada'},
-    {nome:'Seguro de Vida em Grupo', icone:'🛡', descricao:'Cobertura 24h'},
   ];
   const seeded = seed.map((s,i)=>Object.assign({},s,{id:i+1,status:'Ativo',criadoEm:now,atualizadoEm:now}));
   saveData('beneficios_tipos', seeded);
@@ -7863,6 +7571,42 @@ function benefAdicionarInscrito(tipoNome) {
   }, 30);
 }
 
+
+/* Seguro de Vida fica só em Contratos / Obrigações (apólice, vigência, anexos) */
+function migracaoSeguroVidaUnico(){
+  if(localStorage.getItem('ac_segvida_unico_v1')) return;
+  try{
+    loadData('beneficios_tipos').filter(t=>t.status!=='Inativo'&&/seguro de vida/i.test(t.nome||'')).forEach(t=>{ try{ crudDeleteFisico('beneficios_tipos',t.id,{modulo:'Benefícios',label:t.nome}); }catch(e){ crudUpdate('beneficios_tipos',t.id,{status:'Inativo'},{modulo:'Benefícios',label:t.nome}); } });
+    localStorage.setItem('ac_segvida_unico_v1','1');
+  }catch(e){ console.warn('migracaoSeguroVidaUnico',e); }
+}
+/* Convênio: atalhos mensais */
+function convCompAnterior(c){ return c.mes===1?{empresa:c.empresa,ano:c.ano-1,mes:12}:{empresa:c.empresa,ano:c.ano,mes:c.mes-1}; }
+function convNomesAtivos(emp){
+  const cod=emp==='BRASS'?'02':'01';
+  return loadData('colaboradores').filter(c=>c.status!=='Inativo'&&c.cnpj===cod).map(c=>c.nome);
+}
+function convCopiarMesAnterior(){
+  const comp=benefComp(), ant=convCompAnterior(comp), meses=['','Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  const ativos=new Set(convNomesAtivos(comp.empresa)), jaTem=new Set(convInscritos(comp).map(i=>i.colaborador));
+  const lista=convInscritos(ant).filter(i=>!jaTem.has(i.colaborador)&&ativos.has(i.colaborador));
+  if(!lista.length){ showToast('Nada para copiar: '+meses[ant.mes]+'/'+ant.ano+' não tem inscritos novos ou ativos.','warn'); return; }
+  confirmAction('Copiar '+lista.length+' inscrito(s) de '+meses[ant.mes]+'/'+ant.ano+' para '+meses[comp.mes]+'/'+comp.ano+'? Mensalidade e dependentes vêm do mês anterior; a coparticipação começa zerada (muda todo mês). Desligados não são copiados.',()=>{
+    lista.forEach(i=>{ const mens=convNum(i.mensalidade), dep=convNum(i.descDep), col=convR2(mens/2);
+      crudCreate('beneficios_inscritos',{colaborador:i.colaborador,tipoBeneficio:'Convênio Médico',empresa:comp.empresa,ano:comp.ano,mes:comp.mes,mensalidade:mens,descColab:col,descDep:dep,descCopart:0,valorDesconto:convR2(col+dep)},{modulo:'Benefícios',label:i.colaborador}); });
+    renderBeneficiosTipos(); showToast('✅ '+lista.length+' inscrito(s) copiados. Atualize a mensalidade, dependentes e coparticipação do mês.');
+  });
+}
+function convInscreverTodosAtivos(){
+  const comp=benefComp(), jaTem=new Set(convInscritos(comp).map(i=>i.colaborador));
+  const nomes=convNomesAtivos(comp.empresa).filter(n=>!jaTem.has(n));
+  if(!nomes.length){ showToast('Todos os colaboradores ativos desta empresa já estão inscritos.','warn'); return; }
+  confirmAction('Inscrever '+nomes.length+' colaborador(es) ativo(s) de '+(CV_EMPRESA_INFO[comp.empresa]||{nome:comp.empresa}).nome+' no Convênio Médico? Depois preencha a mensalidade de cada um e exclua quem não tem o plano.',()=>{
+    nomes.forEach(n=>crudCreate('beneficios_inscritos',{colaborador:n,tipoBeneficio:'Convênio Médico',empresa:comp.empresa,ano:comp.ano,mes:comp.mes,mensalidade:0,descColab:0,descDep:0,descCopart:0,valorDesconto:0},{modulo:'Benefícios',label:n}));
+    renderBeneficiosTipos(); showToast('✅ '+nomes.length+' colaborador(es) inscritos.');
+  });
+}
+
 function benefRemoverInscrito(id, nome) {
   crudDeleteAction({table:'beneficios_inscritos', label:'Benefícios', onSave: renderBeneficiosTipos}, id, nome);
 }
@@ -7893,8 +7637,8 @@ function convResumo(comp){
     mens: convR2(lista.reduce((a,c)=>a+(c.mens||0),0)), colab: convR2(lista.reduce((a,c)=>a+(c.colab||0),0)),
     dep: convR2(lista.reduce((a,c)=>a+c.dep,0)), copart: convR2(lista.reduce((a,c)=>a+c.copart,0))};
 }
-function convNotaSalvar(valor){
-  const comp = benefComp(); const num = Math.max(0, convR2(convNum(valor)));
+function convNotaSalvar(valor, compIn){
+  const comp = compIn || benefComp(); const num = Math.max(0, convR2(convNum(valor)));
   const reg = convNotaReg(comp);
   if (reg) crudUpdate('convenio_notas', reg.id, {valorNota: num}, {modulo:'Benefícios', label:`Nota Convênio Médico ${comp.empresa} ${comp.mes}/${comp.ano}`});
   else crudCreate('convenio_notas', {empresa:comp.empresa, ano:comp.ano, mes:comp.mes, valorNota:num}, {modulo:'Benefícios', label:`Nota Convênio Médico ${comp.empresa} ${comp.mes}/${comp.ano}`});
@@ -7952,6 +7696,8 @@ function convInscritosHtml(){
       <div style="white-space:nowrap">
         <button class="btn btn-s btn-xs" onclick="benefGerarRelatorio('Convênio Médico')">🖨 Relatório</button>
         <button class="btn btn-s btn-xs" onclick="benefExportarInscritos('Convênio Médico')">⬇ Exportar</button>
+        <button class="btn btn-s btn-xs" title="Traz os inscritos do mês anterior com mensalidade e dependentes" onclick="convCopiarMesAnterior()">📋 Copiar mês anterior</button>
+        <button class="btn btn-s btn-xs" title="Inscreve todos os colaboradores ativos da empresa" onclick="convInscreverTodosAtivos()">👥 Inscrever todos os ativos</button>
         <button class="btn btn-s btn-xs" onclick="benefAdicionarInscrito('Convênio Médico')">+ Adicionar</button>
       </div>
     </div>
@@ -11595,14 +11341,6 @@ function initClimaTable() {
   tcAcaoClima.render();
 }
 
-function buildClimaSeed() {
-  if (loadData('clima_pesquisas').length) return;
-  crudCreate('clima_pesquisas', {titulo:'Pulse — Junho 2026', tipo:'Pulse mensal', dataInicio:'01/06/2026', dataFim:'10/06/2026', enps:42, promotores:61, neutros:20, detratores:19, participacao:87, situacao:'Encerrada', observacao:'Resultado positivo. Pontos críticos: feedback de líderes e clareza de crescimento.'}, {modulo:'Clima', label:'Pulse Junho 2026'});
-  crudCreate('clima_pesquisas', {titulo:'eNPS — Q1/2026', tipo:'eNPS trimestral', dataInicio:'15/03/2026', dataFim:'22/03/2026', enps:38, promotores:58, neutros:22, detratores:20, participacao:91, situacao:'Encerrada'}, {modulo:'Clima', label:'eNPS Q1/2026'});
-  crudCreate('clima_acoes', {titulo:'Programa de capacitação de líderes', origem:'Pulse Jun/26 — feedback líderes 6.2', responsavel:'Jakeline + RH', prazo:'31/08/2026', prioridade:'Alta', situacao:'Planejada'}, {modulo:'Clima', label:'Cap. líderes'});
-  crudCreate('clima_acoes', {titulo:'Comunicar trilhas de carreira por setor', origem:'Pulse Jun/26 — crescimento 5.8', responsavel:'Jakeline + RH', prazo:'31/07/2026', prioridade:'Alta', situacao:'Em andamento'}, {modulo:'Clima', label:'Trilhas carreira'});
-  crudCreate('clima_acoes', {titulo:'Manutenção de investimentos em equipamentos', origem:'Pulse Jun/26 — ferramentas 8.4', responsavel:'Direção', prazo:'Contínuo', prioridade:'Baixa', situacao:'Em andamento'}, {modulo:'Clima', label:'Equipamentos'});
-}
 
 function atualizarKPIsClima() {
   const pesquisas = loadData('clima_pesquisas').filter(c=>c.status!=='Inativo');
@@ -11666,16 +11404,6 @@ function initSucessaoTable() {
   tcSucessao.render();
 }
 
-function buildSucessaoSeed() {
-  if (loadData('sucessao').length) return;
-  const seed = [
-    {posicao:'Supervisor de Produção', titular:'Antonio G.', sucessor:'Carlos F.', prontidao:'1–2 anos', potencial:'Alto', desempenho:'Alto', acoes:'Mentoria com titular, participação em reuniões estratégicas'},
-    {posicao:'Supervisora de Qualidade', titular:'Juliana P.', sucessor:'Ana Lima', prontidao:'Pronto agora', potencial:'Alto', desempenho:'Alto', acoes:'Planejamento de transição formal'},
-    {posicao:'Coord. de Manutenção', titular:'Roberto A.', sucessor:'Marcos S.', prontidao:'2–3 anos', potencial:'Médio', desempenho:'Médio', acoes:'Capacitação técnica e liderança'},
-    {posicao:'Líder de Usinagem', titular:'Paulo M.', sucessor:'Eduardo R.', prontidao:'1–2 anos', potencial:'Alto', desempenho:'Médio', acoes:'Rotação de função, gestão de equipes'},
-  ];
-  seed.forEach(s => crudCreate('sucessao', s, {modulo:'Sucessão', label: s.posicao}));
-}
 
 function atualizarKPIsSucessao() {
   const suc = loadData('sucessao').filter(s=>s.status!=='Inativo');
@@ -11751,12 +11479,6 @@ function buildTerceirosSeed() {
   // Obrigações do Planejamento 2027
   const obrigSeed = [{"empresa": "AC Metalúrgica", "contrato": "—", "tipo": "Consultoria", "servico": "LTCAT - Laudo Técnico das Condições Ambientais", "vigenciaInicio": "", "vigenciaFim": "", "valor": null, "colaboradores": null, "sla": "", "docs": "Não iniciado", "situacao": "Ativo"}, {"empresa": "Brass Metal", "contrato": "—", "tipo": "Consultoria", "servico": "LTCAT - Laudo Técnico das Condições Ambientais", "vigenciaInicio": "", "vigenciaFim": "", "valor": null, "colaboradores": null, "sla": "", "docs": "Não iniciado", "situacao": "Ativo"}, {"empresa": "AC Metalúrgica", "contrato": "—", "tipo": "Consultoria", "servico": "PCMSO - Programa de Controle Médico de Saúde Ocupacional", "vigenciaInicio": "", "vigenciaFim": "", "valor": null, "colaboradores": null, "sla": "", "docs": "Não iniciado", "situacao": "Ativo"}, {"empresa": "Brass Metal", "contrato": "—", "tipo": "Consultoria", "servico": "PCMSO - Programa de Controle Médico de Saúde Ocupacional", "vigenciaInicio": "", "vigenciaFim": "", "valor": null, "colaboradores": null, "sla": "", "docs": "Não iniciado", "situacao": "Ativo"}, {"empresa": "AC Metalúrgica", "contrato": "—", "tipo": "Consultoria", "servico": "PGR - Programa de Gerenciamento de Riscos", "vigenciaInicio": "", "vigenciaFim": "", "valor": null, "colaboradores": null, "sla": "", "docs": "Não iniciado", "situacao": "Ativo"}, {"empresa": "Brass Metal", "contrato": "—", "tipo": "Consultoria", "servico": "PGR - Programa de Gerenciamento de Riscos", "vigenciaInicio": "", "vigenciaFim": "", "valor": null, "colaboradores": null, "sla": "", "docs": "Não iniciado", "situacao": "Ativo"}, {"empresa": "ALLIANZ (SEGERAL)", "contrato": "—", "tipo": "Prestador de Serviço", "servico": "Seguro de Vida - AC Metalúrgica", "vigenciaInicio": "19/08/2026", "vigenciaFim": "19/08/2027", "valor": null, "colaboradores": null, "sla": "", "docs": "OK", "situacao": "Ativo"}, {"empresa": "YELUM", "contrato": "—", "tipo": "Prestador de Serviço", "servico": "Seguro de Vida - Brass Metal", "vigenciaInicio": "26/02/2026", "vigenciaFim": "26/02/2027", "valor": null, "colaboradores": null, "sla": "", "docs": "OK", "situacao": "Vencendo em 60d"}];
   obrigSeed.forEach(o => crudCreate('terceiros', o, {modulo:'Terceiros', label: o.empresa + ' — ' + o.servico}));
-  const seed = [
-    {empresa:'SegurTech — Vigilância Patrimonial', contrato:'2024-011', tipo:'Prestador de Serviço', servico:'Vigilância', vigenciaInicio:'01/01/2024', vigenciaFim:'31/12/2026', valor:14200, colaboradores:4, sla:'9.1', docs:'OK', situacao:'Ativo'},
-    {empresa:'LimpMax — Limpeza & Conservação', contrato:'2025-003', tipo:'Prestador de Serviço', servico:'Limpeza', vigenciaInicio:'01/03/2025', vigenciaFim:'28/02/2027', valor:8400, colaboradores:6, sla:'8.7', docs:'OK', situacao:'Ativo'},
-    {empresa:'TechMaint — Manutenção Equipamentos', contrato:'2024-028', tipo:'Prestador de Serviço', servico:'Manutenção', vigenciaInicio:'01/08/2024', vigenciaFim:'31/07/2026', valor:6200, colaboradores:2, sla:'7.9', docs:'1 pendência', situacao:'Vencendo em 60d'},
-  ];
-  seed.forEach(s => crudCreate('terceiros', s, {modulo:'Terceiros', label: s.empresa}));
 }
 
 function atualizarKPIsTerceiros() {
@@ -11820,17 +11542,6 @@ function initDocTable() {
   tcDoc.render();
 }
 
-function buildDocsSeed() {
-  if (loadData('documentos').length) return;
-  const seed = [
-    {colaborador:'Carlos Ferreira', tipo:'Contrato de Trabalho', descricao:'Contrato de Trabalho CLT', dataDocumento:'15/03/2019', validade:'Indeterminado', situacao:'Vigente'},
-    {colaborador:'Carlos Ferreira', tipo:'ASO', descricao:'Atestado de Saúde Ocupacional', dataDocumento:'10/01/2026', validade:'10/01/2027', situacao:'Vigente'},
-    {colaborador:'Carlos Ferreira', tipo:'Certificado NR', descricao:'NR-12 Básico', dataDocumento:'05/05/2022', validade:'05/05/2024', situacao:'Vencido'},
-    {colaborador:'Paulo Mendes', tipo:'Advertência', descricao:'Advertência Escrita — Atraso', dataDocumento:'12/03/2026', validade:'—', situacao:'Arquivado'},
-    {colaborador:'Beatriz Santos', tipo:'Contrato de Experiência', descricao:'Contrato de Experiência 45d', dataDocumento:'26/05/2026', validade:'09/07/2026', situacao:'Experiência'},
-  ];
-  seed.forEach(s => crudCreate('documentos', s, {modulo:'Documentos', label: s.colaborador+' — '+s.tipo}));
-}
 
 function atualizarKPIsDocumentos() {
   const docs = loadData('documentos').filter(d=>d.status!=='Inativo');
@@ -11846,11 +11557,9 @@ function atualizarKPIsDocumentos() {
 
 /* ═══════════════ INIT LOTE 4 ═══════════════ */
 function initLote4Modules() {
-  buildClimaSeed();
   initClimaTable();
   atualizarKPIsClima();
 
-  buildSucessaoSeed();
   initSucessaoTable();
   atualizarKPIsSucessao();
 
@@ -11858,7 +11567,6 @@ function initLote4Modules() {
   initTerceiroTable();
   atualizarKPIsTerceiros();
 
-  buildDocsSeed();
   initDocTable();
   atualizarKPIsDocumentos();
 }
@@ -11998,50 +11706,28 @@ function buildInsights(colabs, ferias, treinos, avals, sst, vagas) {
 }
 
 let paChartsBuilt = false;
-function buildPACharts(colabs, treinos, avals) {
-  // Cargos
-  const cargoCounts = {};
-  colabs.forEach(c => { cargoCounts[c.cargo] = (cargoCounts[c.cargo] || 0) + 1; });
-  const sortedCargos = Object.entries(cargoCounts).sort((a, b) => b[1] - a[1]).slice(0, 8);
-
-  if (!paChartsBuilt) {
-    mkChart('c-sturn', 'bar', {
-      labels: sortedCargos.map(x => x[0].length > 20 ? x[0].slice(0, 18) + '…' : x[0]),
-      datasets: [{ data: sortedCargos.map(x => x[1]), backgroundColor: '#1a3f6f', borderRadius: 4 }]
-    }, { y: { ticks: { font: { size: 9 }, stepSize: 1 } }, x: { ticks: { font: { size: 8 } } } });
-
-    // Crescimento do quadro por ano de admissão
-    const anoCounts = {};
-    colabs.forEach(c => { const a = anoAdm(c.adm); if (a) anoCounts[a] = (anoCounts[a] || 0) + 1; });
-    const anos = Object.keys(anoCounts).sort();
-    let acum = 0;
-    const crescimento = anos.map(a => { acum += anoCounts[a]; return acum; });
-    mkChart('c-hcline', 'line', {
-      labels: anos,
-      datasets: [{ data: crescimento, borderColor: '#1a3f6f', backgroundColor: 'rgba(26,63,111,.1)', tension: .4, fill: true, pointRadius: 4, pointBackgroundColor: '#1a3f6f' }]
-    }, { y: { min: 0, ticks: { font: { size: 10 } } }, x: { ticks: { font: { size: 10 } } } });
-
-    paChartsBuilt = true;
-  }
-}
 
 /* ═══════════════ CONFIGURAÇÕES — CRUD PERSISTENTE ═══════════════ */
 
 /* ── Empresa: salva/carrega via localStorage ── */
-function salvarEmpresa() {
-  const cfg = {};
-  document.querySelectorAll('#cfg-emp [data-cfg]').forEach(el => { cfg[el.dataset.cfg] = el.value; });
-  saveData('config_empresa', cfg);
-  logAudit('Configurações', 'Atualização', 'empresa', 'Dados da empresa');
-  showToast('✅ Dados da empresa salvos');
+/* Dados das empresas: ficam em CV_EMPRESA_INFO (usado por todos os documentos); o que for alterado aqui vale em todo o sistema */
+function empresaCfgAplicar() {
+  try {
+    const cfg = JSON.parse(localStorage.getItem(dbKey('config_empresa_v2')) || 'null');
+    if (cfg) ['AC','BRASS'].forEach(k => { if (cfg[k]) Object.keys(cfg[k]).forEach(f => { if (cfg[k][f]) CV_EMPRESA_INFO[k][f] = cfg[k][f]; }); });
+  } catch(e) {}
 }
-
+function salvarEmpresa() {
+  const cfg = {AC:{}, BRASS:{}};
+  document.querySelectorAll('#cfg-emp [data-cfg]').forEach(el => { const [k,f] = el.dataset.cfg.split('.'); cfg[k][f] = el.value.trim(); });
+  localStorage.setItem(dbKey('config_empresa_v2'), JSON.stringify(cfg));
+  empresaCfgAplicar();
+  logAudit('Configurações', 'Atualização', 'empresa', 'Dados da empresa');
+  showToast('✅ Dados da empresa salvos — valem para todos os documentos');
+}
 function carregarEmpresa() {
-  const cfg = loadData('config_empresa');
-  if (!cfg || !cfg.razao1) return; // sem dados salvos — mantém padrão
-  document.querySelectorAll('#cfg-emp [data-cfg]').forEach(el => {
-    if (cfg[el.dataset.cfg] !== undefined) el.value = cfg[el.dataset.cfg];
-  });
+  empresaCfgAplicar();
+  document.querySelectorAll('#cfg-emp [data-cfg]').forEach(el => { const [k,f] = el.dataset.cfg.split('.'); el.value = (CV_EMPRESA_INFO[k] && CV_EMPRESA_INFO[k][f]) || ''; });
 }
 
 /* ── Metas: salva/carrega via localStorage ── */
@@ -12500,7 +12186,7 @@ function refreshControllerFor(tabela) {
       case 'avaliacoes': if (typeof tcAval !== 'undefined' && tcAval) tcAval.refresh(); break;
       case 'sst': if (typeof tcSST !== 'undefined' && tcSST) tcSST.refresh(); break;
       case 'admissoes': if (typeof tcAdmissao !== 'undefined' && tcAdmissao) tcAdmissao.refresh(); break;
-      case 'vagas': if (typeof tcVaga !== 'undefined' && tcVaga) tcVaga.refresh(); break;
+      case 'vagas': if (typeof vagaCtrl !== 'undefined' && vagaCtrl) vagaCtrl.load(); break;
       case 'beneficios_mov': if (typeof tcBeneficio !== 'undefined' && tcBeneficio) tcBeneficio.refresh(); break;
       case 'cargos': if (typeof tcCargo !== 'undefined' && tcCargo) tcCargo.refresh(); break;
       case 'ponto': if (typeof tcPonto !== 'undefined' && tcPonto) tcPonto.refresh(); break;
@@ -12664,17 +12350,6 @@ function hRow(label, val, desc) {
   </div>`;
 }
 
-function buildHoleritesSeed() {
-  if (loadData('holerites').length) return;
-  const colabs = loadData('colaboradores').filter(c => c.status !== 'Inativo').slice(0, 5);
-  colabs.forEach(c => {
-    crudCreate('holerites', {
-      colaborador: c.nome, cargo: c.cargo, competencia: 'Jun/2026',
-      salarioBase: 3200, vt: 280, vr: 770, horasExtra: 0, adicionais: 0,
-      inss: 352, irrf: 0, vt_desc: 192, outros_desc: 0, observacao: '',
-    }, { modulo: 'Holerite', label: c.nome });
-  });
-}
 
 let tcHolerite;
 function initHoleriteTable() {
@@ -12796,16 +12471,6 @@ function verComunicado(id) {
   document.getElementById('m-crud').classList.add('open');
 }
 
-function buildComunicadosSeed() {
-  if (loadData('comunicados').length) return;
-  const seed = [
-    { titulo:'Bem-vindos — Novos Colaboradores Jun/2026', categoria:'Aviso Geral', destinatario:'Todos os colaboradores', canal:'WhatsApp', data:'05/06/2026', conteudo:'Sejam muito bem-vindos à AC Metalúrgica!\n\nRecebemos com alegria os novos membros da nossa equipe neste mês. Desejamos muito sucesso a todos e contamos com o empenho de cada um para continuarmos crescendo juntos.\n\nQualquer dúvida, o RH está à disposição.', autor:'Jakeline Cabrera', situacao:'Publicado' },
-    { titulo:'NR-12 — Renovação Obrigatória — Usinagem', categoria:'Segurança do Trabalho', destinatario:'Usinagem', canal:'Quadro de avisos', data:'10/06/2026', conteudo:'Atenção equipe de Usinagem!\n\nO treinamento de renovação da NR-12 (Segurança em Máquinas e Equipamentos) é obrigatório para todos os torneiros e auxiliares de usinagem.\n\nData: a confirmar — aguardar comunicado da Patrícia.\nPresença obrigatória. Falta não justificada será registrada.', autor:'Patrícia', situacao:'Publicado' },
-    { titulo:'Aniversariantes de Junho 🎂', categoria:'Aniversariantes', destinatario:'Todos os colaboradores', canal:'WhatsApp', data:'01/06/2026', conteudo:'🎉 Parabéns aos aniversariantes de junho!\n\nA AC Metalúrgica deseja muito felicidade e saúde a todos que fazem aniversário neste mês.\n\nVocês são parte fundamental da nossa história. Que venham muitos anos de conquistas!', autor:'RH', situacao:'Publicado' },
-    { titulo:'Programa de Indicação de Candidatos — Torneiro', categoria:'Processo Seletivo', destinatario:'Todos os colaboradores', canal:'Todos', data:'12/06/2026', conteudo:'A AC Metalúrgica está com vaga aberta para Torneiro CNC.\n\nSe você conhece um profissional qualificado e comprometido, indique! Colaboradores que indicarem candidatos aprovados receberão um bônus de reconhecimento.\n\nEntre em contato com o RH.', autor:'Jakeline Cabrera', situacao:'Publicado' },
-  ];
-  seed.forEach(s => crudCreate('comunicados', s, { modulo: 'Comunicados', label: s.titulo }));
-}
 
 let tcComunicado;
 function initComunicadoTable() {
@@ -12834,11 +12499,9 @@ function atualizarKPIsComunicados() {
 
 /* ═══════════════ INIT LOTE 6 ═══════════════ */
 function initLote6Modules() {
-  buildHoleritesSeed();
   initHoleriteTable();
   atualizarKPIsHolerite();
 
-  buildComunicadosSeed();
   initComunicadoTable();
   atualizarKPIsComunicados();
 }
