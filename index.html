@@ -455,7 +455,7 @@ body.ad-minimizado #ad-titlebar-text{cursor:pointer}
   <div class="l-box">
     <div class="l-logo">
       <div class="l-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
-      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 5.20 — Anexos e fotos com link temporário (privados); Login real por e-mail e senha (Supabase) e script para trancar a base; Convênio: copiar mês anterior e inscrever todos os ativos; Seguro de Vida só em Contratos. Versão 5.15 — Limpeza geral: duplicidades removidas (histórico único de cargo/salário, Folha × Convênio, funções e filtros repetidos), dados de exemplo removidos e tudo editável (Configurações da empresa, cargos, pipeline), verificador de duplicidades; Benefícios sem limite de inscritos (leitura da nuvem em blocos); Convênio médico: mensalidade, desconto do colaborador (50%), dependentes, coparticipação e quadro Nota/Empresa/Repasse; Carta PHS e Prêmio por Assiduidade com a data do dia da impressão; impressão dos históricos de férias e salário/cargo; Histórico de férias: incluir/excluir período e gozo; Férias: botão ✔ Resolvido (guarda o período no histórico), coluna do colaborador mais estreita; menu lateral compacto; botões minimizar/maximizar; Férias por empresa</div></div>
+      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 5.22 — Planejamento 2026 (5W2H), Provisão com salário editável e PJ/SR manual, Medicina Ocupacional atualizada, Aniversariantes (todos os meses + Mês atual), Tempo de Empresa com data da planilha; Tático em branco; sem aba Indicadores; Versão 5.21 — Raphael (Brass→AC) e Edielson (desligado) ajustados; Versão 5.20 — Anexos e fotos com link temporário (privados); Login real por e-mail e senha (Supabase) e script para trancar a base; Convênio: copiar mês anterior e inscrever todos os ativos; Seguro de Vida só em Contratos. Versão 5.15 — Limpeza geral: duplicidades removidas (histórico único de cargo/salário, Folha × Convênio, funções e filtros repetidos), dados de exemplo removidos e tudo editável (Configurações da empresa, cargos, pipeline), verificador de duplicidades; Benefícios sem limite de inscritos (leitura da nuvem em blocos); Convênio médico: mensalidade, desconto do colaborador (50%), dependentes, coparticipação e quadro Nota/Empresa/Repasse; Carta PHS e Prêmio por Assiduidade com a data do dia da impressão; impressão dos históricos de férias e salário/cargo; Histórico de férias: incluir/excluir período e gozo; Férias: botão ✔ Resolvido (guarda o período no histórico), coluna do colaborador mais estreita; menu lateral compacto; botões minimizar/maximizar; Férias por empresa</div></div>
     </div>
     <div class="f-row"><label>E-mail</label><input type="email" id="l-user" autocomplete="username" placeholder="seu.email@acmetalurgica.com.br" onkeydown="if(event.key==='Enter')document.getElementById('l-pass').focus()"></div>
     <div class="f-row"><label>Senha</label><input type="password" id="l-pass" autocomplete="current-password" placeholder="Sua senha" onkeydown="if(event.key==='Enter')entrarSistema()"></div>
@@ -524,9 +524,6 @@ body.ad-minimizado #ad-titlebar-text{cursor:pointer}
       <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Desempenho / PDI
     </div>
     <div class="sb-layer layer-st"><div class="sb-dot dot-st" style=""></div>Estratégico</div>
-    <div class="nav-item" data-go="ind-rh" onclick="go('ind-rh',this,'Indicadores de RH — Anual','Turnover · Engajamento · T&D')">
-      📊 Indicadores RH Anual
-    </div>
     <div class="nav-item" data-go="planejamento" onclick="go('planejamento',this,'Planejamento Anual RH','5W2H · Plano de Ação · Endomkt')">
       🎯 Planejamento Anual
     </div>
@@ -736,6 +733,8 @@ body.ad-minimizado #ad-titlebar-text{cursor:pointer}
             <option value="">🏢 Todas as empresas</option>
             <option value="01">CNPJ 01 — AC Metalúrgica</option>
             <option value="02">CNPJ 02 — Brass Metal</option>
+            <option value="PJ">PJ — Prestador</option>
+            <option value="SR">SR — Sem registro</option>
           </select>
           <select class="fsel" id="cf-setor" onchange="colabFiltrar()" style="min-width:150px">
             <option value="">📌 Todos os setores</option>
@@ -1190,13 +1189,15 @@ body.ad-minimizado #ad-titlebar-text{cursor:pointer}
         <button class="btn btn-s" onclick="anivExportar()">⬇ Exportar Excel</button>
       </div>
       <div class="kpi-grid">
-        <div class="kpi-card"><div class="kpi-lbl">Aniversariantes no mês</div><div class="kpi-val" id="aniv-kpi-mes">—</div></div>
+        <div class="kpi-card"><div class="kpi-lbl">Aniversariantes neste mês</div><div class="kpi-val" id="aniv-kpi-mes">—</div></div>
         <div class="kpi-card"><div class="kpi-lbl">Hoje</div><div class="kpi-val" style="color:var(--pink,#be185d)" id="aniv-kpi-hoje">—</div></div>
         <div class="kpi-card"><div class="kpi-lbl">Próximos 7 dias</div><div class="kpi-val" style="color:var(--blue)" id="aniv-kpi-7d">—</div></div>
         <div class="kpi-card"><div class="kpi-lbl">Sem data de nascimento</div><div class="kpi-val" style="color:var(--orange)" id="aniv-kpi-sem">—</div></div>
       </div>
       <div class="filters" style="margin-bottom:12px;flex-wrap:wrap">
         <select class="fsel" id="aniv-mes-sel" onchange="renderAniversariantes()"></select>
+        <button class="btn btn-s" id="aniv-btn-mesatual" onclick="anivMesAtual()" title="Mostrar só os aniversariantes do mês atual">📅 Mês atual</button>
+        <button class="btn btn-s" onclick="anivTodosMeses()" title="Voltar a mostrar todos os meses">📋 Todos os meses</button>
         <select class="fsel" id="aniv-emp-sel" onchange="renderAniversariantes()"><option value="">Todas as empresas</option><option value="AC">AC Metal</option><option value="BRASS">Brass Metal</option></select>
         <input class="finp" type="text" id="aniv-busca" placeholder="🔎 Nome..." oninput="renderAniversariantes()" style="width:180px">
         <label style="font-size:11px;color:var(--g500);display:flex;align-items:center;gap:4px" title="Pessoas que constam na planilha de aniversariantes da empresa mas não no cadastro (diretoria, familiares etc.)"><input type="checkbox" id="aniv-fora-chk" checked onchange="renderAniversariantes()"> incluir quem não está no cadastro</label>
@@ -1760,93 +1761,6 @@ body.ad-minimizado #ad-titlebar-text{cursor:pointer}
     </div>
 
     <!-- ══ INDICADORES RH 2026 ══ -->
-    <div id="page-ind-rh" class="page">
-      <div class="layer-badge lb-st">● Estratégico — Indicadores</div>
-      <div class="section-hdr">
-        <div class="sec-title" id="ix-titulo">📊 Indicadores de RH</div>
-        <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
-          <select class="fsel" id="ix-ano" style="width:90px" onchange="ixMudou()"></select>
-          <select class="fsel" id="ix-mes" style="width:150px" onchange="ixMudou()"></select>
-          <button class="btn btn-s btn-sm" onclick="ixImprimir()">🖨 Imprimir</button>
-          <button class="btn btn-s btn-sm" onclick="ixExportar()">⬇ Excel</button>
-          <button class="btn btn-s btn-sm" onclick="ixFecharMes()">🔒 Fechar mês (salvar histórico)</button>
-          <button class="btn btn-s btn-sm" onclick="ixHistAbrir()">📜 Histórico mensal</button>
-        </div>
-      </div>
-      <div style="margin:-6px 0 8px"><span class="chip" id="ix-hist-chip" style="display:none"></span></div>
-
-      <div style="display:flex;gap:6px;margin-bottom:16px;border-bottom:2px solid var(--g100);padding-bottom:0">
-        <button class="btn btn-p btn-sm" id="ind-tab-to" onclick="indTab('to')" style="border-radius:6px 6px 0 0;border-bottom:2px solid var(--navy)">Turn-Over</button>
-        <button class="btn btn-s btn-sm" id="ind-tab-eng" onclick="indTab('eng')" style="border-radius:6px 6px 0 0">Engajamento</button>
-        <button class="btn btn-s btn-sm" id="ind-tab-td" onclick="indTab('td')" style="border-radius:6px 6px 0 0">T&amp;D</button>
-      </div>
-
-      <!-- TURNOVER -->
-      <div id="ind-pane-to">
-        <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:10px">
-          <button class="btn btn-p btn-xs" id="ix-g-ef" onclick="ixSetGrupo('ef')">Efetivos</button>
-          <button class="btn btn-s btn-xs" id="ix-g-tr" onclick="ixSetGrupo('tr')">Trainee</button>
-          <button class="btn btn-s btn-xs" id="ix-g-ap" onclick="ixSetGrupo('ap')">Jovem Aprendiz</button>
-          <span style="flex:1"></span>
-          <button class="btn btn-p btn-sm" onclick="ixTOForm()">+ Novo mês</button>
-        </div>
-        <div class="kpi-grid" id="ix-to-kpis"></div>
-        <div class="card" style="margin-bottom:14px">
-          <div class="chart-ttl" id="ix-to-chart-ttl">Turnover mensal (%)</div>
-          <div style="position:relative;height:220px"><canvas id="chart-to-efetivos"></canvas></div>
-        </div>
-        <div class="card" style="padding:0;overflow-x:auto">
-          <div class="card-hdr"><span id="ix-to-tbl-ttl">Detalhamento mensal</span></div>
-          <table><thead><tr>
-            <th>Mês</th><th>Início</th><th>Entrada</th><th>Saída</th><th>Fim</th><th>Deslig. colab.</th><th>Deslig. empresa</th><th>Turn-over (planilha)</th><th>Turn-over por saídas</th><th>Desligados</th><th>Ações</th>
-          </tr></thead><tbody id="tbody-to"></tbody></table>
-        </div>
-        <div class="muted" style="font-size:10px;margin-top:8px;line-height:1.5">
-          <b>Turn-over (planilha)</b> = variação do quadro: |1 − quadro final ÷ quadro inicial|, arredondado para baixo com 2 casas (mesma fórmula da planilha da diretoria). 
-          <b>Turn-over por saídas</b> = saídas ÷ quadro médio do mês (critério usual de mercado), apresentado para comparação.
-          Quadro final = início + entradas − saídas; o início de cada mês é o final do mês anterior.
-        </div>
-      </div>
-
-      <!-- ENGAJAMENTO -->
-      <div id="ind-pane-eng" style="display:none">
-        <div style="display:flex;justify-content:flex-end;margin-bottom:10px"><button class="btn btn-p btn-sm" onclick="ixEngForm()">+ Nova pesquisa (setor)</button></div>
-        <div class="kpi-grid" id="ix-eng-kpis"></div>
-        <div class="card" style="margin-bottom:14px">
-          <div class="chart-ttl" id="ix-eng-chart-ttl">Evolução do engajamento (escala 1–5)</div>
-          <div style="position:relative;height:240px"><canvas id="chart-eng-evolucao"></canvas></div>
-        </div>
-        <div class="card" style="margin-bottom:14px;padding:0;overflow-x:auto">
-          <div class="card-hdr"><span id="eng-setor-titulo">Resultado por Setor</span></div>
-          <div id="ix-eng-legenda" class="muted" style="font-size:10px;padding:6px 12px;line-height:1.5"></div>
-          <table><thead id="thead-eng-setor"></thead><tbody id="tbody-eng-setor"></tbody></table>
-        </div>
-        <div id="ix-eng-alertas"></div>
-      </div>
-
-      <!-- T&D -->
-      <div id="ind-pane-td" style="display:none">
-        <div style="display:flex;justify-content:flex-end;margin-bottom:10px"><button class="btn btn-p btn-sm" onclick="ixTdForm()">+ Nova sessão de T&amp;D</button></div>
-        <div class="kpi-grid" id="ix-td-kpis"></div>
-        <div class="card" style="margin-bottom:14px">
-          <div class="chart-ttl" id="ix-td-chart-ttl">Sessões e horas de T&amp;D por mês</div>
-          <div style="position:relative;height:200px"><canvas id="chart-td-mensal"></canvas></div>
-        </div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px">
-          <div class="srch-wrap" style="flex:2;min-width:180px"><input class="finp" style="width:100%" id="td-search" placeholder="🔎 Buscar tema ou departamento..." oninput="ixTdPag=1;ixRenderTD()"></div>
-          <select class="fsel" id="td-filter-dept" style="min-width:150px" onchange="ixTdPag=1;ixRenderTD()"></select>
-          <span class="chip" id="td-count">— sessões</span>
-          <button class="btn btn-s btn-xs" onclick="document.getElementById('td-search').value='';document.getElementById('td-filter-dept').value='';ixTdPag=1;ixRenderTD()">🔄 Limpar</button>
-        </div>
-        <div class="card" style="padding:0;overflow-x:auto">
-          <table><thead><tr><th>Data</th><th>Departamento</th><th>Participantes</th><th>Duração</th><th>Tema</th><th>Ações</th></tr></thead>
-          <tbody id="tbody-td"></tbody></table>
-          <div style="padding:10px 14px;display:flex;align-items:center;justify-content:flex-end;gap:4px;border-top:1px solid var(--g100)" id="td-pagination"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══ PLANEJAMENTO ESTRATÉGICO 2027 ══ -->
     <div id="page-planejamento" class="page">
       <div class="layer-badge lb-st">● Estratégico — Planejamento Anual</div>
       <div class="section-hdr">
@@ -1908,10 +1822,34 @@ body.ad-minimizado #ad-titlebar-text{cursor:pointer}
         <div style="padding:10px 14px;display:flex;align-items:center;justify-content:flex-end;gap:4px;border-top:1px solid var(--g100)" id="plano-pag"></div>
       </div>
 
-      <!-- ENDOMKT 2027 -->
+      <!-- PLANO DE AÇÃO (etapas) -->
       <div style="margin-top:20px">
         <div class="section-hdr">
-          <div class="sec-title" style="font-size:13px">📅 Calendário Endomarketing — 2027</div>
+          <div class="sec-title" style="font-size:13px" id="planoet-titulo">🧭 Plano de Ação — etapas</div>
+          <button class="btn btn-p btn-sm" onclick="planoEtNova()">+ Nova etapa</button>
+        </div>
+        <div style="background:#fff;border:1px solid var(--g200);border-radius:9px;padding:12px;margin-bottom:10px">
+          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+            <div class="srch-wrap" style="flex:2;min-width:180px"><input class="finp" style="width:100%" id="planoet-search" placeholder="🔎 Buscar etapa, responsável ou observação..." oninput="planoEtCtrl&&planoEtCtrl.filter()"></div>
+            <select class="fsel" data-fid="planoet" style="min-width:160px" onchange="planoEtCtrl&&planoEtCtrl.setFilter('situacao',this.value)">
+              <option value="">🟢 Todas as situações</option><option>Planejado</option><option>Em andamento</option><option>Concluído</option><option>Em pausa</option><option>Atrasado</option><option>Em revisão</option><option>Cancelado</option>
+            </select>
+            <span class="chip" id="planoet-count">— etapas</span>
+            <button class="btn btn-s btn-xs" onclick="planoEtCtrl&&planoEtCtrl.clearAll();planoEtReload()">🔄 Limpar</button>
+            <select class="fsel" style="width:72px" onchange="planoEtCtrl&&(planoEtCtrl._pageSize=+this.value,planoEtCtrl._page=1,planoEtCtrl.render())"><option value="10">10</option><option value="25" selected>25</option><option value="50">50</option><option value="100">100</option></select>
+          </div>
+        </div>
+        <div class="card" style="padding:0;overflow-x:auto">
+          <table><thead><tr><th>Etapa / Ação</th><th>Responsável</th><th>Data inicial</th><th>Entrega prevista</th><th>Situação</th><th>Observações</th><th>Evidência</th><th>Indicador</th><th>Ações</th></tr></thead>
+          <tbody id="planoet-tbody"></tbody></table>
+          <div style="padding:10px 14px;display:flex;align-items:center;justify-content:flex-end;gap:4px;border-top:1px solid var(--g100)" id="planoet-pag"></div>
+        </div>
+      </div>
+
+      <!-- ENDOMKT -->
+      <div style="margin-top:20px">
+        <div class="section-hdr">
+          <div class="sec-title" style="font-size:13px" id="endomkt-titulo">📅 Calendário Endomarketing</div>
           <button class="btn btn-p btn-sm" onclick="openCrudModal(MOD_ENDOMKT,null)">+ Nova Ação</button>
         </div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px">
@@ -2235,7 +2173,6 @@ function go(id,el,title,bread){
   if(id==='pcmso'){setTimeout(()=>{try{pcmsoRenderAll();}catch(e){console.warn('pcmso:',e);}},80);}
   if(id==='folhadesc'){setTimeout(()=>{try{try{fdAutoArquivar();}catch(e){console.warn(e);}renderFolhaDesc();}catch(e){console.warn('folhadesc:',e);}},80);}
   if(id==='configuracoes'){setTimeout(()=>{try{initConfiguracoes();}catch(e){}},80);}
-  if(id==='ind-rh'){setTimeout(()=>{try{initIndRH();}catch(e){console.warn('indRH:',e);}},150);}
   if(id==='planejamento'){setTimeout(()=>{try{initPlanejamento();}catch(e){console.warn('plano:',e);}},150);}
   if(id==='epi'){setTimeout(()=>{try{initEPITable();atualizarKPIsEPI();}catch(e){}},150);}
   if(id==='ferias'){setTimeout(()=>{try{fhAutoArquivar();}catch(e){console.warn('fh:',e);} try{feriasMigrarV3();if(window.feriasCtrl)feriasCtrl.load();atualizarKPIsFerias();}catch(e){}},300);}
@@ -2304,6 +2241,8 @@ async function buildAll(){
   try{buildAdmissaoTemplateTreino90Seed();}catch(e){console.warn('treino90Seed:',e);}
   try{migracaoAdmissaoChecklists();}catch(e){console.warn('migracaoAdmissaoChecklists:',e);}
   try{migracaoRealocacoes2026();}catch(e){console.warn('migracaoRealocacoes2026:',e);}
+  try{migracaoRaphaelEdielson();}catch(e){console.warn('migracaoRaphaelEdielson:',e);}
+  try{migracaoExamesAtualizar();}catch(e){console.warn('migracaoExamesAtualizar:',e);}
   try{ aroldoReativar(); }catch(e){console.warn('aroldoReativar:',e);}
   try{tryRestoreSupabase();}catch(e){console.warn('tryRestoreSupabase:',e); updateDBStatusBadge('error');}
   setTimeout(restaurarSessao,400);
@@ -2484,6 +2423,7 @@ function confirmarExcel(){
 
   // Regenera registros derivados (férias, treinos, avaliações, SST) para novos colaboradores
   buildFeriasFromColabs();
+  try{ migracaoTaticoEmBranco(); }catch(e){ console.warn(e); }
   buildTreinosFromColabs();
   buildAvalFromColabs();
   buildSSTFromColabs();
@@ -3385,7 +3325,7 @@ const MOD_COLAB = {
     {field:'adm', label:'Data de Admissão (dd/mm/aaaa)', required:true, placeholder:'dd/mm/aaaa'},
     {field:'nascimento', label:'Data de Nascimento (dd/mm/aaaa)', placeholder:'dd/mm/aaaa'},
     {field:'sal', label:'Salário (R$)', placeholder:'0,00', moeda:true},
-    {field:'cnpj', label:'CNPJ', type:'select', options:['01','02','PJ']},
+    {field:'cnpj', label:'CNPJ', type:'select', options:['01','02','PJ','SR']},
     {field:'rg', label:'RG'},
     {field:'cpf', label:'CPF'},
     {field:'pis', label:'PIS/PASEP'},
@@ -4378,7 +4318,9 @@ function termoVeiculoDoc(colabId, veis) {
 }
 
 /* ═══════════ COLABORADORES — ATUALIZAR / EXCLUIR / INCLUSÃO AUTOMÁTICA (v4.76) ═══════════ */
-const COLAB_CNPJ_EMPRESA = {'01':'AC','02':'BRASS','PJ':'PJ','AC':'AC','BRASS':'BRASS'};
+const COLAB_CNPJ_EMPRESA = {'01':'AC','02':'BRASS','PJ':'PJ','SR':'SR','AC':'AC','BRASS':'BRASS'};
+/* PJ (prestador) e SR (sem registro) não entram em exames/ASO, treinamentos obrigatórios nem no cálculo automático da provisão */
+function colabEhCLT(c){ return !!c && c.cnpj!=='PJ' && c.cnpj!=='SR'; }
 
 async function colabAtualizar() {
   const btn = document.getElementById('colab-atualizar-btn');
@@ -4461,12 +4403,12 @@ const ENDO_MESES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho
 function endoEsc(s) { return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
 function endoEmpChave(c) { return COLAB_CNPJ_EMPRESA[c.cnpj] === 'BRASS' ? 'BRASS' : 'AC'; }
 function endoEmpNome(k) { return k === 'BRASS' ? 'Brass Metal' : 'AC Metal'; }
-function endoInitMeses(selId, comTodos) {
+function endoInitMeses(selId, comTodos, padraoTodos) {
   const sel = document.getElementById(selId);
   if (!sel || sel.options.length) return;
   if (comTodos) sel.innerHTML = '<option value="0">Todos os meses</option>';
   ENDO_MESES.forEach((m,i) => sel.innerHTML += `<option value="${i+1}">${m}</option>`);
-  sel.value = String(new Date().getMonth() + 1);
+  sel.value = (comTodos && padraoTodos) ? '0' : String(new Date().getMonth() + 1);
 }
 const ENDO_CONECTORES = new Set(['DA','DE','DO','DAS','DOS','E']);
 function endoTokens(n) {
@@ -4574,16 +4516,18 @@ function anivPessoas() {
   return endoAplicar('aniv', lista, 'nasc');
 }
 function endoColabsAtivos() { return loadData('colaboradores').filter(c => c.status !== 'Inativo'); }
+function anivMesAtual(){ const sel=document.getElementById('aniv-mes-sel'); if(!sel) return; endoInitMeses('aniv-mes-sel', true, true); sel.value=String(new Date().getMonth()+1); renderAniversariantes(); }
+function anivTodosMeses(){ const sel=document.getElementById('aniv-mes-sel'); if(!sel) return; sel.value='0'; renderAniversariantes(); }
 function anivDados() {
-  endoInitMeses('aniv-mes-sel', false);
+  endoInitMeses('aniv-mes-sel', true, true);
   const mes = parseInt(document.getElementById('aniv-mes-sel').value, 10);
   const emp = document.getElementById('aniv-emp-sel')?.value || '';
   const busca = (document.getElementById('aniv-busca')?.value || '').trim().toUpperCase();
   const ano = new Date().getFullYear();
   const todos = anivPessoas().filter(x => (!emp || x.emp === emp) && (!busca || (x.nome||'').toUpperCase().includes(busca)));
-  const lista = todos.filter(x => x.d.getMonth() + 1 === mes)
-    .map(x => Object.assign({}, x, {dia: x.d.getDate(), idade: ano - x.d.getFullYear()}))
-    .sort((a,b) => a.dia - b.dia || a.nome.localeCompare(b.nome));
+  const lista = todos.filter(x => mes === 0 || x.d.getMonth() + 1 === mes)
+    .map(x => Object.assign({}, x, {dia: x.d.getDate(), mesN: x.d.getMonth() + 1, idade: ano - x.d.getFullYear()}))
+    .sort((a,b) => a.mesN - b.mesN || a.dia - b.dia || a.nome.localeCompare(b.nome));
   const semNasc = endoColabsAtivos().filter(c => !parseDate(c.nascimento)).length;
   return {mes, lista, semNasc, todos};
 }
@@ -4593,17 +4537,17 @@ function renderAniversariantes() {
   const {mes, lista, semNasc, todos} = anivDados();
   const hoje = new Date(); const dHoje = hoje.getDate(), mHoje = hoje.getMonth() + 1;
   tb.innerHTML = lista.length ? lista.map(x => {
-    const ehHoje = mes === mHoje && x.dia === dHoje;
+    const ehHoje = x.mesN === mHoje && x.dia === dHoje;
     return `<tr${ehHoje ? ' style="background:#fdf2f8"' : ''}>
-      <td style="font-weight:700">${String(x.dia).padStart(2,'0')}/${String(mes).padStart(2,'0')}</td>
+      <td style="font-weight:700">${String(x.dia).padStart(2,'0')}/${String(x.mesN).padStart(2,'0')}</td>
       <td><strong style="font-size:11px">${endoEsc(x.nome)}</strong></td>
       <td style="font-size:11px">${endoEsc(x.cargo)}</td><td>${endoEsc(x.setor)}</td>
       <td><span class="badge bgy">${endoEmpNome(x.emp)}</span></td>
       <td>${endoEsc(x.nasc)}</td><td>${x.idade} anos</td>
       <td>${ehHoje ? '<span class="badge bo">🎉 Hoje!</span>' : ''}${x.fora ? ' <span class="badge bgy" title="Está na planilha de aniversariantes, mas não no cadastro de colaboradores">fora do cadastro</span>' : ''}</td><td>${endoBtnExcluir('aniv',x)}</td></tr>`;
-  }).join('') : '<tr><td colspan="9" class="muted" style="text-align:center;padding:16px">Nenhum aniversariante neste mês com os filtros atuais.</td></tr>';
+  }).join('') : '<tr><td colspan="9" class="muted" style="text-align:center;padding:16px">Nenhum aniversariante com os filtros atuais.</td></tr>';
   setText('aniv-count', lista.length + ' aniversariantes');
-  setText('aniv-kpi-mes', lista.length);
+  setText('aniv-kpi-mes', todos.filter(x => x.d.getMonth() + 1 === mHoje).length);
   const hojeN = todos.filter(x => x.d.getMonth() + 1 === mHoje && x.d.getDate() === dHoje).length;
   let prox7 = 0;
   todos.forEach(x => {
@@ -4616,21 +4560,22 @@ function renderAniversariantes() {
 }
 function anivImprimir() {
   const {mes, lista} = anivDados();
-  if (!lista.length) { showToast('Nenhum aniversariante para imprimir neste mês', 'warn'); return; }
-  const linhas = lista.map(x => `<tr style="border-bottom:1px solid #ccc"><td style="padding:5px 4px">${String(x.dia).padStart(2,'0')}/${String(mes).padStart(2,'0')}</td><td style="padding:5px 4px">${endoEsc(x.nome)}</td><td style="padding:5px 4px">${endoEsc(x.cargo)}</td><td style="padding:5px 4px">${endoEsc(x.setor)}</td><td style="padding:5px 4px">${endoEmpNome(x.emp)}</td></tr>`).join('');
-  abrirReciboModal('🖨 Aniversariantes — ' + ENDO_MESES[mes-1], `${docPageCSS({nome:'AC Metalúrgica / Brassmetal', email:''})}<div class="doc-print" style="padding:10px 4px">
-    <h3 style="text-align:center;margin-bottom:4px">ANIVERSARIANTES DE ${ENDO_MESES[mes-1].toUpperCase()}</h3>
+  if (!lista.length) { showToast('Nenhum aniversariante para imprimir', 'warn'); return; }
+  const tituloMes = mes>0 ? ENDO_MESES[mes-1] : 'TODOS OS MESES';
+  const linhas = lista.map(x => `<tr style="border-bottom:1px solid #ccc"><td style="padding:5px 4px">${String(x.dia).padStart(2,'0')}/${String(x.mesN).padStart(2,'0')}</td><td style="padding:5px 4px">${endoEsc(x.nome)}</td><td style="padding:5px 4px">${endoEsc(x.cargo)}</td><td style="padding:5px 4px">${endoEsc(x.setor)}</td><td style="padding:5px 4px">${endoEmpNome(x.emp)}</td></tr>`).join('');
+  abrirReciboModal('🖨 Aniversariantes — ' + tituloMes, `${docPageCSS({nome:'AC Metalúrgica / Brassmetal', email:''})}<div class="doc-print" style="padding:10px 4px">
+    <h3 style="text-align:center;margin-bottom:4px">ANIVERSARIANTES${mes>0?' DE '+ENDO_MESES[mes-1].toUpperCase():' — TODOS OS MESES'}</h3>
     <p style="text-align:center;font-size:11px;color:#666;margin-bottom:12px">${lista.length} colaborador(es)</p>
     <table style="width:100%;border-collapse:collapse;font-size:11px"><thead><tr style="border-bottom:1.5px solid #000"><th style="text-align:left;padding:5px 4px;width:60px">Dia</th><th style="text-align:left;padding:5px 4px">Colaborador</th><th style="text-align:left;padding:5px 4px">Cargo</th><th style="text-align:left;padding:5px 4px">Setor</th><th style="text-align:left;padding:5px 4px">Empresa</th></tr></thead><tbody>${linhas}</tbody></table></div>`, false);
 }
 function anivExportar() {
   if (typeof XLSX === 'undefined') { showToast('Biblioteca XLSX não carregada', 'error'); return; }
   const {mes, lista} = anivDados();
-  const rows = lista.map(x => [x.dia, x.nome, x.cargo, x.setor, endoEmpNome(x.emp), x.nasc, x.idade]);
+  const rows = lista.map(x => [String(x.dia).padStart(2,'0')+'/'+String(x.mesN).padStart(2,'0'), x.nome, x.cargo, x.setor, endoEmpNome(x.emp), x.nasc, x.idade]);
   const ws = XLSX.utils.aoa_to_sheet([['Dia','Colaborador','Cargo','Setor','Empresa','Nascimento','Completa (anos)'], ...rows]);
   ws['!cols'] = [{wch:6},{wch:36},{wch:30},{wch:16},{wch:12},{wch:12},{wch:14}];
   const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, 'Aniversariantes');
-  XLSX.writeFile(wb, `Aniversariantes_${ENDO_MESES[mes-1]}.xlsx`);
+  XLSX.writeFile(wb, `Aniversariantes_${mes>0?ENDO_MESES[mes-1]:'Todos_os_meses'}.xlsx`);
   showToast(`📥 ${lista.length} aniversariantes exportados`);
 }
 
@@ -4661,10 +4606,25 @@ function tempoSalvarCtrl(nome, ano, campo, valor) {
   else crudCreate('tempo_empresa_ctrl', dados, {modulo:'Tempo de Empresa', label: nome});
   renderTempoEmpresa();
 }
+/* Data-base do tempo de empresa: vale SÓ para este controle de comemoração. Nunca altera a admissão do cadastro.
+   Prioridade: data digitada aqui > data da planilha de tempo de empresa > admissão do cadastro. */
+function tempoBaseSalva(nome){ return loadData('tempo_empresa_ctrl').find(r => r.chave === 'base|' + normSemAcento(nome) && r.status !== 'Inativo'); }
+function tempoSalvarBase(nome, valor){
+  const v = (valor||'').trim(), atual = tempoBaseSalva(nome);
+  if (v && !parseDate(v)) { showToast('Data inválida — use dd/mm/aaaa', 'warn'); renderTempoEmpresa(); return; }
+  if (!v) { if (atual) crudDelete('tempo_empresa_ctrl', atual.id, {modulo:'Tempo de Empresa', fisica:true, label:nome}); }
+  else if (atual) crudUpdate('tempo_empresa_ctrl', atual.id, {admReal:v}, {modulo:'Tempo de Empresa', label:nome});
+  else crudCreate('tempo_empresa_ctrl', {chave:'base|' + normSemAcento(nome), nome, admReal:v}, {modulo:'Tempo de Empresa', label:nome});
+  renderTempoEmpresa();
+}
 function tempoPessoas() {
   const hoje = new Date(); const h0 = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate());
   const base = [];
-  endoColabsAtivos().forEach(c => { const d = parseDate(c.adm); if (d) base.push({nome:c.nome, cargo:c.cargo, setor:c.setor, emp:endoEmpChave(c), d, adm:c.adm, fora:false, src:'cad'}); });
+  endoColabsAtivos().forEach(c => {
+    const ov = tempoBaseSalva(c.nome), pl = endoAcharNaFonte(TEMPO_EMPRESA_2026, c.nome);
+    const admBase = (ov && ov.admReal) || (pl && pl.admissao) || c.adm, d = parseDate(admBase);
+    if (d) base.push({nome:c.nome, cargo:c.cargo, setor:c.setor, emp:endoEmpChave(c), d, adm:admBase, admCad:c.adm, difere:!!(admBase && c.adm && admBase !== c.adm), manual:!!(ov && ov.admReal), fora:false, src:'cad'});
+  });
   endoForaCadastro(TEMPO_EMPRESA_2026).forEach(x => { const d = parseDate(x.admissao); if (d) base.push({nome:x.nome, cargo:'—', setor:'—', emp:endoEmpSheet(x.empresa), d, adm:x.admissao, fora:true, src:'plan'}); });
   endoAplicar('tempo', base, 'adm');
   return base.map(x => {
@@ -4698,7 +4658,7 @@ function renderTempoEmpresa() {
       <td><strong style="font-size:11px">${endoEsc(x.nome)}</strong>${x.fora ? ' <span class="badge bgy" title="Está na planilha de tempo de empresa, mas não no cadastro de colaboradores">fora do cadastro</span>' : ''}</td>
       <td style="font-size:11px">${endoEsc(x.cargo)}</td><td>${endoEsc(x.setor)}</td>
       <td><span class="badge bgy">${endoEmpNome(x.emp)}</span></td>
-      <td>${endoEsc(x.adm)}</td><td>${x.t.texto}</td>
+      <td><input type="text" class="finp" style="width:96px;font-size:12px${x.difere?';background:#fef9c3':''}" value="${escAttr(x.adm)}" placeholder="dd/mm/aaaa" title="${x.difere?'Data do controle de comemoração (planilha). No cadastro consta '+escAttr(x.admCad)+' — o cadastro não é alterado.':'Editável: vale só para este controle de comemoração'}" onchange="tempoSalvarBase('${nomeJs}',this.value)"></td><td>${x.t.texto}</td>
       <td>${tempoFmt(x.prox)} — <strong>${x.anos} ${x.anos===1?'ano':'anos'}</strong>${x.marco ? ' <span class="badge bo">🏅 Marco</span>' : ''}</td>
       <td><input type="text" class="finp" style="width:150px" value="${escAttr(ctrl.presente)}" placeholder="Presente..." onchange="tempoSalvarCtrl('${nomeJs}',${x.prox.getFullYear()},'presente',this.value)"></td>
       <td style="text-align:center"><input type="checkbox" ${ctrl.entregue ? 'checked' : ''} title="Presente entregue" onchange="tempoSalvarCtrl('${nomeJs}',${x.prox.getFullYear()},'entregue',this.checked)"></td><td>${endoBtnExcluir('tempo',x)}</td></tr>`;
@@ -5270,6 +5230,34 @@ function migracaoRealocacoes2026() {
   if (joao) crudUpdate('colaboradores', joao.id, {cnpj:'PJ'}, {modulo:'Colaboradores', label: joao.nome});
   logAudit('Colaboradores', 'Atualização', 0, `Correção de cadastro: ${ademir?ademir.nome+' → PJ; ':''}${joao?joao.nome+' → PJ; ':''}`);
   localStorage.setItem('ac_realoc_v1', '1');
+}
+
+
+/* Raphael (Brass → AC) e Edielson (desligado) — informado pelo RH em 20/10/2026 */
+function migracaoRaphaelEdielson(){
+  if(localStorage.getItem('ac_rae_v1')) return;
+  try{
+    const colabs=loadData('colaboradores');
+    const reg=(c,empresa,dataDem,tipo,obs)=>{
+      if(loadData('demissoes').some(d=>d.colabId===c.id&&d.status!=='Inativo')) return;
+      crudCreate('demissoes',Object.assign({nome:c.nome,cargo:c.cargo||'',setor:c.setor||'',empresa,inicio:c.adm||'',dataDemissao:dataDem,tipo,avisoPrevio:'',responsavelProcesso:'',situacao:'Em andamento',observacao:obs,colabId:c.id,origem:'Cadastro de colaboradores'},demChecklistsNovos()),{modulo:'Demissão',label:c.nome});
+    };
+    const ed=colabs.find(c=>normSemAcento(c.nome).startsWith('EDIELSON FERNANDO')&&c.status!=='Inativo');
+    if(ed){ crudUpdate('colaboradores',ed.id,{status:'Inativo',dataDemissao:'19/10/2026'},{modulo:'Colaboradores',label:ed.nome}); reg(ed,'AC','19/10/2026','Pedido de demissão','Desligado em 19/10/2026 a pedido do colaborador.'); }
+    const velho=colabs.find(c=>normSemAcento(c.nome).startsWith('RAPHAEL HENRIQUE')&&c.cnpj==='02'&&c.status!=='Inativo');
+    if(velho){
+      crudUpdate('colaboradores',velho.id,{status:'Inativo',dataDemissao:'30/09/2026'},{modulo:'Colaboradores',label:velho.nome});
+      reg(velho,'BRASS','30/09/2026','Outro','Desligado da Brass Metal em 30/09/2026 e admitido na AC Metal em 01/10/2026. Ajuste o tipo de desligamento se necessário.');
+      const jaNovo=loadData('colaboradores').some(c=>normSemAcento(c.nome).startsWith('RAPHAEL HENRIQUE')&&c.cnpj==='01'&&c.status!=='Inativo');
+      if(!jaNovo){
+        const nv={}; Object.keys(velho).forEach(k=>{ if(!['id','criadoEm','atualizadoEm','status','cnpj','adm','mat','dataDemissao','matriculaEsocial'].includes(k)) nv[k]=velho[k]; });
+        Object.assign(nv,{cnpj:'01',adm:'01/10/2026',mat:'',status:'Ativo'});
+        const rec=crudCreate('colaboradores',nv,{modulo:'Colaboradores',label:nv.nome+' (admissão AC)'});
+        try{ colabAposCadastro(rec); }catch(e){}
+      }
+    }
+    localStorage.setItem('ac_rae_v1','1');
+  }catch(e){ console.warn('migracaoRaphaelEdielson',e); }
 }
 
 function colabRowRender(rows) {
@@ -6286,7 +6274,23 @@ function initTreinoTable() {
 }
 
 /* Gera matriz de treinamentos (NRs) a partir dos colaboradores reais */
+
+/* Tático em branco: remove o que o sistema gerou sozinho (e que ninguém alterou) em Cargos, T&D e Desempenho */
+function migracaoTaticoEmBranco(){
+  if(localStorage.getItem('ac_tatico_branco_v1')) return;
+  try{
+    let n=0; const meta={modulo:'Limpeza Tático',fisica:true};
+    loadData('treinamentos').filter(t=>t.situacao==='Pendente'&&!t.dataConclusao&&!t.validade&&((t.tipo==='Presencial'&&t.periodicidade==='Bienal'&&+t.cargaHoraria===16)||(t.tipo==='EAD'&&t.periodicidade==='Anual'&&+t.cargaHoraria===4))).forEach(t=>{ crudDelete('treinamentos',t.id,Object.assign({label:t.colaborador+' — '+t.treinamento},meta)); n++; });
+    loadData('avaliacoes').filter(a=>a.situacao==='Pendente'&&(a.nota===null||a.nota===undefined||a.nota==='')&&(!a.pdi||a.pdi==='—')&&!a.comentario&&a.ciclo==='1º Sem. 2026').forEach(a=>{ crudDelete('avaliacoes',a.id,Object.assign({label:a.colaborador},meta)); n++; });
+    const assin=new Map(CARGOS_SEED_ANT.map(c=>[c.cargo,c]));
+    loadData('cargos').forEach(c=>{ const o=assin.get(c.cargo); if(o&&+c.faixaMin===o.faixaMin&&+c.faixaMedia===o.faixaMedia&&+c.faixaMax===o.faixaMax&&c.nivel===o.nivel){ crudDelete('cargos',c.id,Object.assign({label:c.cargo},meta)); n++; } });
+    if(n) logAudit('Tático',"Exclusão",0,'Telas em branco para preenchimento: '+n+' registros gerados automaticamente foram removidos');
+    localStorage.setItem('ac_tatico_branco_v1','1');
+  }catch(e){ console.warn('migracaoTaticoEmBranco',e); }
+}
+
 function buildTreinosFromColabs() {
+  return 0; // T&D começa em branco: a equipe lança os treinamentos
   let treinos = loadData('treinamentos');
   const colabs = loadData('colaboradores').filter(c=>c.status!=='Inativo');
   const existentes = new Set(treinos.map(t=>t.colaborador+'|'+t.treinamento));
@@ -6395,6 +6399,7 @@ function initAvalTable() {
 }
 
 function buildAvalFromColabs() {
+  return 0; // Desempenho/PDI começa em branco: a equipe abre os ciclos e avaliações
   let avals = loadData('avaliacoes');
   const colabs = loadData('colaboradores').filter(c=>c.status!=='Inativo');
   const existentes = new Set(avals.map(a=>a.colaborador+'|'+a.ciclo));
@@ -6607,9 +6612,41 @@ function initSSTTable() {
   tcSST.render();
 }
 
+
+/* Medicina Ocupacional — atualização informada pelo RH em 20/10/2026:
+   ninguém com exame vencido/pendente (exceto Aroldo); Thiago afastado pelo INSS até 31/12/2026; PJ e SR fora do controle.
+   Datas reais dos exames ficam em branco para o RH preencher. */
+function migracaoExamesAtualizar(){
+  if(localStorage.getItem('ac_exames_atual_v1')) return;
+  try{
+    const meta={modulo:'SST'}, ehAroldo=n=>/AROLDO JOSE ISAIAS/i.test(n||''), ehThiago=n=>/^THIAGO RODRIGO MELLO/i.test(n||'');
+    const colabs=loadData('colaboradores');
+    // PJ / SR fora do controle de ASO
+    loadData('sst').forEach(r=>{ const c=colabs.find(x=>x.id===r.colaboradorId)||colabs.find(x=>x.nome===r.colaborador); if(c&&!colabEhCLT(c)) crudDelete('sst',r.id,{modulo:'SST',fisica:true,label:r.colaborador}); });
+    loadData('sst').filter(r=>r.status!=='Inativo').forEach(r=>{
+      if(ehAroldo(r.colaborador)) return;
+      if(ehThiago(r.colaborador)){ crudUpdate('sst',r.id,{situacao:'Em dia',dataExame:'',validade:'',observacao:'Afastado pelo INSS até 31/12/2026 — fazer o exame de retorno ao trabalho na volta.'},meta); return; }
+      if(['Vencido','Vence em breve','Agendar'].includes(r.situacao)) crudUpdate('sst',r.id,{situacao:'Em dia',dataExame:'',validade:'',observacao:'Exame em dia — informar a data do último exame.'},meta);
+    });
+    // CLT ativos sem nenhum registro de ASO
+    const tem=new Set(loadData('sst').filter(r=>r.status!=='Inativo').map(r=>normSemAcento(r.colaborador||'')));
+    colabs.filter(c=>c.status!=='Inativo'&&colabEhCLT(c)&&!tem.has(normSemAcento(c.nome))).forEach(c=>{
+      crudCreate('sst',{colaborador:c.nome,colaboradorId:c.id,cnpj:COLAB_CNPJ_EMPRESA[c.cnpj]||'AC',cargo:c.cargo,tipoExame:'Periódico',dataExame:'',validade:'',nrsPendentes:'',situacao:'Em dia',observacao:'Exame em dia — informar a data do último exame.'},Object.assign({label:c.nome},meta));
+    });
+    // Thiago: afastamento INSS + status no cadastro
+    const t=colabs.find(c=>ehThiago(c.nome)&&c.status!=='Inativo');
+    if(t){
+      if(t.status!=='Afastado') crudUpdate('colaboradores',t.id,{status:'Afastado'},{modulo:'Colaboradores',label:t.nome});
+      if(!loadData('afastamentos').some(a=>a.status!=='Inativo'&&ehThiago(a.colaborador)&&a.situacao!=='Retornou'))
+        crudCreate('afastamentos',{colaborador:t.nome,empresa:'AC',motivo:'Auxílio-doença INSS (B31)',inicio:'',previsaoRetorno:'31/12/2026',retornoReal:'',exameRetorno:'Pendente',situacao:'Afastado',observacao:'Afastado pelo INSS até 31/12/2026 (informado pelo RH). Informar a data de início.'},{modulo:'Afastamentos',label:t.nome});
+    }
+    localStorage.setItem('ac_exames_atual_v1','1');
+  }catch(e){ console.warn('migracaoExamesAtualizar',e); }
+}
+
 function buildSSTFromColabs() {
   let sst = loadData('sst');
-  const colabs = loadData('colaboradores').filter(c=>c.status!=='Inativo');
+  const colabs = loadData('colaboradores').filter(c=>c.status!=='Inativo'&&colabEhCLT(c));
   const existentes = new Set(sst.map(s=>s.colaborador));
   const hoje = new Date();
   let novos = 0;
@@ -10846,7 +10883,8 @@ function pcmsoMesesEntre(d1, d2) {
 
 /* Cruza colaboradores ativos com a Matriz PCMSO (por cargo) e com os exames realmente realizados */
 function pcmsoComputarConformidade() {
-  const colabs = loadData('colaboradores').filter(c => c.status !== 'Inativo');
+  const colabs = loadData('colaboradores').filter(c => c.status !== 'Inativo' && colabEhCLT(c));
+  const asoEmDia = new Set(loadData('sst').filter(r => r.status !== 'Inativo' && r.situacao === 'Em dia').map(r => (r.colaborador||'').trim().toUpperCase()));
   const matriz = loadData('pcmso_matriz').filter(m => m.status !== 'Inativo');
   const realizados = loadData('exames_realizados').filter(r => r.status !== 'Inativo');
   const hoje = new Date();
@@ -10869,7 +10907,9 @@ function pcmsoComputarConformidade() {
       const feitos = realizados.filter(r => (r.colaborador||'').trim().toUpperCase() === (c.nome||'').trim().toUpperCase()
         && (r.exame||'').trim().toUpperCase() === req.exame.trim().toUpperCase());
       let status, detalhe;
-      if (!feitos.length) {
+      if (!feitos.length && asoEmDia.has((c.nome||'').trim().toUpperCase())) {
+        status = 'CONFORME'; detalhe = 'Coberto pelo ASO periódico em dia (lance a data do exame quando tiver)';
+      } else if (!feitos.length) {
         status = 'PENDENTE'; detalhe = 'Nenhum registro encontrado';
       } else {
         feitos.sort((a,b) => (pcmsoParseData(b.dataRealizacao)||0) - (pcmsoParseData(a.dataRealizacao)||0));
@@ -11128,10 +11168,7 @@ function initCargoTable() {
   tcCargo.render();
 }
 
-function buildCargosSeed() {
-  if (loadData('cargos').length) return;
-  // Dados reais da AC Metalúrgica + Brass Metal — set/2026
-  const seed = [
+const CARGOS_SEED_ANT = [
     // ── Usinagem ──
     {cargo:"TORNEIRO PROGRAMADOR A",      familia:"Usinagem", nivel:"N5", faixaMin:5500,  faixaMedia:5900,  faixaMax:6500,  ocupacao:1,  mediaAtual:5900.00, situacao:"Na faixa"},
     {cargo:"TORNEIRO PROGRAMADOR B",      familia:"Usinagem", nivel:"N4", faixaMin:3900,  faixaMedia:4200,  faixaMax:4800,  ocupacao:1,  mediaAtual:4189.10, situacao:"Na faixa"},
@@ -11170,8 +11207,7 @@ function buildCargosSeed() {
     {cargo:"AUXILIAR DE ALMOXARIFADO",    familia:"Administrativo",nivel:"N1",faixaMin:2100,faixaMedia:2300,faixaMax:2600,ocupacao:1,mediaAtual:2221.54,situacao:"Na faixa"},
     {cargo:"MOTORISTA",                   familia:"Administrativo",nivel:"N2",faixaMin:2700,faixaMedia:2900,faixaMax:3300,ocupacao:1,mediaAtual:2835.30,situacao:"Na faixa"},
   ];
-  seed.forEach(s => crudCreate('cargos', s, {modulo:'Cargos & Salários', label: s.cargo}));
-}
+function buildCargosSeed() { /* Cargos & Salários começa em branco: a equipe cadastra as faixas e níveis. */ }
 
 
 function atualizarKPIsCargos() {
@@ -11985,7 +12021,7 @@ async function pullColaboradoresMerge() {
 // tem dado local, não mexe — evita sobrescrever algo em uso.
 async function pullOutrasTabelasAntesDoBoot() {
   if (DB_MODE !== 'supabase' || !supabaseClient) return;
-  const TABELAS = ['colab_hist','convenio_notas','veiculos','ferias_gozos','treino_listas','beneficios_hist','ferias_hist','demissoes','demissao_templates','hist_pdfs','endo_extra','endo_oculto','ind_turnover','ind_eng','ind_td','ind_hist','plano_cfg','plano_hist','plano_acoes','colab_excluidos','beneficios_anexos','colab_documentos','ferias','treinamentos','avaliacoes','sst','admissoes',
+  const TABELAS = ['plano_etapas','colab_hist','convenio_notas','veiculos','ferias_gozos','treino_listas','beneficios_hist','ferias_hist','demissoes','demissao_templates','hist_pdfs','endo_extra','endo_oculto','ind_turnover','ind_eng','ind_td','ind_hist','plano_cfg','plano_hist','plano_acoes','colab_excluidos','beneficios_anexos','colab_documentos','ferias','treinamentos','avaliacoes','sst','admissoes',
     'vagas','beneficios_mov','beneficios_inscritos','beneficios_tipos','cargos','ponto',
     'clima_pesquisas','clima_acoes','sucessao','terceiros','documentos','usuarios','holerites',
     'comunicados','cesta_vegas','folha_descontos','feedback90','tempo_empresa_ctrl','desccargos','sstfin','pcmso',
@@ -14412,6 +14448,7 @@ const MOD_PLANO = {
   label: 'Ação 5W2H',
   fields: [
     {field:'ano',      label:'Ano do plano', type:'select', options:Array.from({length:25},(_,i)=>String(2026+i))},
+    {field:'eixo',     label:'Objetivo / Eixo (agrupa as ações)', full:true, placeholder:'Ex.: Endomarketing — melhorar a cultura da empresa'},
     {field:'acao',     label:'O que? (What)',      required:true, full:true},
     {field:'porque',   label:'Por quê? (Why)',      full:true},
     {field:'onde',     label:'Onde? (Where)'},
@@ -14432,16 +14469,22 @@ const MOD_ENDOMKT = {
   table: 'endomkt_2027',
   label: 'Ação Endomarketing',
   fields: [
+    {field:'ano',        label:'Ano', type:'select', options:Array.from({length:25},(_,i)=>String(2026+i))},
     {field:'acao',       label:'Nome da Ação',       required:true, full:true},
+    {field:'descricao',  label:'Ação de marketing / endomarketing', type:'textarea', full:true},
     {field:'mes',        label:'Mês', type:'select', options:['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro']},
     {field:'data',       label:'Data',               placeholder:'dd/mm/aaaa'},
     {field:'categoria',  label:'Categoria', type:'select', options:['Endomarketing','Segurança do Trabalho','Reconhecimento','Aviso Geral','RH Informa']},
-    {field:'responsavel',label:'Responsável', type:'select', options:['Patrícia','Jakeline','Francielle','RH','Direção']},
+    {field:'inicio',     label:'Início do preparo',  placeholder:'dd/mm/aaaa'},
+    {field:'fim',        label:'Fim do preparo',     placeholder:'dd/mm/aaaa'},
+    {field:'responsavel',label:'Responsável (pode ser mais de um)', placeholder:'Ex.: Patrícia/Jakeline'},
+    {field:'observacao', label:'Observações', type:'textarea', full:true},
     {field:'canal',      label:'Canal', type:'select', options:['WhatsApp','Quadro de avisos','E-mail','Reunião','Todos']},
     {field:'valor',      label:'Valor estimado R$',  type:'number', step:'0.01'},
     {field:'situacao',   label:'Status', type:'select', options:['Planejado','Em andamento','Concluído','Cancelado']},
     {field:'status',     label:'Registro', type:'select', options:['Ativo','Inativo']},
   ],
+  beforeSave: obj => { if(!obj.ano) obj.ano=String(planoAno()); obj.ano=String(obj.ano); },
   onSave: () => { endomktFiltrar(); }
 };
 
@@ -14452,7 +14495,7 @@ function planoRowRender(rows) {
     const sb = STATUS_BADGE[p.status]||'bgy';
     const inativo = p.status==='Cancelado';
     return `<tr style="${inativo?'opacity:.5':''}">
-      <td style="font-size:11px;font-weight:600;max-width:180px">${p.acao}</td>
+      <td style="font-size:11px;font-weight:600;max-width:180px">${p.eixo?`<div style="font-size:9px;font-weight:700;color:var(--blue);text-transform:uppercase;margin-bottom:2px">${gpEsc(p.eixo)}</div>`:''}${p.acao}</td>
       <td style="font-size:10px;max-width:140px">${p.porque||'—'}</td>
       <td style="font-size:10px">${p.onde||'—'}</td>
       <td><span class="chip">${p.responsavel||'—'}</span></td>
@@ -14468,8 +14511,48 @@ function planoRowRender(rows) {
   }).join('');
 }
 
+
+/* ── Plano de Ação: etapas ── */
+const MOD_PLANO_ETAPA = {
+  table: 'plano_etapas',
+  label: 'Etapa do Plano de Ação',
+  fields: [
+    {field:'ano',         label:'Ano do plano', type:'select', options:Array.from({length:25},(_,i)=>String(2026+i))},
+    {field:'acao',        label:'Etapa / Ação', required:true, full:true},
+    {field:'responsavel', label:'Responsável', placeholder:'Ex.: Patrícia/Jakeline'},
+    {field:'dataInicial', label:'Data inicial', placeholder:'dd/mm/aaaa'},
+    {field:'dataPrevista',label:'Entrega prevista', placeholder:'dd/mm/aaaa'},
+    {field:'situacao',    label:'Situação', type:'select', options:['Planejado','Em andamento','Concluído','Em pausa','Atrasado','Em revisão','Cancelado']},
+    {field:'observacao',  label:'Observações', type:'textarea', full:true},
+    {field:'evidencia',   label:'Evidência (onde está salva)', full:true},
+    {field:'indicador',   label:'Indicador'},
+  ],
+  beforeSave: obj => { if(!obj.situacao) obj.situacao='Planejado'; if(!obj.ano) obj.ano=String(planoAno()); obj.ano=String(obj.ano); },
+  onSave: () => { planoEtReload(); }
+};
+let planoEtCtrl;
+function planoEtRowRender(rows){
+  const SB={'Planejado':'bgy','Em andamento':'bb','Concluído':'bg','Em pausa':'bo','Atrasado':'br','Em revisão':'by','Cancelado':'bgy'};
+  return rows.map(p=>`<tr${p.situacao==='Cancelado'?' style="opacity:.5"':''}>
+    <td style="font-size:11px;font-weight:600;max-width:260px">${gpEsc(p.acao)}</td>
+    <td><span class="chip">${gpEsc(p.responsavel||'—')}</span></td>
+    <td style="font-size:10px;white-space:nowrap">${gpEsc(p.dataInicial||'—')}</td><td style="font-size:10px;white-space:nowrap">${gpEsc(p.dataPrevista||'—')}</td>
+    <td><span class="badge ${SB[p.situacao]||'bgy'}">${p.situacao||'—'}</span></td>
+    <td style="font-size:10px;max-width:220px">${gpEsc((p.observacao||'—').slice(0,90))}${(p.observacao||'').length>90?'…':''}</td>
+    <td style="font-size:10px">${gpEsc(p.evidencia||'—')}</td><td style="font-size:10px">${gpEsc(p.indicador||'—')}</td>
+    <td style="white-space:nowrap"><button class="btn btn-s btn-xs" onclick="openCrudModal(MOD_PLANO_ETAPA,${p.id})">✏</button>
+    <button class="btn btn-s btn-xs" onclick="crudDeleteAction(MOD_PLANO_ETAPA,${p.id},'${escAttr(p.acao)}')">🗑</button></td></tr>`).join('');
+}
+function planoEtDoAno(ano){ return loadData('plano_etapas').filter(a=>a.situacao!==undefined&&a.status!=='Inativo'&&String(a.ano||'2026')===String(ano)).sort((a,b)=>(a.ordem||9999)-(b.ordem||9999)); }
+function planoEtReload(){
+  if(!planoEtCtrl){ planoEtCtrl=makeAdvCtrl({id:'planoet',table:'plano_etapas',tbodyId:'planoet-tbody',countId:'planoet-count',paginationId:'planoet-pag',searchFields:['acao','responsavel','observacao','evidencia','indicador'],pageSize:25,sortField:'',render:planoEtRowRender}); window.planoEtCtrl=planoEtCtrl; }
+  planoEtCtrl._data=planoEtDoAno(planoAno()); planoEtCtrl.filter();
+  const t=document.getElementById('planoet-titulo'); if(t) t.textContent='🧭 Plano de Ação — etapas '+planoAno();
+}
+function planoEtNova(){ openCrudModal(MOD_PLANO_ETAPA,null); setTimeout(()=>{ const e=document.querySelector('#crud-form [data-field="ano"]'); if(e) e.value=String(planoAno()); },60); }
+
 let planoCtrl;
-function planoAno(){ const e=document.getElementById('plano-ano-sel'); return e&&e.value?parseInt(e.value,10):2027; }
+function planoAno(){ const e=document.getElementById('plano-ano-sel'); return e&&e.value?parseInt(e.value,10):Math.max(2026,new Date().getFullYear()); }
 function planoDoAno(ano){ return loadData('plano_acoes').filter(a=>a.status!=='Inativo'&&String(a.ano||'2027')===String(ano)); }
 function initPlanoTable() {
   planoCtrl = makeAdvCtrl({
@@ -14488,10 +14571,11 @@ function planoReload(){
   planoCtrl._data = planoDoAno(ano);
   planoCtrl._filters.ano='';          // o ano já filtra a base
   planoCtrl.filter();
+  try{ planoEtReload(); }catch(e){ console.warn('etapas',e); }
   atualizarKPIsPlano(); planoRenderMVV(); planoAtualizaChip();
   const t=document.getElementById('plano-titulo'); if(t) t.textContent='🎯 Planejamento Estratégico RH — '+ano;
 }
-function planoMudarAno(){ planoReload(); }
+function planoMudarAno(){ planoReload(); try{ endomktFiltrar(); }catch(e){} }
 function planoNovaAcao(){ openCrudModal(MOD_PLANO,null); setTimeout(()=>{ const e=document.querySelector('#crud-form [data-field="ano"]'); if(e) e.value=String(planoAno()); },60); }
 function atualizarKPIsPlano() {
   const acoes = planoDoAno(planoAno());
@@ -14572,11 +14656,28 @@ function planoImprimir(ano,doHist){
   abrirReciboModal('Planejamento '+ano,html,false);
 }
 
+
+/* ═══ Planejamento 2026 — importado da planilha "01 - PLANEJAMENTO ESTRATÉGICO RH 2026" ═══ */
+const PLANO_2026 = {"cfg": {"ano": "2026", "missao": "Garantir que as pessoas e a cultura sustentem o crescimento e a inovação da empresa.", "visao": "Ser reconhecido como um RH estratégico e parceiro do negócio.", "valores": "Integridade, Colaboração, Inovação e Resultado.", "metas": "Turnover | ≤ 2%\nEngajamento (P.C.) | ≥ 4\nCultura / Treinamento | 2h por pessoa"}, "acoes": [{"eixo": "Endomarketing — melhorar a cultura da empresa", "acao": "Aproximação, engajamento RH x funcionários em ações diversas da empresa.", "porque": "Entender os desafios de segurança, clima, produtividade, reduzir conflitos, otimizar processos e promover maior integração entre departamentos.", "onde": "Todos Setores", "responsavel": "RH", "quando": "Imediato", "como": "Rotina: Participação semanal do RH nas reuniões da fábrica e Adm.", "quanto": 0, "status": "Concluído", "observacao": "", "indicador": "Participação do RH em 100% das reuniões semanais"}, {"eixo": "Endomarketing — melhorar a cultura da empresa", "acao": "Fortalecer a marca empregadora da empresa por meio de transparência e engajamento nas redes sociais, divulgando a cultura interna, eventos e comemorações.", "porque": "Para atrair, reter e engajar talentos, demonstrando um ambiente de trabalho positivo e aumentando a credibilidade externa da organização como um local desejável para se trabalhar.", "onde": "Todos Setores", "responsavel": "RH", "quando": "Imediato", "como": "Fazer registros de todos eventos/ações edmkt. Jakeline: criação de conteúdo, com os registros (materiais do eventos, ações comemorativas realizadas, com cuidado para exposição de imagem de forma direta (analisar os devidos cuidados), termos utilizados, em cada ação e evento fazer registros e utilizar IA para auxílio de criação e desenvolvimento de materiais sem aumentar custos externamente.", "quanto": 0, "status": "Concluído", "observacao": "", "indicador": "Nº de ações/eventos registrados e divulgados"}, {"eixo": "Endomarketing — melhorar a cultura da empresa", "acao": "Programa de reconhecimento \"Funcionário Destaque do Mês\".", "porque": "Para aumentar a motivação, o engajamento e reter talentos, reconhecendo publicamente o desempenho excepcional e o alinhamento com os valores da empresa.", "onde": "Todos Setores", "responsavel": "RH", "quando": "A partir do 2º semestre/2026", "como": "Após definidos os critérios RH criara o formulario. Líder indicará o colaborador e preenchera o formulario com base nos critérios predefinidos (ex: assiduidade, trabalho em equipe, comprometimento e resultados).", "quanto": 0, "status": "Em pausa", "observacao": "", "indicador": "% de funcionários reconhecidos no mês"}, {"eixo": "Endomarketing — melhorar a cultura da empresa", "acao": "Programa de reconhecimento por tempo de empresa", "porque": "Despertar sentimento de pertencimento, reconhecimento e valorização das pessoas, sua carreira, valores, cultura e engajamento e contribuição para redução de turnover.", "onde": "Todos Setores", "responsavel": "RH", "quando": "01/12/2025", "como": "Analisar as ações atuais e possibildiade de melhorias x custos e planejamento de datas. PRIORIZAR SEMPRE QUE POSSÍVEL AÇÕES DE CUSTO R$0,00 OU MENOR POSSÍVEL.", "quanto": 0, "status": "Concluído", "observacao": "", "indicador": "Reconhecimentos entregues no mês de aniversário de empresa"}, {"eixo": "Endomarketing — melhorar a cultura da empresa", "acao": "Promover ações referentes às datas comemorativas e feriados do ano.", "porque": "Promover o engajamento e bem-estar dos colaboradores, fortalecer a cultura organizacional, para que seja realizado com organização, planejamento e menor custo x benefício possível.", "onde": "Todos Setores", "responsavel": "RH", "quando": "3 meses antes de cada data comemorativa", "como": "Analisar as ações atuais e possibildiade de melhorias x custos e planejamento de datas. PRIORIZAR SEMPRE QUE POSSÍVEL AÇÕES DE CUSTO R$0,00 OU MENOR POSSÍVEL.", "quanto": 0, "status": "Concluído", "observacao": "", "indicador": "Ações realizadas / datas comemorativas do calendário"}, {"eixo": "Recrutamento e Seleção — melhorar o processo", "acao": "Designação de um \"padrinho\" para novos colaboradores durantes o periodo de experiência.", "porque": "Facilitar a socialização e garantir que o novo colaborador seja bem recebido e integrado à cultura e aos processos da empresa. .", "onde": "Todos Setores", "responsavel": "RH", "quando": "Durante todo o período de experiência.", "como": "1-Definir resp. com compet.de comunicação, conhecimento dos processos e da cultura para acompanhar o novo func. 2- Estruturar (POP) de integração e treinamentos na fábrica alinhando/ineragindo com demais setores.3- Rh monitorar a eficácia dos treinamentos.", "quanto": 0, "status": "Em pausa", "observacao": "", "indicador": "% de novos colaboradores com padrinho designado"}, {"eixo": "Recrutamento e Seleção — melhorar o processo", "acao": "Melhoria nos processos de Treinamentos.", "porque": "Justificar a necessidade do treinamento, alinhando-o aos objetivos da empresa ou a uma necessidade identificada (como baixo desempenho ou novas regulamentações).", "onde": "Todos Setores", "responsavel": "RH", "quando": "01/2026 a 02/2026", "como": "Mapear através do levantamento de necessidades de treinamento (LNT)", "quanto": 0, "status": "Em andamento", "observacao": "", "indicador": "Horas de treinamento por pessoa (meta 2h/pessoa)"}, {"eixo": "Recrutamento e Seleção — melhorar o processo", "acao": "Melhoria nos Processos de Recrutamento e Seleção", "porque": "Melhoria na qualidade das contratações alinhadas às competências, valores e à cultura da empresa, redução de custos com R&S e turnover, engajamento e aumento de eficiência da empresa.", "onde": "Todos Setores", "responsavel": "RH", "quando": "01/2026 À 04/2026", "como": "Diagnóstico da situação atual, pontos de carência, gargalos nos processos existente e necessidades do negócio. Levantamentos dos custos deste processo, planilha de custo de todos os processos envolvidos", "quanto": 0, "status": "Concluído", "observacao": "", "indicador": "Tempo médio de contratação (dias) e turnover do período de experiência"}, {"eixo": "Recrutamento e Seleção — melhorar o processo", "acao": "Melhoria no Processo Integração", "porque": "Para facilitar a adaptação do novo funcionário à cultura e processos, acelerar produtividade, reduzir rotatividade, fortalecer cultura e engajamento, melhorar o clima e comunicação interna, diminuir erros, garantir o alinhamento com as práticas, políticas e valores e cumprimento a requisitos.", "onde": "Todos Setores", "responsavel": "RH", "quando": "01/2026 À 04/2026", "como": "Diagnóstico da situação atual, pontos de carência, gargalos nos processos existente e necessidades do negócio e desenvolvimento de um POP para ser seguido em todas as integrações que já contemple melhorias que atendam o cumprimento de requisitos, alinhamento e etc..", "quanto": 0, "status": "Concluído", "observacao": "", "indicador": "Taxa de retenção na experiência de 90 dias"}, {"eixo": "Recrutamento e Seleção — melhorar o processo", "acao": "Implementar Projeto \"Indique\"", "porque": "Promover velocidade e assertividade nas contratações, incentivando colaboradores a indicar pessoas para trabalhar na empresa.", "onde": "Todos Setores", "responsavel": "RH", "quando": "A definir", "como": "Se o candidato indicado for aprovado para a vaga e passar no período de experiência o colaborador que indicou ganha uma premiação no valor de R$", "quanto": 0, "status": "Em pausa", "observacao": "Aplica-se tanto para Indicação e padrinho. Custo a definir (planilha: \"?\").", "indicador": "Nº de contratações por indicação / contratações totais"}, {"eixo": "Segurança e Medicina do Trabalho", "acao": "Implementação da Ficha de Entrega de EPI e Assinatura Digital.", "porque": "Facilitar procedimento de entrega, armazenamento e rastreabilidade via assinatura digital.", "onde": "Todos Setores", "responsavel": "RH", "quando": "A partir do 2º semestre/2026", "como": "Pesquisar e analisar aplicativos no mercado e custo x benefício.", "quanto": 0, "status": "Em pausa", "observacao": "Custo a definir (planilha: \"?\").", "indicador": "% de EPIs entregues com assinatura digital"}, {"eixo": "Segurança e Medicina do Trabalho", "acao": "Acompanhamento de Técnico em Seg do trabalho", "porque": "Contribuir para a cultura de segurança, (utilização de EPIs, normas, etc), acompanhamento, orientações, desenvolvimentos de melhorias, treinamentos de O.S. e outros.", "onde": "Diretoria", "responsavel": "Direção", "quando": "01/02/2026", "como": "fazer cotações em fevereiro, Analisar orçamento disponível e desenvolver fornecedor", "quanto": 0, "status": "Concluído", "observacao": "especificar melhor as ações", "indicador": "Acidentes de trabalho e % de uso correto de EPI"}, {"eixo": "Segurança e Medicina do Trabalho", "acao": "Implementação de processos de Seg do Trab. nos processos de RH", "porque": "Continuar desenvolvendo cultura de segurança no ambiente de por todos os funcionários, propiciando no dia a dia engajamento, envolvimento, treinamentos e cumprimento de obrigações, resultando em um ambiente seguro.", "onde": "Todos Setores", "responsavel": "RH", "quando": "01/2026 a 03/2026", "como": "Analisar os processos de RH, etapas em que pode haver implementação e melhorias de processos relacionados à segurança do trabalho.", "quanto": 0, "status": "Concluído", "observacao": "", "indicador": "Nº de processos de RH com requisito de SST implementado"}, {"eixo": "Melhoria e Desenvolvimento — rotinas e processos", "acao": "Mapeamento do RH", "porque": "Identificar todos os processos de RH, para mensurar, organizar, administrar e otimizar processos de gestão de pessoas e oepração como um todo", "onde": "Todos Setores", "responsavel": "RH", "quando": "Imediato", "como": "Listar todos os processos e rotinas existentes na estrutura atual do RH e montar o mapeamento visual", "quanto": 0, "status": "Concluído", "observacao": "", "indicador": "% dos processos de RH mapeados"}, {"eixo": "Melhoria e Desenvolvimento — rotinas e processos", "acao": "Manual de procedimentos do RH", "porque": "Padronizar processos, reduzir falhas operacionais, garantir a conformidade legal, integrar novos colaboradores e centralizar informações para acesso fácil e rápido.", "onde": "Todos Setores", "responsavel": "RH", "quando": "01/2026 A 06/2026", "como": "Através do mapeamento detalhado do fluxo de trabalho, redação dos procedimentos em um modelo padrão e validação das informações com o gestor.", "quanto": 0, "status": "Em andamento", "observacao": "", "indicador": "% dos procedimentos (POP) redigidos e validados"}, {"eixo": "Melhoria e Desenvolvimento — rotinas e processos", "acao": "Padronizar Sequência de Medidas Disciplinares", "porque": "Garantir a justiça, transparência e conformidade legal nos processos disciplinares, evitando a subjetividade e possíveis passivos trabalhistas. Assegurar que os colaboradores conheçam as regras e consequências de suas ações.", "onde": "Todos Setores", "responsavel": "RH", "quando": "Imediato", "como": "A punição deverá ser aplicada logo após a falta, para que o empregado a relacione diretamente com seu ato.                                                                                                              1. Ficha de Orientação.                                                                                   2. Advertência por escrito.                                                                                             3. Suspensão", "quanto": 0, "status": "Concluído", "observacao": "", "indicador": "Nº de medidas disciplinares aplicadas conforme a política"}, {"eixo": "Melhoria e Desenvolvimento — rotinas e processos", "acao": "Implementar a cultura de feedback do período de experiência e contínuo.", "porque": "Melhorar a comunicação interna, promover o desenvolvimento profissional, aumentar o engajamento e a retenção de talentos (redução de turnover), e alinhar expectativas e performance.", "onde": "Todos Setores", "responsavel": "RH", "quando": "05/01/26 a 17/01/26", "como": "1- Implantação do método Erica Belon para experiência de 90 dias; 2-Utilização de ferramentas ou plataformas de gestão de de pessoas para registros;  3-definição de rituais de feedback, monitoramento e desenvolvimento contínuo através do cheklist de integração; 4- RH treinamento para ldierança sobre a política de feedback e as ferramentas/métodos.", "quanto": 0, "status": "Concluído", "observacao": "", "indicador": "% de colaboradores com feedback de 90 dias realizado"}, {"eixo": "Melhoria e Desenvolvimento — rotinas e processos", "acao": "Implantar e executar a Programação Anual de Férias", "porque": "Garantir que todos os aspectos sejam considerados e que a operação não seja prejudicada. Evitar passivos trabalhistas e organizar a substituição de funcionários durante suas ausências.", "onde": "Todos Setores", "responsavel": "RH", "quando": "01/01/2026", "como": "Laborar, organizar e controlar a programação de férias dos colaboradores para o ano de 2026, garantindo conformidade com a legislação, continuidade operacional e comunicação clara entre líderes, RH e funcionários.", "quanto": 0, "status": "Concluído", "observacao": "", "indicador": "% de férias programadas no prazo / férias vencidas = 0"}, {"eixo": "Melhoria e Desenvolvimento — rotinas e processos", "acao": "Implementar a campanha de atualização dos dados cadastrais.", "porque": "Garantir a conformidade legal, a segurança das informações dos colaboradores e a eficiência em processos.", "onde": "Todos Setores", "responsavel": "RH", "quando": "Janeiro e Julho", "como": "O processo será gerenciado no sistema de RH da empresa, com a coleta de dados podendo ocorrer via formulário físico.", "quanto": 0, "status": "Concluído", "observacao": "", "indicador": "% de colaboradores com cadastro atualizado"}, {"eixo": "Melhoria e Desenvolvimento — rotinas e processos", "acao": "PROJETO PLAY NA CARREIRA", "porque": "Programa estruturado de desenvolvimento profissional dividido nas fases Planejar, Lapidar, Avançar e Protagonismo, voltado ao crescimento interno.", "onde": "Todos Setores", "responsavel": "RH", "quando": "A partir do 2º semestre/2026", "como": "FASE 1 - PLANEJAR: Saber onde estou e onde quero chegar                          FASE 2 -LAPIDAR: Desenvolver, treinar e fortalecer a base            FASE 3 - AVANÇAR: Aplicar, executar e mostrar resultados                      FASE 4 - PROTAGONISMO: Construir meu futuro e assumir minha jornada.", "quanto": 0, "status": "Em pausa", "observacao": "Custo a definir.", "indicador": "Nº de colaboradores nas fases do programa"}, {"eixo": "Melhoria e Desenvolvimento — rotinas e processos", "acao": "Implementar programa de melhoria do clima organizacional e engajamento dos funcionários.", "porque": "Reduzir os custos com demissões e novas contratações, além de melhorar a satisfação e a retenção de talentos.", "onde": "Todos Setores", "responsavel": "RH", "quando": "05/2026 E 10/2026", "como": "Identificar pontos fortes e oportunidades de melhoria.\nReduzir turnover.\nAumentar engajamento e produtividade.\nApoiar decisões estratégicas do RH e da liderança.", "quanto": 0, "status": "Concluído", "observacao": "", "indicador": "Turnover ≤ 2% e engajamento ≥ 4"}], "etapas": [{"acao": "Elaborado por: Patrícia", "responsavel": "", "dataInicial": "", "dataPrevista": "", "situacao": "Planejado", "observacao": "", "evidencia": "", "indicador": ""}, {"acao": "AÇÃO", "responsavel": "Responsável", "dataInicial": "Data Inicial", "dataPrevista": "Data prevista para entrega", "situacao": "Planejado", "observacao": "Observações", "evidencia": "Evidência", "indicador": "Indicador"}, {"acao": "Listar todos os processos e rotinas existentes na estrutura atual do RH e montar o mapeamento visual.", "responsavel": "Patrícia/Jakeline", "dataInicial": "01/11/2025", "dataPrevista": "28/11/2025", "situacao": "Concluído", "observacao": "O mapeamento deve ficar salvo na pasta PROCEDIMENTOS RH", "evidencia": "", "indicador": ""}, {"acao": "Mapeamento detalhado do fluxo de trabalho.", "responsavel": "Patrícia/Jakeline", "dataInicial": "01/11/2025", "dataPrevista": "09/01/2026", "situacao": "Concluído", "observacao": "Representação visual de todas as etapas, atividades, responsáveis e interações de um processo, desde o início até o fim, analisar e otimizar a operação, identificando gargalos e ineficiências, visando aumentar produtividade e qualidade.", "evidencia": "", "indicador": ""}, {"acao": "Diagnóstico da situação atual, pontos de carência, gargalos nos processos existente e necessidades do negócio e desenvolvimento de um POP que atenda o cumprimento de requisitos, alinhamento e etc..", "responsavel": "Patrícia/Jakeline", "dataInicial": "01/12/2025", "dataPrevista": "09/01/2026", "situacao": "Em andamento", "observacao": "Redigir o diagnostico com base nas necessidades, e documentar quais as ordens das prioridades a seguir e salvar na pasta de procedimentos,", "evidencia": "", "indicador": ""}, {"acao": "Definição das prioridades de digitação do POP.", "responsavel": "Patrícia", "dataInicial": "15/12/2025", "dataPrevista": "09/01/2026", "situacao": "Concluído", "observacao": "Com base no diagnostico definir a ordem em que os dados devem ser inseridos no modelo. O objetivo é garantir a eficiência, a precisão e o cumprimento de prazos críticos, minimizando erros e retrabalho.", "evidencia": "", "indicador": ""}, {"acao": "Inicio da redação dos Procedimentos no Modelo Padrão (POP), a começar pelos de maiores risco conforme mapeamentos de riscos.", "responsavel": "Patrícia", "dataInicial": "01/12/2025", "dataPrevista": "27/02/2026", "situacao": "Em andamento", "observacao": "Redigir o POP bem definido por pelas prioridades e etapas definidas, para garanir que, mesmo na ausência do responsvél pela ação, a equipe saiba exatamente como proceder, resultando em maior eficiência e qualidade.", "evidencia": "", "indicador": ""}, {"acao": "Validação preliminar do (POP) com o Gestor.", "responsavel": "Patrícia/Jakeline", "dataInicial": "09/03/2026", "dataPrevista": "13/03/2026", "situacao": "Planejado", "observacao": "Apresente modelo preliminar e revise o documento de procedimento com o gestor.\nSolicite feedback detalhado: O gestor deve verificar se o processo mapeado está correto, se atende às políticas da empresa e se as otimizações propostas são viáveis.", "evidencia": "", "indicador": ""}, {"acao": "Realizar ajustes necessários no POP.", "responsavel": "Patrícia", "dataInicial": "16/03/2026", "dataPrevista": "20/03/2026", "situacao": "Planejado", "observacao": "Realizar os ajustes necessarios, apontados pelo gestor.", "evidencia": "", "indicador": ""}, {"acao": "Validação final com o Gestor.", "responsavel": "Patrícia/Jakeline", "dataInicial": "16/03/2026", "dataPrevista": "20/03/2026", "situacao": "Planejado", "observacao": "Após a aprovação, incluir revisão no check-list anual para garantir que permaneça sempre atualizado, monitorar regularmente para verificar se os procedimentos estão sendo seguidos corretamente na prática.", "evidencia": "", "indicador": ""}, {"acao": "Definição da padronização das etapas processo seletivo do início ao fim.", "responsavel": "Patrícia/Jakeline", "dataInicial": "15/12/2025", "dataPrevista": "09/01/2026", "situacao": "Concluído", "observacao": "Padronizar processos, reduzir a influência de percepções subjetivas e facilitar a comparação justa entre candidatos.Reduzir erros e contratar pessoas que realmente entregam resultado.", "evidencia": "", "indicador": ""}, {"acao": "Triagem de Currículos .", "responsavel": "Patrícia/Jakeline", "dataInicial": "05/01/2026", "dataPrevista": "06/03/2026", "situacao": "Concluído", "observacao": "Análise de Currículos: Revisão dos CVs recebidos com base nos critérios definidos no planejamento.\nPré-seleção: Identificação dos candidatos que avançarão para as próximas fases. Pesquisar e verificar como o uso de I.A pode auxiliar no pré filtro.", "evidencia": "", "indicador": ""}, {"acao": "Carta-proposta para candidatos aprovados.", "responsavel": "Patrícia/Jakeline", "dataInicial": "22/12/2025", "dataPrevista": "20/07/2026", "situacao": "Concluído", "observacao": "Criar um MODELO PADRÃO de carta-proposta com campos editáveis descrito cargo, setor, salário e data de início. Incluir checklists para garantir que todos os dados foram preenchidos corretamente. Enviar texto e solicitar a Jake a criação e informar o prazo. [Data inicial corrigida para o ano anterior (a planilha trazia data posterior à entrega).]", "evidencia": "", "indicador": ""}, {"acao": "Carta de boas-vindas aos novos colaboradores.", "responsavel": "Patrícia/Jakeline", "dataInicial": "22/12/2025", "dataPrevista": "20/07/2026", "situacao": "Concluído", "observacao": "Criar um MODELO PADRÃO de carta com uma mensagem de boas-vindas padrão, que será personalizado com o nome e cargo do novo funcionário. Enviar texto e solicitar a Jake a criação e informar o prazo. [Data inicial corrigida para o ano anterior (a planilha trazia data posterior à entrega).]", "evidencia": "", "indicador": ""}, {"acao": "Implantação do métido Erica Belon para experiência de 90 dias.", "responsavel": "Patrícia/Jakeline", "dataInicial": "22/12/2025", "dataPrevista": "09/01/2026", "situacao": "Concluído", "observacao": "Implementar o metodo da Erica, Determine o que deseja alcançar com o feedback. \nEstabeleçer métricas (KPIs) para acompanhar,  criar ou atualizar o checklist de experiencia e desenvolver  ficha entrevista de experiencia. [Data inicial corrigida para o ano anterior (a planilha trazia data posterior à entrega).]", "evidencia": "", "indicador": ""}, {"acao": "Definição de rituais para cultura de feedback continuo TRIMESTRAL.", "responsavel": "Patrícia/Líderes", "dataInicial": "05/01/2026", "dataPrevista": "15/01/2026", "situacao": "Concluído", "observacao": "Definir junto aos lideres, qual o melhor ritual de cultura de feedback, enfatizar os  benefícios estratégicos para o desempenho, engajamento e alinhamento com as metas organizacionais.", "evidencia": "", "indicador": ""}, {"acao": "RH: Treinamento para liderança sobre a política de feedback e as ferramentas/métodos.", "responsavel": "Jakeline/Líderes", "dataInicial": "05/01/2026", "dataPrevista": "15/01/2026", "situacao": "Concluído", "observacao": "Jakeline, desenvolverá e aplicara o treinamento.", "evidencia": "", "indicador": ""}, {"acao": "Elaboração da Politica de Medidas Disciplinares", "responsavel": "Patrícia", "dataInicial": "01/12/2025", "dataPrevista": "05/01/2026", "situacao": "Concluído", "observacao": "Criar um manual claro e acessível que descreva, em detalhes, os procedimentos, as falhas passíveis de punição e as medidas aplicáveis (advertência verbal/escrita, suspensão, demissão por justa causa), respeitando a legislação trabalhista brasileira (CLT).", "evidencia": "", "indicador": ""}, {"acao": "Participação semanal do RH nas reuniões da fábrica e Adm.", "responsavel": "Patrícia", "dataInicial": "01/11/2025", "dataPrevista": "30/12/2026", "situacao": "Concluído", "observacao": "Acompanhamento SEMANAL, importante na ultima reunião do mês levar um tema ou uma orientação, comunicado, falar sobre segurança etc, a participação com foco no engajamento (DDS), documentar e arquivar na pasta de Reunião Fabrica", "evidencia": "", "indicador": ""}, {"acao": "Analisar os processos de RH, etapas em que pode haver implementação e melhorias de processos relacionados à segurança do trabalho.", "responsavel": "Patrícia", "dataInicial": "01/02/2026", "dataPrevista": "20/03/2026", "situacao": "Concluído", "observacao": "1. Recrutamento e Seleção Integrar critérios de segurança nos perfis de vaga. Durante as entrevistas, avaliar a consciência do candidato sobre riscos e práticas seguras. Incluir a saúde e segurança como um valor inegociável da empresa.                                                                                                                                                                   2. Utilizar dados de SST (como taxas de turnover e absenteísmo relacionados a problemas de saúde ou acidentes) para um planejamento mais assertivo, antecipando necessidades e ajustando estratégias.", "evidencia": "", "indicador": ""}, {"acao": "Implementar um processo padronizado de entrega de EPIs, pelo setor almoxarifado", "responsavel": "RH/Almoxarife", "dataInicial": "05/01/2026", "dataPrevista": "28/02/2026", "situacao": "Concluído", "observacao": "1. Almoxarife executa a entrega do EPI, colhe a assinatura e arquiva as fichas de EPI assinadas na pasta de EPI.                                                                                                                                                                                                                             2. RH monitora os procedimentos se estão ocorrendo de forma eficaz.                                                                                                               3. Almoxarifado informa ao RH sobre o estoque de EPI, para que o Rh solicite a compra dos mesmo.", "evidencia": "", "indicador": ""}, {"acao": "Treinar/orientar o almoxarife para entrega dos EPIS", "responsavel": "RH/SST/Almoxarife", "dataInicial": "02/02/2026", "dataPrevista": "03/02/2026", "situacao": "Concluído", "observacao": "Patricia e Jakeline orientará o almoxarife a respeito dos procedimentos,", "evidencia": "", "indicador": ""}, {"acao": "Com resulados das AVDs, identificar as necessidades de treinamentos (técnicos) e programar treinamentos.", "responsavel": "Jakeline/Patrícia", "dataInicial": "05/01/2026", "dataPrevista": "31/03/2026", "situacao": "Planejado", "observacao": "Definição dos Treinamentos.", "evidencia": "", "indicador": ""}, {"acao": "Cronograma de Treinamentos de Integração 2026", "responsavel": "Patrícia/Jakeline", "dataInicial": "05/01/2026", "dataPrevista": "30/04/2026", "situacao": "Concluído", "observacao": "Estabeleça datas, horários e duração de cada sessão. Determine os materiais necessários, orçamento e instrutores (internos ou externos). Coloque o plano em prática e monitore a participação e o engajamento dos colaboradores. Meça a eficácia dos treinamentos para garantir que os objetivos foram alcançados e ajuste o cronograma conforme necessário para ciclos futuros", "evidencia": "", "indicador": ""}, {"acao": "Cronograma de Treinamentos Periodo de Experiencia", "responsavel": "Patrícia", "dataInicial": "05/01/2026", "dataPrevista": "28/02/2026", "situacao": "Concluído", "observacao": "Estabeleça datas, horários e duração de cada sessão. Determine os materiais necessários, orçamento e instrutores (internos ou externos). Coloque o plano em prática e monitore a participação e o engajamento dos colaboradores. Meça a eficácia dos treinamentos para garantir que os objetivos foram alcançados e ajuste o cronograma conforme necessário para ciclos futuros", "evidencia": "", "indicador": ""}, {"acao": "Cronograma de Treinamentos de Processos 2026", "responsavel": "Patrícia/Anderson", "dataInicial": "19/12/2025", "dataPrevista": "31/03/2026", "situacao": "Em andamento", "observacao": "Estabeleça datas, horários e duração de cada sessão. Determine os materiais necessários, orçamento e instrutores (internos ou externos). Coloque o plano em prática e monitore a participação e o engajamento dos colaboradores. Meça a eficácia dos treinamentos para garantir que os objetivos foram alcançados e ajuste o cronograma conforme necessário para ciclos futuros [Data inicial corrigida para o ano anterior (a planilha trazia data posterior à entrega).]", "evidencia": "", "indicador": ""}, {"acao": "Cronograma de Treinamentos SGQI 2026", "responsavel": "Patrícia/Anderson", "dataInicial": "05/01/2026", "dataPrevista": "28/02/2026", "situacao": "Concluído", "observacao": "Estabeleça datas, horários e duração de cada sessão. Determine os materiais necessários, orçamento e instrutores (internos ou externos). Coloque o plano em prática e monitore a participação e o engajamento dos colaboradores. Meça a eficácia dos treinamentos para garantir que os objetivos foram alcançados e ajuste o cronograma conforme necessário para ciclos futuros", "evidencia": "", "indicador": ""}, {"acao": "Criar formulário de programação de férias por setor (usinagem, fundição, administrativo, expedição, qualidade) para os lideres preencher.", "responsavel": "Patrícia", "dataInicial": "22/12/2025", "dataPrevista": "09/01/2026", "situacao": "Concluído", "observacao": "1. Criar formulário por setor (usinagem, fundição, administrativo, expedição, qualidade) para os lideres preencher.                                                                                                                                                                                                 2. Cria cartaz com orientações claras.                                                                                                                                                                3. Criar prolocolo com data de entrega e data de devolução.", "evidencia": "", "indicador": ""}, {"acao": "RH entrega a programação das férias.", "responsavel": "Patrícia", "dataInicial": "12/01/2026", "dataPrevista": "12/01/2026", "situacao": "Concluído", "observacao": "Entregar formulário com as devidas orientações, pegar assinatura no protocolo de confirmação de recebimento. Tirar as duvidas caso necessário.", "evidencia": "", "indicador": ""}, {"acao": "Lider preencher a programação das férias", "responsavel": "Líderes", "dataInicial": "12/01/2026", "dataPrevista": "23/01/2026", "situacao": "Em pausa", "observacao": "Conversar com cada colaborador e negociam conflitos de datas e preenchem com base na operação.", "evidencia": "", "indicador": ""}, {"acao": "Lider devolve a programação das férias", "responsavel": "Líderes", "dataInicial": "23/01/2026", "dataPrevista": "23/01/2026", "situacao": "Em pausa", "observacao": "3 - Devolver o formulario ao RH dentro do prazo.                                                                                                                                 4 - Informar ao RH se foi feito alguma trativa de acordo interno com o colaborador.", "evidencia": "", "indicador": ""}, {"acao": "Controle e monitoramento da programação de férias.", "responsavel": "Patrícia", "dataInicial": "26/01/2026", "dataPrevista": "30/01/2026", "situacao": "Concluído", "observacao": "1. Conferência da data de inicio/fim, quantidade de dias de gozo                                                                                                               2.Atualiza as planilhas de férias  com as devidas datas e informações.                                                                                                           3. Monitora mensalmente conforme checklist mensal do ano todo e atualizar mudanças quando necessário.", "evidencia": "", "indicador": ""}, {"acao": "Planejamento da campanha de atualização de Dados Cadastrais.", "responsavel": "Patrícia", "dataInicial": "19/01/2026", "dataPrevista": "23/01/2026", "situacao": "Concluído", "observacao": "Definir meio e desenvolver a planilha através de plataformaUmmani / Google Forms.                                                                         Criar formulario impresso para entregar funcionário com mais difuldades com tecnologia.                                                                                                                                                                  Criar panfleto com as informações sobre a campanha para enviar no whatsApp dos colaboradores.", "evidencia": "", "indicador": ""}, {"acao": "Divilgação da Primeira Campanha de atualização de Dados.", "responsavel": "Patrícia", "dataInicial": "03/02/2026", "dataPrevista": "03/02/2026", "situacao": "Concluído", "observacao": "Comunicar/divulga a campanha na reunião de terça-feira.                                                                                                            Colocar os panfleto com as informações sobre a campanha nos murais.                                                                                                                 Enviar panfleto om as informações sobre a campanha para o WhatsApp dos colaboradores.                                                     Orientar os colaboradores em caso de surgimentos de duvidas.", "evidencia": "", "indicador": ""}, {"acao": "Primeira Coleta do ano da campanha de atualização de Dados Cadastrais.", "responsavel": "Todos os funcionários", "dataInicial": "09/02/2026", "dataPrevista": "13/02/2026", "situacao": "Concluído", "observacao": "Entregar formulário impresso/e ou enviar o link do formulario.                                                                                           Colaboradores devem preencher/informar as alterações dados                                                                                                             Assinar o termo de veracidade dos dados.", "evidencia": "", "indicador": ""}, {"acao": "Verificar e preparar o sistema da Ummani para aplicação da pesquisa de Clima", "responsavel": "Patrícia/Jakeline", "dataInicial": "13/04/2026", "dataPrevista": "17/04/2026", "situacao": "Planejado", "observacao": "Criação da Pesquisa: Utilize a ferramenta de criação de pesquisas da Ummani para inserir as perguntas e opções de resposta.\nAnonimato e Confidencialidade: Configure as opções de anonimato e confidencialidade da pesquisa. Isso é crucial para garantir respostas honestas e a confiança dos funcionários.                                                                     Realize novas pesquisas periodicamente para medir a evolução do clima e identificar novas necessidades.", "evidencia": "", "indicador": ""}, {"acao": "Definição do objetivo da pesquisa Pesquisa de Clima Organizacional - 1 TRIMESTRE", "responsavel": "Patrícia/Jakeline", "dataInicial": "Janeiro", "dataPrevista": "Janeiro", "situacao": "Concluído", "observacao": "Identificar o que se deseja medir a satisfação (comunicação, liderança, salario e beneficios, ambiente,reconhecimento, segurança, Condições de trabalho).                                                                                                                                                                      Defina a data de início e término da pesquisa no sistema.                                                                                                                                                Aplicação semestral no 1º semestre.\nReaplicação no 2º semestre.", "evidencia": "", "indicador": ""}, {"acao": "Elaborar o questionário para aplicação da pesquisa de Clima Organizacional", "responsavel": "Patrícia", "dataInicial": "Janeiro", "dataPrevista": "Março", "situacao": "Concluído", "observacao": "Formular perguntas objetivas (escala de 1 a 5) + campo para comentários", "evidencia": "", "indicador": ""}, {"acao": "Aplicação da Pesquisa de Clima Organizacional para avaliar satisfação.", "responsavel": "Todos os funcionários", "dataInicial": "Janeiro", "dataPrevista": "Março", "situacao": "Concluído", "observacao": "Responder com sinceridade                                                                                                                                                              Marque a opção que melhor representa sua realidade\nNão existe resposta certa ou errada", "evidencia": "", "indicador": ""}, {"acao": "Compilar e analisar os dados da Pesquisa de Clima Organizacional.", "responsavel": "Patrícia", "dataInicial": "Janeiro", "dataPrevista": "Março", "situacao": "Concluído", "observacao": "Organize as Respostas: Estruture os dados de forma que sejam facilmente analisáveis. Se você usou perguntas de múltipla escolha ou escalas de avaliação (ex: Likert), atribua valores numéricos às respostas (ex: 1 para \"muito insatisfeito\", 5 para \"muito satisfeito\").                                                                             Categorize os comentários por temas (ex: comunicação, liderança, benefícios) para facilitar a análise dos padrões e sentimentos gerais.                                                                                                                                     Verifique a Amostragem: Avalie a taxa de participação. Uma baixa adesão pode indicar problemas de confiança ou comunicação, impactando a representatividade dos resultados.", "evidencia": "", "indicador": ""}, {"acao": "Apresentar os resultados da Pesquisa na reunião de indicadores.", "responsavel": "Patrícia", "dataInicial": "Janeiro", "dataPrevista": "Março", "situacao": "Concluído", "observacao": "Quais são os maiores problemas?\nQuais pontos estão funcionando bem?\nO que depende de liderança?                                                                                                                                                         O que depende do RH?\nO que depende de decisão da diretoria?", "evidencia": "", "indicador": ""}, {"acao": "Criar o Plano de Ação Pós-Pesquisa Trimestral - caso não atinja o indicador", "responsavel": "Patrícia/Líderes", "dataInicial": "Março", "dataPrevista": "Março", "situacao": "Concluído", "observacao": "A partir da análise dos resultados da pesquisa de clima, classificar os problemas em diferentes categorias. Definir um prazo para implementar cada ação, com metas claras e realizáveis. Para cada problema identificado, definir uma ação corretiva e quem será o responsável pela execução. Exemplo: Melhorar comunicação interna com a implementação de reuniões semanais.                                                                             Problema identificado: Ação proposta / Responsável / Prazo / Indicador de acompanhamento.", "evidencia": "", "indicador": ""}, {"acao": "Implementação e Acompanhamento plano de ação. caso não atinja o indicador", "responsavel": "Patrícia", "dataInicial": "Abril", "dataPrevista": "Junho", "situacao": "Concluído", "observacao": "Acompanhamento Periódico: Realize reuniões regulares de acompanhamento com os responsáveis pelas ações para verificar o progresso, discutir obstáculos e realizar ajustes.\nPesquisas de Pulso (Pulsing Surveys): Em vez de esperar pela próxima pesquisa de clima anual, considere pesquisas mais curtas e frequentes (\"pesquisas de pulso\") sobre temas específicos para avaliar o impacto das ações em tempo real.\nAjustes e Melhoria Contínua: Use os dados dos KPIs e do monitoramento para fazer ajustes nas ações conforme necessário. O processo deve ser cíclico: planejar, executar, monitorar, ajustar e repetir.", "evidencia": "", "indicador": ""}, {"acao": "Definição do objetivo da pesquisa Pesquisa de Clima Organizacional - 2 TRIMESTRE", "responsavel": "Patrícia/Líderes", "dataInicial": "Abril", "dataPrevista": "Abril", "situacao": "Concluído", "observacao": "Identificar o que se deseja medir a satisfação (comunicação, liderança, salario e beneficios, ambiente,reconhecimento, segurança, Condições de trabalho).                                                                                                                                                                      Defina a data de início e término da pesquisa no sistema.                                                                                                                                                Aplicação semestral no 1º semestre.\nReaplicação no 2º semestre.", "evidencia": "", "indicador": ""}, {"acao": "Elaborar o questionário para aplicação da pesquisa de Clima Organizacional", "responsavel": "Patrícia", "dataInicial": "Abril", "dataPrevista": "Junho", "situacao": "Concluído", "observacao": "Formular perguntas objetivas (escala de 1 a 5) + campo para comentários", "evidencia": "", "indicador": ""}, {"acao": "Aplicação da Pesquisa de Clima Organizacional para avaliar satisfação.", "responsavel": "Todos os funcionários", "dataInicial": "Abril", "dataPrevista": "Junho", "situacao": "Concluído", "observacao": "Responder com sinceridade                                                                                                                                                              Marque a opção que melhor representa sua realidade\nNão existe resposta certa ou errada", "evidencia": "", "indicador": ""}, {"acao": "Compilar e analisar os dados da Pesquisa de Clima Organizacional.", "responsavel": "Patrícia", "dataInicial": "Abril", "dataPrevista": "Junho", "situacao": "Concluído", "observacao": "Organize as Respostas: Estruture os dados de forma que sejam facilmente analisáveis. Se você usou perguntas de múltipla escolha ou escalas de avaliação (ex: Likert), atribua valores numéricos às respostas (ex: 1 para \"muito insatisfeito\", 5 para \"muito satisfeito\").                                                                             Categorize os comentários por temas (ex: comunicação, liderança, benefícios) para facilitar a análise dos padrões e sentimentos gerais.                                                                                                                                     Verifique a Amostragem: Avalie a taxa de participação. Uma baixa adesão pode indicar problemas de confiança ou comunicação, impactando a representatividade dos resultados.", "evidencia": "", "indicador": ""}, {"acao": "Apresentar os resultados da Pesquisa na reunião de indicadores.", "responsavel": "Patrícia", "dataInicial": "Abril", "dataPrevista": "Junho", "situacao": "Concluído", "observacao": "Quais são os maiores problemas?\nQuais pontos estão funcionando bem?\nO que depende de liderança?                                                                                                                                                         O que depende do RH?\nO que depende de decisão da diretoria?", "evidencia": "", "indicador": ""}, {"acao": "Criar o Plano de Ação Pós-Pesquisa Trimestral - caso não atinja o indicador", "responsavel": "Patrícia/Líderes", "dataInicial": "Junho", "dataPrevista": "Junho", "situacao": "Concluído", "observacao": "A partir da análise dos resultados da pesquisa de clima, classificar os problemas em diferentes categorias. Definir um prazo para implementar cada ação, com metas claras e realizáveis. Para cada problema identificado, definir uma ação corretiva e quem será o responsável pela execução. Exemplo: Melhorar comunicação interna com a implementação de reuniões semanais.                                                                             Problema identificado: Ação proposta / Responsável / Prazo / Indicador de acompanhamento.", "evidencia": "", "indicador": ""}, {"acao": "Implementação e Acompanhamento plano de ação. caso não atinja o indicador", "responsavel": "Patrícia", "dataInicial": "Julho", "dataPrevista": "Setembro", "situacao": "Concluído", "observacao": "Acompanhamento Periódico: Realize reuniões regulares de acompanhamento com os responsáveis pelas ações para verificar o progresso, discutir obstáculos e realizar ajustes.\nPesquisas de Pulso (Pulsing Surveys): Em vez de esperar pela próxima pesquisa de clima anual, considere pesquisas mais curtas e frequentes (\"pesquisas de pulso\") sobre temas específicos para avaliar o impacto das ações em tempo real.\nAjustes e Melhoria Contínua: Use os dados dos KPIs e do monitoramento para fazer ajustes nas ações conforme necessário. O processo deve ser cíclico: planejar, executar, monitorar, ajustar e repetir.", "evidencia": "", "indicador": ""}, {"acao": "Definição do objetivo da pesquisa Pesquisa de Clima Organizacional - 3 TRIMESTRE", "responsavel": "Patrícia/Líderes", "dataInicial": "Julho", "dataPrevista": "Julho", "situacao": "Concluído", "observacao": "Identificar o que se deseja medir a satisfação (comunicação, liderança, salario e beneficios, ambiente,reconhecimento, segurança, Condições de trabalho).                                                                                                                                                                      Defina a data de início e término da pesquisa no sistema.                                                                                                                                                Aplicação semestral no 1º semestre.\nReaplicação no 2º semestre.", "evidencia": "", "indicador": ""}, {"acao": "Elaborar o questionário para aplicação da pesquisa de Clima Organizacional", "responsavel": "Patrícia", "dataInicial": "Julho", "dataPrevista": "Setembro", "situacao": "Concluído", "observacao": "Formular perguntas objetivas (escala de 1 a 5) + campo para comentários", "evidencia": "", "indicador": ""}, {"acao": "Aplicação da Pesquisa de Clima Organizacional para avaliar satisfação.", "responsavel": "Todos os funcionários", "dataInicial": "Julho", "dataPrevista": "Setembro", "situacao": "Concluído", "observacao": "Responder com sinceridade                                                                                                                                                              Marque a opção que melhor representa sua realidade\nNão existe resposta certa ou errada", "evidencia": "", "indicador": ""}, {"acao": "Compilar e analisar os dados da Pesquisa de Clima Organizacional.", "responsavel": "Patrícia", "dataInicial": "Julho", "dataPrevista": "Setembro", "situacao": "Concluído", "observacao": "Organize as Respostas: Estruture os dados de forma que sejam facilmente analisáveis. Se você usou perguntas de múltipla escolha ou escalas de avaliação (ex: Likert), atribua valores numéricos às respostas (ex: 1 para \"muito insatisfeito\", 5 para \"muito satisfeito\").                                                                             Categorize os comentários por temas (ex: comunicação, liderança, benefícios) para facilitar a análise dos padrões e sentimentos gerais.                                                                                                                                     Verifique a Amostragem: Avalie a taxa de participação. Uma baixa adesão pode indicar problemas de confiança ou comunicação, impactando a representatividade dos resultados.", "evidencia": "", "indicador": ""}, {"acao": "Apresentar os resultados da Pesquisa na reunião de indicadores.", "responsavel": "Patrícia", "dataInicial": "Julho", "dataPrevista": "Setembro", "situacao": "Concluído", "observacao": "Quais são os maiores problemas?\nQuais pontos estão funcionando bem?\nO que depende de liderança?                                                                                                                                                         O que depende do RH?\nO que depende de decisão da diretoria?", "evidencia": "", "indicador": ""}, {"acao": "Criar o Plano de Ação Pós-Pesquisa Trimestral - caso não atinja o indicador", "responsavel": "Patrícia/Líderes", "dataInicial": "Setembro", "dataPrevista": "Setembro", "situacao": "Concluído", "observacao": "A partir da análise dos resultados da pesquisa de clima, classificar os problemas em diferentes categorias. Definir um prazo para implementar cada ação, com metas claras e realizáveis. Para cada problema identificado, definir uma ação corretiva e quem será o responsável pela execução. Exemplo: Melhorar comunicação interna com a implementação de reuniões semanais.                                                                             Problema identificado: Ação proposta / Responsável / Prazo / Indicador de acompanhamento.", "evidencia": "", "indicador": ""}, {"acao": "Implementação e Acompanhamento plano de ação.", "responsavel": "Patrícia", "dataInicial": "Outubro", "dataPrevista": "Dezembro", "situacao": "Concluído", "observacao": "Acompanhamento Periódico: Realize reuniões regulares de acompanhamento com os responsáveis pelas ações para verificar o progresso, discutir obstáculos e realizar ajustes.\nPesquisas de Pulso (Pulsing Surveys): Em vez de esperar pela próxima pesquisa de clima anual, considere pesquisas mais curtas e frequentes (\"pesquisas de pulso\") sobre temas específicos para avaliar o impacto das ações em tempo real.\nAjustes e Melhoria Contínua: Use os dados dos KPIs e do monitoramento para fazer ajustes nas ações conforme necessário. O processo deve ser cíclico: planejar, executar, monitorar, ajustar e repetir.", "evidencia": "", "indicador": ""}, {"acao": "Definição do objetivo da pesquisa Pesquisa de Clima Organizacional - 4 TRIMESTRE", "responsavel": "Patrícia/Líderes", "dataInicial": "Outubro", "dataPrevista": "Outubro", "situacao": "Concluído", "observacao": "Identificar o que se deseja medir a satisfação (comunicação, liderança, salario e beneficios, ambiente,reconhecimento, segurança, Condições de trabalho).                                                                                                                                                                      Defina a data de início e término da pesquisa no sistema.                                                                                                                                                Aplicação semestral no 1º semestre.\nReaplicação no 2º semestre.", "evidencia": "", "indicador": ""}, {"acao": "Elaborar o questionário para aplicação da pesquisa de Clima Organizacional", "responsavel": "Patrícia", "dataInicial": "Outubro", "dataPrevista": "Dezembro", "situacao": "Concluído", "observacao": "Formular perguntas objetivas (escala de 1 a 5) + campo para comentários", "evidencia": "", "indicador": ""}, {"acao": "Apliciação da Pesquisa de Clima Organizacional para avaliar satisfação.", "responsavel": "Todos os funcionários", "dataInicial": "Outubro", "dataPrevista": "Dezembro", "situacao": "Planejado", "observacao": "Responder com sinceridade                                                                                                                                                              Marque a opção que melhor representa sua realidade\nNão existe resposta certa ou errada", "evidencia": "", "indicador": ""}, {"acao": "Compilar e analisar os dados da Pesquisa de Clima Organizacional.", "responsavel": "Patrícia", "dataInicial": "Outubro", "dataPrevista": "Dezembro", "situacao": "Planejado", "observacao": "Organize as Respostas: Estruture os dados de forma que sejam facilmente analisáveis. Se você usou perguntas de múltipla escolha ou escalas de avaliação (ex: Likert), atribua valores numéricos às respostas (ex: 1 para \"muito insatisfeito\", 5 para \"muito satisfeito\").                                                                             Categorize os comentários por temas (ex: comunicação, liderança, benefícios) para facilitar a análise dos padrões e sentimentos gerais.                                                                                                                                     Verifique a Amostragem: Avalie a taxa de participação. Uma baixa adesão pode indicar problemas de confiança ou comunicação, impactando a representatividade dos resultados.", "evidencia": "", "indicador": ""}, {"acao": "Apresentar os resultados da Pesquisa na reunião de indicadores.", "responsavel": "Patrícia", "dataInicial": "Outubro", "dataPrevista": "Dezembro", "situacao": "Planejado", "observacao": "Quais são os maiores problemas?\nQuais pontos estão funcionando bem?\nO que depende de liderança?                                                                                                                                                         O que depende do RH?\nO que depende de decisão da diretoria?", "evidencia": "", "indicador": ""}, {"acao": "Criar o Plano de Ação Pós-Pesquisa Trimestral", "responsavel": "Patrícia/Líderes", "dataInicial": "Dezembro", "dataPrevista": "Dezembro", "situacao": "Planejado", "observacao": "A partir da análise dos resultados da pesquisa de clima, classificar os problemas em diferentes categorias. Definir um prazo para implementar cada ação, com metas claras e realizáveis. Para cada problema identificado, definir uma ação corretiva e quem será o responsável pela execução. Exemplo: Melhorar comunicação interna com a implementação de reuniões semanais.                                                                             Problema identificado: Ação proposta / Responsável / Prazo / Indicador de acompanhamento.", "evidencia": "", "indicador": ""}, {"acao": "Implementação e Acompanhamento plano de ação.", "responsavel": "Patrícia", "dataInicial": "Janeiro", "dataPrevista": "Março", "situacao": "Planejado", "observacao": "Acompanhamento Periódico: Realize reuniões regulares de acompanhamento com os responsáveis pelas ações para verificar o progresso, discutir obstáculos e realizar ajustes.\nPesquisas de Pulso (Pulsing Surveys): Em vez de esperar pela próxima pesquisa de clima anual, considere pesquisas mais curtas e frequentes (\"pesquisas de pulso\") sobre temas específicos para avaliar o impacto das ações em tempo real.\nAjustes e Melhoria Contínua: Use os dados dos KPIs e do monitoramento para fazer ajustes nas ações conforme necessário. O processo deve ser cíclico: planejar, executar, monitorar, ajustar e repetir.", "evidencia": "", "indicador": ""}, {"acao": "FASE 1 - PLANEJAR: Saber onde estou e onde quero chegar.", "responsavel": "Patrícia/Jakeline", "dataInicial": "Apartir 2° semestre", "dataPrevista": "", "situacao": "Em pausa", "observacao": "1. Mapear cenário atual do colaborador.\n2. Identificar competências técnicas e comportamentais necessárias.\n3. Construir um Plano Individual de Desenvolvimento (PDI).\n4. Diagnóstico de carreira\n5. Aplicação de inventários comportamentais (perfil profissional, etc.)\n6. Entrevista de carreira com gestor\n7. Definição de trilhas: técnica, liderança, administrativa.", "evidencia": "", "indicador": ""}, {"acao": "FASE 2 -LAPIDAR: Desenvolver, treinar e fortalecer a base.", "responsavel": "Patrícia/Jakeline", "dataInicial": "Apartir 2° semestre", "dataPrevista": "", "situacao": "Em pausa", "observacao": "1. Desenvolver habilidades técnicas e comportamentais críticas.\n2. Acompanhar evolução com tarefas práticas e feedbacks.\n3. Conectar aprendizado à rotina de trabalho.\n4. Treinamentos internos e externos.\n5. Rodízio operacional (job rotation)", "evidencia": "", "indicador": ""}, {"acao": "FASE 3 - AVANÇAR: Aplicar, executar e mostrar resultados.", "responsavel": "Patrícia/Jakeline", "dataInicial": "Apartir 2° semestre", "dataPrevista": "", "situacao": "Em pausa", "observacao": "1. Colocar em prática o que foi desenvolvido.\n2. Assumir desafios, projetos ou responsabilidades ampliadas.\n3. Medir resultados individuais e impacto no time.\n4. Assumir liderança de pequenas atividades.\n5. Indicadores: produtividade, qualidade, retrabalho, engajamento.\n6. Reuniões mensais de acompanhamento", "evidencia": "", "indicador": ""}, {"acao": "FASE 4 - PROTAGONISMO: Construir meu futuro e assumir minha jornada.", "responsavel": "Todos os funcionários", "dataInicial": "Apartir 2° semestre", "dataPrevista": "", "situacao": "Em pausa", "observacao": "1. Consolidar autonomia e corresponsabilidade.\n2. Posicionar o colaborador como autor do seu caminho.\n3. Criar plano de longo prazo (1–3 anos). \n4. Certificação interna PLAY\n5. Plano de carreira futuro\n6. Registro de competências adquiridas\n7. Autoavaliação final\n8. Preparação para promoções ou novos desafios\n9. Construção de portfólio interno\n10. Apresentação de resultados para RH e liderança", "evidencia": "", "indicador": ""}], "endomkt": [{"ano": "2026", "acao": "JANEIRO BRANCO - SAÚDE MENTAL", "descricao": "Decoração na cor Branco (Recepção e refeitórios)", "mes": "Janeiro", "data": "01/01/2026", "inicio": "10/12/2025", "fim": "15/12/2025", "responsavel": "Patrícia", "categoria": "Endomarketing", "canal": "Todos", "valor": null, "situacao": "Planejado", "observacao": "Criar cartaz sobre o tema p/ murais + criar panfleto com mensagem de orientação para enviar no WhatsApp. Falar sobre o tema na reunião. Lara cotar e comprar bexigas. o que especificamente será tarefa para a Lara?"}, {"ano": "2026", "acao": "Confraternização Universal Ano Novo", "descricao": "POST REDES SOBRE O TEMA", "mes": "Janeiro", "data": "01/01/2026", "inicio": "01/01/2026", "fim": "01/01/2026", "responsavel": "Jakeline", "categoria": "Aviso Geral", "canal": "Todos", "valor": null, "situacao": "Planejado", "observacao": ""}, {"ano": "2026", "acao": "RETORNO DAS ATIVIDADES NA EMPRESA", "descricao": "AGRADECIMENTO E VOTOS SUCESSO PARA 2026", "mes": "Janeiro", "data": "05/01/2026", "inicio": "05/01/2026", "fim": "05/01/2026", "responsavel": "Patrícia", "categoria": "Endomarketing", "canal": "Todos", "valor": null, "situacao": "Planejado", "observacao": "ENVIAR MENSAGEM VIA WHATSAPP PARA TODOS FUNCIONARIOS Sugestão de colocar emojis no texto e afixar nos murais, simles mesmo, mais para aqueles que não olham o whats"}, {"ano": "2026", "acao": "DIA DA MULHER", "descricao": "POST REDES + PALESTRA GRATUITA PARCERIA COM FORNECEDORES COM COFFE BREAK + VIDEO EXPLICATIVO + CARTÃO + BRINDE (EX: NECESSARIE)", "mes": "Março", "data": "08/03/2026", "inicio": "19/01/2026", "fim": "30/01/2026", "responsavel": "Jakeline/Patrícia", "categoria": "Endomarketing", "canal": "Todos", "valor": null, "situacao": "Planejado", "observacao": "Verificar verba com a Fran para o coffe + lembrancinha. Passar para compras cotar itens e informar a Fran. Patricia: Preparar vídeo sobre o dia da mulher e outras informações. Criar cartaz sobre o tema p/ murais + criar panfleto com mensagem de orientação para enviar no WhatsApp. Sugestão de trazer alguma palestra (gratuita) - parceria com fornecedores"}, {"ano": "2026", "acao": "PAIXÃO DE CRISTO", "descricao": "POST REDES SOBRE O TEMA", "mes": "Abril", "data": "03/04/2026", "inicio": "03/04/2026", "fim": "03/04/2026", "responsavel": "Jakeline", "categoria": "Aviso Geral", "canal": "Todos", "valor": null, "situacao": "Planejado", "observacao": ""}, {"ano": "2026", "acao": "PÁSCOA", "descricao": "Entrega de Ovos de Pascoa", "mes": "Abril", "data": "02/04/2026", "inicio": "19/01/2026", "fim": "02/04/2026", "responsavel": "Patrícia/Jakeline", "categoria": "Endomarketing", "canal": "Todos", "valor": null, "situacao": "Planejado", "observacao": "Verificar com a Fran valor da verba para compra dos ovos. Passar para compras cotar itens e informar a Fran. Post redes sobre o tema + entrega do ovo e panfleto com mensagem sobre o tema. Jakeline criar cartão sobre o tema e programar postagem nas redes. Sugestão, tirar fotos de entregas, pequenos vídeos e montar post / reels para redes sociais"}, {"ano": "2026", "acao": "Dia do engº Metalúrgico", "descricao": "POST NAS REDES SOBRE O TEMA e Whats dos funcionários", "mes": "Abril", "data": "10/04/2026", "inicio": "16/03/2026", "fim": "23/03/2026", "responsavel": "Jakeline", "categoria": "Reconhecimento", "canal": "Todos", "valor": null, "situacao": "Planejado", "observacao": "CRIAR CARTAZ- P/ RH ENVIAR MENSAGEM VIA WHATSAPP e programar post nas redes sociais."}, {"ano": "2026", "acao": "Tiradentes", "descricao": "POST REDES SOBRE O TEMA", "mes": "Abril", "data": "21/04/2026", "inicio": "21/04/2026", "fim": "21/04/2026", "responsavel": "Jakeline", "categoria": "Aviso Geral", "canal": "Todos", "valor": null, "situacao": "Planejado", "observacao": ""}, {"ano": "2026", "acao": "Dia do Metalúrgico: Usinagem e Fundição", "descricao": "POST NAS REDES SOBRE O TEMA e Whats dos funcionários", "mes": "Abril", "data": "21/04/2026", "inicio": "16/03/2026", "fim": "23/03/2026", "responsavel": "Jakeline/Patrícia", "categoria": "Reconhecimento", "canal": "Todos", "valor": null, "situacao": "Planejado", "observacao": "CRIAR PANFLETO - ENVIAR MENSAGEM VIA WHATSAPP Colocar nos murais da fábrica"}, {"ano": "2026", "acao": "Dia Mundial da Segurança e Saúde no trabalho- SEMANA SIPAT", "descricao": "POST NAS REDES SOBRE O TEMA, MURAIS DA EMPRESA E WHATS FUNCIONÁRIOS + BRINDE + DECORAÇÃO VERDE/BRANCO", "mes": "Abril", "data": "28/04/2026", "inicio": "19/01/2026", "fim": "30/01/2026", "responsavel": "Jakeline/Sst Patricia", "categoria": "Segurança do Trabalho", "canal": "Todos", "valor": null, "situacao": "Planejado", "observacao": "DEFINIR AÇÕES - VERIFICAR VALOR - FAZER COTAÇÃO BRINDES - PASSAR AO FINANCEIRO"}, {"ano": "2026", "acao": "Maio Amarelo", "descricao": "POST NAS REDES + Decoração com bexiga na cor Amarelo (Recepção e refeitórios) + VIDEO EXPLICATIVO - USAR AMARELO NA ULTIMA SEXTA DO MÊS + BRINDE (CHOCOLATE COM EMBALAGEM AMARELO)", "mes": "Maio", "data": "01/05/2026", "inicio": "13/04/2026", "fim": "20/04/2026", "responsavel": "Patrícia", "categoria": "Segurança do Trabalho", "canal": "Todos", "valor": null, "situacao": "Planejado", "observacao": "Criar cartaz sobre o tema p/ murais + criar panfleto com mensagem de orientação para enviar no WhatsApp. Falar sobre o tema na reunião. Ficou confuso a cor rosa.. Vi uma idéia de colocar caixinha de mensagens..."}, {"ano": "2026", "acao": "Dia do trabalhador", "descricao": "POST REDES E WHATS FUNCIONÁRIOS + VIDEO HOMENAGEM AOS COLABORADORES", "mes": "Maio", "data": "01/05/2026", "inicio": "13/04/2026", "fim": "20/04/2026", "responsavel": "Patrícia", "categoria": "Endomarketing", "canal": "Todos", "valor": null, "situacao": "Planejado", "observacao": "Criar panfleto com mensagem de orientação para enviar no WhatsApp. Falar sobre o tema na reunião. Sem brinde"}, {"ano": "2026", "acao": "Dia das Mães", "descricao": "POST REDES + WHATS / + campanha (tal mãe tal filho) + VIDEO HOMENAGEM AS MÃES DA EMPRESA + CARTÃO + BRINDE (EX: NECESSARIE)", "mes": "Maio", "data": "10/05/2026", "inicio": "23/02/2026", "fim": "27/02/2026", "responsavel": "Jakeline/Patrícia", "categoria": "Endomarketing", "canal": "Todos", "valor": null, "situacao": "Planejado", "observacao": "VERIFICAR VALOR - FAZER COTAÇÃO - PASSAR AO FINANCEIRO S/ a roda de conversa, mas sugiro alguma campanha (eplo tal mãe tal filho...)idem para dia dos pais"}, {"ano": "2026", "acao": "Dia do RH", "descricao": "POST NAS REDES SOBRE TEMAS E ENVIO VIA WHATS FUNCIONÁRIOS", "mes": "Maio", "data": "20/05/2026", "inicio": "13/04/2026", "fim": "20/04/2026", "responsavel": "Jakeline/Patrícia", "categoria": "Reconhecimento", "canal": "Todos", "valor": null, "situacao": "Planejado", "observacao": "CRIAR PANFLETO - ENVIAR MENSAGEM VIA WHATSAPP"}, {"ano": "2026", "acao": "Dia da Industria", "descricao": "POST REDES SOBRE O TEMA", "mes": "Maio", "data": "25/05/2026", "inicio": "25/05/2026", "fim": "25/05/2026", "responsavel": "Jakeline", "categoria": "Reconhecimento", "canal": "Todos", "valor": null, "situacao": "Planejado", "observacao": "as datas de início e término devem ser o período para preparar tudo e a data da ação é outra."}, {"ano": "2026", "acao": "Semana MUNDIAL DO MEIO AMBIENTE", "descricao": "POST NAS REDES SOBRE O TEMA e Whats dos funcionários + BRINDE (EX: LAPIS SEMENTE)", "mes": "Junho", "data": "01/06/2026", "inicio": "16/03/2026", "fim": "23/03/2026", "responsavel": "Patrícia/Lara", "categoria": "Aviso Geral", "canal": "Todos", "valor": null, "situacao": "Planejado", "observacao": "Criar cartaz sobre o tema p/ murais + criar panfleto com mensagem de orientação para enviar no WhatsApp. Falar sobre o tema na reunião. o que é lápis semente? Rsrs Sugiro realizar ação do brinde e registrar e criar posteriomente post (evidências) pois é obrigatório para 2026 realizarmos ações relacionadas ao ESG para apresentarmos ao auditor em 2027."}, {"ano": "2026", "acao": "Corpus Christi", "descricao": "POST REDES SOBRE O TEMA", "mes": "Junho", "data": "04/06/2026", "inicio": "04/06/2026", "fim": "04/06/2026", "responsavel": "Jakeline", "categoria": "Aviso Geral", "canal": "Todos", "valor": null, "situacao": "Planejado", "observacao": ""}, {"ano": "2026", "acao": "Revolução de 9 de Julho", "descricao": "POST REDES SOBRE O TEMA", "mes": "Julho", "data": "09/07/2026", "inicio": "09/07/2026", "fim": "09/07/2026", "responsavel": "Jakeline", "categoria": "Aviso Geral", "canal": "Todos", "valor": null, "situacao": "Planejado", "observacao": ""}, {"ano": "2026", "acao": "Dia nacional de Prevenção de Acidentes do Trabalho", "descricao": "POST NAS REDES SOBRE O TEMA, MURAIS DA EMPRESA E WHATS FUNCIONÁRIOS + Participação do Rh nas reuniões da fábrica c/ orientações.", "mes": "Julho", "data": "27/07/2026", "inicio": "18/05/2026", "fim": "22/05/2026", "responsavel": "Jakeline/SST/Patrícia", "categoria": "Segurança do Trabalho", "canal": "Todos", "valor": null, "situacao": "Planejado", "observacao": ""}, {"ano": "2026", "acao": "Dia dos Pais", "descricao": "POST REDES + WHATS / + campanha (tal pai tal filho) + VIDEO HOMENAGEM AS PAIS DA EMPRESA + CARTÃO + BRINDE (EX: CHAVEIRO)", "mes": "Agosto", "data": "09/08/2026", "inicio": "18/05/2026", "fim": "22/05/2026", "responsavel": "Jakeline/Patrícia", "categoria": "Endomarketing", "canal": "Todos", "valor": null, "situacao": "Planejado", "observacao": "VERIFICAR VALOR - FAZER COTAÇÃO BRINDES - PASSAR AO FINANCEIRO - criar panfleto com mensagem de orientação para enviar no WhatsApp. Falar sobre o tema na reunião. idem ao Dia das mães"}, {"ano": "2026", "acao": "Proclamação Da Independencia", "descricao": "POST NAS REDES SOBRE O TEMA", "mes": "Setembro", "data": "07/09/2026", "inicio": "07/09/2026", "fim": "07/09/2026", "responsavel": "Jakeline", "categoria": "Aviso Geral", "canal": "Todos", "valor": null, "situacao": "Planejado", "observacao": ""}, {"ano": "2026", "acao": "KITS PERSONALIZADOS", "descricao": "DEFINIÇÃO DOS KIT ONBOARDING + BRINDES TEMPO DE EMPRESA - 2027", "mes": "Setembro", "data": "08/09/2026", "inicio": "03/08/2026", "fim": "14/08/2026", "responsavel": "Jakeline/Patrícia", "categoria": "Endomarketing", "canal": "Todos", "valor": null, "situacao": "Planejado", "observacao": "DEFINIR OS KITS - VERIFICAR VALOR - FAZER COTAÇÃO - PASSAR AO FINANCEIRO Pode ser antes (mês de agosto) para aproveitarmos brindes de finald e ano para clientes. Pois tem toda rotina de compras (cotações, negociações, etc)"}, {"ano": "2026", "acao": "Dia do Administrador", "descricao": "POST SOBRE TEMAS E ENVIO VIA WHATS FUNCIONÁRIOS", "mes": "Setembro", "data": "09/09/2026", "inicio": "10/08/2026", "fim": "14/08/2026", "responsavel": "Jakeline/Patrícia", "categoria": "Reconhecimento", "canal": "Todos", "valor": null, "situacao": "Planejado", "observacao": "CRIAR PANFLETO - ENVIAR MENSAGEM VIA WHATSAPP"}, {"ano": "2026", "acao": "Dia do Financeiro", "descricao": "POST SOBRE TEMAS E ENVIO VIA WHATS FUNCIONÁRIOS", "mes": "Setembro", "data": "09/09/2026", "inicio": "10/08/2026", "fim": "14/08/2026", "responsavel": "Jakeline/Patrícia", "categoria": "Reconhecimento", "canal": "Todos", "valor": null, "situacao": "Planejado", "observacao": "CRIAR PANFLETO - ENVIAR MENSAGEM VIA WHATSAPP"}, {"ano": "2026", "acao": "DIA DO CLIENTE", "descricao": "POST DE AGRADECIMENTO REDES SOCIAIS E LISTAS DE TRANSMISSÃO DE VENDAS Este post é para estar na Matriz de conteúdo", "mes": "Setembro", "data": "15/09/2026", "inicio": "15/09/2026", "fim": "15/09/2026", "responsavel": "Jakeline/Vendas", "categoria": "Reconhecimento", "canal": "Todos", "valor": null, "situacao": "Planejado", "observacao": "FEITO PELO TIME DE VENDAS"}, {"ano": "2026", "acao": "Dia do comprador", "descricao": "POST SOBRE TEMAS E ENVIO VIA WHATS FUNCIONÁRIOS", "mes": "Setembro", "data": "19/09/2026", "inicio": "10/08/2026", "fim": "14/08/2026", "responsavel": "Jakeline/Patrícia", "categoria": "Reconhecimento", "canal": "Todos", "valor": null, "situacao": "Planejado", "observacao": "CRIAR PANFLETO - ENVIAR MENSAGEM VIA WHATSAPP"}, {"ano": "2026", "acao": "SEMANA DA SIPAT", "descricao": "POST NAS REDES SOBRE O TEMA, MURAIS DA EMPRESA E WHATS FUNCIONÁRIOS + BRINDE + DECORAÇÃO VERDE/BRANCO", "mes": "Setembro", "data": "", "inicio": "", "fim": "", "responsavel": "", "categoria": "Segurança do Trabalho", "canal": "Todos", "valor": null, "situacao": "Planejado", "observacao": "DEFINIR AÇÕES - VERIFICAR VALOR - FAZER COTAÇÃO BRINDES - PASSAR AO FINANCEIRO"}, {"ano": "2026", "acao": "Outubro Rosa", "descricao": "POST NAS REDES + Decoração com bexiga na cor Rosa (Recepção e refeitórios) + VIDEO EXPLICATIVO - USAR ROSA NA ULTIMA SEXTA DO MÊS + BRINDE (CHOCOLATE COM EMBALAGEM ROSA)", "mes": "Outubro", "data": "01/10/2026", "inicio": "10/08/2026", "fim": "14/08/2026", "responsavel": "Patrícia", "categoria": "Endomarketing", "canal": "Todos", "valor": null, "situacao": "Planejado", "observacao": "VERIFICAR VALOR - FAZER COTAÇÃO BRINDES - PASSAR AO FINANCEIRO - criar panfleto com mensagem de orientação para enviar no WhatsApp. Falar sobre o tema na reunião. Lara cotar e comprar bexigas rosa."}, {"ano": "2026", "acao": "Dia do Vendedor", "descricao": "POST SOBRE TEMAS E ENVIO VIA WHATS FUNCIONÁRIOS", "mes": "Outubro", "data": "01/10/2026", "inicio": "08/09/2026", "fim": "11/09/2026", "responsavel": "Jakeline", "categoria": "Reconhecimento", "canal": "Todos", "valor": null, "situacao": "Planejado", "observacao": ""}, {"ano": "2026", "acao": "Dia do Empreendedor", "descricao": "POST SOBRE TEMAS E ENVIO VIA WHATS FUNCIONÁRIOS", "mes": "Outubro", "data": "05/10/2026", "inicio": "08/09/2026", "fim": "11/09/2026", "responsavel": "Jakeline", "categoria": "Reconhecimento", "canal": "Todos", "valor": null, "situacao": "Planejado", "observacao": ""}, {"ano": "2026", "acao": "Dia das crianças e Nossa Sra. Aparecida", "descricao": "POST NAS REDES SOBRE O TEMA", "mes": "Outubro", "data": "12/10/2026", "inicio": "12/10/2026", "fim": "12/10/2026", "responsavel": "Jakeline", "categoria": "Aviso Geral", "canal": "Todos", "valor": null, "situacao": "Planejado", "observacao": ""}, {"ano": "2026", "acao": "Novembro azul", "descricao": "POST NAS REDES + Decoração com bexiga na cor azul (Recepção e refeitórios) + VIDEO EXPLICATIVO - USAR AZUL NA ULTIMA SEXTA DO MÊS + BRINDE (CHOCOLATE COM EMBALAGEM AZUL)", "mes": "Novembro", "data": "01/11/2026", "inicio": "17/08/2026", "fim": "21/08/2026", "responsavel": "Patrícia", "categoria": "Endomarketing", "canal": "Todos", "valor": null, "situacao": "Planejado", "observacao": "VERIFICAR VALOR - FAZER COTAÇÃO BRINDES - PASSAR AO FINANCEIRO - criar panfleto com mensagem de orientação para enviar no WhatsApp. Falar sobre o tema na reunião. Lara cotar e comprar bexigas azul."}, {"ano": "2026", "acao": "Finados", "descricao": "POST SOBRE O TEMA", "mes": "Novembro", "data": "02/11/2026", "inicio": "02/11/2026", "fim": "02/11/2026", "responsavel": "Jakeline", "categoria": "Aviso Geral", "canal": "Todos", "valor": null, "situacao": "Planejado", "observacao": ""}, {"ano": "2026", "acao": "Aniversário da Empresa", "descricao": "POST NAS REDES + WHATS + VIDEO COM FOTOS RETROSPECTIVA", "mes": "Novembro", "data": "09/11/2026", "inicio": "17/08/2026", "fim": "21/08/2026", "responsavel": "Jakeline/Patrícia", "categoria": "Endomarketing", "canal": "Todos", "valor": null, "situacao": "Planejado", "observacao": "Verficar se a diretoria quer fazer alguma ação."}, {"ano": "2026", "acao": "SEMANA MUNDIAL DA QUALIDADE", "descricao": "DEFINIR AÇOES A SER REALIZADA", "mes": "Novembro", "data": "", "inicio": "", "fim": "", "responsavel": "Anderson", "categoria": "Endomarketing", "canal": "Todos", "valor": null, "situacao": "Planejado", "observacao": "Promover ações com os colaboradores (definir quais)."}, {"ano": "2026", "acao": "Proclamação da República", "descricao": "POST SOBRE O TEMA", "mes": "Novembro", "data": "15/11/2026", "inicio": "15/11/2026", "fim": "15/11/2026", "responsavel": "Jakeline", "categoria": "Aviso Geral", "canal": "Todos", "valor": null, "situacao": "Planejado", "observacao": ""}, {"ano": "2026", "acao": "Consciência Negra", "descricao": "POST SOBRE O TEMA", "mes": "Novembro", "data": "20/11/2026", "inicio": "20/11/2026", "fim": "20/11/2026", "responsavel": "Jakeline", "categoria": "Aviso Geral", "canal": "Todos", "valor": null, "situacao": "Planejado", "observacao": ""}, {"ano": "2026", "acao": "Aniversário da cidade", "descricao": "POST NAS REDES SOBRE O TEMA", "mes": "Dezembro", "data": "04/12/2026", "inicio": "04/12/2026", "fim": "04/12/2026", "responsavel": "Jakeline", "categoria": "Aviso Geral", "canal": "Todos", "valor": null, "situacao": "Planejado", "observacao": ""}, {"ano": "2026", "acao": "Dia do Fundidor", "descricao": "POST NAS REDES SOBRE O TEMA", "mes": "Dezembro", "data": "04/12/2026", "inicio": "16/11/2026", "fim": "19/11/2026", "responsavel": "Jakeline/Patrícia", "categoria": "Reconhecimento", "canal": "Todos", "valor": null, "situacao": "Planejado", "observacao": "Criar cartaz sobre o tema p/ murais - ENVIAR MENSAGEM VIA WHATSAPP Colocar nos murais da fábrica"}, {"ano": "2026", "acao": "Natal", "descricao": "POST NAS REDES SOBRE O TEMA + VIDEO COM FOTOS RETROSPECTIVA + KIT NATAL OU CESTA DE NATAL COM CARTÃO DE BOAS FESTAS.", "mes": "Dezembro", "data": "25/12/2026", "inicio": "05/10/2026", "fim": "09/10/2026", "responsavel": "Jakeline/Patrícia", "categoria": "Aviso Geral", "canal": "Todos", "valor": null, "situacao": "Planejado", "observacao": "VERIFICAR VALOR - FAZER COTAÇÃO - PASSAR AO FINANCEIRO - criar panfleto com mensagem de orientação para enviar no WhatsApp."}]};
+function planoImportar2026(){
+  if(localStorage.getItem('ac_plano2026_v1')) return;
+  try{
+    const meta={modulo:'Planejamento'};
+    // calendário antigo (modelo 2027) ganha o ano
+    loadData('endomkt_2027').filter(e=>!e.ano).forEach(e=>crudUpdate('endomkt_2027',e.id,{ano:'2027'},meta));
+    if(!loadData('plano_cfg').some(c=>c.status!=='Inativo'&&String(c.ano)==='2026')) crudCreate('plano_cfg',PLANO_2026.cfg,Object.assign({label:'Missão/Metas 2026'},meta));
+    if(!loadData('plano_acoes').some(a=>a.status!=='Inativo'&&String(a.ano)==='2026')) PLANO_2026.acoes.forEach(a=>crudCreate('plano_acoes',Object.assign({ano:'2026'},a),Object.assign({label:a.acao},meta)));
+    if(!loadData('plano_etapas').some(a=>String(a.ano)==='2026')) PLANO_2026.etapas.forEach((e,i)=>crudCreate('plano_etapas',Object.assign({ano:'2026',ordem:i+1},e),Object.assign({label:e.acao},meta)));
+    if(!loadData('endomkt_2027').some(e=>String(e.ano)==='2026')) PLANO_2026.endomkt.forEach(e=>crudCreate('endomkt_2027',e,Object.assign({label:e.acao},meta)));
+    localStorage.setItem('ac_plano2026_v1','1');
+  }catch(err){ console.warn('planoImportar2026',err); }
+}
+
 /* ── Endomkt ── */
 function buildEndomktSeed() {
-  if(loadData('endomkt_2027').length) return;
+  if(loadData('endomkt_2027').some(e=>String(e.ano||'2027')==='2027')) return;
   ENDOMKT_2027.forEach(e => crudCreate('endomkt_2027', {
-    acao: e.acao, mes: e.mes, categoria: e.categoria,
+    ano:'2027', acao: e.acao, mes: e.mes, categoria: e.categoria,
     responsavel: 'Patrícia', canal: 'Todos',
     situacao: 'Planejado', status: 'Ativo',
   }, {modulo:'Endomkt', label: e.acao}));
@@ -14586,7 +14687,9 @@ let endomktFiltrado2027 = [];
 function endomktFiltrar() {
   const mes = (document.getElementById('endomkt-filter-mes')||{}).value||'';
   const cat = (document.getElementById('endomkt-filter-cat')||{}).value||'';
-  let dados = loadData('endomkt_2027').filter(e=>e.status!=='Inativo');
+  const anoSel=String(planoAno());
+  { const t=document.getElementById('endomkt-titulo'); if(t) t.textContent='📅 Calendário Endomarketing — '+anoSel; }
+  let dados = loadData('endomkt_2027').filter(e=>e.status!=='Inativo'&&String(e.ano||'2027')===anoSel);
   if(mes) dados = dados.filter(e=>e.mes===mes);
   if(cat) dados = dados.filter(e=>e.categoria===cat);
   const countEl = document.getElementById('endomkt-count');
@@ -14596,7 +14699,7 @@ function endomktFiltrar() {
   const CAT_ICON = {'Endomarketing':'🎯','Segurança do Trabalho':'🛡','Reconhecimento':'🏆','Aviso Geral':'📢','RH Informa':'📋'};
   const SIT_BADGE = {'Planejado':'bgy','Em andamento':'bb','Concluído':'bg','Cancelado':'br'};
   const MESES_ORDEM = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
-  dados.sort((a,b)=>MESES_ORDEM.indexOf(a.mes)-MESES_ORDEM.indexOf(b.mes));
+  dados.sort((a,b)=>MESES_ORDEM.indexOf(a.mes)-MESES_ORDEM.indexOf(b.mes)||(parseDate(a.data)||0)-(parseDate(b.data)||0));
   grid.innerHTML = dados.map(e => {
     const icon = CAT_ICON[e.categoria]||'📌';
     const sb = SIT_BADGE[e.situacao]||'bgy';
@@ -14608,7 +14711,9 @@ function endomktFiltrar() {
             <span class="badge bgy" style="font-size:9px">${e.mes}</span>
             <span class="badge ${sb}" style="font-size:9px">${e.situacao}</span>
           </div>
-          <div style="font-size:9px;color:var(--g400);margin-top:4px">${e.responsavel||'—'} · ${e.data||'a definir'}</div>
+          ${e.descricao?`<div style="font-size:10px;margin-top:4px">${gpEsc(e.descricao)}</div>`:''}
+          <div style="font-size:9px;color:var(--g400);margin-top:4px">${gpEsc(e.responsavel||'—')} · ${e.data||'a definir'}${e.inicio?` · preparo ${e.inicio.slice(0,5)}${e.fim&&e.fim!==e.inicio?' a '+e.fim.slice(0,5):''}`:''}</div>
+          ${e.observacao?`<div style="font-size:9px;color:var(--g500);margin-top:3px">${gpEsc(e.observacao).slice(0,160)}${e.observacao.length>160?'…':''}</div>`:''}
         </div>
         <button class="btn btn-s btn-xs" onclick="openCrudModal(MOD_ENDOMKT,${e.id})">✏</button>
         <button class="btn btn-s btn-xs" onclick="crudDeleteAction(MOD_ENDOMKT,${e.id},'${escAttr(e.acao)}')">🗑</button>
@@ -14633,9 +14738,10 @@ function buildFeriadosWidget() {
 
 /* ── INIT ── */
 function initPlanejamento() {
+  planoImportar2026();
   buildEndomktSeed();
   const sel=document.getElementById('plano-ano-sel');
-  if(sel&&!sel.options.length){ for(let y=2026;y<=2050;y++) sel.add(new Option(y,y)); sel.value='2027'; }
+  if(sel&&!sel.options.length){ for(let y=2026;y<=2050;y++) sel.add(new Option(y,y)); sel.value=String(Math.max(2026,new Date().getFullYear())); }
   try{ planoAutoArquivar(); }catch(e){ console.warn(e); }
   initPlanoTable();
   endomktFiltrar();
@@ -15815,13 +15921,15 @@ function provSetAj(nome,ano,campo,v){
   const chave=nome+'|'+ano, a=provAjustes()[chave], s=String(v).trim();
   let val=null;
   if(campo==='termo'){ val=(s==='SIM'||s==='NÃO')?s:null; }
+  else if(campo==='sal'){ val=s===''?null:moedaNum(s); if(val!==null&&(isNaN(val)||val<0)){ showToast('Salário inválido','warn'); renderProvisao(); return; } }
   else if(s!==''){ val=Math.round(parseFloat(s.replace(',','.'))*2)/2; if(isNaN(val)||val<(campo==='gozo'?1:0)||val>(campo==='gozo'?30:90)){ showToast((campo==='gozo'?'Dias de gozo: de 1 a 30':'Dias de direito: de 0 a 90'),'warn'); renderProvisao(); return; } }
-  const o=Object.assign({dias:a&&a.dias!=null?a.dias:null,gozo:a&&a.gozo!=null?a.gozo:null,termo:a&&a.termo?a.termo:null},{[campo]:val});
-  if(o.dias==null&&o.gozo==null&&o.termo==null){ if(a) crudDeleteFisico('provisao_ajuste',a.id); showToast('↺ Voltou para o automático'); }
-  else if(a) crudUpdate('provisao_ajuste',a.id,{dias:o.dias,gozo:o.gozo,termo:o.termo},{modulo:'Provisão'});
-  else crudCreate('provisao_ajuste',{chave,dias:o.dias,gozo:o.gozo,termo:o.termo},{modulo:'Provisão',label:nome});
+  const o=Object.assign({dias:a&&a.dias!=null?a.dias:null,gozo:a&&a.gozo!=null?a.gozo:null,termo:a&&a.termo?a.termo:null,sal:a&&a.sal!=null?a.sal:null},{[campo]:val});
+  if(o.dias==null&&o.gozo==null&&o.termo==null&&o.sal==null){ if(a) crudDeleteFisico('provisao_ajuste',a.id); showToast('↺ Voltou para o automático'); }
+  else if(a) crudUpdate('provisao_ajuste',a.id,{dias:o.dias,gozo:o.gozo,termo:o.termo,sal:o.sal},{modulo:'Provisão'});
+  else crudCreate('provisao_ajuste',{chave,dias:o.dias,gozo:o.gozo,termo:o.termo,sal:o.sal},{modulo:'Provisão',label:nome});
   renderProvisao();
 }
+function provSetSal(nome,ano,v){ provSetAj(nome,ano,'sal',v); }
 function provSetTermo(nome,ano,v){ provSetAj(nome,ano,'termo',v); }
 function provSetDias(nome,ano,v){ provSetAj(nome,ano,'dias',v); }
 function provSetGozo(nome,ano,v){ provSetAj(nome,ano,'gozo',v); }
@@ -15831,11 +15939,11 @@ function provDados(){
   const cfg=provCfg(), aj=provAjustes();
   const V1=provVenc(ano,11,30), V2=provVenc(ano,12,20);
   let rows=loadData('colaboradores').filter(c=>c.status!=='Inativo').map(c=>{
-    const sal=moedaNum(c.sal)||0, m=provMeses(c.adm,ano), emp=(c.cnpj==='02')?'BRASS':'AC';
+    const manual=!colabEhCLT(c), a0=aj[c.nome+'|'+ano], salAj=!!(a0&&a0.sal!=null), salAuto=manual?0:(moedaNum(c.sal)||0), sal=salAj?Number(a0.sal):salAuto, m=provMeses(c.adm,ano), emp=(c.cnpj==='02')?'BRASS':'AC';
     const d13=sal/12*m, p1=d13*0.5, p2=d13-p1;
     const dr=provDiasDireito(c.adm,ano,c.nome), est=dr.dias, a=aj[c.nome+'|'+ano], dd=(a&&a.dias!=null)?Number(a.dias):est;
     const gAj=!!(a&&a.gozo!=null), dias=gAj?Number(a.gozo):cfg.gozo, tAj=!!(a&&a.termo), termo=tAj?a.termo==='SIM':dd<dias, vfer=sal/30*dias, terco=vfer/3, fer=vfer+terco;
-    return {nome:c.nome,cargo:c.cargo||'',empresa:emp,adm:c.adm||'',sal,m,
+    return {nome:c.nome,cargo:c.cargo||'',empresa:emp,adm:c.adm||'',sal,salAj,salAuto,manual,cat:manual?c.cnpj:'',m,
       d13,p1,p2,V1,V2,v1:V1.data,v2:V2.data,
       dd,est,fonte:dr.fonte,ajust:!!(a&&a.dias!=null),gAj,tAj,termo,dias,vfer,terco,fer,
       total:d13+fer, semSal:!sal};
@@ -15860,18 +15968,19 @@ function renderProvisao(){
   setText('prov-k-tot',provBRL(provSoma(rows,'total')));
   const linhaEmp=(lab,r,neg)=>`<tr${neg?' style="background:var(--g50,#f8fafc);font-weight:700"':''}><td>${neg?lab:'<b>'+lab+'</b>'}</td><td style="text-align:center">${r.length}</td><td>${provBRL(provSoma(r,'d13'))}</td><td>${provBRL(provSoma(r,'fer'))}</td><td><b>${provBRL(provSoma(r,'total'))}</b></td></tr>`;
   document.getElementById('prov-emps').innerHTML=PROV_EMP.map(([e,n])=>linhaEmp(n,rows.filter(x=>x.empresa===e))).join('')+linhaEmp('Total',rows,true);
-  const R=v=>`<td style="text-align:right">${v}</td>`, nome=r=>`<td><b>${gpEsc(r.nome)}</b><br><span class="muted">${gpEsc(r.cargo)}</span></td>`;
+  const R=v=>`<td style="text-align:right">${v}</td>`, nome=r=>`<td><b>${gpEsc(r.nome)}</b>${r.cat?` <span class="badge by" title="Preenchimento manual">${r.cat}</span>`:''}<br><span class="muted">${gpEsc(r.cargo)}</span></td>`;
   const vazio=n=>`<tr><td colspan="${n}" class="muted" style="text-align:center;padding:18px">Nenhum colaborador neste filtro.</td></tr>`;
-  const sal=r=>r.semSal?'<span style="color:var(--red)">sem salário</span>':provBRL(r.sal);
+  const sal=r=>{ const cor=r.salAj?'#dcfce7':(r.semSal?(r.manual?'#fff7ed':'#fef2f2'):'#fff'); const nm=gpEsc(r.nome).replace(/'/g,"\\'");
+    return `<input type="text" inputmode="decimal" class="finp" style="width:110px;text-align:right;font-size:12px;font-weight:600;background:${cor}!important;border:1.5px solid ${r.semSal?'#f59e0b':'#cbd5e1'};border-radius:6px" value="${r.sal?moedaFmt(r.sal):''}" placeholder="${r.manual?'preencher':'R$ 0,00'}" title="${r.salAj?'Valor digitado por você — apague para voltar ao do cadastro':(r.manual?'PJ / Sem registro: preencha manualmente':'Salário do cadastro — digite para alterar só na provisão')}" oninput="maskMoedaInput(this)" onchange="provSetSal('${nm}',${D.ano},this.value)">`; };
   const T=(rs,k)=>provBRL(provSoma(rs,k));
   PROV_EMP.forEach(([e])=>{
     const rs=rows.filter(x=>x.empresa===e);
-    document.getElementById('prov-tb-body-13'+e).innerHTML=rs.length?rs.map(r=>`<tr${r.semSal?' style="background:#fef2f2"':''}>${nome(r)}<td>${gpEsc(r.adm)}</td>${R(sal(r))}<td style="text-align:center">${r.m}</td>${R(provBRL(r.d13))}${R(provBRL(r.p1))}<td style="text-align:center">${provVencHtml(r.V1)}</td>${R(provBRL(r.p2))}<td style="text-align:center">${provVencHtml(r.V2)}</td></tr>`).join('')
+    document.getElementById('prov-tb-body-13'+e).innerHTML=rs.length?rs.map(r=>`<tr${r.semSal?(r.manual?' style="background:#fff7ed"':' style="background:#fef2f2"'):''}>${nome(r)}<td>${gpEsc(r.adm)}</td>${R(sal(r))}<td style="text-align:center">${r.m}</td>${R(provBRL(r.d13))}${R(provBRL(r.p1))}<td style="text-align:center">${provVencHtml(r.V1)}</td>${R(provBRL(r.p2))}<td style="text-align:center">${provVencHtml(r.V2)}</td></tr>`).join('')
       +`<tr style="background:var(--g50,#f8fafc);font-weight:700"><td colspan="4">TOTAL (${rs.length})</td>${R(T(rs,'d13'))}${R(T(rs,'p1'))}<td></td>${R(T(rs,'p2'))}<td></td></tr>`:vazio(9);
     document.getElementById('prov-tb-body-fer'+e).innerHTML=rs.length?rs.map(r=>`<tr${r.semSal?' style="background:#fef2f2"':''}>${nome(r)}<td>${gpEsc(r.adm)}</td>${R(sal(r))}<td style="text-align:center"><input type="text" inputmode="numeric" class="finp" style="font-size:15px;font-weight:700;color:#0f172a;width:76px;height:34px;padding:2px 4px;text-align:center;border:1.5px solid #94a3b8;border-radius:6px${r.ajust?';background:#dcfce7!important':(r.fonte==='contabilidade'?';background:#dbeafe!important':';background:#ffedd5!important')}" value="${String(r.dd).replace('.',',')}" title="${r.ajust?'Ajustado por você — apague para voltar ao valor automático ('+String(r.est).replace('.',',')+')':(r.fonte==='contabilidade'?'Calculado com o relatório da contabilidade (saldo + dias acumulados até a data-base)':'Estimativa — digite o saldo real')}" onchange="provSetDias('${gpEsc(r.nome).replace(/'/g,"\\'")}',${D.ano},this.value)"></td><td style="text-align:center"><select class="finp" style="font-size:14px;font-weight:700;height:34px;width:140px;border:1.5px solid #94a3b8;border-radius:6px;color:${r.termo?'#b91c1c':'#0f172a'}${r.tAj?';background:#dcfce7!important':''}" title="${r.tAj?'Definido por você':'Automático: SIM quando dias de direito < dias de gozo'}" onchange="provSetTermo('${gpEsc(r.nome).replace(/'/g,"\\'")}',${D.ano},this.value)"><option value="">Auto (${r.termo?'SIM':'NÃO'})</option><option value="SIM"${r.tAj&&r.termo?' selected':''}>SIM</option><option value="NÃO"${r.tAj&&!r.termo?' selected':''}>NÃO</option></select><br><button class="btn btn-s btn-xs" style="margin-top:3px" onclick="provTermo('${gpEsc(r.nome).replace(/'/g,"\\'")}')">🖨 Termo</button></td><td style="text-align:center"><input type="text" inputmode="numeric" class="finp" style="font-size:15px;font-weight:700;color:#0f172a;width:76px;height:34px;padding:2px 4px;text-align:center;border:1.5px solid #94a3b8;border-radius:6px${r.gAj?';background:#dcfce7!important':''}" value="${r.dias}" title="${r.gAj?'Ajustado só para esta pessoa — apague para voltar ao padrão':'Padrão geral — digite para mudar só esta pessoa'}" onchange="provSetGozo('${gpEsc(r.nome).replace(/'/g,"\\'")}',${D.ano},this.value)"></td>${R(provBRL(r.vfer))}${R(provBRL(r.terco))}${R('<b>'+provBRL(r.fer)+'</b>')}</tr>`).join('')
       +`<tr style="background:var(--g50,#f8fafc);font-weight:700"><td colspan="3">TOTAL (${rs.length})</td><td></td><td style="text-align:center">${rs.filter(r=>r.termo).length} c/ termo</td><td></td>${R(T(rs,'vfer'))}${R(T(rs,'terco'))}${R(T(rs,'fer'))}</tr>`:vazio(9);
   });
-  document.getElementById('prov-aviso').innerHTML=(rows.some(r=>r.semSal)?'⚠ Há colaborador(es) sem salário no cadastro (linha em vermelho). ':'')+'Dias de direito: azul = calculado com o relatório da contabilidade; laranja = estimativa pela admissão; verde = ajustado por você.';
+  document.getElementById('prov-aviso').innerHTML=(rows.some(r=>r.semSal&&!r.manual)?'⚠ Há colaborador(es) sem salário no cadastro (linha em vermelho). ':'')+(rows.some(r=>r.manual)?'PJ e Sem registro (SR): salário em branco para preenchimento manual (linha laranja). ':'')+'Todo salário pode ser alterado aqui (campo verde = ajustado por você). '+'Dias de direito: azul = calculado com o relatório da contabilidade; laranja = estimativa pela admissão; verde = ajustado por você.';
   provAbaSel(provAba);
 }
 function provImprimir(){
