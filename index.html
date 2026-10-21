@@ -25,7 +25,7 @@ body{font-family:'IBM Plex Sans',sans-serif;font-size:13px;color:var(--g800);bac
 
 /* LOGIN */
 #login-screen{position:fixed;inset:0;background:linear-gradient(135deg,#0a1628 0%,var(--navy) 50%,#152040 100%);display:flex;align-items:center;justify-content:center;z-index:999}
-.l-box{background:#fff;border-radius:16px;padding:40px;width:400px;box-shadow:0 32px 80px rgba(0,0,0,.45)}
+.l-box{background:#fff;border-radius:16px;padding:28px 40px;width:400px;max-width:94vw;max-height:96vh;overflow:auto;box-shadow:0 32px 80px rgba(0,0,0,.45)}
 .l-logo{display:flex;align-items:center;gap:12px;margin-bottom:28px}
 .l-icon{width:46px;height:46px;background:var(--blue);border-radius:10px;display:flex;align-items:center;justify-content:center}
 .l-icon svg{width:26px;height:26px;stroke:#fff;fill:none;stroke-width:2}
@@ -455,7 +455,7 @@ body.ad-minimizado #ad-titlebar-text{cursor:pointer}
   <div class="l-box">
     <div class="l-logo">
       <div class="l-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
-      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 5.24 — Medicina Ocupacional: exames ocupacionais (lançamento, histórico no cadastro, conferência com a nota fiscal, fechamento do dia 21 ao 20, valores de referência, painel) e VALIDADE ASO; Versão 5.23 — Cargos, T&D e Desempenho zerados de verdade; Tempo de Empresa igual ao Aniversariantes (todos os meses + Mês atual); botão Anexar nos históricos de salário/cargo e férias; Versão 5.22 — Planejamento 2026 (5W2H), Provisão com salário editável e PJ/SR manual, Medicina Ocupacional atualizada, Aniversariantes (todos os meses + Mês atual), Tempo de Empresa com data da planilha; Tático em branco; sem aba Indicadores; Versão 5.21 — Raphael (Brass→AC) e Edielson (desligado) ajustados; Versão 5.20 — Anexos e fotos com link temporário (privados); Login real por e-mail e senha (Supabase) e script para trancar a base; Convênio: copiar mês anterior e inscrever todos os ativos; Seguro de Vida só em Contratos. Versão 5.15 — Limpeza geral: duplicidades removidas (histórico único de cargo/salário, Folha × Convênio, funções e filtros repetidos), dados de exemplo removidos e tudo editável (Configurações da empresa, cargos, pipeline), verificador de duplicidades; Benefícios sem limite de inscritos (leitura da nuvem em blocos); Convênio médico: mensalidade, desconto do colaborador (50%), dependentes, coparticipação e quadro Nota/Empresa/Repasse; Carta PHS e Prêmio por Assiduidade com a data do dia da impressão; impressão dos históricos de férias e salário/cargo; Histórico de férias: incluir/excluir período e gozo; Férias: botão ✔ Resolvido (guarda o período no histórico), coluna do colaborador mais estreita; menu lateral compacto; botões minimizar/maximizar; Férias por empresa</div></div>
+      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:10px;color:#94a3b8;margin-top:2px">Versão 5.25</div><details style="font-size:10px;color:#94a3b8;margin-top:3px"><summary style="cursor:pointer">Novidades desta versão</summary><div style="max-height:90px;overflow:auto;margin-top:4px">Versão 5.25 — Provisão com Médias editáveis e Incluir/Excluir colaborador, Históricos na aba Gestão e Históricos (abrem ao clicar), Tempo de Empresa com data completa, Medicina Ocupacional puxa só os exames da matriz, Fechamento MedClass removido; Versão 5.24 — Medicina Ocupacional: exames ocupacionais (lançamento, histórico no cadastro, conferência com a nota fiscal, fechamento do dia 21 ao 20, valores de referência, painel) e VALIDADE ASO; Versão 5.23 — Cargos, T&D e Desempenho zerados de verdade; Tempo de Empresa igual ao Aniversariantes (todos os meses + Mês atual); botão Anexar nos históricos de salário/cargo e férias; Versão 5.22 — Planejamento 2026 (5W2H), Provisão com salário editável e PJ/SR manual, Medicina Ocupacional atualizada, Aniversariantes (todos os meses + Mês atual), Tempo de Empresa com data da planilha; Tático em branco; sem aba Indicadores; Versão 5.21 — Raphael (Brass→AC) e Edielson (desligado) ajustados; Versão 5.20 — Anexos e fotos com link temporário (privados); Login real por e-mail e senha (Supabase) e script para trancar a base; Convênio: copiar mês anterior e inscrever todos os ativos; Seguro de Vida só em Contratos. Versão 5.15 — Limpeza geral: duplicidades removidas (histórico único de cargo/salário, Folha × Convênio, funções e filtros repetidos), dados de exemplo removidos e tudo editável (Configurações da empresa, cargos, pipeline), verificador de duplicidades; Benefícios sem limite de inscritos (leitura da nuvem em blocos); Convênio médico: mensalidade, desconto do colaborador (50%), dependentes, coparticipação e quadro Nota/Empresa/Repasse; Carta PHS e Prêmio por Assiduidade com a data do dia da impressão; impressão dos históricos de férias e salário/cargo; Histórico de férias: incluir/excluir período e gozo; Férias: botão ✔ Resolvido (guarda o período no histórico), coluna do colaborador mais estreita; menu lateral compacto; botões minimizar/maximizar; Férias por empresa</div></details></div>
     </div>
     <div class="f-row"><label>E-mail</label><input type="email" id="l-user" autocomplete="username" placeholder="seu.email@acmetalurgica.com.br" onkeydown="if(event.key==='Enter')document.getElementById('l-pass').focus()"></div>
     <div class="f-row"><label>Senha</label><input type="password" id="l-pass" autocomplete="current-password" placeholder="Sua senha" onkeydown="if(event.key==='Enter')entrarSistema()"></div>
@@ -555,9 +555,6 @@ body.ad-minimizado #ad-titlebar-text{cursor:pointer}
     </div>
     <div class="nav-item" data-go="medex" onclick="go('medex',this,'Exames Ocupacionais','Medicina Ocupacional')">
       🧪 Exames Ocupacionais
-    </div>
-    <div class="nav-item" data-go="sstfin" onclick="go('sstfin',this,'Fechamento MedClass','Medicina Ocupacional')">
-      💲 Fechamento MedClass (histórico)
     </div>
     <div class="nav-item" data-go="pcmso" onclick="go('pcmso',this,'Conferência PCMSO','Medicina Ocupacional')">
       ✅ Conferência PCMSO
@@ -708,7 +705,7 @@ body.ad-minimizado #ad-titlebar-text{cursor:pointer}
                 <div class="tab" onclick="colabFichaSwitchTab('endereco')">Endereço</div>
                 <div class="tab" onclick="colabFichaSwitchTab('contratuais')">Dados Contratuais</div>
                 <div class="tab" onclick="colabFichaSwitchTab('folha')">Informações da Folha</div>
-                <div class="tab" onclick="colabFichaSwitchTab('gestao')">Gestão</div>
+                <div class="tab" onclick="colabFichaSwitchTab('gestao')">Gestão e Históricos</div>
                 <div class="tab" onclick="colabFichaSwitchTab('documentos')">Documentos</div>
               </div>
               <div style="padding:16px;overflow-y:auto" id="colab-ficha-tabcontent"></div>
@@ -997,34 +994,7 @@ body.ad-minimizado #ad-titlebar-text{cursor:pointer}
     </div>
 
     <!-- ══ FINANCEIRO SST ══ -->
-    <div id="page-sstfin" class="page">
-      <div class="layer-badge lb-med">● Medicina Ocupacional</div>
-      <div class="section-hdr">
-        <div class="sec-title"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Fechamento MedClass</div>
-      </div>
-      <div class="filters" style="margin-bottom:12px">
-        <select class="fsel" id="sf-cnpj-sel" onchange="renderSSTFinanceiro()">
-          <option value="">AC + BRASS</option><option value="AC">AC</option><option value="BRASS">BRASS</option>
-        </select>
-        <span class="chip" id="sf-count">— períodos</span>
-        <button class="btn btn-s btn-sm" onclick="document.getElementById('sf-cnpj-sel').value='';renderSSTFinanceiro()">🔄 Limpar</button>
-        <button class="btn btn-s btn-sm" onclick="exportTableToExcel('sst_financeiro',[{field:'cnpj',label:'CNPJ',width:10},{field:'periodo',label:'Período',width:18},{field:'qtdVidas',label:'Vidas Ativas',width:14},{field:'totalVidas',label:'Valor Vidas (R$)',width:16},{field:'valorTotalExames',label:'Valor Exames (R$)',width:16},{field:'valorTotalGeral',label:'Valor Total (R$)',width:16}],'FinanceiroSST')">⬇ Exportar</button>
-      </div>
-      <div class="kpi-grid">
-        <div class="kpi-card"><div class="kpi-lbl">Total no ano (filtro atual)</div><div class="kpi-val" style="color:var(--blue)" id="sf-kpi-total">—</div></div>
-        <div class="kpi-card"><div class="kpi-lbl">Média mensal</div><div class="kpi-val" id="sf-kpi-media">—</div></div>
-        <div class="kpi-card"><div class="kpi-lbl">Vidas ativas (mês mais recente)</div><div class="kpi-val" style="color:var(--green)" id="sf-kpi-vidas">—</div></div>
-        <div class="kpi-card"><div class="kpi-lbl">Períodos lançados</div><div class="kpi-val" id="sf-kpi-periodos">—</div></div>
-      </div>
-      <div class="card" style="padding:12px;margin-bottom:14px">
-        <div class="card-hdr" style="padding:0 0 10px 0">📈 Custo Mensal — MedClass</div>
-        <div style="height:220px"><canvas id="sf-chart"></canvas></div>
-      </div>
-      <div id="sf-lista"></div>
-    </div>
-
-    <!-- ══ EXAMES OCUPACIONAIS (gestão) ══ -->
-    <div id="page-medex" class="page">
+<div id="page-medex" class="page">
       <div class="layer-badge lb-med">● Medicina Ocupacional</div>
       <div class="section-hdr">
         <div class="sec-title">🧪 Exames Ocupacionais — lançamento, conferência e fechamento</div>
@@ -2190,7 +2160,6 @@ function go(id,el,title,bread){
   if(id==='feedback90'){setTimeout(()=>{try{renderFeedback90();}catch(e){console.warn('feedback90:',e);}},80);}
   if(id==='desccargos'){setTimeout(()=>{try{renderDescCargos();}catch(e){console.warn('desccargos:',e);}},80);}
   if(id==='ordemservico'){setTimeout(()=>{try{renderOrdensServico();}catch(e){console.warn('ordemservico:',e);}},80);}
-  if(id==='sstfin'){setTimeout(()=>{try{renderSSTFinanceiro();}catch(e){console.warn('sstfin:',e);}},80);}
   if(id==='pcmso'){setTimeout(()=>{try{pcmsoRenderAll();}catch(e){console.warn('pcmso:',e);}},80);}
   if(id==='medex'){setTimeout(()=>{try{medexRender();}catch(e){console.warn('medex:',e);}},60);}
   if(id==='exameaso'){setTimeout(()=>{try{medAsoInjetar();gpRender('exameaso');}catch(e){console.warn('exameaso:',e);}},60);}
@@ -3525,13 +3494,18 @@ function colabFichaSwitchTab(tab) {
       cfField('Matrícula eSocial', c.matriculaEsocial) + cfField('Status', c.status) + cfField('Função', c.funcao) +
       cfField('FGTS — Opção em', c.fgtsOpcao) +
       cfField('Contrato de experiência', c.expIni ? c.expIni+' a '+(c.expFim||'—')+(c.expFimProrrog?' (prorrogado até '+c.expFimProrrog+')':'') : '') + ''
-    ) + `<div style="margin-top:8px"><button class="btn btn-s btn-sm" onclick="fgAbrir('${escAttr(c.nome)}')">📜 Histórico de férias</button></div>`;
+    );
   } else if (tab === 'folha') {
     box.innerHTML = grid(
       cfField('Salário', c.sal ? 'R$ '+moedaFmt(c.sal) : '') + cfField('Horário de Trabalho', c.horarioTrabalho) + ''
-    ) + chHtml(c) + (typeof medHistHtml==='function'?medHistHtml(c):'');
+    );
   } else if (tab === 'gestao') {
-    box.innerHTML = grid(cfField('Status', c.status) + '') + `<div style="margin-top:10px">${cfField('Observações', c.observacoes)}</div>`;
+    box.innerHTML = grid(cfField('Status', c.status) + '') + `<div style="margin-top:10px">${cfField('Observações', c.observacoes)}</div>
+      <div style="margin-top:16px"><div style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--g500);margin-bottom:8px">Históricos</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-s btn-sm" onclick="fgAbrir('${escAttr(c.nome)}')">📜 Histórico de férias</button>
+        <button class="btn btn-s btn-sm" onclick="chAbrir(${c.id})">📜 Histórico de salário e cargo</button>
+        <button class="btn btn-s btn-sm" onclick="medHistAbrir(${c.id})">🩺 Histórico de exames ocupacionais</button></div></div>`;
   } else if (tab === 'documentos') {
     box.innerHTML = colabDocumentosHtml(c);
   }
@@ -4684,7 +4658,7 @@ function renderTempoEmpresa() {
       <td><strong style="font-size:11px">${endoEsc(x.nome)}</strong>${x.fora ? ' <span class="badge bgy" title="Está na planilha de tempo de empresa, mas não no cadastro de colaboradores">fora do cadastro</span>' : ''}</td>
       <td style="font-size:11px">${endoEsc(x.cargo)}</td><td>${endoEsc(x.setor)}</td>
       <td><span class="badge bgy">${endoEmpNome(x.emp)}</span></td>
-      <td><input type="text" class="finp" style="width:96px;font-size:12px${x.difere?';background:#fef9c3':''}" value="${escAttr(x.adm)}" placeholder="dd/mm/aaaa" title="${x.difere?'Data do controle de comemoração (planilha). No cadastro consta '+escAttr(x.admCad)+' — o cadastro não é alterado.':'Editável: vale só para este controle de comemoração'}" onchange="tempoSalvarBase('${nomeJs}',this.value)"></td><td>${x.t.texto}</td>
+      <td><input type="text" class="finp" style="width:112px;min-width:112px;padding:4px 6px;font-size:12px${x.difere?';background:#fef9c3':''}" value="${escAttr(x.adm)}" placeholder="dd/mm/aaaa" title="${x.difere?'Data do controle de comemoração (planilha). No cadastro consta '+escAttr(x.admCad)+' — o cadastro não é alterado.':'Editável: vale só para este controle de comemoração'}" onchange="tempoSalvarBase('${nomeJs}',this.value)"></td><td>${x.t.texto}</td>
       <td>${tempoFmt(x.prox)} — <strong>${x.anos} ${x.anos===1?'ano':'anos'}</strong>${x.marco ? ' <span class="badge bo">🏅 Marco</span>' : ''}</td>
       <td><input type="text" class="finp" style="width:150px" value="${escAttr(ctrl.presente)}" placeholder="Presente..." onchange="tempoSalvarCtrl('${nomeJs}',${x.prox.getFullYear()},'presente',this.value)"></td>
       <td style="text-align:center"><input type="checkbox" ${ctrl.entregue ? 'checked' : ''} title="Presente entregue" onchange="tempoSalvarCtrl('${nomeJs}',${x.prox.getFullYear()},'entregue',this.checked)"></td><td>${endoBtnExcluir('tempo',x)}</td></tr>`;
@@ -5875,7 +5849,7 @@ function hxExcluirAnexo(id){
   });
 }
 function hxLimpar(ref,regId){ loadData('anexos_gerais').filter(a=>a.ref===ref&&a.regId===regId).forEach(a=>{ try{ if(supabaseClient&&a.caminho) supabaseClient.storage.from('documentos-rh').remove([a.caminho]); }catch(e){} crudDeleteFisico('anexos_gerais',a.id,{modulo:'Anexos',label:a.nomeArquivo}); }); }
-function hxVoltar(){ try{ if(HX_ANX.volta==='fg') fgAbrir(FG_NOME,true); }catch(e){} }
+function hxVoltar(){ try{ const v=HX_ANX.volta||''; if(v==='fg') fgAbrir(FG_NOME,true); else if(v.indexOf('ch:')===0) chAbrir(+v.slice(3)); else if(v.indexOf('med:')===0) medHistAbrir(+v.slice(4)); }catch(e){} }
 function hxRefrescar(){ try{ if(HX_ANX.ref==='colab_hist') colabFichaSwitchTab(window._cfTabAtiva||'folha'); }catch(e){} }
 
 const MOD_COLAB_HIST = {
@@ -5893,7 +5867,7 @@ const MOD_COLAB_HIST = {
     {field:'status', label:'Status', type:'select', options:['Ativo','Inativo']},
   ],
   beforeSave: (o) => { if(!o.status) o.status='Ativo'; const c=loadData('colaboradores').find(x=>normSemAcento(x.nome)===normSemAcento(o.colaborador)); if(c) o.colaboradorId=c.id; },
-  onSave: () => { try{ colabFichaSwitchTab(window._cfTabAtiva||'folha'); }catch(e){} }
+  onSave: () => { try{ colabFichaSwitchTab(window._cfTabAtiva||'folha'); }catch(e){} histRefrescar(); }
 };
 function chLista(c){
   return loadData('colaboradores_hist_dummy').length?[]:loadData('colab_hist').filter(h=>h.status!=='Inativo'&&(h.colaboradorId===c.id||normSemAcento(h.colaborador)===normSemAcento(c.nome)))
@@ -5905,7 +5879,7 @@ function chHtml(c){
   const rows=l.map(h=>`<tr style="border-bottom:1px solid var(--g100)"><td style="white-space:nowrap">${h.data||'—'}</td><td>${gpEsc(h.tipo||'')}</td>
     <td style="white-space:nowrap;text-align:right">${h.salario!==undefined&&h.salario!==''&&h.salario!==null?'R$ '+fmtBRL(Number(h.salario)):'—'}${prev[h.id]!==undefined?`<div style="font-size:9px;color:${prev[h.id]>=0?'var(--green,#167a3d)':'var(--red)'}">${prev[h.id]>=0?'+':''}${prev[h.id].toFixed(1).replace('.',',')}%</div>`:''}</td>
     <td style="font-size:11px">${h.cargoDe||h.cargoPara?gpEsc((h.cargoDe?h.cargoDe+' → ':'')+(h.cargoPara||'')):'—'}</td><td style="font-size:11px">${gpEsc(h.motivo||'')}${h.obs?'<div class="muted" style="font-size:10px">'+gpEsc(h.obs)+'</div>':''}</td>
-    <td style="white-space:nowrap">${hxBtn('colab_hist',h.id,c.nome+' — '+(h.tipo||'')+' '+(h.data||''))} <button class="btn btn-s btn-xs" onclick="openCrudModal(MOD_COLAB_HIST,${h.id})">✏</button> <button class="btn btn-s btn-xs" onclick="chExcluir(${h.id})">🗑</button></td></tr>`).join('');
+    <td style="white-space:nowrap">${hxBtn('colab_hist',h.id,c.nome+' — '+(h.tipo||'')+' '+(h.data||''),'ch:'+c.id)} <button class="btn btn-s btn-xs" onclick="openCrudModal(MOD_COLAB_HIST,${h.id})">✏</button> <button class="btn btn-s btn-xs" onclick="chExcluir(${h.id})">🗑</button></td></tr>`).join('');
   return `<div style="margin-top:14px"><div style="display:flex;align-items:center;gap:10px;margin-bottom:6px"><b style="font-size:12px;text-transform:uppercase;color:var(--g500)">Histórico de salário e cargo</b><button class="btn btn-p btn-xs" onclick="chNovo(${c.id})">+ Incluir</button><button class="btn btn-s btn-xs" onclick="chImprimir(${c.id})">🖨 Imprimir</button></div>
     <div style="overflow-x:auto"><table style="width:100%"><thead><tr><th>Data</th><th>Tipo</th><th style="text-align:right">Salário</th><th>Cargo</th><th>Motivo</th><th></th></tr></thead><tbody>${rows||'<tr><td colspan="6" class="muted" style="padding:10px">Nenhum registro.</td></tr>'}</tbody></table></div></div>`;
 }
@@ -5939,6 +5913,16 @@ function chImprimir(colabId){
     return `<tr><td>${h.data||'—'}</td><td>${gpEsc(h.tipo||'')}</td><td class="r">${tem?'R$ '+fmtBRL(Number(h.salario)):'—'}</td><td class="c">${pct!==''?(pct>=0?'+':'')+pct.toFixed(1).replace('.',',')+'%':''}</td><td>${h.cargoDe||h.cargoPara?gpEsc((h.cargoDe?h.cargoDe+' → ':'')+(h.cargoPara||'')):'—'}</td><td>${gpEsc(h.motivo||'')}${h.obs?' — '+gpEsc(h.obs):''}</td></tr>`; }).join('')||'<tr><td colspan="6">Nenhum registro.</td></tr>';
   abrirReciboModal('🖨 Histórico de salário e cargo — '+c.nome, docPageCSS(emp)+HIST_PRINT_CSS+`<div class="doc-print hp">${cab}<table><thead><tr><th>Data</th><th>Tipo</th><th>Salário</th><th>Reajuste</th><th>Cargo</th><th>Motivo</th></tr></thead><tbody>${rows}</tbody></table></div>`, false);
 }
+let HIST_ABERTO=null;
+function histAbrirModal(tipo,colabId){
+  const c=loadData('colaboradores').find(x=>x.id===colabId); if(!c) return;
+  HIST_ABERTO={tipo,colabId};
+  const html=tipo==='ch'?chHtml(c):medHistHtml(c);
+  abrirModalSimples((tipo==='ch'?'📜 Histórico de salário e cargo — ':'🩺 Histórico de exames ocupacionais — ')+c.nome,html,980);
+}
+function chAbrir(colabId){ histAbrirModal('ch',colabId); }
+function medHistAbrir(colabId){ histAbrirModal('med',colabId); }
+function histRefrescar(){ try{ const m=document.getElementById('m-simples'); if(HIST_ABERTO&&m&&m.classList.contains('open')&&document.getElementById('m-simples-titulo').textContent.indexOf('Histórico de')>=0) histAbrirModal(HIST_ABERTO.tipo,HIST_ABERTO.colabId); }catch(e){} }
 function chNovo(colabId){
   const c=loadData('colaboradores').find(x=>x.id===colabId); if(!c) return;
   openCrudModal(MOD_COLAB_HIST,null);
@@ -16007,13 +15991,31 @@ function provSetAj(nome,ano,campo,v){
   const chave=nome+'|'+ano, a=provAjustes()[chave], s=String(v).trim();
   let val=null;
   if(campo==='termo'){ val=(s==='SIM'||s==='NÃO')?s:null; }
+  else if(campo==='exc'){ val=(s==='EXC'||s==='INC')?s:null; }
+  else if(campo==='med'){ val=s===''?null:moedaNum(s); if(val!==null&&(isNaN(val)||val<0)){ showToast('Média inválida','warn'); renderProvisao(); return; } }
   else if(campo==='sal'){ val=s===''?null:moedaNum(s); if(val!==null&&(isNaN(val)||val<0)){ showToast('Salário inválido','warn'); renderProvisao(); return; } }
   else if(s!==''){ val=Math.round(parseFloat(s.replace(',','.'))*2)/2; if(isNaN(val)||val<(campo==='gozo'?1:0)||val>(campo==='gozo'?30:90)){ showToast((campo==='gozo'?'Dias de gozo: de 1 a 30':'Dias de direito: de 0 a 90'),'warn'); renderProvisao(); return; } }
-  const o=Object.assign({dias:a&&a.dias!=null?a.dias:null,gozo:a&&a.gozo!=null?a.gozo:null,termo:a&&a.termo?a.termo:null,sal:a&&a.sal!=null?a.sal:null},{[campo]:val});
-  if(o.dias==null&&o.gozo==null&&o.termo==null&&o.sal==null){ if(a) crudDeleteFisico('provisao_ajuste',a.id); showToast('↺ Voltou para o automático'); }
-  else if(a) crudUpdate('provisao_ajuste',a.id,{dias:o.dias,gozo:o.gozo,termo:o.termo,sal:o.sal},{modulo:'Provisão'});
-  else crudCreate('provisao_ajuste',{chave,dias:o.dias,gozo:o.gozo,termo:o.termo,sal:o.sal},{modulo:'Provisão',label:nome});
+  const o=Object.assign({dias:a&&a.dias!=null?a.dias:null,gozo:a&&a.gozo!=null?a.gozo:null,termo:a&&a.termo?a.termo:null,sal:a&&a.sal!=null?a.sal:null,med:a&&a.med!=null?a.med:null,exc:a&&a.exc?a.exc:null},{[campo]:val});
+  if(o.dias==null&&o.gozo==null&&o.termo==null&&o.sal==null&&o.med==null&&o.exc==null){ if(a) crudDeleteFisico('provisao_ajuste',a.id); showToast('↺ Voltou para o automático'); }
+  else if(a) crudUpdate('provisao_ajuste',a.id,{dias:o.dias,gozo:o.gozo,termo:o.termo,sal:o.sal,med:o.med,exc:o.exc},{modulo:'Provisão'});
+  else crudCreate('provisao_ajuste',{chave,dias:o.dias,gozo:o.gozo,termo:o.termo,sal:o.sal,med:o.med,exc:o.exc},{modulo:'Provisão',label:nome});
   renderProvisao();
+}
+function provSetMed(nome,ano,v){ provSetAj(nome,ano,'med',v); }
+function provExcluir(nome){
+  const ano=Number((document.getElementById('prov-ano')||{}).value)||new Date().getFullYear();
+  confirmAction('Tirar '+nome+' da provisão de '+ano+'? O cadastro do colaborador não é alterado; você pode incluir de volta pelo botão "Incluir colaborador".',()=>{ provSetAj(nome,ano,'exc','EXC'); showToast('✓ '+nome+' saiu da provisão'); });
+}
+function provIncluir(nome){ const ano=Number((document.getElementById('prov-ano')||{}).value)||new Date().getFullYear(); provSetAj(nome,ano,'exc','INC'); showToast('✓ '+nome+' incluído na provisão'); provIncluirModal(); }
+function provCandidatos(ano){
+  const aj=provAjustes();
+  return loadData('colaboradores').filter(c=>{ const a=aj[c.nome+'|'+ano], e=a&&a.exc; return provMeses(c.adm,ano)>0 && ((c.status==='Inativo'&&e!=='INC')||e==='EXC'); }).sort((x,y)=>x.nome.localeCompare(y.nome));
+}
+function provIncluirModal(){
+  const ano=Number((document.getElementById('prov-ano')||{}).value)||new Date().getFullYear();
+  const cand=provCandidatos(ano), aj=provAjustes();
+  const lin=cand.map(c=>{ const nm=gpEsc(c.nome).replace(/'/g,"\\'"); const exc=(aj[c.nome+'|'+ano]||{}).exc==='EXC'; return `<tr><td><b>${gpEsc(c.nome)}</b><br><span class="muted">${gpEsc(c.cargo||'')}</span></td><td>${gpEsc(c.adm||'')}</td><td>${exc?'Tirado da provisão':'Inativo no cadastro'}</td><td><button class="btn btn-p btn-sm" onclick="provIncluir('${nm}')">➕ Incluir</button></td></tr>`; }).join('');
+  abrirModalSimples('➕ Incluir colaborador na provisão '+ano,`<p class="muted" style="font-size:12px;margin-bottom:8px">Aparecem aqui quem foi tirado da provisão e quem está inativo no cadastro. O cadastro não é alterado.</p>${cand.length?`<div class="card" style="padding:0;overflow-x:auto"><table><thead><tr><th>Colaborador</th><th>Admissão</th><th>Situação</th><th></th></tr></thead><tbody>${lin}</tbody></table></div>`:'<p class="muted" style="padding:14px;text-align:center">Todos os colaboradores ativos já estão na provisão.</p>'}`,720);
 }
 function provSetSal(nome,ano,v){ provSetAj(nome,ano,'sal',v); }
 function provSetTermo(nome,ano,v){ provSetAj(nome,ano,'termo',v); }
@@ -16024,12 +16026,12 @@ function provDados(){
   const q=((document.getElementById('prov-busca')||{}).value||'').toLowerCase().trim();
   const cfg=provCfg(), aj=provAjustes();
   const V1=provVenc(ano,11,30), V2=provVenc(ano,12,20);
-  let rows=loadData('colaboradores').filter(c=>c.status!=='Inativo').map(c=>{
+  let rows=loadData('colaboradores').filter(c=>{ const e=(aj[c.nome+'|'+ano]||{}).exc; return e==='INC'||(c.status!=='Inativo'&&e!=='EXC'); }).map(c=>{
     const manual=!colabEhCLT(c), a0=aj[c.nome+'|'+ano], salAj=!!(a0&&a0.sal!=null), salAuto=manual?0:(moedaNum(c.sal)||0), sal=salAj?Number(a0.sal):salAuto, m=provMeses(c.adm,ano), emp=(c.cnpj==='02')?'BRASS':'AC';
-    const d13=sal/12*m, p1=d13*0.5, p2=d13-p1;
+    const med=(a0&&a0.med!=null)?Number(a0.med):0, base=sal+med, d13=base/12*m, p1=d13*0.5, p2=d13-p1;
     const dr=provDiasDireito(c.adm,ano,c.nome), est=dr.dias, a=aj[c.nome+'|'+ano], dd=(a&&a.dias!=null)?Number(a.dias):est;
-    const gAj=!!(a&&a.gozo!=null), dias=gAj?Number(a.gozo):cfg.gozo, tAj=!!(a&&a.termo), termo=tAj?a.termo==='SIM':dd<dias, vfer=sal/30*dias, terco=vfer/3, fer=vfer+terco;
-    return {nome:c.nome,cargo:c.cargo||'',empresa:emp,adm:c.adm||'',sal,salAj,salAuto,manual,cat:manual?c.cnpj:'',m,
+    const gAj=!!(a&&a.gozo!=null), dias=gAj?Number(a.gozo):cfg.gozo, tAj=!!(a&&a.termo), termo=tAj?a.termo==='SIM':dd<dias, vfer=base/30*dias, terco=vfer/3, fer=vfer+terco;
+    return {nome:c.nome,cargo:c.cargo||'',empresa:emp,adm:c.adm||'',sal,med,base,incl:!!(a0&&a0.exc==='INC'),salAj,salAuto,manual,cat:manual?c.cnpj:'',m,
       d13,p1,p2,V1,V2,v1:V1.data,v2:V2.data,
       dd,est,fonte:dr.fonte,ajust:!!(a&&a.dias!=null),gAj,tAj,termo,dias,vfer,terco,fer,
       total:d13+fer, semSal:!sal};
@@ -16054,19 +16056,20 @@ function renderProvisao(){
   setText('prov-k-tot',provBRL(provSoma(rows,'total')));
   const linhaEmp=(lab,r,neg)=>`<tr${neg?' style="background:var(--g50,#f8fafc);font-weight:700"':''}><td>${neg?lab:'<b>'+lab+'</b>'}</td><td style="text-align:center">${r.length}</td><td>${provBRL(provSoma(r,'d13'))}</td><td>${provBRL(provSoma(r,'fer'))}</td><td><b>${provBRL(provSoma(r,'total'))}</b></td></tr>`;
   document.getElementById('prov-emps').innerHTML=PROV_EMP.map(([e,n])=>linhaEmp(n,rows.filter(x=>x.empresa===e))).join('')+linhaEmp('Total',rows,true);
-  const R=v=>`<td style="text-align:right">${v}</td>`, nome=r=>`<td><b>${gpEsc(r.nome)}</b>${r.cat?` <span class="badge by" title="Preenchimento manual">${r.cat}</span>`:''}<br><span class="muted">${gpEsc(r.cargo)}</span></td>`;
+  const R=v=>`<td style="text-align:right">${v}</td>`, nome=r=>`<td><b>${gpEsc(r.nome)}</b>${r.cat?` <span class="badge by" title="Preenchimento manual">${r.cat}</span>`:''}${r.incl?' <span class="badge bb" title="Incluído manualmente">incluído</span>':''}<br><span class="muted">${gpEsc(r.cargo)}</span> <button class="btn btn-s btn-xs" style="margin-left:4px;color:#b91c1c" title="Tirar da provisão (não altera o cadastro)" onclick="provExcluir('${gpEsc(r.nome).replace(/'/g,"\\'")}')">✕ Excluir</button></td>`;
+  const medIn=r=>`<input type="text" inputmode="decimal" class="finp" style="width:100px;text-align:right;font-size:12px;font-weight:600;${r.med?'background:#dcfce7!important;':''}border:1.5px solid #cbd5e1;border-radius:6px" value="${r.med?moedaFmt(r.med):''}" placeholder="R$ 0,00" title="Média mensal de horas extras, adicionais e outras variáveis. É somada ao salário para calcular 13º e férias." oninput="maskMoedaInput(this)" onchange="provSetMed('${gpEsc(r.nome).replace(/'/g,"\\'")}',${D.ano},this.value)">`;
   const vazio=n=>`<tr><td colspan="${n}" class="muted" style="text-align:center;padding:18px">Nenhum colaborador neste filtro.</td></tr>`;
   const sal=r=>{ const cor=r.salAj?'#dcfce7':(r.semSal?(r.manual?'#fff7ed':'#fef2f2'):'#fff'); const nm=gpEsc(r.nome).replace(/'/g,"\\'");
     return `<input type="text" inputmode="decimal" class="finp" style="width:110px;text-align:right;font-size:12px;font-weight:600;background:${cor}!important;border:1.5px solid ${r.semSal?'#f59e0b':'#cbd5e1'};border-radius:6px" value="${r.sal?moedaFmt(r.sal):''}" placeholder="${r.manual?'preencher':'R$ 0,00'}" title="${r.salAj?'Valor digitado por você — apague para voltar ao do cadastro':(r.manual?'PJ / Sem registro: preencha manualmente':'Salário do cadastro — digite para alterar só na provisão')}" oninput="maskMoedaInput(this)" onchange="provSetSal('${nm}',${D.ano},this.value)">`; };
   const T=(rs,k)=>provBRL(provSoma(rs,k));
   PROV_EMP.forEach(([e])=>{
     const rs=rows.filter(x=>x.empresa===e);
-    document.getElementById('prov-tb-body-13'+e).innerHTML=rs.length?rs.map(r=>`<tr${r.semSal?(r.manual?' style="background:#fff7ed"':' style="background:#fef2f2"'):''}>${nome(r)}<td>${gpEsc(r.adm)}</td>${R(sal(r))}<td style="text-align:center">${r.m}</td>${R(provBRL(r.d13))}${R(provBRL(r.p1))}<td style="text-align:center">${provVencHtml(r.V1)}</td>${R(provBRL(r.p2))}<td style="text-align:center">${provVencHtml(r.V2)}</td></tr>`).join('')
-      +`<tr style="background:var(--g50,#f8fafc);font-weight:700"><td colspan="4">TOTAL (${rs.length})</td>${R(T(rs,'d13'))}${R(T(rs,'p1'))}<td></td>${R(T(rs,'p2'))}<td></td></tr>`:vazio(9);
-    document.getElementById('prov-tb-body-fer'+e).innerHTML=rs.length?rs.map(r=>`<tr${r.semSal?' style="background:#fef2f2"':''}>${nome(r)}<td>${gpEsc(r.adm)}</td>${R(sal(r))}<td style="text-align:center"><input type="text" inputmode="numeric" class="finp" style="font-size:15px;font-weight:700;color:#0f172a;width:76px;height:34px;padding:2px 4px;text-align:center;border:1.5px solid #94a3b8;border-radius:6px${r.ajust?';background:#dcfce7!important':(r.fonte==='contabilidade'?';background:#dbeafe!important':';background:#ffedd5!important')}" value="${String(r.dd).replace('.',',')}" title="${r.ajust?'Ajustado por você — apague para voltar ao valor automático ('+String(r.est).replace('.',',')+')':(r.fonte==='contabilidade'?'Calculado com o relatório da contabilidade (saldo + dias acumulados até a data-base)':'Estimativa — digite o saldo real')}" onchange="provSetDias('${gpEsc(r.nome).replace(/'/g,"\\'")}',${D.ano},this.value)"></td><td style="text-align:center"><select class="finp" style="font-size:14px;font-weight:700;height:34px;width:140px;border:1.5px solid #94a3b8;border-radius:6px;color:${r.termo?'#b91c1c':'#0f172a'}${r.tAj?';background:#dcfce7!important':''}" title="${r.tAj?'Definido por você':'Automático: SIM quando dias de direito < dias de gozo'}" onchange="provSetTermo('${gpEsc(r.nome).replace(/'/g,"\\'")}',${D.ano},this.value)"><option value="">Auto (${r.termo?'SIM':'NÃO'})</option><option value="SIM"${r.tAj&&r.termo?' selected':''}>SIM</option><option value="NÃO"${r.tAj&&!r.termo?' selected':''}>NÃO</option></select><br><button class="btn btn-s btn-xs" style="margin-top:3px" onclick="provTermo('${gpEsc(r.nome).replace(/'/g,"\\'")}')">🖨 Termo</button></td><td style="text-align:center"><input type="text" inputmode="numeric" class="finp" style="font-size:15px;font-weight:700;color:#0f172a;width:76px;height:34px;padding:2px 4px;text-align:center;border:1.5px solid #94a3b8;border-radius:6px${r.gAj?';background:#dcfce7!important':''}" value="${r.dias}" title="${r.gAj?'Ajustado só para esta pessoa — apague para voltar ao padrão':'Padrão geral — digite para mudar só esta pessoa'}" onchange="provSetGozo('${gpEsc(r.nome).replace(/'/g,"\\'")}',${D.ano},this.value)"></td>${R(provBRL(r.vfer))}${R(provBRL(r.terco))}${R('<b>'+provBRL(r.fer)+'</b>')}</tr>`).join('')
-      +`<tr style="background:var(--g50,#f8fafc);font-weight:700"><td colspan="3">TOTAL (${rs.length})</td><td></td><td style="text-align:center">${rs.filter(r=>r.termo).length} c/ termo</td><td></td>${R(T(rs,'vfer'))}${R(T(rs,'terco'))}${R(T(rs,'fer'))}</tr>`:vazio(9);
+    document.getElementById('prov-tb-body-13'+e).innerHTML=rs.length?rs.map(r=>`<tr${r.semSal?(r.manual?' style="background:#fff7ed"':' style="background:#fef2f2"'):''}>${nome(r)}<td>${gpEsc(r.adm)}</td>${R(sal(r))}${R(medIn(r))}<td style="text-align:center">${r.m}</td>${R(provBRL(r.d13))}${R(provBRL(r.p1))}<td style="text-align:center">${provVencHtml(r.V1)}</td>${R(provBRL(r.p2))}<td style="text-align:center">${provVencHtml(r.V2)}</td></tr>`).join('')
+      +`<tr style="background:var(--g50,#f8fafc);font-weight:700"><td colspan="5">TOTAL (${rs.length})</td>${R(T(rs,'d13'))}${R(T(rs,'p1'))}<td></td>${R(T(rs,'p2'))}<td></td></tr>`:vazio(10);
+    document.getElementById('prov-tb-body-fer'+e).innerHTML=rs.length?rs.map(r=>`<tr${r.semSal?' style="background:#fef2f2"':''}>${nome(r)}<td>${gpEsc(r.adm)}</td>${R(sal(r))}${R(medIn(r))}<td style="text-align:center"><input type="text" inputmode="numeric" class="finp" style="font-size:15px;font-weight:700;color:#0f172a;width:76px;height:34px;padding:2px 4px;text-align:center;border:1.5px solid #94a3b8;border-radius:6px${r.ajust?';background:#dcfce7!important':(r.fonte==='contabilidade'?';background:#dbeafe!important':';background:#ffedd5!important')}" value="${String(r.dd).replace('.',',')}" title="${r.ajust?'Ajustado por você — apague para voltar ao valor automático ('+String(r.est).replace('.',',')+')':(r.fonte==='contabilidade'?'Calculado com o relatório da contabilidade (saldo + dias acumulados até a data-base)':'Estimativa — digite o saldo real')}" onchange="provSetDias('${gpEsc(r.nome).replace(/'/g,"\\'")}',${D.ano},this.value)"></td><td style="text-align:center"><select class="finp" style="font-size:14px;font-weight:700;height:34px;width:140px;border:1.5px solid #94a3b8;border-radius:6px;color:${r.termo?'#b91c1c':'#0f172a'}${r.tAj?';background:#dcfce7!important':''}" title="${r.tAj?'Definido por você':'Automático: SIM quando dias de direito < dias de gozo'}" onchange="provSetTermo('${gpEsc(r.nome).replace(/'/g,"\\'")}',${D.ano},this.value)"><option value="">Auto (${r.termo?'SIM':'NÃO'})</option><option value="SIM"${r.tAj&&r.termo?' selected':''}>SIM</option><option value="NÃO"${r.tAj&&!r.termo?' selected':''}>NÃO</option></select><br><button class="btn btn-s btn-xs" style="margin-top:3px" onclick="provTermo('${gpEsc(r.nome).replace(/'/g,"\\'")}')">🖨 Termo</button></td><td style="text-align:center"><input type="text" inputmode="numeric" class="finp" style="font-size:15px;font-weight:700;color:#0f172a;width:76px;height:34px;padding:2px 4px;text-align:center;border:1.5px solid #94a3b8;border-radius:6px${r.gAj?';background:#dcfce7!important':''}" value="${r.dias}" title="${r.gAj?'Ajustado só para esta pessoa — apague para voltar ao padrão':'Padrão geral — digite para mudar só esta pessoa'}" onchange="provSetGozo('${gpEsc(r.nome).replace(/'/g,"\\'")}',${D.ano},this.value)"></td>${R(provBRL(r.vfer))}${R(provBRL(r.terco))}${R('<b>'+provBRL(r.fer)+'</b>')}</tr>`).join('')
+      +`<tr style="background:var(--g50,#f8fafc);font-weight:700"><td colspan="4">TOTAL (${rs.length})</td><td></td><td style="text-align:center">${rs.filter(r=>r.termo).length} c/ termo</td><td></td>${R(T(rs,'vfer'))}${R(T(rs,'terco'))}${R(T(rs,'fer'))}</tr>`:vazio(10);
   });
-  document.getElementById('prov-aviso').innerHTML=(rows.some(r=>r.semSal&&!r.manual)?'⚠ Há colaborador(es) sem salário no cadastro (linha em vermelho). ':'')+(rows.some(r=>r.manual)?'PJ e Sem registro (SR): salário em branco para preenchimento manual (linha laranja). ':'')+'Todo salário pode ser alterado aqui (campo verde = ajustado por você). '+'Dias de direito: azul = calculado com o relatório da contabilidade; laranja = estimativa pela admissão; verde = ajustado por você.';
+  document.getElementById('prov-aviso').innerHTML=(rows.some(r=>r.semSal&&!r.manual)?'⚠ Há colaborador(es) sem salário no cadastro (linha em vermelho). ':'')+(rows.some(r=>r.manual)?'PJ e Sem registro (SR): salário em branco para preenchimento manual (linha laranja). ':'')+'Todo salário pode ser alterado aqui (campo verde = ajustado por você). '+'Dias de direito: azul = calculado com o relatório da contabilidade; laranja = estimativa pela admissão; verde = ajustado por você. Médias = valor mensal de horas extras e adicionais, somado ao salário no cálculo. ✕ Excluir tira a pessoa só da provisão; ➕ Incluir colaborador traz de volta.';
   provAbaSel(provAba);
 }
 function provImprimir(){
@@ -16080,13 +16083,13 @@ function provImprimir(){
   if(provAba.startsWith('13')){
     if(!rs.length){ showToast('Nada para imprimir','warn'); return; }
     titulo='Provisão 13º '+enome+' '+D.ano;
-    const lin=rs.map(r=>`<tr style="border-bottom:1px solid #ddd">${cel(gpEsc(r.nome))}${cel(gpEsc(r.adm),'center')}${cel(provBRL(r.sal),'right')}${cel(r.m,'center')}${cel(provBRL(r.d13),'right')}${cel(provBRL(r.p1),'right')}${cel(provBRL(r.p2),'right')}</tr>`).join('');
-    corpo=cab('13º SALÁRIO — '+enome.toUpperCase(),`1ª parcela ${rs[0].v1} · 2ª parcela ${rs[0].v2} · valores brutos`)+`<table style="width:100%;border-collapse:collapse"><thead><tr style="border-bottom:1.5px solid #000">${th(['Colaborador','Admissão','Salário','Meses','13º bruto','1ª parcela','2ª parcela'])}</tr></thead><tbody>${lin}<tr style="border-top:1.5px solid #000;font-weight:700">${cel('TOTAL')}${cel('')}${cel('')}${cel('')}${cel(provBRL(provSoma(rs,'d13')),'right')}${cel(provBRL(provSoma(rs,'p1')),'right')}${cel(provBRL(provSoma(rs,'p2')),'right')}</tr></tbody></table>`;
+    const lin=rs.map(r=>`<tr style="border-bottom:1px solid #ddd">${cel(gpEsc(r.nome))}${cel(gpEsc(r.adm),'center')}${cel(provBRL(r.sal),'right')}${cel(provBRL(r.med),'right')}${cel(r.m,'center')}${cel(provBRL(r.d13),'right')}${cel(provBRL(r.p1),'right')}${cel(provBRL(r.p2),'right')}</tr>`).join('');
+    corpo=cab('13º SALÁRIO — '+enome.toUpperCase(),`1ª parcela ${rs[0].v1} · 2ª parcela ${rs[0].v2} · valores brutos`)+`<table style="width:100%;border-collapse:collapse"><thead><tr style="border-bottom:1.5px solid #000">${th(['Colaborador','Admissão','Salário','Médias','Meses','13º bruto','1ª parcela','2ª parcela'])}</tr></thead><tbody>${lin}<tr style="border-top:1.5px solid #000;font-weight:700">${cel('TOTAL')}${cel('')}${cel('')}${cel('')}${cel(provBRL(provSoma(rs,'d13')),'right')}${cel(provBRL(provSoma(rs,'p1')),'right')}${cel(provBRL(provSoma(rs,'p2')),'right')}</tr></tbody></table>`;
   } else if(provAba.startsWith('fer')){
     if(!rs.length){ showToast('Nada para imprimir','warn'); return; }
     titulo='Provisão de Férias Coletivas '+enome+' '+D.ano;
-    const lin=rs.map(r=>`<tr style="border-bottom:1px solid #ddd">${cel(gpEsc(r.nome))}${cel(gpEsc(r.adm),'center')}${cel(provBRL(r.sal),'right')}${cel(r.dd,'center')}${cel(r.termo?'SIM':'NÃO','center')}${cel(r.dias,'center')}${cel(provBRL(r.vfer),'right')}${cel(provBRL(r.terco),'right')}${cel(provBRL(r.fer),'right')}</tr>`).join('');
-    corpo=cab('FÉRIAS COLETIVAS — '+enome.toUpperCase(),`${D.cfg.gozo} dias de gozo · valor + 1/3 constitucional`)+`<table style="width:100%;border-collapse:collapse"><thead><tr style="border-bottom:1.5px solid #000">${th(['Colaborador','Admissão','Salário','Dias direito','Termo acordo','Dias gozo','Valor férias','1/3','Valor a pagar'])}</tr></thead><tbody>${lin}<tr style="border-top:1.5px solid #000;font-weight:700">${cel('TOTAL')}${cel('')}${cel('')}${cel('')}${cel('')}${cel('')}${cel(provBRL(provSoma(rs,'vfer')),'right')}${cel(provBRL(provSoma(rs,'terco')),'right')}${cel(provBRL(provSoma(rs,'fer')),'right')}</tr></tbody></table>`;
+    const lin=rs.map(r=>`<tr style="border-bottom:1px solid #ddd">${cel(gpEsc(r.nome))}${cel(gpEsc(r.adm),'center')}${cel(provBRL(r.sal),'right')}${cel(provBRL(r.med),'right')}${cel(r.dd,'center')}${cel(r.termo?'SIM':'NÃO','center')}${cel(r.dias,'center')}${cel(provBRL(r.vfer),'right')}${cel(provBRL(r.terco),'right')}${cel(provBRL(r.fer),'right')}</tr>`).join('');
+    corpo=cab('FÉRIAS COLETIVAS — '+enome.toUpperCase(),`${D.cfg.gozo} dias de gozo · valor + 1/3 constitucional`)+`<table style="width:100%;border-collapse:collapse"><thead><tr style="border-bottom:1.5px solid #000">${th(['Colaborador','Admissão','Salário','Médias','Dias direito','Termo acordo','Dias gozo','Valor férias','1/3','Valor a pagar'])}</tr></thead><tbody>${lin}<tr style="border-top:1.5px solid #000;font-weight:700">${cel('TOTAL')}${cel('')}${cel('')}${cel('')}${cel('')}${cel('')}${cel(provBRL(provSoma(rs,'vfer')),'right')}${cel(provBRL(provSoma(rs,'terco')),'right')}${cel(provBRL(provSoma(rs,'fer')),'right')}</tr></tbody></table>`;
   } else {
     titulo='Provisão 13º e Férias '+D.ano;
     const emps=PROV_EMP.map(([e,n])=>{ const r=rows.filter(x=>x.empresa===e); return r.length?`<tr>${cel('<b>'+n+'</b>')}${cel(r.length,'center')}${cel(provBRL(provSoma(r,'d13')),'right')}${cel(provBRL(provSoma(r,'fer')),'right')}${cel('<b>'+provBRL(provSoma(r,'total'))+'</b>','right')}</tr>`:''; }).join('');
@@ -16108,8 +16111,8 @@ function provExportar(){
   XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(res),'Resumo');
   PROV_EMP.forEach(([e,nm])=>{
     const r=D.rows.filter(x=>x.empresa===e);
-    XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([['Nome','Admissão','Salário Base (R$)','Meses Trabalhados no Ano','13º Proporcional (R$)','1ª Parcela 13º '+(r[0]?r[0].v1:''),'2ª Parcela 13º '+(r[0]?r[0].v2:'')],...r.map(x=>[x.nome,x.adm,x.sal,x.m,n(x.d13),n(x.p1),n(x.p2)])]),('13º '+nm).slice(0,31));
-    XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([['Nome','Admissão','Salário Base (R$)','Dias de Direito','Termo de Acordo','Dias de Gozo','Valor Férias Proporcional (R$)','1/3 Constitucional (R$)','Valor a pagar (R$)'],...r.map(x=>[x.nome,x.adm,x.sal,x.dd,x.termo?'SIM':'NÃO',x.dias,n(x.vfer),n(x.terco),n(x.fer)])]),('Férias '+nm).slice(0,31));
+    XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([['Nome','Admissão','Salário Base (R$)','Médias (R$/mês)','Meses Trabalhados no Ano','13º Proporcional (R$)','1ª Parcela 13º '+(r[0]?r[0].v1:''),'2ª Parcela 13º '+(r[0]?r[0].v2:'')],...r.map(x=>[x.nome,x.adm,x.sal,n(x.med),x.m,n(x.d13),n(x.p1),n(x.p2)])]),('13º '+nm).slice(0,31));
+    XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([['Nome','Admissão','Salário Base (R$)','Médias (R$/mês)','Dias de Direito','Termo de Acordo','Dias de Gozo','Valor Férias Proporcional (R$)','1/3 Constitucional (R$)','Valor a pagar (R$)'],...r.map(x=>[x.nome,x.adm,x.sal,n(x.med),x.dd,x.termo?'SIM':'NÃO',x.dias,n(x.vfer),n(x.terco),n(x.fer)])]),('Férias '+nm).slice(0,31));
   });
   XLSX.writeFile(wb,'Provisao_13o_Ferias_Coletivas_'+D.ano+'.xlsx');
 }
@@ -16145,14 +16148,15 @@ function provTermosEmpresa(emp){
   const old=document.getElementById('page-provisao'); if(old) old.remove();
   const d=document.createElement('div'); d.id='page-provisao'; d.className='page';
   const th=a=>a.map(t=>`<th>${t}</th>`).join('');
-  const H13=['Colaborador','Admissão','Salário','Meses','13º bruto','1ª parcela (50%)','Venc. 1ª','2ª parcela (50%)','Venc. 2ª'];
-  const HF=['Colaborador','Admissão','Salário','Dias de direito','Termo de acordo','Dias de gozo','Valor das férias','1/3 constitucional','Valor a pagar'];
+  const H13=['Colaborador','Admissão','Salário','Médias (R$/mês)','Meses','13º bruto','1ª parcela (50%)','Venc. 1ª','2ª parcela (50%)','Venc. 2ª'];
+  const HF=['Colaborador','Admissão','Salário','Médias (R$/mês)','Dias de direito','Termo de acordo','Dias de gozo','Valor das férias','1/3 constitucional','Valor a pagar'];
   const tab=(id,rot)=>`<div class="tab${id==='resumo'?' active':''}" id="prov-tb-${id}" onclick="provAbaSel('${id}')">${rot}</div>`;
   const pane=(id,h,body,nota)=>`<div id="prov-t-${id}" style="display:none"><div class="card" style="padding:0;overflow-x:auto"><table><thead><tr>${th(h)}</tr></thead><tbody id="prov-tb-body-${id}"></tbody></table></div><div class="muted" style="font-size:10.5px;margin-top:8px">${nota}</div></div>`;
   const n13='1ª parcela = 50% do 13º bruto. 2ª parcela = restante do 13º. Valores brutos, sem INSS, IRRF ou encargos. Vencimentos ajustados: fim de semana → sexta; feriado → dia útil anterior.';
   const nF='Férias coletivas: dias de gozo × salário ÷ 30, mais 1/3. Termo de acordo = SIM quando a pessoa ainda não tem direito aos dias de gozo em dezembro (dias de direito menores que os de gozo): ela assina o termo e os dias antecipados são descontados das férias futuras. Dias de direito, Termo de acordo e Dias de gozo podem ser alterados por pessoa (verde = ajustado por você; apague ou escolha "Auto" para voltar ao automático).';
   d.innerHTML=`<div class="layer-badge lb-st">● Estratégico — Provisão</div>
     <div class="section-hdr"><div class="sec-title">💰 Provisão de 13º e Férias Coletivas</div>
+      <button class="btn btn-p btn-sm" onclick="provIncluirModal()">➕ Incluir colaborador</button>
       <button class="btn btn-s btn-sm" onclick="provImprimir()">🖨 Imprimir esta aba</button>
       <button class="btn btn-s btn-sm" onclick="provExportar()">⬇ Exportar Excel</button></div>
     <div class="muted" style="font-size:11px;margin:-4px 0 10px">Calculada com os salários e datas de admissão do cadastro de Colaboradores, projetada até 31/12 do ano escolhido. Valores brutos, sem INSS, IRRF ou encargos.</div>
@@ -16359,9 +16363,9 @@ function medAbrirForm(id,colabId){
    <div id="med-form">
     <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px">
       <label class="flbl">Colaborador<select class="fsel" id="medf-colab" style="width:100%" onchange="medFormColab()"><option value="">— selecione —</option>${ops}<option value="0" ${a&&!a.colaboradorId?'selected':''}>Outro (não cadastrado)</option></select></label>
-      <label class="flbl">Tipo de exame<select class="fsel" id="medf-tipo" style="width:100%" onchange="medFormSugerir(false)">${MED_TIPOS.map(t=>`<option ${a&&a.tipo===t?'selected':''}>${t}</option>`).join('')}</select></label>
+      <label class="flbl">Tipo de exame<select class="fsel" id="medf-tipo" style="width:100%" onchange="medFormSugerir(false);medFormProx()">${MED_TIPOS.map(t=>`<option ${a&&a.tipo===t?'selected':''}>${t}</option>`).join('')}</select></label>
       <label class="flbl" id="medf-outro-wrap" style="display:none">Nome (não cadastrado)<input class="finp" id="medf-nome" style="width:100%" value="${gpEsc(a&&!a.colaboradorId?a.colaborador:'')}"></label>
-      <label class="flbl">Data do exame<input class="finp" id="medf-data" placeholder="dd/mm/aaaa" style="width:100%" value="${gpEsc(a?a.data:'')}" oninput="medFormProx()"></label>
+      <label class="flbl">Data do exame<input class="finp" id="medf-data" placeholder="dd/mm/aaaa" style="width:100%" value="${gpEsc(a?a.data:'')}" oninput="medFormProx();if(this.value.length===10&&!MED_FORM.id)medFormSugerir(false)"></label>
       <label class="flbl">Clínica / laboratório<input class="finp" id="medf-clin" style="width:100%" value="${gpEsc(a?a.clinica:MED_CLINICA)}"></label>
       <label class="flbl">Nº da nota fiscal<input class="finp" id="medf-nf" style="width:100%" value="${gpEsc(a?a.notaFiscal:'')}"></label>
       <label class="flbl">Próximo exame (calculado pela matriz)<input class="finp" id="medf-prox" placeholder="dd/mm/aaaa" style="width:100%" value="${gpEsc(a?(a.proximoExame||''):'')}" oninput="medFormProxManual()"></label>
@@ -16391,20 +16395,28 @@ function medFormColab(inicial){
         <select class="fsel" id="medf-cargomat" onchange="medFormMapear()" style="width:100%;margin-top:4px"><option value="">— escolher —</option>${medCargosMatriz(emp).map(x=>`<option>${gpEsc(x)}</option>`).join('')}</select>`;
     } else cw.style.display='none'; }
   else cw.style.display='none';
-  if(!inicial) medFormSugerir(false);
+  medFormDatalist();
+  if(!inicial||!MED_FORM.id) medFormSugerir(false);
   medFormProx();
+}
+/* só os exames que a matriz prevê para o cargo (qualquer tipo) ficam na lista de escolha; outros podem ser digitados, mas serão apontados como "fora da matriz" */
+function medFormDatalist(){
+  const dl=document.getElementById('med-dl'); if(!dl) return; const c=medFormCol(); let nomes=null;
+  if(c){ const emp=medEmp(c), cm=medCargoMatriz(c.cargo,emp).cargoMatriz;
+    if(cm){ const m=new Map(); loadData('pcmso_matriz').filter(r=>r.status!=='Inativo'&&r.empresa===emp&&r.cargo===cm).forEach(r=>{ const k=medChave(r.exame); if(k!=='RUIDO'&&!m.has(k)) m.set(k,r.exame); }); nomes=[...m.values()]; } }
+  dl.innerHTML=(nomes||medNomesConhecidos()).map(n=>`<option value="${gpEsc(n)}">`).join('');
 }
 function medFormMapear(){ const c=medFormCol(), v=document.getElementById('medf-cargomat').value; if(!c||!v) return; medMapearCargo(c.cargo,medEmp(c),v); showToast('✅ Cargo vinculado à matriz'); medFormColab(); medFormSugerir(false); }
 function medFormSugerir(forcar){
   const c=medFormCol(), tipo=document.getElementById('medf-tipo').value, dt=medDt(document.getElementById('medf-data').value);
-  if(!c){ if(forcar) showToast('Selecione um colaborador cadastrado','warn'); return; }
-  if(MED_FORM.itens.length&&!forcar) return;
+  medFormLerItens();
+  const valores=new Map(MED_FORM.itens.map(i=>[medChave(i.exame),i.valorCobrado]));
+  if(!c){ if(forcar) showToast('Selecione um colaborador cadastrado','warn'); MED_FORM.itens=[]; medFormRenderItens(); return; }
   const emp=medEmp(c), cm=medCargoMatriz(c.cargo,emp).cargoMatriz;
-  if(!cm){ if(forcar) showToast('Cargo sem matriz — vincule acima','warn'); return; }
+  if(!cm){ MED_FORM.itens=[]; medFormRenderItens(); if(forcar) showToast('Cargo sem matriz — vincule acima','warn'); return; }
   const ex=medExigidos(cm,emp,tipo,c.nome,dt,MED_FORM.id);
-  if(forcar&&MED_FORM.itens.length&&!confirm('Substituir os procedimentos lançados pelos exigidos pela matriz?')) return;
-  MED_FORM.itens=ex.map(e=>({exame:e.exame,qtd:1,valorCobrado:''}));
-  if(forcar&&!ex.length) showToast('A matriz não exige exames para este cargo/tipo','warn');
+  MED_FORM.itens=ex.map(e=>({exame:e.exame,qtd:1,valorCobrado:valores.has(e.chave)?valores.get(e.chave):''}));
+  if(!ex.length) showToast('A matriz não exige exames para este cargo no tipo "'+tipo+'"','warn');
   medFormRenderItens();
 }
 function medFormAddItem(){ medFormLerItens(); MED_FORM.itens.push({exame:'',qtd:1,valorCobrado:''}); medFormRenderItens(); }
@@ -16464,7 +16476,7 @@ function medFormSalvar(){
   fecharModalSimples(); showToast('✅ Exame ocupacional salvo'); medAposMudanca();
 }
 function medAposMudanca(){
-  try{ colabFichaSwitchTab(window._cfTabAtiva||'folha'); }catch(e){}
+  try{ colabFichaSwitchTab(window._cfTabAtiva||'folha'); }catch(e){} histRefrescar();
   try{ if(typeof gpRender==='function'&&document.getElementById('gp-exameaso-tbody')) gpRender('exameaso'); }catch(e){}
   try{ medexRender(); }catch(e){} try{ pcmsoRenderAll(); }catch(e){} try{ atualizarKPIsSST(); }catch(e){}
 }
@@ -16482,7 +16494,7 @@ function medHistHtml(c){
   const l=medHistLista(c);
   const rows=l.map(a=>{ const r=medConferir(a); return `<tr style="border-bottom:1px solid var(--g100)"><td style="white-space:nowrap">${gpEsc(a.data)}</td><td>${gpEsc(a.tipo)}</td><td style="font-size:11px">${gpEsc(a.clinica||'—')}</td><td>${gpEsc(a.notaFiscal||'—')}</td>
     <td style="font-size:10.5px">${(a.itens||[]).map(i=>gpEsc(i.exame)+((i.qtd||1)>1?' ×'+i.qtd:'')).join('; ')}</td><td style="text-align:right;white-space:nowrap">${medMoeda(r.cobrado)}</td><td>${medBadgeStatus(r)}</td>
-    <td style="white-space:nowrap">${hxBtn('exame_atend',a.id,c.nome+' — '+a.tipo+' '+a.data)} <button class="btn btn-s btn-xs" onclick="medAbrirForm(${a.id})">✏</button> <button class="btn btn-s btn-xs" onclick="medAtendExcluir(${a.id})">🗑</button></td></tr>`; }).join('');
+    <td style="white-space:nowrap">${hxBtn('exame_atend',a.id,c.nome+' — '+a.tipo+' '+a.data,'med:'+c.id)} <button class="btn btn-s btn-xs" onclick="medAbrirForm(${a.id})">✏</button> <button class="btn btn-s btn-xs" onclick="medAtendExcluir(${a.id})">🗑</button></td></tr>`; }).join('');
   return `<div style="margin-top:14px"><div style="display:flex;align-items:center;gap:10px;margin-bottom:6px"><b style="font-size:12px;text-transform:uppercase;color:var(--g500)">Histórico de exames ocupacionais</b><button class="btn btn-p btn-xs" onclick="medAbrirForm(null,${c.id})">+ Incluir</button></div>
     <div style="overflow-x:auto"><table style="width:100%"><thead><tr><th>Data</th><th>Tipo</th><th>Clínica</th><th>NF</th><th>Exames</th><th style="text-align:right">Total</th><th>Conferência</th><th></th></tr></thead><tbody>${rows||'<tr><td colspan="8" class="muted" style="padding:10px">Nenhum exame ocupacional lançado. Os lançamentos feitos em Medicina Ocupacional aparecem aqui automaticamente.</td></tr>'}</tbody></table></div></div>`;
 }
