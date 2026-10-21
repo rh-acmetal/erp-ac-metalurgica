@@ -455,7 +455,7 @@ body.ad-minimizado #ad-titlebar-text{cursor:pointer}
   <div class="l-box">
     <div class="l-logo">
       <div class="l-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
-      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 5.22 — Planejamento 2026 (5W2H), Provisão com salário editável e PJ/SR manual, Medicina Ocupacional atualizada, Aniversariantes (todos os meses + Mês atual), Tempo de Empresa com data da planilha; Tático em branco; sem aba Indicadores; Versão 5.21 — Raphael (Brass→AC) e Edielson (desligado) ajustados; Versão 5.20 — Anexos e fotos com link temporário (privados); Login real por e-mail e senha (Supabase) e script para trancar a base; Convênio: copiar mês anterior e inscrever todos os ativos; Seguro de Vida só em Contratos. Versão 5.15 — Limpeza geral: duplicidades removidas (histórico único de cargo/salário, Folha × Convênio, funções e filtros repetidos), dados de exemplo removidos e tudo editável (Configurações da empresa, cargos, pipeline), verificador de duplicidades; Benefícios sem limite de inscritos (leitura da nuvem em blocos); Convênio médico: mensalidade, desconto do colaborador (50%), dependentes, coparticipação e quadro Nota/Empresa/Repasse; Carta PHS e Prêmio por Assiduidade com a data do dia da impressão; impressão dos históricos de férias e salário/cargo; Histórico de férias: incluir/excluir período e gozo; Férias: botão ✔ Resolvido (guarda o período no histórico), coluna do colaborador mais estreita; menu lateral compacto; botões minimizar/maximizar; Férias por empresa</div></div>
+      <div><div class="l-name">AC Metalúrgica</div><div class="l-tag">ERP · Recursos Humanos</div><div class="l-version" style="font-size:9px;color:#94a3b8;margin-top:2px">Versão 5.24 — Medicina Ocupacional: exames ocupacionais (lançamento, histórico no cadastro, conferência com a nota fiscal, fechamento do dia 21 ao 20, valores de referência, painel) e VALIDADE ASO; Versão 5.23 — Cargos, T&D e Desempenho zerados de verdade; Tempo de Empresa igual ao Aniversariantes (todos os meses + Mês atual); botão Anexar nos históricos de salário/cargo e férias; Versão 5.22 — Planejamento 2026 (5W2H), Provisão com salário editável e PJ/SR manual, Medicina Ocupacional atualizada, Aniversariantes (todos os meses + Mês atual), Tempo de Empresa com data da planilha; Tático em branco; sem aba Indicadores; Versão 5.21 — Raphael (Brass→AC) e Edielson (desligado) ajustados; Versão 5.20 — Anexos e fotos com link temporário (privados); Login real por e-mail e senha (Supabase) e script para trancar a base; Convênio: copiar mês anterior e inscrever todos os ativos; Seguro de Vida só em Contratos. Versão 5.15 — Limpeza geral: duplicidades removidas (histórico único de cargo/salário, Folha × Convênio, funções e filtros repetidos), dados de exemplo removidos e tudo editável (Configurações da empresa, cargos, pipeline), verificador de duplicidades; Benefícios sem limite de inscritos (leitura da nuvem em blocos); Convênio médico: mensalidade, desconto do colaborador (50%), dependentes, coparticipação e quadro Nota/Empresa/Repasse; Carta PHS e Prêmio por Assiduidade com a data do dia da impressão; impressão dos históricos de férias e salário/cargo; Histórico de férias: incluir/excluir período e gozo; Férias: botão ✔ Resolvido (guarda o período no histórico), coluna do colaborador mais estreita; menu lateral compacto; botões minimizar/maximizar; Férias por empresa</div></div>
     </div>
     <div class="f-row"><label>E-mail</label><input type="email" id="l-user" autocomplete="username" placeholder="seu.email@acmetalurgica.com.br" onkeydown="if(event.key==='Enter')document.getElementById('l-pass').focus()"></div>
     <div class="f-row"><label>Senha</label><input type="password" id="l-pass" autocomplete="current-password" placeholder="Sua senha" onkeydown="if(event.key==='Enter')entrarSistema()"></div>
@@ -550,11 +550,14 @@ body.ad-minimizado #ad-titlebar-text{cursor:pointer}
       🪪 Controle Visitas Técnicas
     </div>
     <div class="sb-layer layer-med"><div class="sb-dot dot-med" style=""></div>Medicina Ocupacional</div>
-    <div class="nav-item" data-go="exameaso" onclick="go('exameaso',this,'Exame / ASO','Medicina Ocupacional')">
-      🩺 Exame / ASO
+    <div class="nav-item" data-go="exameaso" onclick="go('exameaso',this,'Validade ASO','Medicina Ocupacional')">
+      🩺 VALIDADE ASO
+    </div>
+    <div class="nav-item" data-go="medex" onclick="go('medex',this,'Exames Ocupacionais','Medicina Ocupacional')">
+      🧪 Exames Ocupacionais
     </div>
     <div class="nav-item" data-go="sstfin" onclick="go('sstfin',this,'Fechamento MedClass','Medicina Ocupacional')">
-      💲 Fechamento MedClass
+      💲 Fechamento MedClass (histórico)
     </div>
     <div class="nav-item" data-go="pcmso" onclick="go('pcmso',this,'Conferência PCMSO','Medicina Ocupacional')">
       ✅ Conferência PCMSO
@@ -1020,6 +1023,22 @@ body.ad-minimizado #ad-titlebar-text{cursor:pointer}
       <div id="sf-lista"></div>
     </div>
 
+    <!-- ══ EXAMES OCUPACIONAIS (gestão) ══ -->
+    <div id="page-medex" class="page">
+      <div class="layer-badge lb-med">● Medicina Ocupacional</div>
+      <div class="section-hdr">
+        <div class="sec-title">🧪 Exames Ocupacionais — lançamento, conferência e fechamento</div>
+        <button class="btn btn-p" onclick="medAbrirForm()">+ Lançar exame</button>
+      </div>
+      <div class="filters" style="margin-bottom:12px"><div class="tabs">
+        <div class="tab active" id="medex-tab-painel" onclick="medexIr('painel')">Painel</div>
+        <div class="tab" id="medex-tab-lanc" onclick="medexIr('lanc')">Lançamentos</div>
+        <div class="tab" id="medex-tab-fech" onclick="medexIr('fech')">Fechamento (dia 21 ao 20)</div>
+        <div class="tab" id="medex-tab-valores" onclick="medexIr('valores')">Valores de referência</div>
+      </div></div>
+      <div id="medex-corpo"></div>
+    </div>
+
     <!-- ══ CONFERÊNCIA PCMSO ══ -->
     <div id="page-pcmso" class="page">
       <div class="layer-badge lb-med">● Medicina Ocupacional</div>
@@ -1228,6 +1247,8 @@ body.ad-minimizado #ad-titlebar-text{cursor:pointer}
       </div>
       <div class="filters" style="margin-bottom:12px;flex-wrap:wrap">
         <select class="fsel" id="tempo-mes-sel" onchange="renderTempoEmpresa()"></select>
+        <button class="btn btn-s" onclick="tempoMesAtual()" title="Mostrar só os aniversários de empresa do mês atual">📅 Mês atual</button>
+        <button class="btn btn-s" onclick="tempoTodosMeses()" title="Voltar a mostrar todos os meses">📋 Todos os meses</button>
         <select class="fsel" id="tempo-emp-sel" onchange="renderTempoEmpresa()"><option value="">Todas as empresas</option><option value="AC">AC Metal</option><option value="BRASS">Brass Metal</option></select>
         <input class="finp" type="text" id="tempo-busca" placeholder="🔎 Nome..." oninput="renderTempoEmpresa()" style="width:180px">
         <span class="chip" id="tempo-count">— colaboradores</span>
@@ -2171,6 +2192,8 @@ function go(id,el,title,bread){
   if(id==='ordemservico'){setTimeout(()=>{try{renderOrdensServico();}catch(e){console.warn('ordemservico:',e);}},80);}
   if(id==='sstfin'){setTimeout(()=>{try{renderSSTFinanceiro();}catch(e){console.warn('sstfin:',e);}},80);}
   if(id==='pcmso'){setTimeout(()=>{try{pcmsoRenderAll();}catch(e){console.warn('pcmso:',e);}},80);}
+  if(id==='medex'){setTimeout(()=>{try{medexRender();}catch(e){console.warn('medex:',e);}},60);}
+  if(id==='exameaso'){setTimeout(()=>{try{medAsoInjetar();gpRender('exameaso');}catch(e){console.warn('exameaso:',e);}},60);}
   if(id==='folhadesc'){setTimeout(()=>{try{try{fdAutoArquivar();}catch(e){console.warn(e);}renderFolhaDesc();}catch(e){console.warn('folhadesc:',e);}},80);}
   if(id==='configuracoes'){setTimeout(()=>{try{initConfiguracoes();}catch(e){}},80);}
   if(id==='planejamento'){setTimeout(()=>{try{initPlanejamento();}catch(e){console.warn('plano:',e);}},150);}
@@ -2243,6 +2266,7 @@ async function buildAll(){
   try{migracaoRealocacoes2026();}catch(e){console.warn('migracaoRealocacoes2026:',e);}
   try{migracaoRaphaelEdielson();}catch(e){console.warn('migracaoRaphaelEdielson:',e);}
   try{migracaoExamesAtualizar();}catch(e){console.warn('migracaoExamesAtualizar:',e);}
+  try{migracaoMedV2();}catch(e){console.warn('migracaoMedV2:',e);}
   try{ aroldoReativar(); }catch(e){console.warn('aroldoReativar:',e);}
   try{tryRestoreSupabase();}catch(e){console.warn('tryRestoreSupabase:',e); updateDBStatusBadge('error');}
   setTimeout(restaurarSessao,400);
@@ -3505,7 +3529,7 @@ function colabFichaSwitchTab(tab) {
   } else if (tab === 'folha') {
     box.innerHTML = grid(
       cfField('Salário', c.sal ? 'R$ '+moedaFmt(c.sal) : '') + cfField('Horário de Trabalho', c.horarioTrabalho) + ''
-    ) + chHtml(c);
+    ) + chHtml(c) + (typeof medHistHtml==='function'?medHistHtml(c):'');
   } else if (tab === 'gestao') {
     box.innerHTML = grid(cfField('Status', c.status) + '') + `<div style="margin-top:10px">${cfField('Observações', c.observacoes)}</div>`;
   } else if (tab === 'documentos') {
@@ -4412,7 +4436,7 @@ function endoInitMeses(selId, comTodos, padraoTodos) {
 }
 const ENDO_CONECTORES = new Set(['DA','DE','DO','DAS','DOS','E']);
 function endoTokens(n) {
-  return normSemAcento(n).replace(/[.,]/g,' ').split(/\s+/).filter(t => t.length > 1 && !ENDO_CONECTORES.has(t));
+  return normSemAcento(n).replace(/[.,]/g,' ').split(/\s+/).filter(t => t.length > 1 && !ENDO_CONECTORES.has(t)).map(t => t.replace(/Z/g,'S').replace(/([A-Z])\1+/g,'$1')); // SOUZA=SOUSA, BRITTO=BRITO
 }
 // Mesma pessoa mesmo com abreviações / sobrenome a mais (ex.: "FRANCIELLE CRISTINA ASCARI" x "FRANCIELLE CRISTINA ASCARI RODRIGUES")
 function endoMesmaPessoa(a, b) {
@@ -4635,15 +4659,17 @@ function tempoPessoas() {
     return Object.assign({}, x, {t, prox, anos, marco: anos > 0 && anos % 5 === 0});
   });
 }
+function tempoMesAtual(){ const sel=document.getElementById('tempo-mes-sel'); if(!sel) return; endoInitMeses('tempo-mes-sel', true, true); sel.value=String(new Date().getMonth()+1); renderTempoEmpresa(); }
+function tempoTodosMeses(){ const sel=document.getElementById('tempo-mes-sel'); if(!sel) return; sel.value='0'; renderTempoEmpresa(); }
 function tempoDados() {
-  endoInitMeses('tempo-mes-sel', true);
+  endoInitMeses('tempo-mes-sel', true, true);
   const mes = parseInt(document.getElementById('tempo-mes-sel').value, 10);
   const emp = document.getElementById('tempo-emp-sel')?.value || '';
   const busca = (document.getElementById('tempo-busca')?.value || '').trim().toUpperCase();
   const itens = tempoPessoas().filter(x => (!emp || x.emp === emp) && (!busca || x.nome.toUpperCase().includes(busca)));
   const lista = mes > 0
     ? itens.filter(x => x.d.getMonth() + 1 === mes && x.anos > 0).sort((a,b) => a.d.getDate() - b.d.getDate())
-    : itens.slice().sort((a,b) => b.t.meses - a.t.meses);
+    : itens.slice().sort((a,b) => a.d.getMonth() - b.d.getMonth() || a.d.getDate() - b.d.getDate() || a.nome.localeCompare(b.nome));
   return {mes, lista, itens};
 }
 const tempoFmt = d => String(d.getDate()).padStart(2,'0') + '/' + String(d.getMonth()+1).padStart(2,'0') + '/' + d.getFullYear();
@@ -4665,6 +4691,7 @@ function renderTempoEmpresa() {
   }).join('') : '<tr><td colspan="10" class="muted" style="text-align:center;padding:16px">Nenhum colaborador com aniversário de empresa neste mês.</td></tr>';
   setText('tempo-count', lista.length + ' colaboradores');
   setText('tempo-kpi-total', itens.length);
+  const lblMes=document.getElementById('tempo-count'); 
   const mesRef = mes > 0 ? mes : new Date().getMonth() + 1;
   const doMes = itens.filter(x => x.d.getMonth() + 1 === mesRef && x.anos > 0);
   setText('tempo-kpi-mes', doMes.length);
@@ -5735,7 +5762,7 @@ function fgAbrir(nome,silencioso){
   const perSet=new Set(per.map(p=>p.periodoInicio));
   const sit={'Em aquisição':'bb','Elegível':'by','Programada':'bg','Em gozo':'bp','Vencida':'br','Gozada':'bgy'};
   const perRows=per.map(p=>`<tr><td style="white-space:nowrap">${p.periodoInicio||'—'} a ${p.periodoFim||'—'}</td><td style="text-align:center">${fgFmt(p.dias)}</td><td style="text-align:center">${fgFmt(p.diasGozados)}</td><td style="text-align:center">${fgFmt(p.diasAbono||0)}</td><td style="text-align:center"><b>${fgFmt(p.diasRest)}</b></td><td style="white-space:nowrap">${p.limiteGozo||'—'}</td><td><span class="badge ${sit[p.situacao]||'bgy'}">${p.situacao||'—'}</span>${p.arquivado?`<div style="font-size:9px;color:var(--g400)">✔ resolvido em ${p.arquivadoEm||''}</div>`:''}</td>
-    <td style="white-space:nowrap"><button class="btn btn-p btn-xs" onclick="fgNovo('${escAttr(nome)}','${escAttr(p.periodoInicio)}')">+ Lançar gozo</button> <button class="btn btn-s btn-xs" onclick="openCrudModal(MOD_FERIAS,${p.id})">✏ Período</button> ${p.arquivado?`<button class="btn btn-s btn-xs" onclick="feriasArquivar(${p.id},false)">↩ Reabrir</button>`:`<button class="btn btn-s btn-xs" title="Período resolvido" onclick="feriasArquivar(${p.id},true)">✔ Resolvido</button>`} <button class="btn btn-s btn-xs" title="Excluir período" onclick="fgExcluirPeriodo(${p.id})">🗑</button></td></tr>`).join('');
+    <td style="white-space:nowrap"><button class="btn btn-p btn-xs" onclick="fgNovo('${escAttr(nome)}','${escAttr(p.periodoInicio)}')">+ Lançar gozo</button> ${hxBtn('ferias',p.id,nome+' — período '+(p.periodoInicio||''),'fg')} <button class="btn btn-s btn-xs" onclick="openCrudModal(MOD_FERIAS,${p.id})">✏ Período</button> ${p.arquivado?`<button class="btn btn-s btn-xs" onclick="feriasArquivar(${p.id},false)">↩ Reabrir</button>`:`<button class="btn btn-s btn-xs" title="Período resolvido" onclick="feriasArquivar(${p.id},true)">✔ Resolvido</button>`} <button class="btn btn-s btn-xs" title="Excluir período" onclick="fgExcluirPeriodo(${p.id})">🗑</button></td></tr>`).join('');
   const entRows=ent.map(g=>{
     const orfao = !todos && !perSet.has(g.periodoInicio);
     return `<tr style="border-bottom:1px solid var(--g100)">
@@ -5744,7 +5771,7 @@ function fgAbrir(nome,silencioso){
       <td style="font-size:11px">${g.tipo==='Abono pecuniário (venda)'?'Abono':'Gozo'}</td>
       <td style="white-space:nowrap">${g.inicioGozo||'<span class="muted">informar</span>'}</td><td style="white-space:nowrap">${g.fimGozo||'<span class="muted">informar</span>'}</td>
       <td style="text-align:center"><b>${fgFmt(g.dias)}</b></td><td style="font-size:10.5px">${gpEsc(g.obs||'')}</td>
-      <td style="white-space:nowrap"><button class="btn btn-s btn-xs" onclick="fgEditar(${g.id})">✏</button> <button class="btn btn-s btn-xs" onclick="fgExcluir(${g.id})">🗑</button></td></tr>`; }).join('');
+      <td style="white-space:nowrap">${hxBtn('ferias_gozos',g.id,g.colaborador+' — gozo '+(g.inicioGozo||''),'fg')} <button class="btn btn-s btn-xs" onclick="fgEditar(${g.id})">✏</button> <button class="btn btn-s btn-xs" onclick="fgExcluir(${g.id})">🗑</button></td></tr>`; }).join('');
   const tot = ent.filter(g=>g.tipo!=='Abono pecuniário (venda)').reduce((t,g)=>t+(Number(g.dias)||0),0);
   abrirModalSimples(todos?'📜 Histórico de gozo de férias — todos os colaboradores':'📜 Histórico de férias — '+nome,
    `<div id="fg-root">
@@ -5794,7 +5821,7 @@ function fgEditar(id){
 function fgExcluir(id){
   const g=loadData('ferias_gozos').find(x=>x.id===id); if(!g) return;
   confirmAction('Excluir este lançamento de gozo ('+(g.dias||'?')+' dias de '+g.colaborador+')?',()=>{
-    crudDeleteFisico('ferias_gozos',id,{modulo:'Férias',label:g.colaborador}); fgRecalcTodos();
+    hxLimpar('ferias_gozos',id); crudDeleteFisico('ferias_gozos',id,{modulo:'Férias',label:g.colaborador}); fgRecalcTodos();
     try{ if(window.feriasCtrl) feriasCtrl.load(); atualizarKPIsFerias(); }catch(e){} fgRefrescar(); });
 }
 function fgExportar(nome){
@@ -5811,6 +5838,45 @@ function fgExportar(nome){
    Preenche cadastro (só campos vazios), histórico de salário/cargo e férias
    ═══════════════════════════════════════════════════════════════ */
 const FICHA_BRASS=[{"nome":"AROLDO JOSE ISAIAS DE MORAES JUNIOR","adm":"11/01/2021","matriculaEsocial":"000012","nascimento":"10/10/2004","localNascimento":"RIO CLARO - SP","nacionalidade":"Brasil","estadoCivil":"Solteiro(a)","pai":"AROLDO JOSE ISAIAS DE MORAS","mae":"MARCIA RANGEL ISAIAS DE MORAES","rg":"577293187","rgEmissao":"22/07/2013","rgOrgao":"SSP/SP","tituloEleitor":"","tituloZona":"","tituloSecao":"","ctps":"48719998","ctpsSerie":"88","ctpsData":"08/01/2021","ctpsUF":"SP","cpf":"487.199.968-88","cnh":"","cnhCategoria":"","docMilitar":"","corRaca":"Branca","sexo":"Masculino","grauInstrucao":"Médio Completo","deficiencia":"Não","telefone":"","celular":"","cbo":"721215","funcao":"","pis":"140.47173.48-3","pisCadastro":"08/01/2021","fgtsOpcao":"11/01/2021","horarioTrabalho":"07:00–17:00 (intervalo 12:00–13:00)","beneficiarios":"","expIni":"11/01/2021","expFim":"09/02/2021","expProrrogDias":"30","expFimProrrog":"11/03/2021","cargoAdmissao":"TORNEIRO PRODUÇÃO C","salarioAdmissao":1694.79,"enderecoTipo":"Rua","endereco":"10","numero":"330","complemento":"","bairro":"CONSOLAÇÃO","cidade":"RIO CLARO","uf":"SP","cep":"13500-090","salarios":[["01/11/2025",2221.54,"DISSIDIO"],["01/11/2024",2100.94,"DISSIDIO"],["01/01/2024",1984.83,"ALTERAÇÃO SALARIAL"],["01/12/2022",1943.38,"ALTERAÇÃO SALARIAL"],["01/11/2021",1696.82,"ALTERAÇÃO SALARIAL"]],"cargos":[],"ferias":[["23/12/2024","22/12/2025","02/02/2026","03/03/2026","",""],["23/12/2023","22/12/2024","03/11/2025","02/12/2025","",""],["23/12/2022","22/12/2023","04/11/2024","21/11/2024","",""],["23/12/2022","22/12/2023","20/12/2023","02/01/2024","",""],["23/12/2021","22/12/2022","14/08/2023","12/09/2023","",""],["11/01/2021","22/12/2021","17/01/2023","04/02/2023","",""],["11/01/2021","22/12/2021","23/12/2021","02/01/2022","",""]],"afast":[]},{"nome":"BRUNO DA SILVA NASCIMENTO VICHESI","adm":"11/04/2023","matriculaEsocial":"000071","nascimento":"30/03/2005","localNascimento":"SANTA BARBARA D'OESTE","nacionalidade":"Brasil","estadoCivil":"Solteiro(a)","pai":"ROGERIO FABIANO NASCIMENTO","mae":"SUELI RODRIGUES DA SILVA","rg":"570895467","rgEmissao":"31/05/2022","rgOrgao":"SSP/SP","tituloEleitor":"473153390141","tituloZona":"186","tituloSecao":"0379","ctps":"50727009","ctpsSerie":"842","ctpsData":"10/04/2023","ctpsUF":"SP","cpf":"507.270.098-42","cnh":"","cnhCategoria":"","docMilitar":"320008725668","corRaca":"Branca","sexo":"Masculino","grauInstrucao":"Médio Completo","deficiencia":"Não","telefone":"19-991139443","celular":"","cbo":"721215","funcao":"","pis":"212.30134.08-7","pisCadastro":"","fgtsOpcao":"11/04/2023","horarioTrabalho":"07:00–17:00 (intervalo 12:00–13:00)","beneficiarios":"","expIni":"11/04/2023","expFim":"10/05/2023","expProrrogDias":"30","expFimProrrog":"09/06/2023","cargoAdmissao":"TORNEIRO PRODUÇÃO C","salarioAdmissao":1943.38,"enderecoTipo":"Rua","endereco":"VITORIO PADOVESE","numero":"397","complemento":"FD","bairro":"PARQUE RESIDENCIAL DO LAGO","cidade":"SANTA BARBARA D'OESTE","uf":"SP","cep":"13458-628","salarios":[["01/08/2026",3618.65,"MERITO"],["01/02/2026",3446.34,"MERITO"],["01/11/2025",3282.22,"DISSIDIO"],["01/09/2025",3104.06,"MERITO"],["01/01/2025",2815.47,"MERITO"],["01/11/2024",2720.43,"DISSIDIO"],["01/10/2024",2570.08,"MERITO"],["01/07/2024",2331.14,"REAJUSTE SALARIAL"],["01/01/2024",2220.13,"ALTERAÇÃO SALARIAL"]],"cargos":[["01/10/2024","TORNEIRO PRODUÇÃO C","TORNEIRO PRODUÇÃO B"]],"ferias":[["20/12/2024","19/12/2025","14/10/2026","31/10/2026","",""],["20/12/2024","19/12/2025","22/12/2025","02/01/2026","",""],["20/12/2023","19/12/2024","16/07/2025","27/07/2025","",""],["20/12/2023","19/12/2024","19/12/2024","05/01/2025","",""],["11/04/2023","19/12/2023","26/06/2024","03/07/2024","",""],["11/04/2023","19/12/2023","20/12/2023","02/01/2024","",""]],"afast":[["27/10/2025","01/11/2025"]]},{"nome":"CLEYTON SANTOS DE SOUZA","adm":"16/05/2022","matriculaEsocial":"000049","nascimento":"28/06/1991","localNascimento":"AMERICANA - SP","nacionalidade":"Brasil","estadoCivil":"Casado(a)","pai":"MARIO ALMEIDA DE SOUZA","mae":"LURDINEIA DOS SANTOS DE ALMEIDA DE SOUZA","rg":"475959486","rgEmissao":"30/06/2018","rgOrgao":"SSP/SP","tituloEleitor":"","tituloZona":"","tituloSecao":"","ctps":"30077","ctpsSerie":"0345","ctpsData":"11/01/2008","ctpsUF":"SP","cpf":"371.831.278-69","cnh":"","cnhCategoria":"","docMilitar":"","corRaca":"Branca","sexo":"Masculino","grauInstrucao":"Médio Completo","deficiencia":"Não","telefone":"19-981107485","celular":"","cbo":"721215","funcao":"","pis":"164.24518.99-2","pisCadastro":"","fgtsOpcao":"16/05/2022","horarioTrabalho":"07:00–17:00 (intervalo 12:00–13:00)","beneficiarios":"TYLER RODRIGUES SANTOS, GEOVANA RODRIGUES MARGARIDO","expIni":"16/05/2022","expFim":"14/06/2022","expProrrogDias":"30","expFimProrrog":"14/07/2022","cargoAdmissao":"TORNEIRO PRODUÇÃO B","salarioAdmissao":1882.57,"enderecoTipo":"Rua","endereco":"PORTUGAL","numero":"1138","complemento":"","bairro":"JARDIM EUROPA I","cidade":"SANTA BARBARA D'OESTE","uf":"SP","cep":"13455-425","salarios":[["01/02/2026",3618.65,"MERITO"],["01/11/2025",3446.34,"DISSIDIO"],["01/08/2025",3259.26,"MERITO"],["01/01/2025",3104.06,"PROMOÇÃO DE CARGO"],["01/11/2024",2999.27,"DISSIDIO"],["01/10/2024",2833.51,"MERITO"],["01/01/2024",2570.08,"ALTERAÇÃO SALARIAL"],["01/09/2023",2436.1,"ALTERAÇÃO SALARIAL"],["01/01/2023",2209.61,"ALTERAÇÃO SALARIAL"],["01/12/2022",2104.39,"ALTERAÇÃO SALARIAL"],["01/07/2022",1976.7,"ALTERAÇÃO SALARIAL"]],"cargos":[["30/11/2025","TORNEIRO PRODUÇÃO A","TORNEIRO FERRAMENTEIRO B"],["02/01/2025","TORNEIRO PRODUÇÃO B","TORNEIRO PRODUÇÃO A"]],"ferias":[["16/05/2024","15/05/2025","22/12/2025","05/01/2026","",""],["16/05/2024","15/05/2025","30/06/2025","14/07/2025","",""],["16/05/2023","15/05/2024","24/06/2024","23/07/2024","",""],["16/05/2022","15/05/2023","20/12/2023","30/12/2023","",""],["16/05/2022","15/05/2023","14/06/2023","03/07/2023","",""]],"afast":[["07/01/2025","10/01/2025"],["23/03/2023","28/03/2023"],["09/08/2022","16/08/2022"]]},{"nome":"EDUARDO RODRIGUES LIMA","adm":"24/09/2025","matriculaEsocial":"112","nascimento":"01/04/1979","localNascimento":"SAO PAULO - SP","nacionalidade":"Brasil","estadoCivil":"Casado(a)","pai":"ORIDIO FERREIRA LIMA","mae":"ALZIRA RODRIGUES LIMA","rg":"298262770","rgEmissao":"11/11/2014","rgOrgao":"SSP/SP","tituloEleitor":"220152060108","tituloZona":"186","tituloSecao":"0369","ctps":"031119","ctpsSerie":"00170","ctpsData":"09/02/1994","ctpsUF":"SP","cpf":"282.956.818-42","cnh":"00672700560","cnhCategoria":"B","docMilitar":"040073259497","corRaca":"Branca","sexo":"Masculino","grauInstrucao":"Médio Completo","deficiencia":"Não","telefone":"","celular":"19-982863193","cbo":"721215","funcao":"","pis":"127.10356.17-3","pisCadastro":"12/07/2000","fgtsOpcao":"24/09/2025","horarioTrabalho":"06:00–14:36 (intervalo 11:00–12:00)","beneficiarios":"LETICIA DE OLIVEIRA LIMA, GUILHERME DE OLIVEIRA LIMA","expIni":"24/09/2025","expFim":"07/11/2025","expProrrogDias":"45","expFimProrrog":"22/12/2025","cargoAdmissao":"TORNEIRO PRODUÇÃO A","salarioAdmissao":3104.06,"enderecoTipo":"Rua","endereco":"DOUTOR CLOVIS HADDAD","numero":"209","complemento":"CS 2","bairro":"JARDIM SOUZA QUEIROZ","cidade":"SANTA BARBARA D'OESTE","uf":"SP","cep":"13456-649","salarios":[["18/11/2025",3282.23,"DISSIDIO"]],"cargos":[],"ferias":[],"afast":[]},{"nome":"GABRIEL ANTONIO FERREIRA GARCIA DOS ANJOS","adm":"24/03/2022","matriculaEsocial":"000041","nascimento":"26/06/2000","localNascimento":"PRESIDENTE PRUDENTE - SP","nacionalidade":"Brasil","estadoCivil":"Casado(a)","pai":"CLAUDEMIR ANTONIO DOS ANJOS","mae":"RUTE FERREIRA DOS ANJOS","rg":"555689645","rgEmissao":"19/06/2019","rgOrgao":"SSP/SP","tituloEleitor":"","tituloZona":"","tituloSecao":"","ctps":"029232","ctpsSerie":"00440","ctpsData":"18/11/2015","ctpsUF":"SP","cpf":"437.471.988-13","cnh":"","cnhCategoria":"","docMilitar":"","corRaca":"Branca","sexo":"Masculino","grauInstrucao":"Médio Completo","deficiencia":"Não","telefone":"19-996156897","celular":"","cbo":"721215","funcao":"","pis":"203.67732.35-6","pisCadastro":"","fgtsOpcao":"24/03/2022","horarioTrabalho":"06:00–14:36 (intervalo 11:00–12:00)","beneficiarios":"MARIA RODRIGUES SILVA DOS ANJO","expIni":"24/03/2022","expFim":"22/04/2022","expProrrogDias":"30","expFimProrrog":"22/05/2022","cargoAdmissao":"TORNEIRO PRODUÇÃO B","salarioAdmissao":1882.57,"enderecoTipo":"Rua","endereco":"ALBERTO NOVAES","numero":"311","complemento":"","bairro":"RESIDENCIAL FURLAN","cidade":"SANTA BARBARA D'OESTE","uf":"SP","cep":"13451-192","salarios":[["01/01/2026",4189.1,"MERITO"],["01/11/2025",3799.58,"DISSIDIO"],["01/08/2025",3593.33,"MERITO"],["01/01/2025",3259.25,"PROMOÇÃO DE CARGO"],["01/11/2024",3149.24,"DISSIDIO"],["11/10/2024",2975.19,"MERITO"],["01/03/2024",2698.58,"EFETIVAÇÃO"],["01/01/2024",2570.08,"ALTERAÇÃO SALARIAL"],["01/05/2023",2209.61,"ALTERAÇÃO SALARIAL"],["01/12/2022",2104.39,"ALTERAÇÃO SALARIAL"],["01/06/2022",1976.7,"ALTERAÇÃO SALARIAL"]],"cargos":[["30/11/2025","TORNEIRO PROGRAMADOR C","TORNEIRO PROGRAMADOR B"],["02/01/2025","TORNEIRO PRODUÇÃO A","TORNEIRO PROGRAMADOR C"],["10/10/2024","TORNEIRO PRODUÇÃO B","TORNEIRO PRODUÇÃO A"]],"ferias":[["24/03/2024","23/03/2025","02/03/2026","19/03/2026","",""],["24/03/2024","23/03/2025","22/12/2025","02/01/2026","",""],["24/03/2023","23/03/2024","05/03/2025","16/03/2025","",""],["24/03/2023","23/03/2024","19/12/2024","05/01/2025","",""],["24/03/2023","23/03/2024","01/01/2024","03/01/2024","",""],["24/03/2022","23/03/2023","20/12/2023","31/12/2023","",""],["24/03/2022","23/03/2023","12/06/2023","01/07/2023","",""]],"afast":[]},{"nome":"GUSTAVO BISPO DOS SANTOS","adm":"09/09/2025","matriculaEsocial":"108","nascimento":"26/12/2004","localNascimento":"SANTA BARBARA D'OESTE - SP","nacionalidade":"Brasil","estadoCivil":"Solteiro(a)","pai":"ADAILTON BISPO DOS SANTOS","mae":"THAIS MARTINS DOS SANTOS","rg":"58.217.048-5","rgEmissao":"24/02/2022","rgOrgao":"SSP/SP","tituloEleitor":"466829650159","tituloZona":"186","tituloSecao":"0391","ctps":"","ctpsSerie":"","ctpsData":"","ctpsUF":"","cpf":"478.461.378-16","cnh":"08222960998","cnhCategoria":"AB","docMilitar":"320007444469","corRaca":"Parda","sexo":"Masculino","grauInstrucao":"Médio Incompleto","deficiencia":"Não","telefone":"","celular":"","cbo":"784205","funcao":"","pis":"162.80931.07-3","pisCadastro":"","fgtsOpcao":"09/09/2025","horarioTrabalho":"07:00–17:00 (intervalo 12:00–13:00)","beneficiarios":"HEYTOR HENRIQUE DA SILVA DE ALENCAR BISPO","expIni":"09/09/2025","expFim":"23/10/2025","expProrrogDias":"45","expFimProrrog":"07/12/2025","cargoAdmissao":"AUXILIAR DE PRODUÇÃO","salarioAdmissao":2100.94,"enderecoTipo":"Avenida","endereco":"RUTH GARRIDO ROQUE","numero":"1190","complemento":"BL L AP 402","bairro":"PARQUE RESIDENCIAL DO LAGO","cidade":"SANTA BARBARA D'OESTE","uf":"SP","cep":"13458-620","salarios":[["01/03/2026",2332.62,"MERITO"],["01/11/2025",2221.54,"DISSIDIO"]],"cargos":[],"ferias":[],"afast":[]},{"nome":"LEONARDO GOMES LANDIM DOS SANTOS","adm":"20/03/2025","matriculaEsocial":"92","nascimento":"22/02/2005","localNascimento":"SANTA BARBARA D'OESTE - SP","nacionalidade":"Brasil","estadoCivil":"Solteiro(a)","pai":"EDINILSON PAES LANDIM DOS SANTOS","mae":"SIMONE ALBANEZ GOMES","rg":"62675810-5","rgEmissao":"06/10/2016","rgOrgao":"SSP/SP","tituloEleitor":"488627750132","tituloZona":"186","tituloSecao":"0358","ctps":"57872567","ctpsSerie":"865","ctpsData":"20/04/2022","ctpsUF":"SP","cpf":"578.725.678-65","cnh":"","cnhCategoria":"","docMilitar":"","corRaca":"Branca","sexo":"Masculino","grauInstrucao":"Médio Completo","deficiencia":"Não","telefone":"","celular":"19-982520668","cbo":"721405","funcao":"","pis":"165.17741.38-1","pisCadastro":"","fgtsOpcao":"20/03/2025","horarioTrabalho":"14:00–23:34 (intervalo 19:00–20:00)","beneficiarios":"","expIni":"20/03/2025","expFim":"18/04/2025","expProrrogDias":"30","expFimProrrog":"18/05/2025","cargoAdmissao":"AUXILIAR DE USINAGEM","salarioAdmissao":2100.94,"enderecoTipo":"Rua","endereco":"PADRE VICTORIO FREGUGLIA","numero":"1020","complemento":"AP 14 A","bairro":"CONJUNTO HABITACIONAL ROBERTO ROMANO","cidade":"SANTA BARBARA D'OESTE","uf":"SP","cep":"13458-190","salarios":[["01/01/2026",2449.24,"MERITO"],["01/11/2025",2332.61,"DISSIDIO"],["19/05/2025",2205.99,"EFETIVAÇÃO"]],"cargos":[["30/11/2025","AUXILIAR DE USINAGEM","TORNEIRO PRODUÇÃO C"]],"ferias":[],"afast":[]},{"nome":"MATHEUS HENRIQUE GOMES","adm":"08/09/2025","matriculaEsocial":"107","nascimento":"02/05/2001","localNascimento":"SANTA BARBARA D'OESTE - SP","nacionalidade":"Brasil","estadoCivil":"Solteiro(a)","pai":"CRISTIANO APARECIDO GOMES","mae":"FABIANA CRISTINA ROCHA DA ROZA DE OLIVEIRA GOMES","rg":"57497207-9","rgEmissao":"09/01/2018","rgOrgao":"SSP/SP","tituloEleitor":"452708420175","tituloZona":"186","tituloSecao":"0370","ctps":"","ctpsSerie":"","ctpsData":"","ctpsUF":"","cpf":"483.996.108-52","cnh":"0754992692","cnhCategoria":"AB","docMilitar":"320002736523","corRaca":"Branca","sexo":"Masculino","grauInstrucao":"Médio Completo","deficiencia":"Não","telefone":"","celular":"","cbo":"721215","funcao":"","pis":"207.73951.31-2","pisCadastro":"24/07/2019","fgtsOpcao":"08/09/2025","horarioTrabalho":"06:00–14:36 (intervalo 11:00–12:00)","beneficiarios":"","expIni":"08/09/2025","expFim":"06/11/2025","expProrrogDias":"30","expFimProrrog":"06/12/2025","cargoAdmissao":"TORNEIRO PRODUÇÃO B","salarioAdmissao":2681.4,"enderecoTipo":"Avenida","endereco":"BRIGADEIRO EDUARDO GOMES","numero":"32","complemento":"FD","bairro":"CONJUNTO HABITACIONAL 31 DE MARCO","cidade":"SANTA BARBARA D'OESTE","uf":"SP","cep":"13453-192","salarios":[["01/03/2026",3125.93,"MERITO"],["10/11/2025",2977.07,"DISSIDIO"],["01/11/2025",2815.47,"EFETIVAÇÃO"]],"cargos":[["30/11/2025","TORNEIRO PRODUÇÃO B","TORNEIRO PROGRAMADOR C"]],"ferias":[],"afast":[]},{"nome":"SERGIO HENRIQUE BUSINARI","adm":"02/10/2023","matriculaEsocial":"000081","nascimento":"02/02/1972","localNascimento":"SANTA BARBARA D'OESTE - SP","nacionalidade":"Brasil","estadoCivil":"Casado(a)","pai":"JOSE ANTONIO BUSINARI","mae":"SONIA REGINA BUENO BUSINARI","rg":"22320753","rgEmissao":"24/04/1987","rgOrgao":"SSP/SP","tituloEleitor":"","tituloZona":"","tituloSecao":"","ctps":"68668","ctpsSerie":"123","ctpsData":"03/07/1989","ctpsUF":"SP","cpf":"143.181.268-46","cnh":"02099611565","cnhCategoria":"AC","docMilitar":"","corRaca":"Branca","sexo":"Masculino","grauInstrucao":"Médio Completo","deficiencia":"Não","telefone":"19-992627896","celular":"","cbo":"911305","funcao":"","pis":"123.93148.90-8","pisCadastro":"","fgtsOpcao":"02/10/2023","horarioTrabalho":"07:00–17:00 (intervalo 12:00–13:00)","beneficiarios":"PEDRO CARDOSO BUSINARI","expIni":"","expFim":"","expProrrogDias":"","expFimProrrog":"","cargoAdmissao":"MECANICO DE MANUTENÇÃO","salarioAdmissao":2781.41,"enderecoTipo":"Rua","endereco":"PARA","numero":"32","complemento":"BL INGA AP 13","bairro":"VILA BRASIL","cidade":"SANTA BARBARA D'OESTE","uf":"SP","cep":"13451-086","salarios":[["01/11/2025",3618.65,"DISSIDIO"],["01/01/2025",3422.22,"MERITO"],["01/11/2024",3306.7,"DISSIDIO"],["01/08/2024",3123.95,"REAJUSTE SALARIAL"],["01/01/2024",2975.19,"ALTERAÇÃO SALARIAL"]],"cargos":[],"ferias":[["20/12/2024","19/12/2025","16/03/2026","02/04/2026","",""],["20/12/2024","19/12/2025","22/12/2025","02/01/2026","",""],["20/12/2023","19/12/2024","19/03/2025","30/03/2025","",""],["20/12/2023","19/12/2024","19/12/2024","05/01/2025","",""],["02/10/2023","19/12/2023","20/12/2023","28/12/2023","",""]],"afast":[]},{"nome":"STEFANI MONIZE MONTEIRO","adm":"28/04/2025","matriculaEsocial":"97","nascimento":"05/01/1996","localNascimento":"SANTA BARBARA D'OESTE - SP","nacionalidade":"Brasil","estadoCivil":"Solteiro(a)","pai":"MARCIO JOSE MONTEIRO","mae":"BARBARA FRANCELINA AFONSO","rg":"526279266","rgEmissao":"10/03/2022","rgOrgao":"SSP/SP","tituloEleitor":"481281590124","tituloZona":"186","tituloSecao":"0392","ctps":"49182","ctpsSerie":"0375","ctpsData":"09/01/2012","ctpsUF":"SP","cpf":"411.429.108-30","cnh":"06119732483","cnhCategoria":"AB","docMilitar":"","corRaca":"Preta","sexo":"Feminino","grauInstrucao":"Médio Completo","deficiencia":"Não","telefone":"19991517637","celular":"19988009409","cbo":"721405","funcao":"","pis":"162.66779.35-9","pisCadastro":"","fgtsOpcao":"28/04/2025","horarioTrabalho":"22:00–06:00 (intervalo 03:00–04:00)","beneficiarios":"ARYELLA DOMINIC ADÃO","expIni":"28/04/2025","expFim":"27/05/2025","expProrrogDias":"30","expFimProrrog":"26/06/2025","cargoAdmissao":"AUXILIAR DE USINAGEM","salarioAdmissao":2100.94,"enderecoTipo":"Rua","endereco":"ITAPURA","numero":"34","complemento":"","bairro":"JARDIM ICARAI","cidade":"SANTA BARBARA D'OESTE","uf":"SP","cep":"13453-086","salarios":[["01/08/2026",2571.7,"MERITO"],["01/01/2026",2449.24,"MERITO"],["01/11/2025",2332.61,"DISSIDIO"],["11/07/2025",2205.99,"EFETIVAÇÃO"]],"cargos":[["30/11/2025","AUXILIAR DE USINAGEM","TORNEIRO PRODUÇÃO C"]],"ferias":[],"afast":[]},{"nome":"TOMY OGATA","adm":"07/03/2022","matriculaEsocial":"000038","nascimento":"14/09/1969","localNascimento":"AMERICANA - SP","nacionalidade":"Brasil","estadoCivil":"Casado(a)","pai":"ISAO OGATA","mae":"SACHIKO OGATA","rg":"19373377","rgEmissao":"06/12/1984","rgOrgao":"SSP/SP","tituloEleitor":"","tituloZona":"","tituloSecao":"","ctps":"91278","ctpsSerie":"0057","ctpsData":"04/12/1984","ctpsUF":"SP","cpf":"123.638.148-35","cnh":"","cnhCategoria":"","docMilitar":"","corRaca":"Não informado","sexo":"Masculino","grauInstrucao":"Médio Completo","deficiencia":"Não","telefone":"19-999200214","celular":"","cbo":"782310","funcao":"","pis":"124.42013.67-5","pisCadastro":"","fgtsOpcao":"07/03/2022","horarioTrabalho":"07:00–17:00 (intervalo 12:00–13:00)","beneficiarios":"DENISE BOLLIS OGATA","expIni":"07/03/2022","expFim":"05/04/2022","expProrrogDias":"3","expFimProrrog":"08/04/2022","cargoAdmissao":"MOTORISTA","salarioAdmissao":1882.57,"enderecoTipo":"Rua","endereco":"DO CHUMBO","numero":"165","complemento":"","bairro":"VILA MOLON","cidade":"AMERICANA","uf":"SP","cep":"13468-600","salarios":[["01/11/2025",2835.3,"DISSIDIO"],["01/01/2025",2681.4,"MERITO"],["01/11/2024",2590.9,"DISSIDIO"],["01/01/2024",2447.71,"ALTERAÇÃO SALARIAL"],["01/12/2022",2209.62,"ALTERAÇÃO SALARIAL"],["01/08/2022",2075.54,"ALTERAÇÃO SALARIAL"],["01/05/2022",1976.7,"ALTERAÇÃO SALARIAL"]],"cargos":[],"ferias":[["07/03/2025","06/03/2026","05/10/2026","19/10/2026","",""],["07/03/2024","06/03/2025","22/12/2025","05/01/2026","",""],["07/03/2024","06/03/2025","02/07/2025","16/07/2025","",""],["07/03/2023","06/03/2024","19/12/2024","02/01/2025","",""],["07/03/2023","06/03/2024","07/10/2024","21/10/2024","",""],["07/03/2022","06/03/2023","31/01/2024","17/02/2024","",""],["07/03/2022","06/03/2023","20/12/2023","02/01/2024","",""]],"afast":[]}];
+
+
+/* ─── Anexos para históricos (salário/cargo, férias, exames…): mesmo cofre privado dos demais anexos ─── */
+let HX_ANX={ref:null,regId:null,titulo:'',volta:null};
+function hxContagem(ref,regId){ return loadData('anexos_gerais').filter(a=>a.ref===ref&&a.regId===regId&&a.status!=='Inativo').length; }
+function hxBtn(ref,regId,titulo,volta){ const n=hxContagem(ref,regId); return `<button class="btn btn-s btn-xs" onclick="hxAnexos('${ref}',${regId},'${escAttr(titulo||'')}','${volta||''}')" title="Anexar arquivos a este registro">📎${n?' ('+n+')':''}</button>`; }
+function hxAnexos(ref,regId,titulo,volta){
+  HX_ANX={ref,regId,titulo,volta};
+  const arqs=loadData('anexos_gerais').filter(a=>a.ref===ref&&a.regId===regId&&a.status!=='Inativo').sort((a,b)=>(b.id||0)-(a.id||0));
+  const lista=arqs.length?arqs.map(a=>`<div style="display:flex;align-items:center;gap:8px;padding:6px 8px;border:1px solid var(--g100);border-radius:6px;margin-bottom:6px"><span style="font-size:16px">📄</span>
+      <a href="#" onclick="abrirAnexo(event,'${spCaminho(a)}')" style="flex:1;font-size:12px;word-break:break-all">${gpEsc(a.nomeArquivo)}</a><span class="muted" style="font-size:10px">${a.dataUpload||''}</span>
+      <button class="btn btn-s btn-xs" onclick="hxExcluirAnexo(${a.id})" title="Remover arquivo">🗑</button></div>`).join(''):'<div class="muted" style="padding:10px 0">Nenhum arquivo anexado ainda.</div>';
+  abrirModalSimples('📎 Anexos — '+gpEsc(titulo||'registro'),`<div style="margin-bottom:12px;display:flex;gap:8px;flex-wrap:wrap">${volta?'<button class="btn btn-s btn-sm" onclick="hxVoltar()">← Voltar ao histórico</button>':''}<input type="file" id="hx-anexo-input" multiple style="display:none" onchange="hxUpload(this.files)"><button class="btn btn-p btn-sm" onclick="document.getElementById('hx-anexo-input').click()">📎 Anexar arquivo(s)</button></div>${lista}`,640);
+}
+async function hxUpload(files){
+  if(!files||!files.length||!HX_ANX.ref) return;
+  if(!supabaseClient){ showToast('Conecte a nuvem primeiro (veja o Dashboard)','error'); return; }
+  const {ref,regId,titulo}=HX_ANX; showToast('📤 Enviando arquivo(s)...'); let ok=0;
+  for(const file of Array.from(files)){
+    const path=`gerais/${ref}/${regId}/${Date.now()}_${sanitizeStorageKey(file.name)}`;
+    try{ const {error}=await supabaseClient.storage.from('documentos-rh').upload(path,file); if(error) throw error;
+      const {data}=supabaseClient.storage.from('documentos-rh').getPublicUrl(path);
+      crudCreate('anexos_gerais',{ref,regId,nomeArquivo:file.name,caminho:path,url:data.publicUrl,dataUpload:nowStr().split(' ')[0]},{modulo:'Histórico',label:file.name}); ok++;
+    }catch(e){ showToast('Erro ao enviar "'+file.name+'": '+e.message,'error'); }
+  }
+  if(ok) showToast(`✅ ${ok} arquivo(s) anexado(s)`);
+  hxAnexos(ref,regId,titulo,HX_ANX.volta); hxRefrescar();
+}
+function hxExcluirAnexo(id){
+  const a=loadData('anexos_gerais').find(x=>x.id===id); if(!a) return;
+  confirmAction(`Remover o arquivo "${a.nomeArquivo}"?`,()=>{
+    try{ if(supabaseClient&&a.caminho) supabaseClient.storage.from('documentos-rh').remove([a.caminho]); }catch(e){}
+    crudDeleteFisico('anexos_gerais',id,{modulo:'Anexos',label:a.nomeArquivo});
+    showToast('🗑 Arquivo removido'); hxAnexos(HX_ANX.ref,HX_ANX.regId,HX_ANX.titulo,HX_ANX.volta); hxRefrescar();
+  });
+}
+function hxLimpar(ref,regId){ loadData('anexos_gerais').filter(a=>a.ref===ref&&a.regId===regId).forEach(a=>{ try{ if(supabaseClient&&a.caminho) supabaseClient.storage.from('documentos-rh').remove([a.caminho]); }catch(e){} crudDeleteFisico('anexos_gerais',a.id,{modulo:'Anexos',label:a.nomeArquivo}); }); }
+function hxVoltar(){ try{ if(HX_ANX.volta==='fg') fgAbrir(FG_NOME,true); }catch(e){} }
+function hxRefrescar(){ try{ if(HX_ANX.ref==='colab_hist') colabFichaSwitchTab(window._cfTabAtiva||'folha'); }catch(e){} }
 
 const MOD_COLAB_HIST = {
   table: 'colab_hist',
@@ -5839,7 +5905,7 @@ function chHtml(c){
   const rows=l.map(h=>`<tr style="border-bottom:1px solid var(--g100)"><td style="white-space:nowrap">${h.data||'—'}</td><td>${gpEsc(h.tipo||'')}</td>
     <td style="white-space:nowrap;text-align:right">${h.salario!==undefined&&h.salario!==''&&h.salario!==null?'R$ '+fmtBRL(Number(h.salario)):'—'}${prev[h.id]!==undefined?`<div style="font-size:9px;color:${prev[h.id]>=0?'var(--green,#167a3d)':'var(--red)'}">${prev[h.id]>=0?'+':''}${prev[h.id].toFixed(1).replace('.',',')}%</div>`:''}</td>
     <td style="font-size:11px">${h.cargoDe||h.cargoPara?gpEsc((h.cargoDe?h.cargoDe+' → ':'')+(h.cargoPara||'')):'—'}</td><td style="font-size:11px">${gpEsc(h.motivo||'')}${h.obs?'<div class="muted" style="font-size:10px">'+gpEsc(h.obs)+'</div>':''}</td>
-    <td style="white-space:nowrap"><button class="btn btn-s btn-xs" onclick="openCrudModal(MOD_COLAB_HIST,${h.id})">✏</button> <button class="btn btn-s btn-xs" onclick="chExcluir(${h.id})">🗑</button></td></tr>`).join('');
+    <td style="white-space:nowrap">${hxBtn('colab_hist',h.id,c.nome+' — '+(h.tipo||'')+' '+(h.data||''))} <button class="btn btn-s btn-xs" onclick="openCrudModal(MOD_COLAB_HIST,${h.id})">✏</button> <button class="btn btn-s btn-xs" onclick="chExcluir(${h.id})">🗑</button></td></tr>`).join('');
   return `<div style="margin-top:14px"><div style="display:flex;align-items:center;gap:10px;margin-bottom:6px"><b style="font-size:12px;text-transform:uppercase;color:var(--g500)">Histórico de salário e cargo</b><button class="btn btn-p btn-xs" onclick="chNovo(${c.id})">+ Incluir</button><button class="btn btn-s btn-xs" onclick="chImprimir(${c.id})">🖨 Imprimir</button></div>
     <div style="overflow-x:auto"><table style="width:100%"><thead><tr><th>Data</th><th>Tipo</th><th style="text-align:right">Salário</th><th>Cargo</th><th>Motivo</th><th></th></tr></thead><tbody>${rows||'<tr><td colspan="6" class="muted" style="padding:10px">Nenhum registro.</td></tr>'}</tbody></table></div></div>`;
 }
@@ -5879,7 +5945,7 @@ function chNovo(colabId){
   const fm=document.getElementById('crud-form'), set=(k,v)=>{ const e=fm.querySelector('[data-field="'+k+'"]'); if(e) e.value=v; };
   set('colaborador',c.nome); set('tipo','Salário'); set('status','Ativo'); set('cargoPara',c.cargo||'');
 }
-function chExcluir(id){ const h=loadData('colab_hist').find(x=>x.id===id); if(!h) return; confirmAction('Excluir este registro de '+(h.tipo||'')+' de '+h.data+'?',()=>{ crudDeleteFisico('colab_hist',id,{modulo:'Colaboradores',label:h.colaborador}); try{ colabFichaSwitchTab(window._cfTabAtiva||'folha'); }catch(e){} }); }
+function chExcluir(id){ const h=loadData('colab_hist').find(x=>x.id===id); if(!h) return; confirmAction('Excluir este registro de '+(h.tipo||'')+' de '+h.data+'?',()=>{ hxLimpar('colab_hist',id); crudDeleteFisico('colab_hist',id,{modulo:'Colaboradores',label:h.colaborador}); try{ colabFichaSwitchTab(window._cfTabAtiva||'folha'); }catch(e){} }); }
 
 function fichaNorm(s){ return normSemAcento(String(s||'')).replace(/\s+/g,' '); }
 function fichaVazio(v){ return v===undefined||v===null||String(v).trim()===''||String(v).trim()==='—'; }
@@ -6277,15 +6343,19 @@ function initTreinoTable() {
 
 /* Tático em branco: remove o que o sistema gerou sozinho (e que ninguém alterou) em Cargos, T&D e Desempenho */
 function migracaoTaticoEmBranco(){
-  if(localStorage.getItem('ac_tatico_branco_v1')) return;
+  /* v2 (21/10/2026): a Patrícia pediu Cargos & Salários, T&D e Desempenho totalmente em branco.
+     Apaga TUDO que existe nessas três abas (neste navegador e na nuvem), uma única vez; depois o que for lançado fica. */
+  if(localStorage.getItem('ac_tatico_branco_v2')) return;
   try{
     let n=0; const meta={modulo:'Limpeza Tático',fisica:true};
-    loadData('treinamentos').filter(t=>t.situacao==='Pendente'&&!t.dataConclusao&&!t.validade&&((t.tipo==='Presencial'&&t.periodicidade==='Bienal'&&+t.cargaHoraria===16)||(t.tipo==='EAD'&&t.periodicidade==='Anual'&&+t.cargaHoraria===4))).forEach(t=>{ crudDelete('treinamentos',t.id,Object.assign({label:t.colaborador+' — '+t.treinamento},meta)); n++; });
-    loadData('avaliacoes').filter(a=>a.situacao==='Pendente'&&(a.nota===null||a.nota===undefined||a.nota==='')&&(!a.pdi||a.pdi==='—')&&!a.comentario&&a.ciclo==='1º Sem. 2026').forEach(a=>{ crudDelete('avaliacoes',a.id,Object.assign({label:a.colaborador},meta)); n++; });
-    const assin=new Map(CARGOS_SEED_ANT.map(c=>[c.cargo,c]));
-    loadData('cargos').forEach(c=>{ const o=assin.get(c.cargo); if(o&&+c.faixaMin===o.faixaMin&&+c.faixaMedia===o.faixaMedia&&+c.faixaMax===o.faixaMax&&c.nivel===o.nivel){ crudDelete('cargos',c.id,Object.assign({label:c.cargo},meta)); n++; } });
-    if(n) logAudit('Tático',"Exclusão",0,'Telas em branco para preenchimento: '+n+' registros gerados automaticamente foram removidos');
+    ['cargos','treinamentos','avaliacoes'].forEach(t=>{ loadData(t).slice().forEach(r=>{ crudDelete(t,r.id,Object.assign({label:r.cargo||r.colaborador||String(r.id)},meta)); n++; }); });
+    if(n) logAudit('Tático',"Exclusão",0,'Cargos, T&D e Desempenho zerados para preenchimento manual: '+n+' registros removidos');
+    localStorage.setItem('ac_tatico_branco_v2','1');
     localStorage.setItem('ac_tatico_branco_v1','1');
+    // varredura na nuvem: remove o que ficou só lá (outro computador / sincronização)
+    if(DB_MODE==='supabase'&&supabaseClient){
+      ['cargos','treinamentos','avaliacoes'].forEach(async t=>{ try{ const rem=await dbLoadData(t); for(const r of (rem||[])) await cloudHardDelete(t,r); }catch(e){ console.warn('varredura nuvem',t,e); } });
+    }
   }catch(e){ console.warn('migracaoTaticoEmBranco',e); }
 }
 
@@ -6816,6 +6886,7 @@ function initCrudModules() {
   buildOrdensServicoSeed();
   buildFeriasFromColabs();
   initFeriasTable();
+  try{ migracaoTaticoEmBranco(); }catch(e){ console.warn(e); }
   buildTreinosFromColabs();
   initTreinoTable();
   buildAvalFromColabs();
@@ -12021,7 +12092,7 @@ async function pullColaboradoresMerge() {
 // tem dado local, não mexe — evita sobrescrever algo em uso.
 async function pullOutrasTabelasAntesDoBoot() {
   if (DB_MODE !== 'supabase' || !supabaseClient) return;
-  const TABELAS = ['plano_etapas','colab_hist','convenio_notas','veiculos','ferias_gozos','treino_listas','beneficios_hist','ferias_hist','demissoes','demissao_templates','hist_pdfs','endo_extra','endo_oculto','ind_turnover','ind_eng','ind_td','ind_hist','plano_cfg','plano_hist','plano_acoes','colab_excluidos','beneficios_anexos','colab_documentos','ferias','treinamentos','avaliacoes','sst','admissoes',
+  const TABELAS = ['plano_etapas','exame_atend','exame_nf','exame_fechamento','aso_ano_fechado','med_cargo_map','exames_realizados','pcmso_matriz','tabela_valores_exames','sst','colab_hist','convenio_notas','veiculos','ferias_gozos','treino_listas','beneficios_hist','ferias_hist','demissoes','demissao_templates','hist_pdfs','endo_extra','endo_oculto','ind_turnover','ind_eng','ind_td','ind_hist','plano_cfg','plano_hist','plano_acoes','colab_excluidos','beneficios_anexos','colab_documentos','ferias','treinamentos','avaliacoes','sst','admissoes',
     'vagas','beneficios_mov','beneficios_inscritos','beneficios_tipos','cargos','ponto',
     'clima_pesquisas','clima_acoes','sucessao','terceiros','documentos','usuarios','holerites',
     'comunicados','cesta_vegas','folha_descontos','feedback90','tempo_empresa_ctrl','desccargos','sstfin','pcmso',
@@ -14830,11 +14901,12 @@ const MOD_SST_COMPLETO = {
   fields: [
     {field:'colaborador',  label:'Colaborador',        required:true, full:true},
     {field:'cargo',        label:'Cargo',               required:true},
-    {field:'setor',        label:'Setor',               required:true},
+    {field:'setor',        label:'Setor'},
+    {field:'cnpj',         label:'Empresa', type:'select', options:['AC','BRASS']},
     {field:'tipoExame',    label:'Tipo de Exame', type:'select', required:true,
       options:['Admissional','Periódico','Retorno ao Trabalho','Mudança de Função','Demissional']},
     {field:'dataExame',    label:'Data do Exame',       placeholder:'dd/mm/aaaa'},
-    {field:'proximoExame', label:'Próximo Exame',       placeholder:'dd/mm/aaaa'},
+    {field:'proximoExame', label:'Próximo Exame (preenchido pela matriz ao informar a data do exame)', placeholder:'dd/mm/aaaa'},
     {field:'clinica',      label:'Clínica / Médico'},
     {field:'riscos',       label:'Riscos Ocupacionais (PCMSO)', type:'textarea'},
     {field:'restricoes',   label:'Restrições / Aptidão', type:'select',
@@ -14848,10 +14920,22 @@ const MOD_SST_COMPLETO = {
       options:['Regular','Pendente renovação','Vencido','Não aplicável']},
     {field:'observacao',   label:'Observações',        type:'textarea', full:true},
     {field:'situacao',     label:'Situação ASO', type:'select',
-      options:['Em dia','Agendar','Vence em breve','Vencido']},
+      options:['Em dia','Agendar','Pendente','Vence em breve','Vencido']},
     {field:'status',       label:'Registro', type:'select', options:['Ativo','Inativo']},
   ],
-  onSave: () => { if(sstAdvCtrl) sstAdvCtrl.load(); atualizarKPIsSST(); updateSSTBanner(); }
+  beforeSave: (obj, rec, isEdit) => {
+    obj.cnpj = obj.cnpj || 'AC';
+    if (obj.dataExame && medDt(obj.dataExame)) {
+      const mudouData = !rec || rec.dataExame !== obj.dataExame;
+      const col = loadData('colaboradores').find(c => medN(c.nome) === medN(obj.colaborador));
+      const emp = obj.cnpj || (col ? medEmp(col) : 'AC'), cm = medCargoMatriz(obj.cargo || (col && col.cargo) || '', emp).cargoMatriz;
+      const calc = medProxExame(cm, emp, obj.dataExame);
+      if (calc && (!obj.proximoExame || (mudouData && rec && obj.proximoExame === (rec.proximoExame || rec.validade)))) obj.proximoExame = calc.data;
+      if (calc && obj.proximoExame && obj.proximoExame !== calc.data) obj.proxAjustado = true; else obj.proxAjustado = false;
+    }
+    if (obj.proximoExame) { obj.validade = obj.proximoExame; const s = medSituacaoPorData(obj.proximoExame); if (s) obj.situacao = s; }
+  },
+  onSave: () => { if(sstAdvCtrl) sstAdvCtrl.load(); atualizarKPIsSST(); updateSSTBanner(); try{ gpRender('exameaso'); }catch(e){} }
 };
 
 function atualizarKPIsSST() {
@@ -15398,18 +15482,20 @@ gpRegister({id:'visitas',periodo:'data',group:'sst',icon:'🪪',title:'Controle 
 });
 
 /* — Medicina Ocupacional: Exame / ASO (usa a tabela 'sst', onde o colaborador novo já entra) — */
-gpRegister({id:'exameaso',group:'med',icon:'🩺',title:'Exame / ASO',label:'Registro SST',table:'sst',
-  novoBtn:'+ Lançar exame / ASO',nota:'Todo colaborador novo entra aqui automaticamente para agendar o exame admissional. Anexe o ASO em 📎.',
-  empresaFilter:false,
+gpRegister({id:'exameaso',group:'med',icon:'🩺',title:'VALIDADE ASO',label:'Registro SST',table:'sst',periodo:'dataExame',
+  pre:r=>{ const c=loadData('colaboradores').find(x=>normSemAcento(x.nome)===normSemAcento(r.colaborador||'')); return !c||(c.status!=='Inativo'&&colabEhCLT(c)); },
+  novoBtn:'+ Lançar exame / ASO',nota:'Controle de validade dos ASOs. Informe a data do exame e o próximo é calculado pela periodicidade da matriz do PCMSO. Os exames e valores ficam em “Exames Ocupacionais”. Anexe o ASO em 📎. PJ e Sem registro não entram neste controle.',
+  empresaFilter:true,
+  acoes:r=>`<button class="btn btn-s btn-xs" onclick="medAbrirFormPorNome('${escAttr(r.colaborador)}')" title="Lançar exame ocupacional deste colaborador">🧪</button>`,
   mod:null, rowLabel:r=>(r.colaborador||'')+' — '+(r.tipoExame||''),
   fields:null,
-  comp:r=>{ const d=gpDias(r.proximoExame); let s=r.situacao||'Agendar'; if(d!==null){ s=d<0?'Vencido':(d<=30?'Vence em breve':'Em dia'); } return {sit:s,dprox:d}; },
+  comp:r=>{ const px=r.proximoExame||r.validade||''; const d=gpDias(px); let s=r.situacao||'Agendar'; if(d!==null){ s=d<0?'Vencido':(d<=30?'Vence em breve':'Em dia'); } else if(s==='Agendar') s='Pendente'; return {sit:s,dprox:d,proximoExame:px,empresa:r.cnpj||r.empresa||'AC'}; },
   kpis:[
     {l:'Colaboradores no controle',v:rs=>rs.length},
     {l:'Em dia',v:rs=>rs.filter(r=>r.sit==='Em dia').length,c:'var(--green)'},
-    {l:'Agendar',v:rs=>rs.filter(r=>r.sit==='Agendar').length,c:'var(--blue)'},
+    {l:'Pendentes',v:rs=>rs.filter(r=>r.sit==='Pendente'||r.sit==='Agendar').length,c:'var(--blue)'},
     {l:'Vencendo / vencidos',v:rs=>rs.filter(r=>r.sit==='Vence em breve'||r.sit==='Vencido').length,c:'var(--red)'}],
-  filters:[{l:'Todas as situações',k:'sit',opts:['Em dia','Agendar','Vence em breve','Vencido']},{l:'Todos os tipos',k:'tipoExame',opts:['Admissional','Periódico','Retorno ao Trabalho','Mudança de Função','Demissional']}],
+  filters:[{l:'Todas as situações',k:'sit',opts:['Em dia','Pendente','Vence em breve','Vencido']},{l:'Todos os tipos',k:'tipoExame',opts:['Admissional','Periódico','Retorno ao Trabalho','Mudança de Risco','Demissional']}],
   sort:(a,b)=>String(a.colaborador).localeCompare(String(b.colaborador)),
   columns:[
     {l:'Colaborador',v:r=>`<b>${gpEsc(r.colaborador)}</b>`,x:r=>r.colaborador},
@@ -15419,7 +15505,7 @@ gpRegister({id:'exameaso',group:'med',icon:'🩺',title:'Exame / ASO',label:'Reg
     {l:'Próximo exame',v:r=>`<span style="${r.sit==='Vencido'?'color:var(--red);font-weight:700':''}">${gpEsc(r.proximoExame||'—')}</span>`,x:r=>r.proximoExame||''},
     {l:'Clínica',v:r=>gpEsc(r.clinica||'—')},
     {l:'Aptidão',v:r=>gpEsc(r.restricoes||'—')},
-    {l:'Situação',v:r=>gpBadge(r.sit,r.sit==='Em dia'?'bg':(r.sit==='Agendar'?'bb':(r.sit==='Vence em breve'?'bo':'br')))}]
+    {l:'Situação',v:r=>gpBadge(r.sit,r.sit==='Em dia'?'bg':((r.sit==='Agendar'||r.sit==='Pendente')?'bb':(r.sit==='Vence em breve'?'bo':'br')))}]
 });
 
 /* — Contratos / Obrigações — */
@@ -16090,6 +16176,522 @@ function provTermosEmpresa(emp){
     ${pane('13AC',H13,'',n13)}${pane('ferAC',HF,'',nF+' <button class="btn btn-s btn-xs" onclick="provTermosEmpresa(\'AC\')">🖨 Imprimir todos os Termos (SIM)</button>')}${pane('13BRASS',H13,'',n13)}${pane('ferBRASS',HF,'',nF+' <button class="btn btn-s btn-xs" onclick="provTermosEmpresa(\'BRASS\')">🖨 Imprimir todos os Termos (SIM)</button>')}`;
   content.appendChild(d);
 })();
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   MEDICINA OCUPACIONAL v2 — atendimentos (ASO + exames), histórico no cadastro,
+   VALIDADE ASO, conferência matriz × realizado × nota fiscal, fechamento 21→20.
+   Reaproveita: pcmso_matriz, tabela_valores_exames, exames_realizados, sst, anexos_gerais.
+   ═══════════════════════════════════════════════════════════════════ */
+const MED_TIPOS=['Admissional','Periódico','Retorno ao Trabalho','Mudança de Risco','Demissional'];
+const MED_FLAG_TIPO={'Admissional':'admissao','Retorno ao Trabalho':'retTrab','Mudança de Risco':'mudRiscos','Demissional':'demissao'};
+const MED_CLINICA='MedClass';
+const MED_NF_STATUS=['Pendente','Em conferência','Com divergência','Conferida'];
+function medN(s){ return normSemAcento(String(s==null?'':s)).replace(/[^A-Z0-9 ]/g,' ').replace(/\s+/g,' ').trim(); }
+function medEmp(c){ return (c&&(c.cnpj==='02'||c.cnpj==='BRASS'))?'BRASS':'AC'; }
+function medDt(s){ return gpDt(s); }
+function medFmtD(d){ return gpFmt(d); }
+function medMoeda(v){ return 'R$ '+fmtBRL(v); }
+function medAddMeses(d,m){ const r=new Date(d.getFullYear(),d.getMonth()+m,d.getDate()); if(r.getDate()!==d.getDate()) r.setDate(0); return r; }
+/* nome canônico do exame: une "CHUMBO" da nota da clínica com "Chumbo sanguíneo" da matriz */
+function medChave(nome){
+  const n=medN(nome);
+  if(/ACIDO METIL HIPURICO/.test(n)) return 'ACIDO METIL HIPURICO';
+  if(/ACIDO HIPURICO/.test(n)) return 'ACIDO HIPURICO';
+  if(/CHUMBO/.test(n)) return 'CHUMBO';
+  if(/COBRE/.test(n)) return 'COBRE';
+  if(/ESPIROMETRIA|FUNCAO PULMONAR/.test(n)) return 'ESPIROMETRIA';
+  if(/HEMOGRAMA/.test(n)) return 'HEMOGRAMA';
+  if(/AUDIOMETRIA/.test(n)) return 'AUDIOMETRIA';
+  if(/RAIO X|RAIOX|RADIOGRAFIA/.test(n)) return /DOIS LEITORES/.test(n)?'RAIOX OIT DOIS LEITORES':'RAIOX TORAX';
+  if(/PSICOSSOCIAL/.test(n)) return 'PSICOSSOCIAL';
+  if(/ECG|ELETROCARDIO/.test(n)) return 'ECG';
+  if(/GLICEMIA/.test(n)) return 'GLICEMIA';
+  if(/FUNGOS/.test(n)) return 'FUNGOS';
+  if(/EXAME CLINICO/.test(n)) return 'EXAME CLINICO';
+  if(/ACUIDADE/.test(n)) return 'ACUIDADE VISUAL';
+  if(/AVALIACAO FUNCIONAL/.test(n)) return 'AVALIACAO FUNCIONAL';
+  if(/RUIDO/.test(n)) return 'RUIDO';
+  return n;
+}
+function medNomesConhecidos(){
+  const m=new Map();
+  loadData('tabela_valores_exames').filter(t=>t.status!=='Inativo').forEach(t=>m.set(medChave(t.exame),t.exame));
+  loadData('pcmso_matriz').filter(t=>t.status!=='Inativo').forEach(t=>{ const k=medChave(t.exame); if(k!=='RUIDO'&&!m.has(k)) m.set(k,t.exame); });
+  return [...m.values()].sort((a,b)=>a.localeCompare(b));
+}
+function medValorRef(exame){
+  const k=medChave(exame);
+  const t=loadData('tabela_valores_exames').filter(r=>r.status!=='Inativo'&&medChave(r.exame)===k&&Number(r.valorContratado)>0)[0];
+  return t?Number(t.valorContratado):null; // sem valor cadastrado = null (nunca inventa)
+}
+/* cargo do colaborador → cargo da matriz (igual, ou mapeado manualmente uma vez) */
+function medCargoMatriz(cargo,emp){
+  const alvo=medN(cargo);
+  const all=loadData('pcmso_matriz').filter(m=>m.status!=='Inativo'&&(!emp||m.empresa===emp));
+  if(all.some(m=>medN(m.cargo)===alvo)) return {cargoMatriz:all.find(m=>medN(m.cargo)===alvo).cargo,origem:'igual'};
+  const mp=loadData('med_cargo_map').filter(r=>r.status!=='Inativo'&&r.chave===alvo+'|'+emp)[0];
+  if(mp&&all.some(m=>medN(m.cargo)===medN(mp.cargoMatriz))) return {cargoMatriz:mp.cargoMatriz,origem:'mapeado'};
+  return {cargoMatriz:null,origem:'sem'};
+}
+function medCargosMatriz(emp){ return [...new Set(loadData('pcmso_matriz').filter(m=>m.status!=='Inativo'&&(!emp||m.empresa===emp)).map(m=>m.cargo))].sort(); }
+function medMapearCargo(cargo,emp,cargoMatriz){
+  const chave=medN(cargo)+'|'+emp, ex=loadData('med_cargo_map').find(r=>r.chave===chave&&r.status!=='Inativo');
+  if(!cargoMatriz){ if(ex) crudDeleteFisico('med_cargo_map',ex.id,{modulo:'Medicina Ocupacional',label:cargo}); return; }
+  if(ex) crudUpdate('med_cargo_map',ex.id,{cargoMatriz},{modulo:'Medicina Ocupacional',label:cargo});
+  else crudCreate('med_cargo_map',{chave,cargo,empresa:emp,cargoMatriz},{modulo:'Medicina Ocupacional',label:cargo});
+}
+/* histórico de exames já feitos (por exame) — para não exigir de novo o que vale 24 meses */
+function medUltimoExame(nome,chave,antesDe,ignorarAtendId){
+  let ult=null;
+  loadData('exame_atend').filter(a=>a.status!=='Inativo'&&a.id!==ignorarAtendId&&medN(a.colaborador)===medN(nome)).forEach(a=>{
+    const d=medDt(a.data); if(!d||(antesDe&&d>=antesDe)) return;
+    if((a.itens||[]).some(i=>medChave(i.exame)===chave)&&(!ult||d>ult)) ult=d; });
+  return ult;
+}
+function medExigidos(cargoMatriz,emp,tipo,nome,dataAt,ignorarAtendId){
+  if(!cargoMatriz) return [];
+  const rows=loadData('pcmso_matriz').filter(m=>m.status!=='Inativo'&&m.empresa===emp&&m.cargo===cargoMatriz);
+  const vistos=new Set(), out=[];
+  rows.forEach(m=>{
+    const k=medChave(m.exame); if(k==='RUIDO'||vistos.has(k)) return;
+    let aplica;
+    if(tipo==='Periódico'){ const per=parseInt(m.periodicidade); aplica=!!per;
+      if(aplica&&per>=24){ const u=medUltimoExame(nome,k,dataAt,ignorarAtendId); if(u&&dataAt&&medAddMeses(u,per)>dataAt) aplica=false; } }
+    else aplica=m[MED_FLAG_TIPO[tipo]]==='SIM';
+    if(aplica){ vistos.add(k); out.push({exame:m.exame,chave:k,periodicidade:m.periodicidade||''}); }
+  });
+  return out;
+}
+/* próximo ASO pela periodicidade da matriz (12 meses se houver exame anual; senão 24); sem matriz = 12 meses (avisa) */
+function medProxExame(cargoMatriz,emp,dataStr){
+  const d=medDt(dataStr); if(!d) return null;
+  let meses=12, fonte='padrão de 12 meses (cargo sem matriz — confira)';
+  if(cargoMatriz){
+    const pers=loadData('pcmso_matriz').filter(m=>m.status!=='Inativo'&&m.empresa===emp&&m.cargo===cargoMatriz).map(m=>parseInt(m.periodicidade)).filter(Boolean);
+    if(pers.length){ meses=Math.min(...pers); fonte='matriz PCMSO: '+meses+' meses'; }
+    else fonte='cargo na matriz sem periodicidade — usado 12 meses';
+  }
+  return {data:medFmtD(medAddMeses(d,meses)),meses,fonte};
+}
+function medSituacaoPorData(prox){ const dd=gpDias(prox); if(dd===null) return null; return dd<0?'Vencido':(dd<=30?'Vence em breve':'Em dia'); }
+
+/* ── conferência: matriz × realizado × valor cobrado ── */
+function medConferir(a){
+  const col=loadData('colaboradores').find(c=>c.id===a.colaboradorId)||null;
+  const emp=a.empresa||medEmp(col), prob=[];
+  const itens=(a.itens||[]).filter(i=>i.exame);
+  const cm=a.cargoMatriz||medCargoMatriz(a.cargo||(col&&col.cargo)||'',emp).cargoMatriz;
+  const dAt=medDt(a.data);
+  const exig=medExigidos(cm,emp,a.tipo,a.colaborador,dAt,a.id);
+  const feitos={}; itens.forEach(i=>{ const k=medChave(i.exame); feitos[k]=(feitos[k]||0)+(Number(i.qtd)||1); });
+  const faltando=exig.filter(e=>!feitos[e.chave]).map(e=>e.exame);
+  const extras=cm?itens.filter(i=>!exig.some(e=>e.chave===medChave(i.exame))).map(i=>i.exame):[];
+  if(!cm) prob.push({t:'pend',m:'Cargo "'+(a.cargo||'—')+'" sem correspondência na matriz do PCMSO — informe o cargo da matriz (cadastro a completar).'});
+  faltando.forEach(x=>prob.push({t:'ex',m:'Previsto na matriz e não lançado: '+x}));
+  extras.forEach(x=>prob.push({t:'ex',m:'Realizado/cobrado mas não previsto na matriz para este cargo/tipo: '+x}));
+  Object.keys(feitos).forEach(k=>{ if(feitos[k]>1) prob.push({t:'ex',m:'Quantidade divergente / possível duplicidade: '+k.toLowerCase()+' lançado '+feitos[k]+'x'}); });
+  const dup=loadData('exame_atend').filter(o=>o.status!=='Inativo'&&o.id!==a.id&&medN(o.colaborador)===medN(a.colaborador)&&o.tipo===a.tipo&&o.data===a.data);
+  if(dup.length) prob.push({t:'ex',m:'Possível lançamento duplicado: já existe '+a.tipo+' de '+a.colaborador+' em '+a.data});
+  if(!a.colaboradorId) prob.push({t:'pend',m:'Cobrança sem colaborador vinculado ao cadastro.'});
+  if(!String(a.notaFiscal||'').trim()) prob.push({t:'pend',m:'Atendimento sem nota fiscal vinculada.'});
+  if(!itens.length) prob.push({t:'pend',m:'Atendimento sem nenhum procedimento lançado.'});
+  let previsto=0, cobradoComp=0, cobrado=0, semRef=[];
+  itens.forEach(i=>{ const q=Number(i.qtd)||1, c=Number(i.valorCobrado)||0; cobrado+=c;
+    const ref=medValorRef(i.exame);
+    if(ref===null){ semRef.push(i.exame); return; }
+    previsto+=ref*q; cobradoComp+=c;
+    if(i.valorCobrado===''||i.valorCobrado==null) prob.push({t:'pend',m:'Valor cobrado não informado: '+i.exame});
+    else if(Math.abs(c-ref*q)>=0.01) prob.push({t:'val',m:i.exame+': cobrado '+medMoeda(c)+' × previsto '+medMoeda(ref*q)+' (dif. '+medMoeda(c-ref*q)+')'});
+  });
+  semRef.forEach(x=>prob.push({t:'pend',m:'Sem valor de referência cadastrado: '+x+' (informe em "Valores de referência")'}));
+  const dif=cobradoComp-previsto, pct=previsto>0?dif/previsto*100:null;
+  const tem=t=>prob.some(p=>p.t===t);
+  let status;
+  if(!prob.length) status='CONFERIDO';
+  else if(String(a.justificativa||'').trim()&&!tem('pend')) status='CONFERIDO';
+  else if(tem('ex')&&tem('val')) status='NECESSITA DE JUSTIFICATIVA';
+  else if(tem('ex')) status='DIVERGÊNCIA DE EXAMES';
+  else if(tem('val')) status='DIVERGÊNCIA DE VALOR';
+  else status='PENDENTE DE CONFERÊNCIA';
+  return {status,problemas:prob,previsto,cobrado,cobradoComp,dif,pct,faltando,extras,semRef,cargoMatriz:cm,justificado:status==='CONFERIDO'&&prob.length>0};
+}
+function medBadgeStatus(r){
+  const m={'CONFERIDO':'bg','DIVERGÊNCIA DE VALOR':'br','DIVERGÊNCIA DE EXAMES':'br','PENDENTE DE CONFERÊNCIA':'by','NECESSITA DE JUSTIFICATIVA':'bo'};
+  return `<span class="badge ${m[r.status]||'bgy'}" title="${gpEsc(r.problemas.map(p=>p.m).join('\n'))}">${r.status}${r.justificado?' (justificado)':''}</span>`;
+}
+
+/* ── período de fechamento: 21 do mês anterior até 20 do mês ── */
+function medPeriodo(ano,mesFim){ const ini=new Date(ano,mesFim-2,21), fim=new Date(ano,mesFim-1,20); return {ini,fim,label:medFmtD(ini)+' a '+medFmtD(fim)}; }
+function medPeriodoDe(d){ const m=d.getDate()>=21?d.getMonth()+2:d.getMonth()+1; const dt=new Date(d.getFullYear(),m-1,1); return {ano:dt.getFullYear(),mes:dt.getMonth()+1}; }
+function medAtendsDoPeriodo(p){ return loadData('exame_atend').filter(a=>a.status!=='Inativo').filter(a=>{ const d=medDt(a.data); return d&&d>=p.ini&&d<=p.fim; }); }
+
+/* ── gravação ── */
+function medSyncLinhas(a){
+  loadData('exames_realizados').filter(r=>r.atendId===a.id).forEach(r=>crudDeleteFisico('exames_realizados',r.id,{modulo:'Medicina Ocupacional',label:r.exame}));
+  const dm=deriveMesAno(a.data);
+  (a.itens||[]).filter(i=>i.exame).forEach(i=>crudCreate('exames_realizados',{atendId:a.id,colaborador:a.colaborador,cargo:a.cargo||'',empresa:a.empresa,tipoAso:a.tipo,exame:i.exame,dataRealizacao:a.data,clinica:a.clinica||'',valorCobrado:Number(i.valorCobrado)||0,notaFiscal:a.notaFiscal||'',mes:dm.mes,ano:dm.ano},{modulo:'Medicina Ocupacional',label:a.colaborador+' — '+i.exame}));
+}
+function medAtualizarASO(a,proxManual){
+  if(a.tipo==='Demissional') return;
+  const sst=loadData('sst').filter(r=>r.status!=='Inativo');
+  let r=sst.find(x=>medN(x.colaborador)===medN(a.colaborador));
+  const col=loadData('colaboradores').find(c=>c.id===a.colaboradorId);
+  const dN=medDt(a.data); if(r){ const dA=medDt(r.dataExame); if(dA&&dN&&dA>dN) return; }
+  const emp=a.empresa, cm=a.cargoMatriz||medCargoMatriz(a.cargo,emp).cargoMatriz;
+  const calc=medProxExame(cm,emp,a.data), prox=proxManual||(calc&&calc.data)||'';
+  const dados={dataExame:a.data,tipoExame:a.tipo,proximoExame:prox,validade:prox,clinica:a.clinica||'',situacao:medSituacaoPorData(prox)||'Em dia',proxAjustado:!!(proxManual&&calc&&proxManual!==calc.data)};
+  if(r) crudUpdate('sst',r.id,dados,{modulo:'Medicina Ocupacional',label:a.colaborador});
+  else crudCreate('sst',Object.assign({colaborador:a.colaborador,cnpj:emp,cargo:a.cargo||'',setor:(col&&col.setor)||''},dados),{modulo:'Medicina Ocupacional',label:a.colaborador});
+}
+function medAnoFechado(ano){ return loadData('aso_ano_fechado').some(r=>r.status!=='Inativo'&&Number(r.ano)===Number(ano)&&r.situacao==='Fechado'); }
+function medPeriodoConcluido(label){ return loadData('exame_fechamento').some(r=>r.status!=='Inativo'&&r.periodo===label&&r.situacao==='Concluído'); }
+
+/* ── formulário de atendimento ── */
+let MED_FORM={id:null,itens:[],colabId:null};
+function medAbrirForm(id,colabId){
+  const a=id?loadData('exame_atend').find(x=>x.id===id):null;
+  MED_FORM={id:id||null,colabId:a?a.colaboradorId:(colabId||null),itens:a?JSON.parse(JSON.stringify(a.itens||[])):[]};
+  const colabs=loadData('colaboradores').filter(c=>c.status!=='Inativo'&&colabEhCLT(c)).sort((x,y)=>x.nome.localeCompare(y.nome));
+  const sel=MED_FORM.colabId||'';
+  const ops=colabs.map(c=>`<option value="${c.id}" ${String(sel)===String(c.id)?'selected':''}>${gpEsc(c.nome)}</option>`).join('');
+  abrirModalSimples(a?'✏ Exame ocupacional — '+gpEsc(a.colaborador):'🩺 Lançar exame ocupacional',`
+   <div id="med-form">
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px">
+      <label class="flbl">Colaborador<select class="fsel" id="medf-colab" style="width:100%" onchange="medFormColab()"><option value="">— selecione —</option>${ops}<option value="0" ${a&&!a.colaboradorId?'selected':''}>Outro (não cadastrado)</option></select></label>
+      <label class="flbl">Tipo de exame<select class="fsel" id="medf-tipo" style="width:100%" onchange="medFormSugerir(false)">${MED_TIPOS.map(t=>`<option ${a&&a.tipo===t?'selected':''}>${t}</option>`).join('')}</select></label>
+      <label class="flbl" id="medf-outro-wrap" style="display:none">Nome (não cadastrado)<input class="finp" id="medf-nome" style="width:100%" value="${gpEsc(a&&!a.colaboradorId?a.colaborador:'')}"></label>
+      <label class="flbl">Data do exame<input class="finp" id="medf-data" placeholder="dd/mm/aaaa" style="width:100%" value="${gpEsc(a?a.data:'')}" oninput="medFormProx()"></label>
+      <label class="flbl">Clínica / laboratório<input class="finp" id="medf-clin" style="width:100%" value="${gpEsc(a?a.clinica:MED_CLINICA)}"></label>
+      <label class="flbl">Nº da nota fiscal<input class="finp" id="medf-nf" style="width:100%" value="${gpEsc(a?a.notaFiscal:'')}"></label>
+      <label class="flbl">Próximo exame (calculado pela matriz)<input class="finp" id="medf-prox" placeholder="dd/mm/aaaa" style="width:100%" value="${gpEsc(a?(a.proximoExame||''):'')}" oninput="medFormProxManual()"></label>
+    </div>
+    <div id="medf-prox-info" class="muted" style="font-size:10.5px;margin:2px 0 8px"></div>
+    <div id="medf-motivo-wrap" style="display:none;margin-bottom:8px"><label class="flbl">Motivo do ajuste da data (obrigatório)<input class="finp" id="medf-motivo" style="width:100%" value="${gpEsc(a?a.motivoAjuste||'':'')}"></label></div>
+    <div id="medf-cargo-wrap" style="display:none;margin-bottom:8px;padding:8px;border:1px solid #fde68a;background:#fffbeb;border-radius:6px"></div>
+    <div style="display:flex;align-items:center;gap:8px;margin:8px 0 4px"><b style="font-size:12px;text-transform:uppercase;color:var(--g500)">Exames realizados</b>
+      <button class="btn btn-s btn-xs" onclick="medFormSugerir(true)" title="Preenche com os exames que a matriz exige para este cargo e tipo">✨ Sugerir da matriz</button>
+      <button class="btn btn-s btn-xs" onclick="medFormAddItem()">+ Procedimento</button></div>
+    <datalist id="med-dl">${medNomesConhecidos().map(n=>`<option value="${gpEsc(n)}">`).join('')}</datalist>
+    <div style="overflow-x:auto"><table style="width:100%"><thead><tr><th>Procedimento</th><th style="width:76px">Qtd</th><th style="width:110px">Valor cobrado (R$)</th><th style="width:110px">Valor de referência</th><th style="width:30px"></th></tr></thead><tbody id="medf-itens"></tbody></table></div>
+    <div id="medf-total" style="text-align:right;font-weight:700;margin:6px 0"></div>
+    <label class="flbl">Observação<textarea class="finp" id="medf-obs" rows="2" style="width:100%">${gpEsc(a?a.observacao||'':'')}</textarea></label>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px"><button class="btn btn-s" onclick="fecharModalSimples()">Cancelar</button><button class="btn btn-p" onclick="medFormSalvar()">💾 Salvar</button></div>
+   </div>`,860);
+  medFormColab(true); medFormRenderItens();
+}
+function medFormCol(){ const v=document.getElementById('medf-colab').value; return v&&v!=='0'?loadData('colaboradores').find(c=>String(c.id)===v):null; }
+function medFormColab(inicial){
+  const v=document.getElementById('medf-colab').value;
+  document.getElementById('medf-outro-wrap').style.display=v==='0'?'':'none';
+  const c=medFormCol(), cw=document.getElementById('medf-cargo-wrap');
+  if(c){ const emp=medEmp(c), cm=medCargoMatriz(c.cargo,emp);
+    if(cm.origem==='sem'){ cw.style.display='';
+      cw.innerHTML=`⚠ O cargo <b>${gpEsc(c.cargo||'—')}</b> não existe na matriz do PCMSO. Escolha o cargo da matriz equivalente (fica guardado para os próximos exames; o cadastro não muda):
+        <select class="fsel" id="medf-cargomat" onchange="medFormMapear()" style="width:100%;margin-top:4px"><option value="">— escolher —</option>${medCargosMatriz(emp).map(x=>`<option>${gpEsc(x)}</option>`).join('')}</select>`;
+    } else cw.style.display='none'; }
+  else cw.style.display='none';
+  if(!inicial) medFormSugerir(false);
+  medFormProx();
+}
+function medFormMapear(){ const c=medFormCol(), v=document.getElementById('medf-cargomat').value; if(!c||!v) return; medMapearCargo(c.cargo,medEmp(c),v); showToast('✅ Cargo vinculado à matriz'); medFormColab(); medFormSugerir(false); }
+function medFormSugerir(forcar){
+  const c=medFormCol(), tipo=document.getElementById('medf-tipo').value, dt=medDt(document.getElementById('medf-data').value);
+  if(!c){ if(forcar) showToast('Selecione um colaborador cadastrado','warn'); return; }
+  if(MED_FORM.itens.length&&!forcar) return;
+  const emp=medEmp(c), cm=medCargoMatriz(c.cargo,emp).cargoMatriz;
+  if(!cm){ if(forcar) showToast('Cargo sem matriz — vincule acima','warn'); return; }
+  const ex=medExigidos(cm,emp,tipo,c.nome,dt,MED_FORM.id);
+  if(forcar&&MED_FORM.itens.length&&!confirm('Substituir os procedimentos lançados pelos exigidos pela matriz?')) return;
+  MED_FORM.itens=ex.map(e=>({exame:e.exame,qtd:1,valorCobrado:''}));
+  if(forcar&&!ex.length) showToast('A matriz não exige exames para este cargo/tipo','warn');
+  medFormRenderItens();
+}
+function medFormAddItem(){ medFormLerItens(); MED_FORM.itens.push({exame:'',qtd:1,valorCobrado:''}); medFormRenderItens(); }
+function medFormRemItem(i){ medFormLerItens(); MED_FORM.itens.splice(i,1); medFormRenderItens(); }
+function medFormLerItens(){ document.querySelectorAll('#medf-itens tr').forEach((tr,i)=>{ if(!MED_FORM.itens[i]) return; const q=tr.querySelectorAll('input'); if(q.length<3) return; MED_FORM.itens[i]={exame:q[0].value.trim(),qtd:parseInt(q[1].value)||1,valorCobrado:q[2].value.trim()===''?'':moedaNum(q[2].value)}; }); }
+function medFormRenderItens(){
+  const tb=document.getElementById('medf-itens'); if(!tb) return;
+  tb.innerHTML=MED_FORM.itens.map((i,k)=>{ const ref=i.exame?medValorRef(i.exame):null;
+    return `<tr><td><input class="finp" list="med-dl" style="width:100%" value="${gpEsc(i.exame)}" onchange="medFormLerItens();medFormRenderItens()"></td>
+      <td><input class="finp" type="number" min="1" style="width:64px" value="${i.qtd||1}" onchange="medFormLerItens();medFormRenderItens()"></td>
+      <td><input class="finp" style="width:104px;text-align:right" value="${i.valorCobrado===''||i.valorCobrado==null?'':moedaFmt(i.valorCobrado)}" placeholder="0,00" onchange="medFormLerItens();medFormRenderItens()"></td>
+      <td style="font-size:11px">${ref!==null?medMoeda(ref*(i.qtd||1)):'<span class="muted">sem referência</span>'}</td>
+      <td><button class="btn btn-s btn-xs" onclick="medFormRemItem(${k})">🗑</button></td></tr>`; }).join('')||'<tr><td colspan="5" class="muted" style="padding:8px">Nenhum procedimento. Use “Sugerir da matriz” ou “+ Procedimento”.</td></tr>';
+  const tot=MED_FORM.itens.reduce((s,i)=>s+(Number(i.valorCobrado)||0),0);
+  document.getElementById('medf-total').textContent='Total cobrado: '+medMoeda(tot);
+}
+function medFormProx(){
+  const c=medFormCol(), d=document.getElementById('medf-data').value, tipo=document.getElementById('medf-tipo').value;
+  const info=document.getElementById('medf-prox-info'), px=document.getElementById('medf-prox');
+  if(!medDt(d)||tipo==='Demissional'){ info.textContent=tipo==='Demissional'?'Demissional não gera próximo exame.':''; if(tipo==='Demissional') px.value=''; return; }
+  const emp=c?medEmp(c):'AC', cm=c?medCargoMatriz(c.cargo,emp).cargoMatriz:null, calc=medProxExame(cm,emp,d);
+  px.dataset.calc=calc.data; info.textContent='Calculado: '+calc.data+' — '+calc.fonte+'. Pode ajustar com motivo.';
+  if(!px.dataset.manual) px.value=calc.data; medFormProxManual(true);
+}
+function medFormProxManual(auto){
+  const px=document.getElementById('medf-prox'); if(!px) return; if(!auto) px.dataset.manual='1';
+  const dif=px.dataset.calc&&px.value&&px.value!==px.dataset.calc;
+  document.getElementById('medf-motivo-wrap').style.display=dif?'':'none';
+}
+function medFormSalvar(){
+  medFormLerItens();
+  const col=medFormCol(), v=document.getElementById('medf-colab').value;
+  const nome=col?col.nome:(v==='0'?document.getElementById('medf-nome').value.trim():'');
+  const tipo=document.getElementById('medf-tipo').value, data=document.getElementById('medf-data').value.trim();
+  if(!nome){ showToast('Selecione o colaborador (ou informe o nome)','warn'); return; }
+  if(!medDt(data)){ showToast('Informe a data do exame (dd/mm/aaaa)','warn'); return; }
+  const itens=MED_FORM.itens.filter(i=>i.exame);
+  if(!itens.length){ showToast('Lance ao menos um procedimento','warn'); return; }
+  const px=document.getElementById('medf-prox'), prox=tipo==='Demissional'?'':px.value.trim();
+  if(prox&&!medDt(prox)){ showToast('Próximo exame inválido','warn'); return; }
+  const ajustou=prox&&px.dataset.calc&&prox!==px.dataset.calc, motivo=document.getElementById('medf-motivo').value.trim();
+  if(ajustou&&!motivo){ showToast('Informe o motivo do ajuste da data do próximo exame','warn'); return; }
+  const ano=medDt(data).getFullYear(); if(medAnoFechado(ano)){ showToast('O ano '+ano+' está fechado. Reabra em VALIDADE ASO › Histórico anual.','warn'); return; }
+  const per=medPeriodoDe(medDt(data)), plab=medPeriodo(per.ano,per.mes).label;
+  if(medPeriodoConcluido(plab)&&!confirm('O fechamento '+plab+' já foi concluído. Lançar mesmo assim?')) return;
+  const dupl=loadData('exame_atend').find(o=>o.status!=='Inativo'&&o.id!==MED_FORM.id&&medN(o.colaborador)===medN(nome)&&o.tipo===tipo&&o.data===data);
+  if(dupl&&!confirm('Já existe '+tipo+' de '+nome+' em '+data+'. Salvar mesmo assim (ficará sinalizado como possível duplicidade)?')) return;
+  const emp=col?medEmp(col):'AC', cargo=col?col.cargo:'';
+  const base={colaborador:nome,colaboradorId:col?col.id:null,empresa:emp,cargo,cargoMatriz:col?medCargoMatriz(cargo,emp).cargoMatriz:null,tipo,data,clinica:document.getElementById('medf-clin').value.trim(),notaFiscal:document.getElementById('medf-nf').value.trim(),itens,
+    proximoExame:prox,motivoAjuste:ajustou?motivo:'',observacao:document.getElementById('medf-obs').value.trim(),periodoFech:plab};
+  const meta={modulo:'Medicina Ocupacional',label:nome+' — '+tipo+' '+data};
+  let a;
+  if(MED_FORM.id){ const ant=loadData('exame_atend').find(x=>x.id===MED_FORM.id); const hist=(ant.hist||[]).concat([{em:nowStr(),acao:'Alterado'}]);
+    crudUpdate('exame_atend',MED_FORM.id,Object.assign({},base,{hist}),meta); a=loadData('exame_atend').find(x=>x.id===MED_FORM.id); }
+  else { crudCreate('exame_atend',Object.assign({},base,{hist:[{em:nowStr(),acao:'Lançado'}],status:'Ativo'}),meta); a=loadData('exame_atend').slice(-1)[0]; }
+  medSyncLinhas(a); if(col) medAtualizarASO(a,prox);
+  fecharModalSimples(); showToast('✅ Exame ocupacional salvo'); medAposMudanca();
+}
+function medAposMudanca(){
+  try{ colabFichaSwitchTab(window._cfTabAtiva||'folha'); }catch(e){}
+  try{ if(typeof gpRender==='function'&&document.getElementById('gp-exameaso-tbody')) gpRender('exameaso'); }catch(e){}
+  try{ medexRender(); }catch(e){} try{ pcmsoRenderAll(); }catch(e){} try{ atualizarKPIsSST(); }catch(e){}
+}
+function medAtendExcluir(id){
+  const a=loadData('exame_atend').find(x=>x.id===id); if(!a) return;
+  confirmAction('Excluir o exame ocupacional de '+a.colaborador+' ('+a.tipo+', '+a.data+')?\nOs anexos e os lançamentos vinculados também saem.',()=>{
+    hxLimpar('exame_atend',id);
+    loadData('exames_realizados').filter(r=>r.atendId===id).forEach(r=>crudDeleteFisico('exames_realizados',r.id,{modulo:'Medicina Ocupacional',label:r.exame}));
+    crudDeleteFisico('exame_atend',id,{modulo:'Medicina Ocupacional',label:a.colaborador}); showToast('🗑 Excluído'); medAposMudanca(); });
+}
+
+/* ── Histórico de exames ocupacionais no cadastro ── */
+function medHistLista(c){ return loadData('exame_atend').filter(a=>a.status!=='Inativo'&&(a.colaboradorId===c.id||medN(a.colaborador)===medN(c.nome))).sort((x,y)=>(medDt(y.data)||0)-(medDt(x.data)||0)); }
+function medHistHtml(c){
+  const l=medHistLista(c);
+  const rows=l.map(a=>{ const r=medConferir(a); return `<tr style="border-bottom:1px solid var(--g100)"><td style="white-space:nowrap">${gpEsc(a.data)}</td><td>${gpEsc(a.tipo)}</td><td style="font-size:11px">${gpEsc(a.clinica||'—')}</td><td>${gpEsc(a.notaFiscal||'—')}</td>
+    <td style="font-size:10.5px">${(a.itens||[]).map(i=>gpEsc(i.exame)+((i.qtd||1)>1?' ×'+i.qtd:'')).join('; ')}</td><td style="text-align:right;white-space:nowrap">${medMoeda(r.cobrado)}</td><td>${medBadgeStatus(r)}</td>
+    <td style="white-space:nowrap">${hxBtn('exame_atend',a.id,c.nome+' — '+a.tipo+' '+a.data)} <button class="btn btn-s btn-xs" onclick="medAbrirForm(${a.id})">✏</button> <button class="btn btn-s btn-xs" onclick="medAtendExcluir(${a.id})">🗑</button></td></tr>`; }).join('');
+  return `<div style="margin-top:14px"><div style="display:flex;align-items:center;gap:10px;margin-bottom:6px"><b style="font-size:12px;text-transform:uppercase;color:var(--g500)">Histórico de exames ocupacionais</b><button class="btn btn-p btn-xs" onclick="medAbrirForm(null,${c.id})">+ Incluir</button></div>
+    <div style="overflow-x:auto"><table style="width:100%"><thead><tr><th>Data</th><th>Tipo</th><th>Clínica</th><th>NF</th><th>Exames</th><th style="text-align:right">Total</th><th>Conferência</th><th></th></tr></thead><tbody>${rows||'<tr><td colspan="8" class="muted" style="padding:10px">Nenhum exame ocupacional lançado. Os lançamentos feitos em Medicina Ocupacional aparecem aqui automaticamente.</td></tr>'}</tbody></table></div></div>`;
+}
+
+/* ── VALIDADE ASO: filtros, Fechar ano, Histórico anual ── */
+function medAsoAnos(){ const s=new Set([new Date().getFullYear()]); loadData('sst').forEach(r=>{ const d=medDt(r.dataExame); if(d) s.add(d.getFullYear()); }); loadData('exame_atend').forEach(a=>{ const d=medDt(a.data); if(d) s.add(d.getFullYear()); }); return [...s].sort((a,b)=>b-a); }
+function medResumoAno(ano,emp){
+  const sst=loadData('sst').filter(r=>r.status!=='Inativo'&&(!emp||r.cnpj===emp));
+  const doAno=sst.filter(r=>{ const d=medDt(r.dataExame); return d&&d.getFullYear()===ano; });
+  const at=loadData('exame_atend').filter(a=>a.status!=='Inativo'&&(!emp||a.empresa===emp)&&medDt(a.data)&&medDt(a.data).getFullYear()===ano);
+  const cob=at.reduce((s,a)=>s+medConferir(a).cobrado,0);
+  const sit=r=>{ const p=r.proximoExame||r.validade; return medSituacaoPorData(p)||r.situacao; };
+  return {ano,emp:emp||'AC + BRASS',asoRealizados:doAno.length,atendimentos:at.length,custo:cob,vencidos:sst.filter(r=>sit(r)==='Vencido').length,vencendo:sst.filter(r=>sit(r)==='Vence em breve').length,emDia:sst.filter(r=>sit(r)==='Em dia').length,pendentes:sst.filter(r=>sit(r)==='Agendar'||sit(r)==='Pendente').length};
+}
+function medFecharAno(){
+  const anos=medAsoAnos();
+  abrirModalSimples('🔒 Fechar ano — VALIDADE ASO',`<p style="font-size:12px;margin-bottom:8px">Fechar o ano guarda uma <b>foto</b> dos ASOs e custos do ano e bloqueia novos lançamentos de exame com data naquele ano. Nada é apagado; dá para reabrir no Histórico anual.</p>
+    <select class="fsel" id="medfa-ano">${anos.map(a=>`<option>${a}</option>`).join('')}</select> <button class="btn btn-p" onclick="medFecharAnoOk()">🔒 Fechar este ano</button>`,520);
+}
+function medFecharAnoOk(){
+  const ano=+document.getElementById('medfa-ano').value;
+  if(medAnoFechado(ano)){ showToast('O ano '+ano+' já está fechado','warn'); return; }
+  const snap=['AC','BRASS',''].map(e=>medResumoAno(ano,e));
+  crudCreate('aso_ano_fechado',{ano,situacao:'Fechado',fechadoEm:nowStr(),snap},{modulo:'Medicina Ocupacional',label:'Ano '+ano});
+  fecharModalSimples(); showToast('🔒 Ano '+ano+' fechado'); medHistoricoAnual();
+}
+function medReabrirAno(id){ confirmAction('Reabrir este ano? Novos lançamentos voltam a ser permitidos.',()=>{ crudUpdate('aso_ano_fechado',id,{situacao:'Reaberto',reabertoEm:nowStr()},{modulo:'Medicina Ocupacional'}); medHistoricoAnual(); }); }
+function medHistoricoAnual(){
+  const fech=loadData('aso_ano_fechado').filter(r=>r.status!=='Inativo');
+  const linhas=medAsoAnos().flatMap(ano=>['AC','BRASS'].map(e=>{ const r=medResumoAno(ano,e), f=fech.find(x=>+x.ano===ano&&x.situacao==='Fechado'); const s=f?(f.snap||[]).find(x=>x.emp===e)||r:r;
+    return `<tr><td><b>${ano}</b></td><td>${e}</td><td style="text-align:center">${s.asoRealizados}</td><td style="text-align:center">${s.atendimentos}</td><td style="text-align:right">${medMoeda(s.custo)}</td><td style="text-align:center">${s.emDia}</td><td style="text-align:center">${s.vencendo}</td><td style="text-align:center;color:${s.vencidos?'var(--red)':''}">${s.vencidos}</td><td style="text-align:center">${s.pendentes}</td><td>${f?`<span class="badge bgy">🔒 Fechado em ${gpEsc((f.fechadoEm||'').split(' ')[0])}</span> <button class="btn btn-s btn-xs" onclick="medReabrirAno(${f.id})">Reabrir</button>`:'<span class="badge bg">Aberto</span>'}</td></tr>`; })).join('');
+  abrirModalSimples('📚 Histórico anual — ASO e vencimentos',`<div style="overflow-x:auto"><table style="width:100%"><thead><tr><th>Ano</th><th>Empresa</th><th>ASOs realizados</th><th>Atend. lançados</th><th style="text-align:right">Custo cobrado</th><th>Em dia</th><th>Vencendo</th><th>Vencidos</th><th>Pendentes</th><th>Situação</th></tr></thead><tbody>${linhas}</tbody></table></div>
+   <div class="muted" style="font-size:10.5px;margin-top:8px">Anos abertos mostram a situação de hoje; anos fechados mostram a foto do dia do fechamento.</div>`,1000);
+}
+function medAsoInjetar(){
+  const pg=document.getElementById('page-exameaso'); if(!pg||pg.dataset.medv2) return; pg.dataset.medv2='1';
+  ['mes','ano'].forEach(k=>{ const e=document.getElementById('gp-exameaso-'+k); if(e) e.value='0'; });
+  const h=pg.querySelector('.section-hdr');
+  if(h){ h.insertAdjacentHTML('beforeend',`<button class="btn btn-s btn-sm" onclick="medFecharAno()">🔒 Fechar ano</button><button class="btn btn-s btn-sm" onclick="medHistoricoAnual()">📚 Histórico anual</button>`);
+    const nb=h.querySelector('.btn-p'); if(nb) nb.setAttribute('onclick',"medAbrirForm()"); }
+}
+
+/* ── Gestão: Exames Ocupacionais (Painel · Lançamentos · Fechamento 21→20 · Valores de referência) ── */
+let MEDEX={tab:'painel',ano:null,mes:null};
+function medexIr(t){ MEDEX.tab=t; medexRender(); }
+function medexInit(){
+  if(!MEDEX.ano){ const p=medPeriodoDe(new Date()); MEDEX.ano=p.ano; MEDEX.mes=p.mes; }
+}
+function medexRender(){
+  const box=document.getElementById('medex-corpo'); if(!box) return; medexInit();
+  ['painel','lanc','fech','valores'].forEach(t=>{ const e=document.getElementById('medex-tab-'+t); if(e) e.classList.toggle('active',t===MEDEX.tab); });
+  ({painel:medexPainel,lanc:medexLanc,fech:medexFech,valores:medexValores})[MEDEX.tab](box);
+}
+function medKpi(l,v,cor){ return `<div class="kpi-card"><div class="kpi-lbl">${l}</div><div class="kpi-val" style="${cor?'color:'+cor:''}">${v}</div></div>`; }
+function medAgrupar(lista,fn){ const m={}; lista.forEach(a=>{ const k=fn(a)||'—'; m[k]=(m[k]||0)+medConferir(a).cobrado; }); return Object.entries(m).sort((x,y)=>y[1]-x[1]); }
+function medTabelaResumo(tit,pares){ return `<div class="card" style="padding:10px"><div style="font-weight:700;font-size:12px;margin-bottom:6px">${tit}</div><table style="width:100%;font-size:11.5px"><tbody>${pares.map(p=>`<tr><td>${gpEsc(p[0])}</td><td style="text-align:right">${medMoeda(p[1])}</td></tr>`).join('')||'<tr><td class="muted">Sem lançamentos</td></tr>'}</tbody></table></div>`; }
+function medexPainel(box){
+  const sst=loadData('sst').filter(r=>r.status!=='Inativo'), sit=r=>medSituacaoPorData(r.proximoExame||r.validade)||r.situacao;
+  const p=medPeriodo(MEDEX.ano,MEDEX.mes), at=medAtendsDoPeriodo(p), conf=at.map(medConferir), fechado=medPeriodoConcluido(p.label);
+  const todos=loadData('exame_atend').filter(a=>a.status!=='Inativo'), ano=new Date().getFullYear(), doAno=todos.filter(a=>medDt(a.data)&&medDt(a.data).getFullYear()===ano);
+  box.innerHTML=`<div class="kpi-grid">${medKpi('ASOs vencidos',sst.filter(r=>sit(r)==='Vencido').length,'var(--red)')}${medKpi('Vencendo (30 dias)',sst.filter(r=>sit(r)==='Vence em breve').length,'var(--orange)')}${medKpi('Exames pendentes (a agendar)',sst.filter(r=>sit(r)==='Agendar'||sit(r)==='Pendente').length,'var(--blue)')}${medKpi('Divergências no fechamento atual',conf.filter(r=>/DIVERG|NECESSITA/.test(r.status)).length,'var(--red)')}</div>
+   <div class="muted" style="margin:6px 0 10px;font-size:12px">Fechamento atual: <b>${p.label}</b> — ${fechado?'<span class="badge bg">Concluído</span>':'<span class="badge by">Em aberto</span>'} · ${at.length} atendimento(s), ${conf.filter(r=>r.status==='PENDENTE DE CONFERÊNCIA').length} pendente(s) de conferência. <a href="#" onclick="medexIr('fech');return false">Abrir fechamento</a></div>
+   <div class="charts-grid" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px">${medTabelaResumo('Custo por empresa — '+ano,medAgrupar(doAno,a=>a.empresa))}${medTabelaResumo('Custo por tipo de exame — '+ano,medAgrupar(doAno,a=>a.tipo))}${medTabelaResumo('Valores por clínica — '+ano,medAgrupar(doAno,a=>a.clinica))}</div>
+   <div style="margin-top:12px"><button class="btn btn-s btn-sm" onclick="medexExportar('painel')">⬇ Excel</button> <button class="btn btn-s btn-sm" onclick="medexImprimir('painel')">🖨 Imprimir</button></div>`;
+}
+function medLancFiltrados(){
+  const q=((document.getElementById('medl-q')||{}).value||'').toLowerCase(), e=(document.getElementById('medl-emp')||{}).value||'', t=(document.getElementById('medl-tipo')||{}).value||'', s=(document.getElementById('medl-st')||{}).value||'';
+  return loadData('exame_atend').filter(a=>a.status!=='Inativo').filter(a=>(!e||a.empresa===e)&&(!t||a.tipo===t)&&(!q||(a.colaborador+' '+a.notaFiscal+' '+a.clinica).toLowerCase().includes(q))).map(a=>({a,r:medConferir(a)})).filter(x=>!s||x.r.status===s).sort((x,y)=>(medDt(y.a.data)||0)-(medDt(x.a.data)||0));
+}
+function medexLanc(box){
+  const ST=['CONFERIDO','DIVERGÊNCIA DE VALOR','DIVERGÊNCIA DE EXAMES','PENDENTE DE CONFERÊNCIA','NECESSITA DE JUSTIFICATIVA'];
+  box.innerHTML=`<div class="filters" style="margin-bottom:10px;flex-wrap:wrap"><button class="btn btn-p btn-sm" onclick="medAbrirForm()">+ Lançar exame</button>
+    <input class="finp" id="medl-q" placeholder="🔎 Colaborador, NF, clínica..." oninput="medexLancTab()" style="width:200px">
+    <select class="fsel" id="medl-emp" onchange="medexLancTab()"><option value="">Todas as empresas</option><option>AC</option><option>BRASS</option></select>
+    <select class="fsel" id="medl-tipo" onchange="medexLancTab()"><option value="">Todos os tipos</option>${MED_TIPOS.map(t=>`<option>${t}</option>`).join('')}</select>
+    <select class="fsel" id="medl-st" onchange="medexLancTab()"><option value="">Todas as conferências</option>${ST.map(t=>`<option>${t}</option>`).join('')}</select>
+    <button class="btn btn-s btn-sm" onclick="medexExportar('lanc')">⬇ Excel</button><span class="chip" id="medl-cnt"></span></div><div id="medl-tab"></div>`;
+  medexLancTab();
+}
+function medAtendLinha(x,comAcoes){
+  const a=x.a, r=x.r;
+  return `<tr style="border-bottom:1px solid var(--g100)"><td style="white-space:nowrap">${gpEsc(a.data)}</td><td><b style="font-size:11.5px">${gpEsc(a.colaborador)}</b><div class="muted" style="font-size:10px">${gpEmpNome(a.empresa)}</div></td><td>${gpEsc(a.tipo)}</td><td style="font-size:11px">${gpEsc(a.clinica||'—')}</td><td>${gpEsc(a.notaFiscal||'—')}</td>
+   <td style="text-align:right;white-space:nowrap">${r.previsto?medMoeda(r.previsto):'—'}</td><td style="text-align:right;white-space:nowrap">${medMoeda(r.cobrado)}</td><td style="text-align:right;white-space:nowrap;color:${Math.abs(r.dif)>=0.01?'var(--red)':''}">${r.previsto?medMoeda(r.dif)+(r.pct!==null?' ('+(r.pct>=0?'+':'')+r.pct.toFixed(1).replace('.',',')+'%)':''):'—'}</td><td>${medBadgeStatus(r)}</td>
+   <td style="white-space:nowrap"><button class="btn btn-s btn-xs" onclick="medConfAbrir(${a.id})" title="Conferir / justificar">⚖</button> ${hxBtn('exame_atend',a.id,a.colaborador+' — '+a.tipo+' '+a.data)} <button class="btn btn-s btn-xs" onclick="medAbrirForm(${a.id})">✏</button> <button class="btn btn-s btn-xs" onclick="medAtendExcluir(${a.id})">🗑</button></td></tr>`;
+}
+const MED_TH='<th>Data</th><th>Colaborador</th><th>Tipo</th><th>Clínica</th><th>NF</th><th style="text-align:right">Previsto</th><th style="text-align:right">Cobrado</th><th style="text-align:right">Diferença</th><th>Conferência</th><th></th>';
+function medexLancTab(){
+  const l=medLancFiltrados(), el=document.getElementById('medl-tab'); if(!el) return;
+  el.innerHTML=`<div class="card" style="padding:0;overflow-x:auto"><table><thead><tr>${MED_TH}</tr></thead><tbody>${l.map(x=>medAtendLinha(x)).join('')||'<tr><td colspan="10" class="muted" style="text-align:center;padding:16px">Nenhum exame lançado ainda. Use “+ Lançar exame”.</td></tr>'}</tbody></table></div>`;
+  const c=document.getElementById('medl-cnt'); if(c) c.textContent=l.length+' registro(s)';
+}
+/* conferência detalhada + justificativa */
+function medConfAbrir(id){
+  const a=loadData('exame_atend').find(x=>x.id===id); if(!a) return; const r=medConferir(a);
+  const hist=(a.hist||[]).slice().reverse().map(h=>`<div style="font-size:10.5px;color:var(--g500)">${gpEsc(h.em)} — ${gpEsc(h.acao)}${h.texto?': '+gpEsc(h.texto):''}</div>`).join('');
+  abrirModalSimples('⚖ Conferência — '+gpEsc(a.colaborador)+' ('+gpEsc(a.tipo)+' '+gpEsc(a.data)+')',`
+   <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:8px;font-size:12px"><span>Status: ${medBadgeStatus(r)}</span><span>Previsto: <b>${r.previsto?medMoeda(r.previsto):'—'}</b></span><span>Cobrado: <b>${medMoeda(r.cobrado)}</b></span><span>Diferença: <b>${r.previsto?medMoeda(r.dif)+(r.pct!==null?' ('+r.pct.toFixed(1).replace('.',',')+'%)':''):'—'}</b></span></div>
+   <table style="width:100%;font-size:11.5px;margin-bottom:8px"><thead><tr><th>Procedimento</th><th>Qtd</th><th>Cobrado</th><th>Referência</th></tr></thead><tbody>${(a.itens||[]).map(i=>{ const ref=medValorRef(i.exame); return `<tr><td>${gpEsc(i.exame)}</td><td>${i.qtd||1}</td><td>${medMoeda(i.valorCobrado)}</td><td>${ref!==null?medMoeda(ref*(i.qtd||1)):'<span class="muted">sem referência</span>'}</td></tr>`; }).join('')}</tbody></table>
+   ${r.problemas.length?`<div style="border:1px solid #fecaca;background:#fef2f2;border-radius:6px;padding:8px;font-size:11.5px;margin-bottom:8px"><b>Pontos de atenção</b><ul style="margin:4px 0 0 16px">${r.problemas.map(p=>`<li>${gpEsc(p.m)}</li>`).join('')}</ul></div>`:'<div style="color:var(--green);font-size:12px;margin-bottom:8px">✅ Sem divergências com a matriz e a tabela de valores.</div>'}
+   <label class="flbl">Justificativa / resolução da divergência<textarea class="finp" id="medc-just" rows="3" style="width:100%">${gpEsc(a.justificativa||'')}</textarea></label>
+   <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px"><button class="btn btn-s" onclick="fecharModalSimples()">Fechar</button><button class="btn btn-p" onclick="medConfSalvar(${a.id})">💾 Salvar justificativa</button></div>
+   <div style="margin-top:10px"><b style="font-size:11px">Histórico de alterações</b>${hist||'<div class="muted" style="font-size:10.5px">—</div>'}</div>`,760);
+}
+function medConfSalvar(id){
+  const a=loadData('exame_atend').find(x=>x.id===id), t=document.getElementById('medc-just').value.trim();
+  if(t===(a.justificativa||'').trim()){ fecharModalSimples(); return; }
+  crudUpdate('exame_atend',id,{justificativa:t,hist:(a.hist||[]).concat([{em:nowStr(),acao:t?'Justificativa registrada':'Justificativa removida',texto:t}])},{modulo:'Medicina Ocupacional',label:a.colaborador});
+  fecharModalSimples(); showToast('✅ Justificativa salva'); medAposMudanca();
+}
+/* fechamento 21 → 20 */
+function medFechSel(){ const m=+(document.getElementById('medfe-mes')||{}).value||MEDEX.mes, a=+(document.getElementById('medfe-ano')||{}).value||MEDEX.ano; MEDEX.mes=m; MEDEX.ano=a; return medPeriodo(a,m); }
+function medNfReg(p,a){ const k=p.label+'|'+medN(a.clinica)+'|'+medN(a.notaFiscal); return {chave:k,rec:loadData('exame_nf').find(r=>r.status!=='Inativo'&&r.chave===k)}; }
+function medFechFiltrados(p){
+  const g=id=>((document.getElementById(id)||{}).value||'').toLowerCase().trim();
+  return medAtendsDoPeriodo(p).filter(a=>(!g('medfe-emp')||a.empresa.toLowerCase()===g('medfe-emp'))&&(!g('medfe-cli')||medN(a.clinica).toLowerCase().includes(medN(g('medfe-cli')).toLowerCase()))&&(!g('medfe-col')||medN(a.colaborador).toLowerCase().includes(medN(g('medfe-col')).toLowerCase()))&&(!g('medfe-tipo')||a.tipo.toLowerCase()===g('medfe-tipo'))&&(!g('medfe-nf')||String(a.notaFiscal||'').toLowerCase().includes(g('medfe-nf')))).map(a=>({a,r:medConferir(a)})).sort((x,y)=>(medDt(x.a.data)||0)-(medDt(y.a.data)||0));
+}
+function medexFech(box){
+  const anos=[...new Set([MEDEX.ano-1,MEDEX.ano,MEDEX.ano+1,new Date().getFullYear()])].sort();
+  const mn=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  box.innerHTML=`<div class="filters" style="flex-wrap:wrap;margin-bottom:8px"><b style="font-size:12px">Fechamento que termina em:</b>
+    <select class="fsel" id="medfe-mes" onchange="medexFechTab()">${mn.map((m,i)=>`<option value="${i+1}" ${MEDEX.mes===i+1?'selected':''}>${m}</option>`).join('')}</select>
+    <select class="fsel" id="medfe-ano" onchange="medexFechTab()">${anos.map(a=>`<option ${a===MEDEX.ano?'selected':''}>${a}</option>`).join('')}</select><span class="chip" id="medfe-per"></span></div>
+    <div class="filters" style="flex-wrap:wrap;margin-bottom:10px"><select class="fsel" id="medfe-emp" onchange="medexFechTab()"><option value="">Todas as empresas</option><option value="ac">AC</option><option value="brass">BRASS</option></select>
+    <input class="finp" id="medfe-cli" placeholder="Clínica" oninput="medexFechTab()" style="width:120px"><input class="finp" id="medfe-col" placeholder="Colaborador" oninput="medexFechTab()" style="width:150px">
+    <select class="fsel" id="medfe-tipo" onchange="medexFechTab()"><option value="">Todos os tipos</option>${MED_TIPOS.map(t=>`<option value="${t.toLowerCase()}">${t}</option>`).join('')}</select><input class="finp" id="medfe-nf" placeholder="Nº NF" oninput="medexFechTab()" style="width:100px">
+    <button class="btn btn-s btn-sm" onclick="medexExportar('fech')">⬇ Excel</button><button class="btn btn-s btn-sm" onclick="medexImprimir('fech')">🖨 Imprimir</button></div><div id="medfe-tab"></div>`;
+  medexFechTab();
+}
+function medNfSet(chave,campo,valor,p,a){ const ex=loadData('exame_nf').find(r=>r.chave===chave&&r.status!=='Inativo'); if(ex) crudUpdate('exame_nf',ex.id,{[campo]:valor},{modulo:'Medicina Ocupacional'}); else crudCreate('exame_nf',{chave,periodo:p,clinica:a.clinica,notaFiscal:a.notaFiscal,[campo]:valor,situacaoNF:campo==='situacaoNF'?valor:'Pendente'},{modulo:'Medicina Ocupacional',label:'NF '+(a.notaFiscal||'')}); }
+function medNfStatus(chave,idx){ const sel=document.getElementById('nfst-'+idx); const a=MEDFE_CACHE[idx]; medNfSet(chave,'situacaoNF',sel.value,MEDFE_PER,a); medexFechTab(); }
+let MEDFE_CACHE=[], MEDFE_PER='';
+function medexFechTab(){
+  const p=medFechSel(), l=medFechFiltrados(p), el=document.getElementById('medfe-tab'); if(!el) return; MEDFE_PER=p.label;
+  document.getElementById('medfe-per').textContent='Período: '+p.label;
+  const concl=loadData('exame_fechamento').find(r=>r.status!=='Inativo'&&r.periodo===p.label&&r.situacao==='Concluído');
+  const tot=l.reduce((s,x)=>({prev:s.prev+x.r.previsto,cob:s.cob+x.r.cobrado,comp:s.comp+x.r.cobradoComp}),{prev:0,cob:0,comp:0});
+  const colabs=new Set(l.map(x=>medN(x.a.colaborador))).size, exames=l.reduce((s,x)=>s+(x.a.itens||[]).reduce((q,i)=>q+(Number(i.qtd)||1),0),0);
+  const pend=l.filter(x=>x.r.status==='PENDENTE DE CONFERÊNCIA').length, div=l.filter(x=>/DIVERG|NECESSITA/.test(x.r.status)).length;
+  const grupos=new Map(); MEDFE_CACHE=[];
+  l.forEach(x=>{ const k=medNfReg(p,x.a).chave; if(!grupos.has(k)){ grupos.set(k,{a:x.a,itens:[]}); MEDFE_CACHE.push(x.a); } grupos.get(k).itens.push(x); });
+  const nfRows=[...grupos.entries()].map(([k,g],idx)=>{ const reg=loadData('exame_nf').find(r=>r.chave===k&&r.status!=='Inativo'), st=reg&&reg.situacaoNF||'Pendente';
+    const prev=g.itens.reduce((s,x)=>s+x.r.previsto,0), cob=g.itens.reduce((s,x)=>s+x.r.cobrado,0);
+    return `<tr><td>${gpEsc(g.a.clinica||'—')}</td><td><b>${gpEsc(g.a.notaFiscal||'sem NF')}</b></td><td style="text-align:center">${g.itens.length}</td><td style="text-align:right">${medMoeda(prev)}</td><td style="text-align:right">${medMoeda(cob)}</td><td style="text-align:right">${medMoeda(cob-prev)}</td>
+      <td><select class="fsel" id="nfst-${idx}" onchange="medNfStatus('${escAttr(k)}',${idx})">${MED_NF_STATUS.map(s=>`<option ${s===st?'selected':''}>${s}</option>`).join('')}</select></td></tr>`; }).join('');
+  el.innerHTML=`<div class="kpi-grid">${medKpi('Colaboradores atendidos',colabs)}${medKpi('Exames realizados',exames)}${medKpi('Total previsto',medMoeda(tot.prev),'var(--blue)')}${medKpi('Total cobrado',medMoeda(tot.cob))}${medKpi('Diferença total',medMoeda(tot.comp-tot.prev),Math.abs(tot.comp-tot.prev)>=0.01?'var(--red)':'var(--green)')}${medKpi('Pendentes de conferência',pend,'var(--orange)')}${medKpi('Com divergência',div,'var(--red)')}</div>
+   <div class="card" style="padding:0;overflow-x:auto;margin-bottom:12px"><div style="padding:8px 12px;font-weight:700;font-size:12px">Notas fiscais do período</div><table><thead><tr><th>Clínica</th><th>Nota fiscal</th><th>Atend.</th><th style="text-align:right">Previsto</th><th style="text-align:right">Cobrado</th><th style="text-align:right">Diferença</th><th>Situação da nota</th></tr></thead><tbody>${nfRows||'<tr><td colspan="7" class="muted" style="padding:12px;text-align:center">Nenhum atendimento neste período.</td></tr>'}</tbody></table></div>
+   <div class="card" style="padding:0;overflow-x:auto"><table><thead><tr>${MED_TH}</tr></thead><tbody>${l.map(x=>medAtendLinha(x)).join('')||'<tr><td colspan="10" class="muted" style="text-align:center;padding:14px">—</td></tr>'}</tbody></table></div>
+   <div style="margin-top:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">${concl?`<span class="badge bg">✅ Fechamento concluído em ${gpEsc((concl.em||'').split(' ')[0])}</span><button class="btn btn-s btn-sm" onclick="medFechReabrir(${concl.id})">Reabrir fechamento</button>`:`<button class="btn btn-p" onclick="medFechConcluir()">✔ Concluir fechamento</button><span class="muted" style="font-size:11px">Só conclui quando não restar pendência ou divergência sem justificativa, e as notas estiverem como Conferida ou Com divergência.</span>`}</div>`;
+}
+function medFechConcluir(){
+  const p=medFechSel(), l=medAtendsDoPeriodo(p).map(a=>({a,r:medConferir(a)}));
+  if(!l.length){ showToast('Não há atendimentos neste período','warn'); return; }
+  const pend=[]; l.forEach(x=>{ if(x.r.status!=='CONFERIDO') pend.push(x.a.colaborador+' ('+x.a.tipo+' '+x.a.data+') — '+x.r.status); });
+  const nf=new Map(); l.forEach(x=>{ const g=medNfReg(p,x.a); nf.set(g.chave,{a:x.a,st:g.rec&&g.rec.situacaoNF||'Pendente'}); });
+  nf.forEach(v=>{ if(v.st==='Pendente'||v.st==='Em conferência') pend.push('NF '+(v.a.notaFiscal||'sem número')+' ('+(v.a.clinica||'—')+') está '+v.st); });
+  if(pend.length){ abrirModalSimples('⛔ Não dá para concluir ainda',`<p style="font-size:12px">Resolva ou justifique:</p><ul style="margin:6px 0 0 18px;font-size:12px">${pend.map(x=>`<li>${gpEsc(x)}</li>`).join('')}</ul><p class="muted" style="font-size:11px;margin-top:8px">Use o botão ⚖ de cada atendimento para registrar a justificativa e a situação da nota para Conferida / Com divergência.</p>`,640); return; }
+  const tot=l.reduce((s,x)=>s+x.r.cobrado,0);
+  crudCreate('exame_fechamento',{periodo:p.label,situacao:'Concluído',em:nowStr(),atendimentos:l.length,totalCobrado:tot,totalPrevisto:l.reduce((s,x)=>s+x.r.previsto,0)},{modulo:'Medicina Ocupacional',label:'Fechamento '+p.label});
+  showToast('✅ Fechamento concluído'); medexFechTab();
+}
+function medFechReabrir(id){ confirmAction('Reabrir este fechamento?',()=>{ crudUpdate('exame_fechamento',id,{situacao:'Reaberto',reabertoEm:nowStr()},{modulo:'Medicina Ocupacional'}); medexFechTab(); }); }
+/* valores de referência */
+function medexValores(box){
+  const tab=loadData('tabela_valores_exames').filter(t=>t.status!=='Inativo');
+  const conhecidos=new Map(); loadData('pcmso_matriz').filter(m=>m.status!=='Inativo').forEach(m=>{ const k=medChave(m.exame); if(k!=='RUIDO'&&!conhecidos.has(k)) conhecidos.set(k,m.exame); });
+  const faltam=[...conhecidos.entries()].filter(([k])=>medValorRef(conhecidos.get(k))===null);
+  box.innerHTML=`<div class="muted" style="font-size:12px;margin-bottom:8px">Valor de referência = preço contratado com a clínica. O sistema só compara onde há valor cadastrado; onde não há, avisa — nunca inventa.</div>
+   <div class="card" style="padding:0;overflow-x:auto;margin-bottom:12px"><div style="padding:8px 12px;font-weight:700;font-size:12px;display:flex;gap:10px;align-items:center">Tabela contratada <button class="btn btn-p btn-xs" onclick="medValNovo('')">+ Incluir</button></div><table><thead><tr><th>Exame</th><th>Clínica</th><th style="text-align:right">Valor (R$)</th><th></th></tr></thead><tbody>${tab.map(t=>`<tr><td>${gpEsc(t.exame)}</td><td>${gpEsc(t.clinica||'')}</td><td style="text-align:right">${Number(t.valorContratado)>0?medMoeda(t.valorContratado):'<span class="muted">sem valor</span>'}</td><td><button class="btn btn-s btn-xs" onclick="medValEditar(${t.id})">✏</button> <button class="btn btn-s btn-xs" onclick="medValExcluir(${t.id})">🗑</button></td></tr>`).join('')}</tbody></table></div>
+   <div class="card" style="padding:0;overflow-x:auto"><div style="padding:8px 12px;font-weight:700;font-size:12px">Exames da matriz PCMSO sem valor de referência (${faltam.length})</div><table><tbody>${faltam.map(([k,n])=>`<tr><td>${gpEsc(n)}</td><td style="width:60px"><button class="btn btn-s btn-xs" onclick="medValNovo('${escAttr(n)}')">Informar valor</button></td></tr>`).join('')||'<tr><td class="muted" style="padding:10px">Todos os exames da matriz têm valor.</td></tr>'}</tbody></table></div>`;
+}
+let MEDV_ID=null;
+function medValNovo(nome){ MEDV_ID=null; medValForm(nome,MED_CLINICA,''); }
+function medValEditar(id){ const t=loadData('tabela_valores_exames').find(x=>x.id===id); if(!t) return; MEDV_ID=id; medValForm(t.exame,t.clinica||'',Number(t.valorContratado)>0?moedaFmt(t.valorContratado):''); }
+function medValForm(nome,cli,val){
+  abrirModalSimples(MEDV_ID?'✏ Valor de referência':'💲 Valor de referência',`<label class="flbl">Exame<input class="finp" id="medv-ex" list="med-dl2" style="width:100%" value="${gpEsc(nome)}"></label><datalist id="med-dl2">${medNomesConhecidos().map(n=>`<option value="${gpEsc(n)}">`).join('')}</datalist>
+   <label class="flbl">Clínica<input class="finp" id="medv-cli" style="width:100%" value="${gpEsc(cli)}"></label><label class="flbl">Valor contratado (R$)<input class="finp" id="medv-val" style="width:100%" value="${gpEsc(val)}" placeholder="0,00" oninput="maskMoedaInput(this)"></label>
+   <div style="text-align:right;margin-top:10px"><button class="btn btn-p" onclick="medValSalvar()">💾 Salvar</button></div>`,460);
+}
+function medValSalvar(){
+  const ex=document.getElementById('medv-ex').value.trim(), cli=document.getElementById('medv-cli').value.trim(), v=moedaNum(document.getElementById('medv-val').value);
+  if(!ex||!(v>0)){ showToast('Informe o exame e um valor maior que zero','warn'); return; }
+  const dados={exame:ex,clinica:cli,valorContratado:v};
+  if(MEDV_ID) crudUpdate('tabela_valores_exames',MEDV_ID,dados,{modulo:'Medicina Ocupacional',label:ex}); else crudCreate('tabela_valores_exames',dados,{modulo:'Medicina Ocupacional',label:ex});
+  fecharModalSimples(); showToast('✅ Valor salvo'); medAposMudanca();
+}
+function medValExcluir(id){ const t=loadData('tabela_valores_exames').find(x=>x.id===id); confirmAction('Excluir o valor de "'+(t&&t.exame)+'"?',()=>{ crudDeleteFisico('tabela_valores_exames',id,{modulo:'Medicina Ocupacional',label:t.exame}); medexRender(); }); }
+/* exportar / imprimir */
+function medLinhasExport(tab){
+  let l; if(tab==='fech'){ l=medFechFiltrados(medFechSel()); } else l=medLancFiltrados();
+  return [['Data','Colaborador','Empresa','Tipo','Clínica','Nota fiscal','Exames','Previsto','Cobrado','Diferença','Conferência','Período de fechamento'],...l.map(x=>[x.a.data,x.a.colaborador,x.a.empresa,x.a.tipo,x.a.clinica||'',x.a.notaFiscal||'',(x.a.itens||[]).map(i=>i.exame+((i.qtd||1)>1?' x'+i.qtd:'')).join('; '),x.r.previsto,x.r.cobrado,x.r.cobradoComp-x.r.previsto,x.r.status,x.a.periodoFech||''])];
+}
+function medexExportar(tab){
+  if(typeof XLSX==='undefined'){ showToast('Biblioteca de Excel indisponível','warn'); return; }
+  const rows=tab==='painel'?[['Indicador','Valor'],...medAgrupar(loadData('exame_atend').filter(a=>a.status!=='Inativo'),a=>a.empresa).map(p=>['Custo — '+p[0],p[1]]),...medAgrupar(loadData('exame_atend').filter(a=>a.status!=='Inativo'),a=>a.tipo).map(p=>['Custo tipo — '+p[0],p[1]]),...medAgrupar(loadData('exame_atend').filter(a=>a.status!=='Inativo'),a=>a.clinica).map(p=>['Custo clínica — '+p[0],p[1]])]:medLinhasExport(tab);
+  const ws=XLSX.utils.aoa_to_sheet(rows), wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,'Exames'); XLSX.writeFile(wb,'Exames_Ocupacionais_'+(tab==='fech'?(medFechSel().label.replace(/\//g,'-')):todayStr().replace(/\//g,'-'))+'.xlsx');
+}
+function medexImprimir(tab){
+  const rows=tab==='painel'?[]:medLinhasExport(tab), tit=tab==='fech'?'FECHAMENTO DE EXAMES OCUPACIONAIS — '+medFechSel().label:(tab==='painel'?'PAINEL — EXAMES OCUPACIONAIS':'EXAMES OCUPACIONAIS');
+  const corpo=tab==='painel'?document.getElementById('medex-corpo').innerHTML:`<table style="width:100%;border-collapse:collapse;font-size:9.5px"><thead><tr>${rows[0].map(h=>`<th style="text-align:left;padding:3px;border-bottom:1.5px solid #000">${h}</th>`).join('')}</tr></thead><tbody>${rows.slice(1).map(r=>`<tr>${r.map((c,i)=>`<td style="padding:3px;border-bottom:1px solid #ccc">${typeof c==='number'?fmtBRL(c):gpEsc(c)}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+  abrirReciboModal('🖨 '+tit,`${docPageCSS({nome:'AC Metalúrgica / Brassmetal',email:''})}<div class="doc-print" style="padding:10px 4px"><h3 style="text-align:center;margin-bottom:8px">${tit}</h3>${corpo}</div>`,false);
+}
+
+
+function medAbrirFormPorNome(nome){ const c=loadData('colaboradores').find(x=>medN(x.nome)===medN(nome)&&x.status!=='Inativo'); medAbrirForm(null,c?c.id:null); }
+/* v5.24 — uma vez: ASOs antigos guardavam a data em "validade"; passa a valer também em "proximoExame" (coluna da tela) */
+function migracaoMedV2(){
+  if(localStorage.getItem('ac_med_v2')) return;
+  try{ loadData('sst').forEach(r=>{ if(!r.proximoExame&&r.validade) crudUpdate('sst',r.id,{proximoExame:r.validade},{modulo:'Medicina Ocupacional',label:r.colaborador}); }); localStorage.setItem('ac_med_v2','1'); }catch(e){ console.warn('migracaoMedV2',e); }
+}
 
 </script>
 </body>
